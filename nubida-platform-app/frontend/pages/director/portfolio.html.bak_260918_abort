@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>포트폴리오 관리 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/print.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    
+    <style>
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-4);
+        }
+        .portfolio-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+        .portfolio-card:hover {
+            border-color: var(--md-primary);
+            box-shadow: 0 2px 12px rgba(79,70,229,0.08);
+            transform: translateY(-1px);
+        }
+        /* 썸네일 영역 */
+        .portfolio-thumb {
+            width: 100%;
+            height: 160px;
+            background: var(--bg-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+        }
+        .portfolio-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 카드 정보 영역 */
+        .portfolio-info {
+            padding: var(--space-4);
+        }
+        .portfolio-title {
+            font-weight: 600;
+            font-size: var(--text-base);
+            margin-bottom: var(--space-1);
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .portfolio-student {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+        }
+
+        .portfolio-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-3) var(--space-5);
+            border-top: 1px solid var(--border-subtle);
+        }
+        /* 승인/코멘트 버튼 — 크고 눈에 띄게 */
+        .approve-btn {
+            background: #16a34a !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-size: var(--text-base) !important;
+            padding: 12px 28px !important;
+            border-radius: var(--radius-lg) !important;
+            cursor: pointer;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 8px rgba(22,163,74,0.25) !important;
+            transition: all 0.2s;
+            margin-right: 12px;
+        }
+        .approve-btn:hover:not(:disabled) {
+            box-shadow: 0 4px 16px rgba(22,163,74,0.35) !important;
+            transform: translateY(-1px);
+        }
+        .approve-btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+            box-shadow: none !important;
+            background: #9ca3af !important;
+        }
+        .comment-btn {
+            background: #4f46e5 !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-size: var(--text-base) !important;
+            padding: 12px 28px !important;
+            border-radius: var(--radius-lg) !important;
+            cursor: pointer;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 8px rgba(79,70,229,0.25) !important;
+            transition: all 0.2s;
+            margin-right: 12px;
+        }
+        .comment-btn:hover {
+            box-shadow: 0 4px 16px rgba(79,70,229,0.35) !important;
+            transform: translateY(-1px);
+        }
+        /* modal-actions: 버튼 사이 간격 */
+        .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 24px;
+            justify-content: flex-start;
+        }
+        .modal-actions > .btn-text {
+            margin-left: auto;
+        }
+        .pf-status {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 600;
+        }
+        .pf-status.draft { background: #fef3c7; color: #92400e; }
+        .pf-status.published { background: #dbeafe; color: #1e40af; }
+        .pf-status.approved { background: #d1fae5; color: #065f46; }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--space-4);
+        }
+        .filter-item label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-subtle);
+            border-radius: var(--radius-md);
+            padding: 2px;
+        }
+        .vt-btn {
+            padding: var(--space-2) var(--space-4);
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: var(--text-sm);
+            transition: all 0.2s;
+        }
+        .vt-btn.active {
+            background: var(--bg-surface);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Detail Modal Styles */
+        .portfolio-detail-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: var(--space-4) 0;
+        }
+        .portfolio-detail-images img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+        }
+        .portfolio-detail-content {
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+    
+/* =========================================================
+   DIRECTOR PORTFOLIO — PRO (레이아웃·카드·상세 업무 미관)
+   ========================================================= */
+#portfolioGridView { min-height:120px; }
+
+/* ── 카드 그리드 간격 ── */
+.dirp-grid { gap:20px; }
+.dirp-card {
+  display:flex; flex-direction:column;
+  background:#fff; border:1px solid #E8EBF2; border-radius:18px;
+  overflow:hidden; cursor:pointer; position:relative;
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 10px 30px -22px rgba(15,23,42,.35);
+  transition:box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+}
+.dirp-card:hover { border-color:#C7CDFA; transform:translateY(-2px);
+  box-shadow:0 14px 34px -18px rgba(79,70,229,.45); }
+.dirp-card:focus-visible { outline:2px solid #4F5EF8; outline-offset:2px; }
+
+/* 머리: 유형 + 상태(우측 상단 병렬) */
+.dirp-card-head { display:flex; align-items:center; justify-content:space-between; padding:12px 16px 8px; }
+.dirp-type { font-size:11px; font-weight:700; color:#5B6476; letter-spacing:.02em; }
+.dirp-state {
+  font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px;
+  display:inline-flex; align-items:center; gap:4px; letter-spacing:.01em;
+}
+.dirp-state.draft     { background:#FEF3C7; color:#92400E; }
+.dirp-state.published { background:#DBEAFE; color:#1E40AF; }
+.dirp-state.approved  { background:#DCFCE7; color:#166534; }
+
+/* 커버(썸네일/아이콘) — place에 따라 같은 높이 유지 */
+.dirp-cover { position:relative; height:132px; background:linear-gradient(135deg,#F1F3FB,#E9ECF9); margin:0 4px; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.dirp-cover img { width:100%; height:100%; object-fit:cover; display:block; }
+.dirp-cover-ic { font-size:34px; opacity:.4; display:inline-flex; }
+.dirp-cover-ic svg { width:40px; height:40px; }
+/* 섬네일 없으면 상태색에 맞는 은은 틴트 */
+.dirp-card[data-noimg] .dirp-cover { background:linear-gradient(135deg,#FBF7EE,#F6EFE0); }
+
+/* 본문: 제목 + 요약 */
+.dirp-body { padding:12px 16px 4px; display:flex; flex-direction:column; gap:6px; }
+.dirp-title { font-size:15px; font-weight:700; line-height:1.4; letter-spacing:-.01em; color:#111827; margin:0;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:20px; }
+.dirp-ex { font-size:12.5px; line-height:1.6; color:#5B6476; margin:0;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* 푸터: 학생 · 과목 · 날짜 구분선 위 */
+.dirp-foot { margin-top:12px; padding:10px 16px 12px; border-top:1px solid #F1F3F8; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.dirp-stu { font-size:11.5px; font-weight:650; color:#1F2437; display:inline-flex; align-items:center; gap:4px; }
+.dirp-stu::before { content:""; width:11px; height:11px; display:inline-block; opacity:.55;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F2437' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E"); }
+.dirp-sub { font-size:10.5px; color:#4F5EF8; background:#F0F2FF; border:1px solid #E4E7FF; padding:1px 8px; border-radius:999px; font-weight:600; }
+.dirp-date { margin-left:auto; font-size:10.5px; color:#98A1B2; font-weight:500; }
+
+/* ── 상세 모달 ── */
+#detailModal .modal { border-radius:20px; }
+.dirpd { padding:0 6px 6px; }
+.dirpd-labels { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+.dirpd-lock { font-size:11px; font-weight:700; color:#B45309; }
+.dirpd-lock.is-pub { color:#2563EB; }
+.dirpd-title { font-size:22px; font-weight:800; letter-spacing:-.02em; color:#0F1222; line-height:1.3; margin:0 0 8px; }
+.dirpd-desc { font-size:13.5px; color:#6B7280; line-height:1.6; margin:0 0 16px; }
+
+/* 메타 2열 격자 */
+.dirpd-meta2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px 18px;
+  margin:14px 0; padding:15px 18px; background:#F8F9FD; border:1px solid #EDF0F7; border-radius:14px; }
+.dirpd-meta2 div { min-width:0; }
+.dirpd-meta2 dt { font-size:10.5px; font-weight:700; color:#98A1B2; letter-spacing:.06em; margin-bottom:2px; }
+.dirpd-meta2 dd { margin:0; font-size:13px; font-weight:600; color:#1F2437; overflow-wrap:anywhere; }
+
+/* 파일 링크 */
+.dirpd-file { margin:4px 0 14px; }
+.dirpd-file a { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:#4F46E5;
+  background:#F0F2FF; border:1px solid #E4E7FF; padding:7px 13px; border-radius:999px; text-decoration:none; font-weight:600; }
+
+/* 본문 읽기 패널 */
+.dirpd-content { margin-top:18px; padding:20px 22px; background:#fff; border:1px solid #EDF0F6; border-radius:16px;
+  white-space:pre-wrap; word-break:break-word; font-size:14px; line-height:1.85; color:#2B3245;
+  max-width:720px; }
+
+/* 사진 */
+.dirpd-photos { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.dirpd-photos img { width:130px; height:130px; object-fit:cover; border-radius:12px;
+  border:1px solid #EEF0F6; box-shadow:0 1px 3px rgba(15,23,42,.06); cursor:zoom-in; transition:transform .15s ease; }
+.dirpd-photos img:hover { transform:scale(1.04); }
+
+/* footer 승인 콘솔 버튼과 상단이 자연스럽게 (디렉터 원용) */
+#detailModal .modal-actions { border-top:1px solid #EEF0F6; }
+
+/* 모바일 보정 */
+@media (max-width:600px){
+  .dirp-cover{height:110px;}
+  .dirpd-content{padding:16px;}
+  .dirpd-photos img{width:96px;height:96px;}
+}
+
+
+
+/* ---- 표준 섹션 리더 (.dsec) — 저장 규약 라벨별 카드 ---- */
+.dsec { margin:14px 0; border:1px solid #EAECF4; border-radius:14px; background:#fff; overflow:hidden; }
+.dsec .dsec-cap {
+  display:flex; align-items:center; gap:8px; padding:9px 16px; font-size:12px; font-weight:750;
+  color:#4F46E5; background:linear-gradient(180deg,#FAFBFF,#F5F7FF); border-bottom:1px solid #EDF0FA;
+}
+.dsec .dsec-body.p { padding:14px 18px 4px; font-size:14px; line-height:1.9; color:#2B3245; white-space:normal; word-break:break-word; }
+.dsec .dsec-body.p:empty{display:none;}
+.dsec .dsec-body.p br { content:""; margin-top:0; }
+/* 코드 / 실행결과 — 다크 콘솔 */
+.dsec .dsec-body { margin:0; padding:16px 18px; overflow:auto; white-space:pre-wrap; word-break:break-word;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace !important; font-size:13px; line-height:1.7; }
+.dsec-code { background:#0D1320; border-color:#1C2537; }
+.dsec-code .dsec-cap { background:#141B28; color:#8AA2E6; border-color:#1E2940; }
+.dsec-code .dsec-body { color:#CAD3E2; }
+.dsec-code .dsec-body.is-out { color:#7EE2A8; }
+/* 주차 같은 메타는 중앙 배지로 */
+.dsec-week { border:none; background:transparent; text-align:center; }
+.dsec-week .dsec-body{ } /* built flat */
+
+
+.dsec.dsec-week{ background:transparent; border:0; text-align:left; padding:4px 0 0; color:#64748B;
+  font-size:12.5px; font-weight:600; letter-spacing:.02em; }
+
+
+
+/* ===========================================================
+   STATUS-THEME — 승인/미확인/반려/코멘트 색계 (원장·학생 공통 시그널)
+   thm-ok  승인=흰색(기본) 주문 배경
+   thm-pend 미확인(발행 대기)=연한 초록
+   thm-rev  반려=주황
+   thm-cmt  원장 코멘트=푸른
+-=========================================================== */
+.dirp-card { position:relative; }
+.thm-pend,
+.thm-rev,
+.thm-cmt,
+.thm-wip { border-radius:16px; border:1px solid transparent; }
+/* 카드 배경 */
+.dirp-card.thm-ok    { background:#FFFFFF; border-color:#E4E9F2; }
+.dirp-card.thm-pend  { background:#EFFAF3; border-color:#CCECDA; }
+.dirp-card.thm-rev   { background:#FFF4E5; border-color:#F8D9B6; }
+.dirp-card.thm-cmt   { background:#EFF4FF; border-color:#CFDFFF; }
+.dirp-card.thm-wip   { background:#F6F7F9; border-color:#E3E6EA; }
+/* 좌측 액센트 */
+.dirp-card.thm-ok::before{ display:none; }
+.dirp-card.thm-pend::before,
+.dirp-card.thm-rev::before,
+.dirp-card.thm-cmt::before,
+.dirp-card.thm-wip::before{ content:""; position:absolute; left:0; top:18px; bottom:18px; width:4px; border-radius:6px; }
+.dirp-card.thm-pend::before{ background:#46B57B; background:linear-gradient(#63C98F,#2FA36B); }
+.dirp-card.thm-rev::before { background:#F2902B; background:linear-gradient(#FFA94D,#E27E16); }
+.dirp-card.thm-cmt::before { background:#5B7CFA; background:linear-gradient(#6E8BFF,#4C63F1); }
+.dirp-card.thm-wip::before { background:#A9B1C2; }
+.dirp-card .dirp-card-head { background:transparent !important; }
+/* 상세 패널 내부 노트테마 */
+.dirpd.thm-ok    { }
+.dirpd.thm-pend div.dirpd-title,
+.dirpd.thm-pend .dirpd-head { background:transparent; }
+/* 코멘트·반려 초기 안내 바 */
+.rd-bubble { display:flex; gap:10px; align-items:flex-start; margin:6px 0 2px; padding:12px 14px;
+  border-radius:12px; border:1px solid #E3EBFF; background:#F4F8FF; }
+.rd-bubble.thm-comment{ }
+.rd-bubble .rd-ico{ font-size:16px; width:22px; flex:none; }
+.rd-bubble.thm-approve{ border-color:#D9EFE3; background:#F2FBF6; }
+.rd-bubble.thm-approve .rd-ico{ color:#20864D; }
+.rd-bubble p{ margin:0; font-size:13px; color:#39506B; line-height:1.6; }
+
+
+
+/* 반려 버튼 + 코멘트 모달 전문 스타일 */
+.reject-btn{ display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:10px;
+  font-weight:750; font-size:14px; cursor:pointer; border:1px solid #F6D3AC; background:#FFF6EC; color:#C96A12;
+  transition:transform .12s ease, box-shadow .12s ease; }
+.reject-btn:hover{ transform:translateY(-1px); box-shadow:0 6px 16px -10px rgba(201,106,18,.5); }
+.reject-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; box-shadow:none; }
+.cc-modal{ padding:22px 22px 16px; border-radius:16px; }
+.cc-title{ margin:0 0 14px; font-size:17px; }
+.cc-head{ display:flex; flex-direction:column; gap:6px; padding:12px 14px; border-radius:12px; background:#F7F9FC;
+  border:1px solid #EAEEF6; margin-bottom:14px; }
+.cc-chip{ align-self:flex-start; font-size:12px; font-weight:800; padding:4px 10px; border-radius:999px; }
+.cc-blue{ background:#E9F0FF; color:#3B5BDB; border:1px solid #D3E0FF; }
+.cc-orange{ background:#FFF1DF; color:#C96A12; border:1px solid #F8D9B6; }
+.cc-sub{ font-size:13.5px; font-weight:650; color:#33415C; }
+.cc-field textarea{ min-height:132px; line-height:1.75; }
+.cc-save-blue{ background:#3B5BDB !important; border-color:#3B5BDB !important; }
+.cc-save-reject{ background:#E27E16 !important; border-color:#E27E16 !important; }
+/* 상세 코멘트 노트 */
+.rd-note{ margin:12px 0 4px; border-radius:13px; overflow:hidden; border:1px solid #D8E4FF; background:#F5F9FF; }
+.rd-note .rd-note-t{ padding:8px 14px; font-size:12px; font-weight:800; color:#3B5BDB; background:#EAF1FF; border-bottom:1px solid #DCE7FF; }
+.rd-note .rd-note-x{ padding:12px 14px; font-size:13.5px; line-height:1.8; color:#33415C; white-space:pre-wrap; }
+.rd-note.is-ok{ border-color:#D2EEDD; background:#FFFFFF; }
+.rd-note.is-ok .rd-note-t{ color:#1E7F4C; background:#EFFAF3; border-color:#D8F0E2; }
+.rd-note.is-rej{ border-color:#F7D9B7; background:#FFF8F0; }
+.rd-note.is-rej .rd-note-t{ color:#C96A12; background:#FFF0DE; border-color:#F8DDBC; }
+
+/* ===========================================================
+   DP-NAV — 상단 헤더 · 교육과정/주차 네비게이션 (전문 리디자인)
+   =========================================================== */
+/* 뷰 토글 — 아이콘+라벨 세그먼트 */
+.view-toggle { display:inline-flex; gap:2px; background:#EEF0F6; border-radius:11px; padding:3px; }
+.vt-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:7px 14px; border:none; background:transparent; border-radius:8px;
+  cursor:pointer; font-size:12.5px; font-weight:650; color:#5B6476;
+  transition:background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.vt-btn svg { width:15px; height:15px; }
+.vt-btn:hover { color:#1F2437; }
+.vt-btn.active { background:#fff; color:#3B4FE0; box-shadow:0 1px 3px rgba(15,23,42,.12); }
+.dp-tool-btn { display:inline-flex; align-items:center; gap:6px; margin-left:8px; }
+.dp-tool-btn svg { width:15px; height:15px; }
+
+/* ── 분류 4축 필터바 (학생/상태/주/과정) ── */
+.dp-filterbar {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr));
+  gap:12px; align-items:end;
+  padding:16px; margin:6px 0 20px;
+  background:linear-gradient(180deg,#FBFCFE,#F6F8FC);
+  border:1px solid #E8ECF5; border-radius:16px;
+}
+.dp-fx { display:flex; align-items:center; gap:10px; min-width:0; }
+.dp-fx-ic {
+  flex:none; width:34px; height:34px; border-radius:10px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:#EEF1FB; color:#4F5EF8;
+}
+.dp-fx-ic svg { width:17px; height:17px; }
+.dp-fx-body { display:flex; flex-direction:column; gap:3px; min-width:0; flex:1; }
+.dp-fx-body label {
+  font-size:10.5px; font-weight:750; letter-spacing:.06em; color:#98A1B2;
+  text-transform:uppercase;
+}
+.dp-fx-body .form-select {
+  height:36px; font-size:13px; font-weight:600; color:#1F2437;
+  border:1px solid #E4E9F2; border-radius:9px; background:#fff;
+}
+.dp-fx-body .form-select:focus { border-color:#B9C2F7; box-shadow:0 0 0 3px rgba(79,94,248,.10); }
+.dp-fx-reset {
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  height:36px; padding:0 16px; border-radius:9px; cursor:pointer;
+  background:#fff; border:1px solid #E4E9F2; color:#5B6476;
+  font-size:12.5px; font-weight:650; transition:all .15s ease; align-self:end;
+}
+.dp-fx-reset:hover { border-color:#C7CDFA; color:#3B4FE0; }
+.dp-fx-reset svg { width:14px; height:14px; }
+
+/* ── 전문 요약 카드 (dp-stat) ── */
+.dp-stats { gap:14px; }
+.dp-stat {
+  display:flex; align-items:center; gap:14px;
+  padding:18px 20px; background:#fff;
+  border:1px solid #E8ECF5; border-radius:16px;
+  box-shadow:0 1px 2px rgba(15,23,42,.03), 0 12px 28px -24px rgba(15,23,42,.4);
+  transition:box-shadow .18s ease, transform .18s ease;
+}
+.dp-stat:hover { transform:translateY(-1px); box-shadow:0 14px 30px -20px rgba(79,94,248,.35); }
+.dp-stat-ic {
+  flex:none; width:44px; height:44px; border-radius:13px;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.dp-stat-ic svg { width:21px; height:21px; }
+.dp-stat-ic.is-total { background:#EEF1FB; color:#4F5EF8; }
+.dp-stat-ic.is-pend  { background:#FFF3E0; color:#E8820C; }
+.dp-stat-ic.is-ok     { background:#E9F9F0; color:#1E904F; }
+.dp-stat-ic.is-stu    { background:#EFF3FF; color:#3D6BE0; }
+.dp-stat-ic.is-week   { background:#F1ECFE; color:#7C4DE0; }
+.dp-stat-body { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.dp-stat-label { font-size:11.5px; font-weight:650; color:#8A93A6; letter-spacing:.01em; }
+.dp-stat-value { font-size:23px; font-weight:800; color:#111827; letter-spacing:-.02em; line-height:1.1; }
+.dp-stat-value .dp-stat-sep { color:#C6CCDA; font-weight:600; margin:0 2px; }
+.dp-stat-value em { font-style:normal; font-size:15px; font-weight:700; color:#98A1B2; }
+
+/* ── 주간 제출 현황 패널 ── */
+.dp-weekly-panel {
+  margin:0 0 22px; padding:20px 22px;
+  background:#fff; border:1px solid #E8ECF5; border-radius:18px;
+  box-shadow:0 1px 2px rgba(15,23,42,.03), 0 16px 34px -28px rgba(15,23,42,.4);
+}
+.dp-weekly-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.dp-weekly-head h2 { margin:0; font-size:15px; font-weight:750; color:#111827; letter-spacing:-.01em; }
+.dp-weekly-nav { display:flex; align-items:center; gap:8px; }
+.dp-wk-nav {
+  width:30px; height:30px; border-radius:8px; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:#F4F6FB; border:1px solid transparent; color:#5B6476; transition:all .15s ease;
+}
+.dp-wk-nav:hover { background:#EEF1FF; color:#3B4FE0; }
+.dp-wk-nav svg { width:15px; height:15px; }
+.dp-weekly-now { font-size:13px; font-weight:700; color:#1F2437; min-width:150px; text-align:center; }
+.dp-weekly-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:10px; }
+.dp-wk-card {
+  display:flex; align-items:center; gap:11px;
+  padding:11px 13px; border-radius:12px; border:1px solid #EAEDF5; background:#FCFDFF;
+}
+.dp-wk-av {
+  flex:none; width:34px; height:34px; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:750; color:#fff; background:#8A93A6;
+}
+.dp-wk-card.is-done .dp-wk-av { background:linear-gradient(135deg,#3FBE7C,#1E904F); }
+.dp-wk-card.is-miss .dp-wk-av { background:linear-gradient(135deg,#F0A03C,#E07C12); }
+.dp-wk-info { display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
+.dp-wk-name { font-size:13px; font-weight:700; color:#1F2437; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dp-wk-sub { font-size:11px; font-weight:600; color:#98A1B2; }
+.dp-wk-badge {
+  flex:none; font-size:10.5px; font-weight:750; padding:3px 9px; border-radius:999px;
+  display:inline-flex; align-items:center; gap:4px;
+}
+.dp-wk-badge.is-done { background:#E4F7EC; color:#177A45; }
+.dp-wk-badge.is-miss { background:#FEF0DC; color:#B4690E; }
+.dp-weekly-hint { margin:14px 0 0; font-size:11.5px; color:#98A1B2; }
+.dp-weekly-hint b { color:#5B6476; }
+.dp-weekly-empty { padding:22px; text-align:center; font-size:13px; color:#98A1B2; }
+
+/* ── 주차 섹션 헤더 (그리드 그룹) ── */
+.dirp-week-sec { margin-bottom:8px; }
+.dirp-week-hd {
+  display:flex; align-items:center; gap:10px; margin:22px 0 14px;
+  font-size:13px; font-weight:750; color:#1F2437; letter-spacing:-.01em;
+}
+.dirp-week-hd::before {
+  content:""; width:3px; height:15px; border-radius:2px;
+  background:linear-gradient(#6E8BFF,#4C63F1);
+}
+.dirp-week-hd .dirp-week-n {
+  margin-left:auto; font-size:11.5px; font-weight:650; color:#98A1B2;
+}
+.dirp-week-sec:first-child .dirp-week-hd { margin-top:6px; }
+@media (max-width:600px){
+  .dp-filterbar { grid-template-columns:1fr 1fr; padding:13px; }
+  .dp-weekly-grid { grid-template-columns:1fr 1fr; }
+  .dp-weekly-head h2 { font-size:14px; }
+  .dp-weekly-now { min-width:110px; font-size:12px; }
+}
+
+</style>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="active nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+                    <h1>포트폴리오 관리</h1>
+                </div>
+                <div class="top-nav-right">
+                    <div class="view-toggle no-print" id="viewToggle" role="tablist" aria-label="보기 방식">
+                        <button class="vt-btn active" data-view="grid" onclick="setView('grid')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                            <span>갤러리</span>
+                        </button>
+                        <button class="vt-btn" data-view="table" onclick="setView('table')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                            <span>테이블</span>
+                        </button>
+                    </div>
+                    <button class="btn btn-outline btn-sm no-print dp-tool-btn" onclick="printPortfolioView()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        <span>인쇄</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 분류 4축 (학생 / 상태 / 주 / 과정) -->
+            <div class="filter-bar no-print dp-filterbar">
+                <div class="dp-fx">
+                    <span class="dp-fx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                    <div class="dp-fx-body">
+                        <label>학생</label>
+                        <select class="form-select" id="filterStudent" onchange="onFilterChange()">
+                            <option value="">전체 학생</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dp-fx">
+                    <span class="dp-fx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+                    <div class="dp-fx-body">
+                        <label>상태</label>
+                        <select class="form-select" id="filterStatus" onchange="onFilterChange()">
+                            <option value="">전체 상태</option>
+                            <option value="draft">임시</option>
+                            <option value="published">발행</option>
+                            <option value="approved">승인</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dp-fx">
+                    <span class="dp-fx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                    <div class="dp-fx-body">
+                        <label>주</label>
+                        <select class="form-select" id="filterWeek" onchange="onFilterChange()">
+                            <option value="">전체 주차</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dp-fx">
+                    <span class="dp-fx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+                    <div class="dp-fx-body">
+                        <label>과정</label>
+                        <select class="form-select" id="filterCourse" onchange="onFilterChange()">
+                            <option value="">전체 과정</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="dp-fx-reset" onclick="resetFilters()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                    <span>초기화</span>
+                </button>
+            </div>
+
+            <!-- Stats Summary -->
+            <div class="stats-grid mb-24 no-print dp-stats">
+                <div class="dp-stat">
+                    <div class="dp-stat-ic is-total"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                    <div class="dp-stat-body"><span class="dp-stat-label">전체 기록</span><b class="dp-stat-value" id="statTotal">0</b></div>
+                </div>
+                <div class="dp-stat">
+                    <div class="dp-stat-ic is-pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+                    <div class="dp-stat-body"><span class="dp-stat-label">승인 대기</span><b class="dp-stat-value" id="statPending">0</b></div>
+                </div>
+                <div class="dp-stat">
+                    <div class="dp-stat-ic is-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                    <div class="dp-stat-body"><span class="dp-stat-label">승인 완료</span><b class="dp-stat-value" id="statApproved">0</b></div>
+                </div>
+                <div class="dp-stat">
+                    <div class="dp-stat-ic is-stu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                    <div class="dp-stat-body"><span class="dp-stat-label">학생 수</span><b class="dp-stat-value" id="statStudents">0</b></div>
+                </div>
+                <div class="dp-stat is-weekly">
+                    <div class="dp-stat-ic is-week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 15h2v2H8z"/></svg></div>
+                    <div class="dp-stat-body">
+                        <span class="dp-stat-label">이번 주 제출</span>
+                        <b class="dp-stat-value" id="statWeekSubmitted">0<span class="dp-stat-sep">/</span><em id="statWeekTotal">0</em></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 주간 제출 현황 (달력/주차별 뷰) -->
+            <div class="dp-weekly-panel no-print" id="weeklyPanel">
+                <div class="dp-weekly-head">
+                    <h2>주간 제출 현황</h2>
+                    <div class="dp-weekly-nav">
+                        <button class="dp-wk-nav" id="wkPrev" onclick="dpWeekShift(-1)" aria-label="이전 주">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <span class="dp-weekly-now" id="weeklyNow">이번 주</span>
+                        <button class="dp-wk-nav" id="wkNext" onclick="dpWeekShift(1)" aria-label="다음 주">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="dp-weekly-grid" id="weeklyGrid"></div>
+                <p class="dp-weekly-hint">주 1회 이상 제출하면 <b>제출 완료</b>로 표시됩니다.</p>
+            </div>
+
+
+            <!-- Portfolio Grid View -->
+            <div id="portfolioGridView"></div>
+
+            <!-- Portfolio Table View -->
+            <div id="portfolioTableView" style="display:none">
+                <div class="card">
+                    <div class="card-body" style="padding:0">
+                        <div class="table-wrapper">
+                            <table class="data-table" data-card-view>
+                                <thead>
+                                    <tr>
+                                        <th>제목</th>
+                                        <th>학생</th>
+                                        <th>과목</th>
+                                        <th>상태</th>
+                                        <th>등록일</th>
+                                        <th class="no-print">액션</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr><td colspan="6" class="small-text" style="text-align:center;padding:var(--space-7)">로딩 중...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Print Area -->
+            <div id="printArea" style="display:none"></div>
+        </main>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal modal-lg">
+            <div id="detailContent">
+                <div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;opacity:.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><p>로딩 중...</p></div>
+            </div>
+            <div class="modal-actions no-print">
+                <button class="approve-btn" id="approveBtn" onclick="approvePortfolio()">승인</button>
+                <button class="reject-btn" id="rejectBtn" onclick="openRejectModal()">반려</button>
+                <button class="comment-btn" id="commentBtn" onclick="openCommentModal()">코멘트</button>
+                <button class="btn btn-outline" onclick="printDetail()">인쇄</button>
+                <button class="btn btn-text" onclick="closeModal('detailModal')">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div class="modal-overlay" id="commentModal">
+        <div class="modal modal-md cc-modal">
+            <h2 class="cc-title" id="ccModalTitle">코멘트 작성</h2>
+            <div id="commentPortfolioTitle" class="cc-head"></div>
+            <div class="form-group cc-field">
+                <textarea class="form-textarea" id="commentText" placeholder="코멘트를 입력하세요" rows="5"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-text" onclick="closeModal('commentModal')">취소</button>
+                <button class="btn btn-filled" id="ccSaveBtn" onclick="saveComment()">코멘트 저장</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260911nav"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script src="/common/js/pages-director.js?v=20260911nav"></script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

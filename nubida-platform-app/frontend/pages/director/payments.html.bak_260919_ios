@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>본사 결제 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/payments.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="active nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+                    <h1>본사 결제</h1>
+                </div>
+                <div class="top-nav-right">
+                    <label class="pm-month-picker">
+                        <span>정산월</span>
+                        <input type="month" id="periodYm">
+                    </label>
+                </div>
+            </div>
+
+            <!-- 본사 계좌 -->
+            <div class="pm-account">
+                <div>
+                    <div class="pm-account-label">본사 입금 계좌</div>
+                    <div class="pm-account-number" id="pmAccount">—</div>
+                    <div class="pm-account-holder">예금주: 누비다플랫폼</div>
+                </div>
+                <button class="pm-copy-btn" onclick="PM.copyAccount()">계좌 복사</button>
+            </div>
+
+            <!-- 승인 상태 배너 -->
+            <div id="pmStatusBanner"></div>
+
+            <!-- 월 정산 요약 -->
+            <div class="pm-summary">
+                <div class="pm-sum-card">
+                    <div class="pm-sum-label">총매출</div>
+                    <div class="pm-sum-value" id="pmTotal">0원</div>
+                    <div class="pm-sum-sub" id="pmTotalSub">학생수 × 교육비</div>
+                </div>
+                <div class="pm-sum-card pm-hl">
+                    <div class="pm-sum-label">공급가액 (부가세 제외)</div>
+                    <div class="pm-sum-value" id="pmSupply">0원</div>
+                    <div class="pm-sum-sub" id="pmVatSub">부가세 0원</div>
+                </div>
+                <div class="pm-sum-card pm-hl-net">
+                    <div class="pm-sum-label">순수익 (원장)</div>
+                    <div class="pm-sum-value" id="pmNet">0원</div>
+                    <div class="pm-sum-sub">공급가액의 55%</div>
+                </div>
+                <div class="pm-sum-card pm-hl-royalty">
+                    <div class="pm-sum-label">본사 납부액 (로열티 45%)</div>
+                    <div class="pm-sum-value" id="pmRoyalty">0원</div>
+                    <div class="pm-sum-sub">이 금액을 입금해 주세요</div>
+                </div>
+            </div>
+
+            <!-- 입금 신청 -->
+            <div class="pm-form-card">
+                <div class="pm-form-title">입금 정보 작성</div>
+                <div class="pm-form-desc">본사 계좌로 로열티를 입금한 뒤, 아래 내용을 작성하고 확인을 눌러주세요.</div>
+                <div class="pm-form-grid">
+                    <div class="pm-field">
+                        <label>입금자명 <span class="req">*</span></label>
+                        <input type="text" id="pmDepositor" placeholder="[지역]학원명" autocomplete="off">
+                        <span class="pm-field-hint">예: <b>[부산]누리드림학원</b> 형식으로 작성해 주세요.</span>
+                    </div>
+                    <div class="pm-field">
+                        <label>입금금액 <span class="req">*</span></label>
+                        <input type="text" id="pmAmount" placeholder="0" inputmode="numeric" autocomplete="off">
+                        <span class="pm-field-hint" id="pmAmountHint">본사 납부액과 동일하게 입력해 주세요.</span>
+                    </div>
+                </div>
+                <div class="pm-submit-row">
+                    <div class="pm-submit-note">
+                        확인을 누르면 본사에서 입금 내역을 확인합니다.<br>
+                        확인 완료 시 상태가 <b>승인</b>으로 변경됩니다.
+                    </div>
+                    <button class="pm-submit-btn" id="pmSubmitBtn" onclick="PM.submit()">확인</button>
+                </div>
+            </div>
+
+            <!-- 입금 요청 이력 -->
+            <div class="pm-card">
+                <div class="pm-card-head"><h2>입금 요청 이력</h2></div>
+                <div style="overflow-x:auto">
+                    <table class="pm-table">
+                        <thead>
+                            <tr><th>정산월</th><th>입금자명</th><th>금액</th><th>상태</th><th>요청일</th></tr>
+                        </thead>
+                        <tbody id="pmHistoryBody">
+                            <tr><td colspan="5" class="pm-empty">불러오는 중...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="pm-toast" id="pmToast"></div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script src="/common/js/director-payments.js?v=20260911nav"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>강좌 관리 — 누비다플랫폼-에듀케어</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/branch/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>운영</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="employees.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">원장 관리</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">수강생 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>교육</div>
+                <a class="nav-item" href="studios.html" style="display:none"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">공부방 관리</span></a>
+                <a class="nav-item" href="schedule.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">일정 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>보고</div>
+                <a class="nav-item" href="branch-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg>소통</div>
+                <a class="nav-item" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">에듀케어 설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">에듀케어</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>강좌 관리</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+            <!-- Folder Bar -->
+            <div class="tab-bar" role="tablist">
+                <button class="tab-item active" data-category="all" onclick="filterCourses('all')">전체</button>
+                <button class="tab-item" data-category="maker_coding" onclick="filterCourses('maker_coding')">메이커 코딩</button>
+                <button class="tab-item" data-category="software" onclick="filterCourses('software')">소프트웨어</button>
+                <button class="tab-item" data-category="robot" onclick="filterCourses('robot')">로봇</button>
+                <button class="tab-item" data-category="ai" onclick="filterCourses('ai')">AI</button>
+                <button class="tab-item" data-category="physical" onclick="filterCourses('physical')">피지컬 컴퓨팅</button>
+            </div>
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-primary btn-sm" onclick="openCourseModal()">+ 강좌 등록</button>
+                </div>
+            </div>
+            <!-- Table -->
+            <div class="card">
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table" data-card-view>
+                            <thead>
+                                <tr>
+                                    <th style="width:36px"><input type="checkbox" id="selectAllCourses" onchange="toggleAllCourseCheckboxes(this)"></th>
+                                    <th style="width:60px">ID</th>
+                                    <th>강좌명</th>
+                                    <th>분류</th>
+                                    <th>담당 강사</th>
+                                    <th style="width:100px">수강료</th>
+                                    <th style="width:60px">정원</th>
+                                    <th style="width:80px">상태</th>
+                                    <th style="width:120px">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="courseBody">
+                                <tr><td colspan="9" style="text-align:center;color:var(--text-tertiary);padding:40px">⏳ 로딩 중...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <div class="toolbar" style="justify-content:center">
+                <button class="btn btn-ghost btn-sm" disabled>◀ 이전</button>
+                <span style="padding:0 12px;font-size:var(--text-sm);color:var(--text-secondary)" id="pageInfo">1 / 1</span>
+                <button class="btn btn-ghost btn-sm" disabled>다음 ▶</button>
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay" id="courseModal">
+        <div class="modal">
+            <h2 id="courseModalTitle">강좌 등록</h2>
+            <form id="courseForm" onsubmit="return false;">
+                <input type="hidden" id="editCourseId">
+                <div class="form-row" style="display:flex;gap:var(--space-4)">
+                    <div class="form-group" style="flex:1"><label>강좌명</label><input type="text" class="form-input" id="courseName" required placeholder="강좌명을 입력하세요"></div>
+                    <div class="form-group" style="flex:1"><label>분류(과목)</label><input type="text" class="form-input" id="courseSubject" placeholder="예: 메이커 코딩"></div>
+                </div>
+                <div class="form-row" style="display:flex;gap:var(--space-4)">
+                    <div class="form-group" style="flex:1"><label>담당 강사</label><input type="text" class="form-input" id="courseTeacher" placeholder="강사명"></div>
+                    <div class="form-group" style="flex:1"><label>수강료</label><input type="number" class="form-input" id="coursePrice" min="0" step="1000" placeholder="0"></div>
+                </div>
+                <div class="form-row" style="display:flex;gap:var(--space-4)">
+                    <div class="form-group" style="flex:1"><label>정원</label><input type="number" class="form-input" id="courseCapacity" min="1" placeholder="20"></div>
+                    <div class="form-group" style="flex:1"><label>상태</label>
+                        <select class="form-select" id="courseStatus">
+                            <option value="active">활성</option>
+                            <option value="inactive">비활성</option>
+                            <option value="draft">임시</option>
+                            <option value="scheduled">예정</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('courseModal')">취소</button>
+                    <button type="submit" class="btn btn-primary">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="deleteCourseModal">
+        <div class="modal modal-sm">
+            <h2>강좌 삭제</h2>
+            <p style="margin:16px 0;color:var(--text-secondary)">정말 이 강좌를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+            <input type="hidden" id="deleteCourseId">
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('deleteCourseModal')">취소</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteCourse()">삭제</button>
+            </div>
+        </div>
+    </div>
+    <script src="/common/js/api.js?v=20260911nav"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script src="/common/js/pages-branch.js?v=20260911nav"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requireAuth();
+            renderSidebarUser();
+        });
+        /* ---- 강좌 관리 헬퍼 ---- */
+        function filterCourses(category) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            const btn = document.querySelector(`.tab-item[data-category="${category}"]`);
+            if (btn) btn.classList.add('active');
+            // Re-trigger loadCourses — in a real impl we'd pass category param
+            loadCourses();
+        }
+        function toggleAllCourseCheckboxes(master) {
+            document.querySelectorAll('#courseBody input[type="checkbox"]').forEach(cb => cb.checked = master.checked);
+        }
+        function confirmDeleteCourse() {
+            const id = document.getElementById('deleteCourseId')?.value;
+            if (!id) return;
+            deleteCourse(parseInt(id));
+            closeModal('deleteCourseModal');
+        }
+        // ============================================================
+        // 아두이노 코딩 에디터 열기
+        // ============================================================
+        function openArduinoCode(courseId, courseName) {
+            window.location.href = 'arduino-editor.html?course_id=' + courseId + '&title=' + encodeURIComponent(courseName || '');
+        }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

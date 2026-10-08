@@ -1,0 +1,120 @@
+const express = require('express');
+const mysql = require('mysql2/promise');
+const axios = require('axios');
+const path = require('path');
+const session = require('express-session');
+
+const app = express();
+app.set('trust proxy', 1);
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+    secret: 'school-ai-premium-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        secure: false, 
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 5 
+    }
+}));
+
+const dbConfig = {
+    host: 'music-db',
+    user: 'nubidaplet',
+    password: '***MASKED***',
+    database: 'school_chat_db',
+    port: 3306
+};
+
+// [1. 회원가입 API]
+app.post('/api/register', async (req, res) => {
+    const { studentId, password } = req.body;
+    let conn;
+    try {
+        conn = await mysql.createConnection(dbConfig);
+        const [rows] = await conn.execute('SELECT id FROM students WHERE student_id = ?', [studentId]);
+        if (rows.length > 0) return res.status(409).json({ message: '이미 존재하는 아이디입니다.' });
+        await conn.execute('INSERT INTO students (student_id, password) VALUES (?, ?)', [studentId, password]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+    finally { if (conn) await conn.end(); }
+});
+
+// [2. 로그인 API]
+app.post('/api/login', async (req, res) => {
+    const { studentId, password } = req.body;
+    let conn;
+    try {
+        conn = await mysql.createConnection(dbConfig);
+        const [rows] = await conn.execute('SELECT * FROM students WHERE student_id = ? AND password = ?', [studentId, password]);
+        if (rows.length > 0) {
+            req.session.user = studentId;
+            req.session.save(() => res.json({ success: true }));
+        } else {
+            res.status(401).json({ message: '학번 또는 비번이 틀립니다.' });
+        }
+    } catch (err) { res.status(500).json({ error: err.message }); }
+    finally { if (conn) await conn.end(); }
+});
+
+// [3. 채팅 초기화 API]
+app.post('/api/chat/reset', async (req, res) => {
+    const studentId = req.session.user;
+    if (!studentId) return res.status(403).json({ message: '로그인 필요' });
+    let conn;
+    try {
+        conn = await mysql.createConnection(dbConfig);
+        await conn.execute('DELETE FROM chat_history WHERE student_id = ?', [studentId]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+    finally { if (conn) await conn.end(); }
+});
+
+// [4. AI 채팅 API - 정리 지침 및 마운트]
+app.post('/api/chat', async (req, res) => {
+    const studentId = req.session.user;
+    if (!studentId) return res.status(403).json({ message: '로그인 필요' });
+    const { message } = req.body;
+    let conn;
+
+    try {
+        conn = await mysql.createConnection(dbConfig);
+        await conn.execute('INSERT INTO chat_history (student_id, role, content) VALUES (?, ?, ?)', [studentId, 'user', message]);
+
+        const [historyRows] = await conn.execute(
+            'SELECT role, content FROM chat_history WHERE student_id = ? ORDER BY created_at DESC LIMIT 6',
+            [studentId]
+        );
+        const history = historyRows.reverse().map(row => ({ role: row.role, content: row.content }));
+
+        const response = await axios.post('http://ollama:11434/api/chat', {
+            model: 'qwen2.5:7b',
+            messages: [
+                { 
+                    role: 'system', 
+                    content: "너는 '누비다 AI 선생님'이야. 학생의 질문에 답할 때 다음 형식을 지켜줘: 1. 가독성을 위해 줄바꿈을 자주 할 것. 2. 중요한 용어는 **굵게** 표시할 것. 3. 단계가 있다면 번호를 매겨 설명할 것. 4. 항상 친절한 존댓말을 쓸 것.\n\n[중요 - 정확성 규칙]\n- 절대 거짓 정보를 지어내지 마라. 모르는 내용이면 '죄송하지만 정확히 알지 못합니다'라고 솔직하게 인정해라.\n- 특히 특정 인물, 가수, 그룹, 역사적 사실, 숫자, 날짜 등의 구체적인 사실을 말할 때는 반드시 실제로 알고 있는 경우에만 답하고, 확신이 없으면 실제 존재하지 않는 정보를 만들어내지 마라.\n- 특정 인물/그룹 멤버 목록을 나열할 때, 실제로 아는 멤버만 나열하고 전체를 안다고 단정하지 마라. 확신이 없으면 '정확한 멤버 전체를 확인하기 어렵습니다'라고 답해라.\n- 질문의 대상이 본인이 학습한 정보에 없으면 추측하지 말고 모른다고 정직하게 말해라." 
+                },
+                ...history
+            ],
+            stream: false
+        });
+
+        const aiReply = response.data.message.content;
+        await conn.execute('INSERT INTO chat_history (student_id, role, content) VALUES (?, ?, ?)', [studentId, 'assistant', aiReply]);
+        res.json({ reply: aiReply });
+    } catch (err) {
+        res.status(500).json({ message: 'AI 서버 응답 오류' });
+    } finally { if (conn) await conn.end(); }
+});
+
+app.get('*', (req, res) => {
+    if (req.path.includes('.') && !req.path.endsWith('.html')) {
+        return res.status(404).send('Not Found');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(3000, () => console.log('Server running on 3000'));

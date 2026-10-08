@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>이용 시간 안내 — 누비다 음악 AI</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    background:linear-gradient(160deg,#0F172A 0%,#1E293B 55%,#0F172A 100%);
+    color:#F1F5F9;padding:24px;
+  }
+  .card{
+    width:100%;max-width:420px;background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.1);border-radius:20px;
+    padding:40px 32px;text-align:center;
+    box-shadow:0 24px 64px rgba(0,0,0,.45);
+    backdrop-filter:blur(8px);
+  }
+  .icon{font-size:44px;margin-bottom:18px;line-height:1}
+  h1{font-size:21px;font-weight:700;margin-bottom:10px;letter-spacing:-.4px}
+  .sub{font-size:14px;color:#94A3B8;line-height:1.65;margin-bottom:28px}
+  .code-input{
+    width:100%;padding:16px 18px;font-size:26px;font-weight:800;text-align:center;
+    letter-spacing:.32em;text-transform:uppercase;
+    background:rgba(15,23,42,.7);border:2px solid rgba(255,255,255,.14);
+    border-radius:14px;color:#F8FAFC;outline:none;
+    font-family:'SF Mono',Consolas,monospace;transition:border-color .18s;
+  }
+  .code-input:focus{border-color:#6366F1}
+  .code-input::placeholder{color:#475569;letter-spacing:.2em;font-size:18px}
+  .btn{
+    width:100%;margin-top:14px;padding:16px;font-size:16px;font-weight:700;
+    background:linear-gradient(135deg,#4F5EF8,#6366F1);color:#fff;border:none;
+    border-radius:14px;cursor:pointer;transition:opacity .18s,transform .1s;
+    font-family:inherit;
+  }
+  .btn:hover:not(:disabled){opacity:.92}
+  .btn:active:not(:disabled){transform:scale(.985)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .msg{margin-top:16px;font-size:14px;min-height:20px;line-height:1.5}
+  .msg.err{color:#FCA5A5}
+  .msg.ok{color:#86EFAC}
+  .foot{margin-top:26px;font-size:12.5px;color:#64748B;line-height:1.7;
+        border-top:1px solid rgba(255,255,255,.07);padding-top:18px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🔒</div>
+    <h1>수업 시간에만 이용할 수 있어요</h1>
+    <p class="sub">선생님께 받은 <b>이용 코드</b>를 입력해 주세요.<br>수업이 끝나면 코드는 자동으로 만료됩니다.</p>
+
+    <input type="text" id="codeInput" class="code-input" maxlength="12"
+           placeholder="코드 입력" autocomplete="off" autocapitalize="characters"
+           spellcheck="false" inputmode="text">
+    <button class="btn" id="submitBtn">확인</button>
+    <div class="msg" id="msg"></div>
+
+    <div class="foot">
+      코드가 없거나 문제가 있으면 담당 선생님께 문의해 주세요.<br>
+      누비다플랫폼 · 음악 AI
+    </div>
+  </div>
+
+<script>
+(function(){
+  var input = document.getElementById('codeInput');
+  var btn   = document.getElementById('submitBtn');
+  var msg   = document.getElementById('msg');
+
+  input.addEventListener('input', function(){
+    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  });
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); submit(); }
+  });
+  btn.addEventListener('click', submit);
+
+  function show(text, cls){
+    msg.textContent = text;
+    msg.className = 'msg ' + (cls || '');
+  }
+
+  function submit(){
+    var code = (input.value || '').trim().toUpperCase();
+    if (code.length < 6) { show('코드는 6자리 이상입니다.', 'err'); input.focus(); return; }
+
+    btn.disabled = true;
+    btn.textContent = '확인 중…';
+    show('');
+
+    fetch('/api/access/unlock', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({code: code})
+    })
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, body:j}; }); })
+    .then(function(res){
+      if (res.body && res.body.ok) {
+        show('확인되었습니다. 이동합니다…', 'ok');
+        setTimeout(function(){ location.href = '/'; }, 500);
+      } else {
+        show((res.body && res.body.message) || '코드가 올바르지 않습니다.', 'err');
+        btn.disabled = false; btn.textContent = '확인';
+        input.select();
+      }
+    })
+    .catch(function(){
+      show('서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.', 'err');
+      btn.disabled = false; btn.textContent = '확인';
+    });
+  }
+
+  input.focus();
+})();
+</script>
+</body>
+</html>

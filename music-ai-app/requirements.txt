@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+numpy
+pandas
+librosa
+soundfile
+torch --index-url https://download.pytorch.org/whl/cu118

@@ -1,0 +1,65 @@
+<nav class="top-navbar">
+    <div class="top-navbar-left">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+        <a href="dashboard.html" class="top-navbar-logo"><img src="/common/assets/logo.svg?v=20260706g" alt="누비다플랫폼">누비다</a>
+    </div>
+    <div class="top-navbar-center">
+        <a class="top-nav-item active" href="dashboard.html"><span class="icon">📊</span>대시보드</a>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'hqManagementMenu')"><span class="icon">🏢</span>관리 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="hqManagementMenu">
+                <a class="top-navbar-dropdown-item" href="academy-management.html"><span class="icon">🏫</span>학원 관리</a>
+                <a class="top-navbar-dropdown-item" href="branches.html"><span class="icon">🏢</span>컨설턴트 관리</a>
+                <a class="top-navbar-dropdown-item" href="programs.html"><span class="icon">📚</span>교육 프로그램</a>
+                <a class="top-navbar-dropdown-item" href="users.html"><span class="icon">👥</span>사용자 관리</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'hqEducationMenu')"><span class="icon">📖</span>교육 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="hqEducationMenu">
+                <a class="top-navbar-dropdown-item" href="courses.html"><span class="icon">📖</span>강좌 관리</a>
+                </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'hqFinanceMenu')"><span class="icon">💰</span>재무 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="hqFinanceMenu">
+                <a class="top-navbar-dropdown-item" href="payments.html"><span class="icon">💳</span>결제 관리</a>
+                <a class="top-navbar-dropdown-item" href="statistics.html"><span class="icon">📈</span>통계</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'hqReportMenu')"><span class="icon">📋</span>보고 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="hqReportMenu">
+                <a class="top-navbar-dropdown-item" href="director-reports.html"><span class="icon">📑</span>에듀케어 보고서</a>
+                <a class="top-navbar-dropdown-item" href="notices.html"><span class="icon">📢</span>공지사항</a>
+                <a class="top-navbar-dropdown-item" href="portfolio.html"><span class="icon">🎨</span>포트폴리오</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'hqSystemMenu')"><span class="icon">⚙️</span>시스템 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="hqSystemMenu">
+                <a class="top-navbar-dropdown-item" href="settings.html#audit"><span class="icon">📋</span>감사 로그</a>
+                <a class="top-navbar-dropdown-item" href="approvals.html"><span class="icon">✅</span>승인 관리</a>
+                <a class="top-navbar-dropdown-item" href="settings.html#backups"><span class="icon">💾</span>백업</a>
+                <a class="top-navbar-dropdown-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+                <a class="top-navbar-dropdown-item" href="chat.html"><span class="icon">💬</span>채팅</a>
+            </div>
+        </div>
+    </div>
+    <div class="top-navbar-right">
+        <div class="top-navbar-dropdown">
+            <div class="top-navbar-user" onclick="toggleDropdown(event,'hqUserMenu')">
+                <div class="top-navbar-avatar">관</div>
+                <div>
+                    <div class="top-navbar-user-name" id="topNavUserName">관리자</div>
+                    <div class="top-navbar-user-role">본사</div>
+                </div>
+            </div>
+            <div class="top-navbar-dropdown-menu" id="hqUserMenu">
+                <a class="top-navbar-dropdown-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+                <div class="top-navbar-dropdown-divider"></div>
+                <a class="top-navbar-dropdown-item" href="#" onclick="handleLogout()"><span class="icon">🚪</span>로그아웃</a>
+            </div>
+        </div>
+    </div>
+</nav>

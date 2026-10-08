@@ -1,0 +1,176 @@
+/**
+ * board.js - (주)누비다플랫폼 실전 서버용 최종본
+ */
+
+// 1. 초기 로드
+window.addEventListener('load', () => {
+    // 좋아요 구분을 위한 임시 고유 ID 생성 (없을 경우)
+    if (!window.STUDIO_USER_ID) {
+        window.STUDIO_USER_ID = 'u' + Math.random().toString(36).substring(2, 11);
+    }
+    renderBoard(); 
+});
+
+// 2. 게시판 목록 불러오기 (실시간 최적화)
+async function renderBoard() {
+    const bList = document.getElementById('board-list');
+    const rList = document.getElementById('ranking-list');
+    if (!bList || !rList) return;
+
+    try {
+        // [성과 지표: 캐시 무시] cache: 'no-store'로 서버의 진짜 데이터를 가져옴
+        const response = await fetch('/api/posts', { cache: 'no-store' });
+        if (!response.ok) throw new Error("데이터 로드 실패");
+        const dbPosts = await response.json();
+
+        const controlBar = document.createElement('div');
+        controlBar.style.cssText = "margin-bottom:20px; display:flex; justify-content:center;";
+        controlBar.innerHTML = `
+            <button class="btn-stop" onclick="stopAll()" 
+                    style="width:100%; max-width:400px; background:#ef4444; color:white; padding:15px; border-radius:12px; font-weight:bold; border:none; cursor:pointer; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                🛑 모든 재생 중지
+            </button>
+        `;
+
+        bList.innerHTML = '';
+        bList.appendChild(controlBar);
+        rList.innerHTML = '';
+
+        if (dbPosts.length === 0) {
+            bList.innerHTML = '<p class="center" style="color:#64748b; margin-top:20px;">아직 등록된 트랙이 없습니다.</p>';
+            return;
+        }
+
+        // 3. TOP 3 랭킹 출력
+        const sorted = [...dbPosts].sort((a, b) => b.likes - a.likes).slice(0, 3);
+        const medals = ["🥇", "🥈", "🥉"];
+        sorted.forEach((p, i) => {
+            const card = document.createElement('div');
+            card.className = `card ranking-card ${i === 0 ? 'top1' : ''}`;
+            card.innerHTML = `
+                <div style="font-size:24px;">${medals[i]}</div>
+                <div style="font-weight:900; margin:10px 0;">${p.title}</div>
+                <div style="font-size:12px; color:var(--text-sub);">${p.author}</div>
+                <div style="color:var(--p-color); font-weight:bold; font-size:12px; margin-top:5px;">🔥 ${p.likes} Likes</div>
+            `;
+            rList.appendChild(card);
+        });
+
+        // 4. 전체 리스트 출력 (메모리 효율을 위해 데이터 바인딩 개선)
+        dbPosts.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.marginBottom = '25px';
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-sub);">
+                    <span>🏫 ${p.school} | 👤 ${p.author}</span>
+                    <span onclick="deletePost('${p.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">삭제 ✕</span>
+                </div>
+                <h3 style="margin:10px 0; font-weight:900;">${p.title}</h3>
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <button class="btn-main" id="btn-play-${p.id}">▶ 재생하기</button>
+                    <button class="btn-sub" onclick="likePostDB('${p.id}')">❤️ ${p.likes}</button>
+                </div>
+            `;
+            bList.appendChild(card);
+            
+            // 재생 버튼에 직접 데이터 연결 (따옴표 충돌 방지)
+            document.getElementById(`btn-play-${p.id}`).onclick = () => {
+                if (typeof playRecipe === 'function') {
+                    playRecipe(p.recipe, p.singerId, p.mrPath);
+                } else {
+                    alert("재생 엔진 로딩 중...");
+                }
+            };
+        });
+    } catch (e) { console.error("로드 실패:", e); }
+}
+
+// 5. 게시판 업로드 (중복 함수 제거 및 통합)
+async function uploadToBoard() {
+    const titleInput = document.getElementById('song-title-input');
+    const pwdInput = document.getElementById('post-password');
+    const author = document.getElementById('user-name').value || "무명";
+    const school = document.getElementById('school-name').value || "개인";
+    
+    if (!titleInput.value.trim()) return alert("제목을 입력하세요.");
+    if (!pwdInput.value.trim()) return alert("삭제 비밀번호를 설정하세요.");
+
+    const postData = {
+        id: 'p' + Date.now(),
+        title: filterText(titleInput.value),
+        password: pwdInput.value,
+        author: author,
+        school: school,
+        singerId: currentSinger,
+        singerName: SINGERS[currentSinger].name,
+        mrPath: currentSelectedBeat,
+        recipe: Array.from(document.querySelectorAll('.lyric-row')).map(r => ({
+            text: r.querySelector('.lyric-text').value,
+            tune: parseFloat(r.querySelector('.line-tune').value) || 10,
+            echo: parseFloat(r.querySelector('.line-echo').value) || 0,
+            speed: parseFloat(r.querySelector('.line-speed').value) || 1,
+            wait: parseFloat(r.querySelector('.line-wait').value) || 0.3,
+            // [수정 260914] 필터/패닝/거칠기 값도 저장 (게시판 재생 시 반영)
+            filter: parseFloat(r.querySelector('.line-filter')?.value) || 0,
+            pan: parseFloat(r.querySelector('.line-pan')?.value) || 0,
+            grit: parseFloat(r.querySelector('.line-grit')?.value) || 0
+        }))
+    };
+
+    try {
+        const res = await fetch('/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(postData)
+        });
+
+        if (res.ok) {
+            alert("업로드 성공!");
+            titleInput.value = '';
+            pwdInput.value = '';
+            document.getElementById('result-area').style.display = 'none';
+            showPage('page-board'); // 페이지 이동 (이 함수 내부에서 renderBoard() 호출됨)
+            await renderBoard();    // [성과 수호] 확실하게 한 번 더 목록 갱신
+        }
+    } catch (err) { alert("서버 통신 오류"); }
+}
+
+// 6. 좋아요 기능
+async function likePostDB(id) {
+    await fetch(`/api/posts/${id}/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: window.STUDIO_USER_ID })
+    });
+    renderBoard(); // 실시간 반영
+}
+
+// 7. 삭제 기능
+async function deletePost(id) {
+    const pwd = prompt("삭제 비밀번호를 입력하세요.");
+    if(!pwd) return;
+
+    const res = await fetch(`/api/posts/${id}/delete`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ password: pwd })
+    });
+
+    if(res.ok) {
+        alert("삭제되었습니다.");
+        renderBoard(); // 실시간 반영
+    } else {
+        alert("비밀번호가 틀렸습니다.");
+    }
+}
+
+// 8. 금지어 필터링
+function filterText(t) {
+    if (typeof BANNED_WORDS === 'undefined') return t;
+    BANNED_WORDS.forEach(w => {
+        const reg = new RegExp(w, 'g');
+        t = t.replace(reg, '***');
+    });
+    return t;
+}

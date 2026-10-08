@@ -1,0 +1,679 @@
+"""
+교육 신청(Education Application) API — 2026-09-21
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔒 개인정보 보호 설계 (핵심)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+이 라우터는 두 종류의 엔드포인트를 가진다.
+
+  [공개]  인증 불필요 — 신청서 제출만 가능
+      POST /edu-apply/submit               일반 교육 신청 접수
+      POST /edu-apply/instructor/submit    소속 강사 신청 접수 (PDF 첨부)
+      POST /edu-apply/instructor/upload    강사카드 PDF 업로드
+
+  [본사 전용] 인증 + HQ_ONLY_ROLES 검사 — 조회/수정/삭제 전부
+      GET    /edu-apply/list                    일반 신청 목록
+      GET    /edu-apply/instructor/list         강사 신청 목록
+      POST   /edu-apply/status/{kind}/{id}      승인/반려 상태 변경
+      POST   /edu-apply/note/{kind}/{id}        본사 메모
+      DELETE /edu-apply/{kind}/{id}             삭제
+      GET    /edu-apply/file/{kind}/{id}        강사카드 PDF 다운로드
+      GET    /edu-apply/csv/{kind}              CSV 내보내기
+      POST   /edu-apply/notify/{kind}/{id}      안내 발송 이력 기록
+      GET    /edu-apply/notify/list             안내 이력 조회
+      GET    /edu-apply/stats                   요약 통계
+
+⚠️ HQ_ONLY_ROLES 에 없는 역할(student / parent / director / branch_admin)은
+   모든 조회 엔드포인트에서 **403** 을 받는다. 목록 자체를 못 본다.
+   즉 "UI 숨김"이 아니라 **서버 차단**이며, API 를 직접 호출해도 실명이
+   응답에 담기지 않는다.
+"""
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, Request
+from sqlalchemy import text
+from datetime import datetime
+import os
+import re
+import csv
+import io
+import uuid
+import aiofiles
+
+from app.core.database import get_db
+from app.core.security import get_current_user
+from app.schemas import ApiResponse
+
+router = APIRouter(prefix="/edu-apply", tags=["EduApply"])
+
+# ── 개인정보 접근 가능 역할 (본사 전용) ──
+# 이 목록에 없는 역할은 조회 계열 엔드포인트에서 전부 403.
+HQ_ONLY_ROLES = ("super_admin", "admin")
+
+# ── 업로드 저장 경로 ──
+# inquiries.py 와 동일한 규칙: main.py 가 서빙하는 /app/uploads 와 일치해야
+# URL 접근 시 404 가 나지 않는다.
+#   abspath(__file__) = /app/app/api/v1/edu_apply.py  (dname 4 → /app)
+UPLOAD_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+    "uploads", "edu_apply",
+)
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+PDF_MAX_BYTES = 10 * 1024 * 1024  # 10MB
+
+VALID_STATUSES = ("pending", "reviewing", "approved", "rejected")
+
+STATUS_LABEL_KR = {
+    "pending": "접수",
+    "reviewing": "확인중",
+    "approved": "승인",
+    "rejected": "반려",
+}
+
+
+# ============================================================
+# 내부 헬퍼
+# ============================================================
+
+def _require_hq(user: dict) -> None:
+    """본사(admin/super_admin)가 아니면 403.
+
+    개인정보 보호의 유일한 관문이므로, 조회·수정 계열 모든 곳에서 호출한다.
+    """
+    role = (user or {}).get("role", "")
+    if role not in HQ_ONLY_ROLES:
+        raise HTTPException(403, "본사 관리자만 접근할 수 있습니다.")
+
+
+def _clean(v, maxlen=200):
+    """입력값 정규화 — 공백 제거, 길이 제한, None 처리."""
+    if v is None:
+        return None
+    s = str(v).strip()
+    if not s:
+        return None
+    return s[:maxlen]
+
+
+def _check_phone(phone: str) -> str:
+    """연락처 형식 검증 (숫자/하이픈/공백/+ 허용, 숫자 9~11자리)."""
+    p = _clean(phone, 30)
+    if not p:
+        raise HTTPException(400, "연락처를 입력해주세요.")
+    digits = re.sub(r"[^0-9]", "", p)
+    if not (9 <= len(digits) <= 11):
+        raise HTTPException(400, "연락처 형식이 올바르지 않습니다.")
+    return p
+
+
+def _client_meta(request: Request):
+    """접수 경로 추적용 IP / User-Agent."""
+    ip = None
+    try:
+        fwd = request.headers.get("x-forwarded-for")
+        ip = (fwd.split(",")[0].strip() if fwd
+              else (request.client.host if request.client else None))
+    except Exception:
+        ip = None
+    ua = _clean(request.headers.get("user-agent"), 300)
+    return ip, ua
+
+
+def _table_of(kind: str) -> str:
+    """kind 별 테이블명 매핑 — SQL 인젝션 방지용 화이트리스트."""
+    if kind in ("application", "app", "edu"):
+        return "edu_applications"
+    if kind in ("instructor", "teacher", "inst"):
+        return "edu_instructor_applications"
+    raise HTTPException(400, "잘못된 구분입니다.")
+
+
+def _row_to_dict(kind: str, r) -> dict:
+    """DB row → dict. 컬럼 순서에 의존하지 않도록 직접 명시 매핑."""
+    if kind == "instructor":
+        return {
+            "id": r[0],
+            "title": r[1],
+            "name": r[2],
+            "phone": r[3],
+            "email": r[4],
+            "region": r[5],
+            "organization": r[6],
+            "memo": r[7],
+            "birth_date": r[8],
+            "career": r[9],
+            "has_certificate": r[10],
+            "certificate_detail": r[11],
+            # 12: pdf_path (경로 자체는 노출하지 않음), 13: pdf_name
+            "has_pdf": bool(r[12]),
+            "pdf_name": r[13],
+            "status": r[14],
+            "status_label": STATUS_LABEL_KR.get(r[14], r[14]),
+            "admin_note": r[15],
+            # 16: ip_address, 17: user_agent (노출하지 않음)
+            "created_at": str(r[18]) if len(r) > 18 and r[18] else None,
+            "updated_at": str(r[19]) if len(r) > 19 and r[19] else None,
+        }
+    return {
+        "id": r[0],
+        "title": r[1],
+        "name": r[2],
+        "phone": r[3],
+        "email": r[4],
+        "region": r[5],
+        "organization": r[6],
+        "memo": r[7],
+        "status": r[8],
+        "status_label": STATUS_LABEL_KR.get(r[8], r[8]),
+        "admin_note": r[9],
+        # 10: ip_address, 11: user_agent (노출하지 않음)
+        "created_at": str(r[12]) if len(r) > 12 and r[12] else None,
+        "updated_at": str(r[13]) if len(r) > 13 and r[13] else None,
+    }
+
+
+# ============================================================
+# [공개] 신청 접수 — 인증 불필요
+# ============================================================
+
+@router.post("/submit")
+async def submit_application(
+    request: Request,
+    title: str = Query(...),
+    name: str = Query(...),
+    phone: str = Query(...),
+    email: str = Query(None),
+    region: str = Query(None),
+    organization: str = Query(None),
+    memo: str = Query(None),
+    db=Depends(get_db),
+):
+    """일반 교육 신청 접수 (공개).
+
+    title 은 '과정명'이 아니라 **자유 타이틀** — 홈페이지에 없는 교육도 신청 가능.
+    """
+    t = _clean(title, 200)
+    if not t:
+        raise HTTPException(400, "교육명(타이틀)을 입력해주세요.")
+    n = _clean(name, 50)
+    if not n:
+        raise HTTPException(400, "이름을 입력해주세요.")
+    ph = _check_phone(phone)
+
+    ip, ua = _client_meta(request)
+
+    async with db as conn:
+        await conn.execute(
+            text("""INSERT INTO edu_applications
+                    (title, name, phone, email, region, organization, memo,
+                     status, ip_address, user_agent)
+                    VALUES (:title, :name, :phone, :email, :region, :org, :memo,
+                            'pending', :ip, :ua)"""),
+            {
+                "title": t, "name": n, "phone": ph,
+                "email": _clean(email, 120),
+                "region": _clean(region, 80),
+                "org": _clean(organization, 120),
+                "memo": _clean(memo, 4000),
+                "ip": ip, "ua": ua,
+            },
+        )
+        await conn.commit()
+
+    return ApiResponse(status="success", message="교육 신청이 접수되었습니다. 확인 후 연락드리겠습니다.")
+
+
+@router.post("/instructor/upload")
+async def upload_instructor_pdf(file: UploadFile = File(...)):
+    """소속 강사 신청 — 강사카드 PDF 업로드 (공개).
+
+    저장 후 경로만 반환한다. 이 경로는 본사 전용 다운로드 엔드포인트를
+    통해서만 접근 가능하도록 별도 게이트를 둔다.
+    """
+    ctype = (file.content_type or "").lower()
+    fname = file.filename or "card.pdf"
+    ext = fname.rsplit(".", 1)[-1].lower() if "." in fname else ""
+
+    # PDF 만 허용 (mimetype 또는 확장자)
+    if ("pdf" not in ctype) and (ext != "pdf"):
+        raise HTTPException(400, "PDF 파일만 업로드 가능합니다.")
+
+    content = await file.read()
+    if len(content) > PDF_MAX_BYTES:
+        raise HTTPException(400, "파일 크기는 10MB 이하여야 합니다.")
+    if not content.startswith(b"%PDF"):
+        raise HTTPException(400, "올바른 PDF 파일이 아닙니다.")
+
+    safe_name = f"{uuid.uuid4().hex}.pdf"
+    filepath = os.path.join(UPLOAD_DIR, safe_name)
+    async with aiofiles.open(filepath, "wb") as f:
+        await f.write(content)
+
+    return ApiResponse(
+        status="success",
+        data={"path": f"/uploads/edu_apply/{safe_name}", "name": _clean(fname, 300)},
+    )
+
+
+@router.post("/instructor/submit")
+async def submit_instructor_application(
+    request: Request,
+    title: str = Query(...),
+    name: str = Query(...),
+    phone: str = Query(...),
+    email: str = Query(None),
+    region: str = Query(None),
+    organization: str = Query(None),
+    memo: str = Query(None),
+    birth_date: str = Query(None),
+    career: str = Query(None),
+    has_certificate: str = Query(None),
+    certificate_detail: str = Query(None),
+    pdf_path: str = Query(None),
+    pdf_name: str = Query(None),
+    db=Depends(get_db),
+):
+    """소속 강사 신청 접수 (공개) — 일반 항목 + 생년월일/경력/자격증 + 강사카드 PDF"""
+    t = _clean(title, 200)
+    if not t:
+        raise HTTPException(400, "교육명(타이틀)을 입력해주세요.")
+    n = _clean(name, 50)
+    if not n:
+        raise HTTPException(400, "이름을 입력해주세요.")
+    ph = _check_phone(phone)
+
+    # pdf_path 는 반드시 우리 업로드 경로여야 한다 (임의 경로 주입 방지)
+    safe_pdf = None
+    if pdf_path:
+        p = _clean(pdf_path, 300)
+        if p and p.startswith("/uploads/edu_apply/") and p.endswith(".pdf"):
+            safe_pdf = p
+
+    ip, ua = _client_meta(request)
+
+    async with db as conn:
+        await conn.execute(
+            text("""INSERT INTO edu_instructor_applications
+                    (title, name, phone, email, region, organization, memo,
+                     birth_date, career, has_certificate, certificate_detail,
+                     pdf_path, pdf_name, status, ip_address, user_agent)
+                    VALUES (:title, :name, :phone, :email, :region, :org, :memo,
+                            :birth, :career, :hascert, :certdetail,
+                            :pdf, :pdfname, 'pending', :ip, :ua)"""),
+            {
+                "title": t, "name": n, "phone": ph,
+                "email": _clean(email, 120),
+                "region": _clean(region, 80),
+                "org": _clean(organization, 120),
+                "memo": _clean(memo, 4000),
+                "birth": _clean(birth_date, 20),
+                "career": _clean(career, 4000),
+                "hascert": _clean(has_certificate, 10),
+                "certdetail": _clean(certificate_detail, 2000),
+                "pdf": safe_pdf,
+                "pdfname": _clean(pdf_name, 300),
+                "ip": ip, "ua": ua,
+            },
+        )
+        await conn.commit()
+
+    return ApiResponse(status="success", message="소속 강사 신청이 접수되었습니다. 확인 후 연락드리겠습니다.")
+
+
+# ============================================================
+# [본사 전용] 조회 / 관리
+# ============================================================
+
+@router.get("/list")
+async def list_applications(
+    status: str = Query(None),
+    q: str = Query(None),
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """일반 교육 신청 목록 — 🔒 본사 전용"""
+    _require_hq(user)
+
+    where, params = [], {}
+    if status and status in VALID_STATUSES:
+        where.append("status = :st")
+        params["st"] = status
+    if q:
+        where.append("(name LIKE :q OR phone LIKE :q OR title LIKE :q OR organization LIKE :q)")
+        params["q"] = f"%{_clean(q, 100)}%"
+    clause = ("WHERE " + " AND ".join(where)) if where else ""
+
+    async with db as conn:
+        rows = await conn.execute(
+            text(f"SELECT * FROM edu_applications {clause} ORDER BY created_at DESC LIMIT 1000"),
+            params,
+        )
+        items = [_row_to_dict("application", r) for r in rows.fetchall()]
+
+    return ApiResponse(status="success", data=items)
+
+
+@router.get("/instructor/list")
+async def list_instructor_applications(
+    status: str = Query(None),
+    q: str = Query(None),
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """소속 강사 신청 목록 — 🔒 본사 전용"""
+    _require_hq(user)
+
+    where, params = [], {}
+    if status and status in VALID_STATUSES:
+        where.append("status = :st")
+        params["st"] = status
+    if q:
+        where.append("(name LIKE :q OR phone LIKE :q OR title LIKE :q OR organization LIKE :q)")
+        params["q"] = f"%{_clean(q, 100)}%"
+    clause = ("WHERE " + " AND ".join(where)) if where else ""
+
+    async with db as conn:
+        rows = await conn.execute(
+            text(f"SELECT * FROM edu_instructor_applications {clause} ORDER BY created_at DESC LIMIT 1000"),
+            params,
+        )
+        items = [_row_to_dict("instructor", r) for r in rows.fetchall()]
+
+    return ApiResponse(status="success", data=items)
+
+
+@router.post("/status/{kind}/{item_id}")
+async def update_status(
+    kind: str,
+    item_id: int,
+    status: str = Query(...),
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """승인 / 반려 상태 변경 — 🔒 본사 전용"""
+    _require_hq(user)
+    table = _table_of(kind)
+
+    if status not in VALID_STATUSES:
+        raise HTTPException(400, "잘못된 상태값입니다.")
+
+    async with db as conn:
+        chk = await conn.execute(text(f"SELECT id FROM {table} WHERE id=:iid"), {"iid": item_id})
+        if not chk.fetchone():
+            raise HTTPException(404, "신청 내역을 찾을 수 없습니다.")
+
+        await conn.execute(
+            text(f"UPDATE {table} SET status=:st, updated_at=:at WHERE id=:iid"),
+            {"st": status, "at": datetime.now(), "iid": item_id},
+        )
+        await conn.commit()
+
+    return ApiResponse(
+        status="success",
+        message=f"{STATUS_LABEL_KR.get(status, status)} 처리되었습니다.",
+    )
+
+
+@router.post("/note/{kind}/{item_id}")
+async def update_note(
+    kind: str,
+    item_id: int,
+    note: str = Query(""),
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """본사 메모 저장 (신청자 비노출) — 🔒 본사 전용"""
+    _require_hq(user)
+    table = _table_of(kind)
+
+    async with db as conn:
+        await conn.execute(
+            text(f"UPDATE {table} SET admin_note=:note, updated_at=:at WHERE id=:iid"),
+            {"note": _clean(note, 4000), "at": datetime.now(), "iid": item_id},
+        )
+        await conn.commit()
+
+    return ApiResponse(status="success", message="메모가 저장되었습니다.")
+
+
+@router.delete("/{kind}/{item_id}")
+async def delete_application(
+    kind: str,
+    item_id: int,
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """신청 삭제 — 🔒 본사 전용. 첨부 PDF 도 함께 정리."""
+    _require_hq(user)
+    table = _table_of(kind)
+
+    async with db as conn:
+        row = await conn.execute(text(f"SELECT * FROM {table} WHERE id=:iid"), {"iid": item_id})
+        item = row.fetchone()
+        if not item:
+            raise HTTPException(404, "신청 내역을 찾을 수 없습니다.")
+
+        # 강사 신청이면 첨부 PDF 파일도 삭제
+        if table == "edu_instructor_applications":
+            pdf_rel = item[12]
+            if pdf_rel:
+                fname = os.path.basename(pdf_rel)
+                fp = os.path.join(UPLOAD_DIR, fname)
+                try:
+                    if os.path.isfile(fp):
+                        os.remove(fp)
+                except Exception:
+                    pass
+
+        await conn.execute(text(f"DELETE FROM {table} WHERE id=:iid"), {"iid": item_id})
+        await conn.commit()
+
+    return ApiResponse(status="success", message="삭제되었습니다.")
+
+
+@router.get("/stats")
+async def get_stats(
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """요약 통계 — 🔒 본사 전용"""
+    _require_hq(user)
+
+    async with db as conn:
+        out = {}
+        for key, table in (("application", "edu_applications"),
+                           ("instructor", "edu_instructor_applications")):
+            rows = await conn.execute(
+                text(f"SELECT status, COUNT(*) FROM {table} GROUP BY status")
+            )
+            counts = {s: 0 for s in VALID_STATUSES}
+            total = 0
+            for st, cnt in rows.fetchall():
+                counts[st] = cnt
+                total += cnt
+            out[key] = {"total": total, "counts": counts}
+
+    return ApiResponse(status="success", data=out)
+
+
+# ============================================================
+# [본사 전용] 강사카드 PDF / CSV / 안내 이력
+# ============================================================
+
+@router.get("/file/{item_id}")
+async def download_instructor_pdf(
+    item_id: int,
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """강사카드 PDF 다운로드 — 🔒 본사 전용.
+
+    /uploads/... 는 정적 서빙이라 URL 만 알면 누구나 접근할 수 있으므로,
+    본사 확인 후 스트리밍으로 내려준다.
+    """
+    _require_hq(user)
+
+    async with db as conn:
+        row = await conn.execute(
+            text("SELECT pdf_path, pdf_name, name FROM edu_instructor_applications WHERE id=:iid"),
+            {"iid": item_id},
+        )
+        item = row.fetchone()
+
+    if not item or not item[0]:
+        raise HTTPException(404, "첨부된 강사카드가 없습니다.")
+
+    fname = os.path.basename(item[0])
+    fp = os.path.join(UPLOAD_DIR, fname)
+    if not os.path.isfile(fp):
+        raise HTTPException(404, "파일을 찾을 수 없습니다.")
+
+    from fastapi.responses import FileResponse
+    dl_name = item[1] or f"{item[2] or 'instructor'}_card.pdf"
+    return FileResponse(fp, media_type="application/pdf", filename=dl_name)
+
+
+def _csv_response(kind: str, items: list, header: list, fields: list) -> "Response":
+    """CSV 생성 — 엑셀 한글 깨짐 방지를 위해 UTF-8 BOM 을 붙인다."""
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(header)
+    for it in items:
+        w.writerow([it.get(f, "") if it.get(f) is not None else "" for f in fields])
+
+    from fastapi.responses import Response
+    data = ("\ufeff" + buf.getvalue()).encode("utf-8")
+    stamp = datetime.now().strftime("%Y%m%d")
+    return Response(
+        content=data,
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="edu_{kind}_{stamp}.csv"',
+            "Cache-Control": "no-store",
+        },
+    )
+
+
+@router.get("/csv/{kind}")
+async def export_csv(
+    kind: str,
+    status: str = Query(None),
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """CSV 내보내기 — 🔒 본사 전용 (개인정보 포함이므로 본사만)"""
+    _require_hq(user)
+    table = _table_of(kind)
+
+    where, params = "", {}
+    if status and status in VALID_STATUSES:
+        where = "WHERE status = :st"
+        params["st"] = status
+
+    async with db as conn:
+        rows = await conn.execute(
+            text(f"SELECT * FROM {table} {where} ORDER BY created_at DESC LIMIT 5000"),
+            params,
+        )
+        items = [_row_to_dict("instructor" if table == "edu_instructor_applications" else "application", r)
+                 for r in rows.fetchall()]
+
+    if kind == "instructor" or table == "edu_instructor_applications":
+        header = ["접수일", "상태", "타이틀", "이름", "연락처", "이메일", "지역", "소속",
+                  "생년월일", "경력", "자격증유무", "자격증상세", "강사카드", "비고", "본사메모"]
+        fields = ["created_at", "status_label", "title", "name", "phone", "email", "region",
+                  "organization", "birth_date", "career", "has_certificate",
+                  "certificate_detail", "pdf_name", "memo", "admin_note"]
+    else:
+        header = ["접수일", "상태", "타이틀", "이름", "연락처", "이메일", "지역", "소속", "비고", "본사메모"]
+        fields = ["created_at", "status_label", "title", "name", "phone", "email",
+                  "region", "organization", "memo", "admin_note"]
+
+    return _csv_response(kind, items, header, fields)
+
+
+@router.post("/notify/{kind}/{item_id}")
+async def log_notify(
+    kind: str,
+    item_id: int,
+    channel: str = Query("sms"),
+    subject: str = Query(None),
+    body: str = Query(...),
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """승인 안내 발송 **이력 기록** — 🔒 본사 전용.
+
+    실제 발송은 하지 않는다(외부 연동 없음 → 오발송 위험 0).
+    본사가 내용을 복사해 직접 발송하고, 무엇을 언제 보냈는지만 남긴다.
+    """
+    _require_hq(user)
+    table = _table_of(kind)
+
+    ch = (channel or "sms").lower()
+    if ch not in ("sms", "email"):
+        ch = "sms"
+
+    async with db as conn:
+        row = await conn.execute(
+            text(f"SELECT name, phone, email FROM {table} WHERE id=:iid"), {"iid": item_id}
+        )
+        item = row.fetchone()
+        if not item:
+            raise HTTPException(404, "신청 내역을 찾을 수 없습니다.")
+
+        await conn.execute(
+            text("""INSERT INTO edu_notify_logs
+                    (target_type, target_id, recipient_name, recipient_phone, recipient_email,
+                     channel, subject, body, sent_by, sent_by_name)
+                    VALUES (:tt, :tid, :rn, :rp, :re, :ch, :sub, :body, :uid, :uname)"""),
+            {
+                "tt": "instructor" if table == "edu_instructor_applications" else "application",
+                "tid": item_id,
+                "rn": item[0], "rp": item[1], "re": item[2],
+                "ch": ch,
+                "sub": _clean(subject, 200),
+                "body": _clean(body, 8000),
+                "uid": user.get("id"),
+                "uname": user.get("name", "본사"),
+            },
+        )
+        await conn.commit()
+
+    return ApiResponse(status="success", message="발송 이력이 기록되었습니다.")
+
+
+@router.get("/notify/list")
+async def list_notify_logs(
+    kind: str = Query(None),
+    item_id: int = Query(None),
+    user: dict = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """안내 발송 이력 조회 — 🔒 본사 전용"""
+    _require_hq(user)
+
+    where, params = [], {}
+    if kind:
+        where.append("target_type = :tt")
+        params["tt"] = "instructor" if "inst" in kind else "application"
+    if item_id:
+        where.append("target_id = :tid")
+        params["tid"] = item_id
+    clause = ("WHERE " + " AND ".join(where)) if where else ""
+
+    async with db as conn:
+        rows = await conn.execute(
+            text(f"""SELECT id, target_type, target_id, recipient_name, recipient_phone,
+                            recipient_email, channel, subject, body, sent_by_name, sent_at
+                     FROM edu_notify_logs {clause} ORDER BY sent_at DESC LIMIT 500"""),
+            params,
+        )
+        items = [{
+            "id": r[0], "target_type": r[1], "target_id": r[2],
+            "recipient_name": r[3], "recipient_phone": r[4], "recipient_email": r[5],
+            "channel": r[6], "subject": r[7], "body": r[8],
+            "sent_by_name": r[9],
+            "sent_at": str(r[10]) if r[10] else None,
+        } for r in rows.fetchall()]
+
+    return ApiResponse(status="success", data=items)

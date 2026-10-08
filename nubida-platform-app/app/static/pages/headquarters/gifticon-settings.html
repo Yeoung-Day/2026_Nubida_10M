@@ -1,0 +1,350 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>기프티콘 설정 — 누비다플랫폼-본사</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <style>
+            /* ── 기프티콘 설정 페이지 CSS ── */
+            .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+            .card-header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid #f3f4f6; }
+            .card-header h2 { font-size:16px; font-weight:700; color:#111827; margin:0; }
+            .card-body { padding:16px 20px; }
+            .card.mb-24 { margin-bottom:24px; }
+            .p-24 { padding:24px; }
+            .table-responsive { overflow-x:auto; }
+            .table { width:100%; border-collapse:collapse; font-size:14px; }
+            .table th { text-align:left; padding:12px 16px; font-weight:600; color:#6b7280; font-size:13px; border-bottom:1px solid #e5e7eb; background:#f9fafb; white-space:nowrap; }
+            .table td { padding:12px 16px; border-bottom:1px solid #f3f4f6; color:#374151; }
+            .table tbody tr:hover { background:#f9fafb; }
+            .btn { display:inline-flex; align-items:center; gap:4px; padding:8px 16px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+            .btn-primary { background:#4F5EF8; color:#fff; }
+            .btn-primary:hover { background:#3b4ae0; }
+            .btn-secondary { background:#f3f4f6; color:#374151; }
+            .btn-secondary:hover { background:#e5e7eb; }
+            .btn-sm { padding:6px 12px; font-size:12px; }
+            .btn-danger { background:#fee2e2; color:#dc2626; }
+            .btn-danger:hover { background:#fecaca; }
+            .btn-success { background:#d1fae5; color:#059669; }
+            .btn-success:hover { background:#a7f3d0; }
+            .btn-warning { background:#fef3c7; color:#d97706; }
+            .badge { display:inline-block; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+            .badge-active { background:#d1fae5; color:#059669; }
+            .badge-inactive { background:#f3f4f6; color:#9ca3af; }
+            .form-group { margin-bottom:16px; }
+            .form-group label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
+            .input, .form-input { width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; transition:border-color 0.2s; box-sizing:border-box; }
+            .input:focus, .form-input:focus { outline:none; border-color:#4F5EF8; box-shadow:0 0 0 3px rgba(79,94,248,0.1); }
+            select.input { appearance:auto; }
+            /* 모달 */
+            .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); display:none; align-items:center; justify-content:center; z-index:1000; backdrop-filter:blur(2px); }
+            .modal-overlay.active { display:flex; }
+            .modal { background:#fff; border-radius:16px; width:480px; max-width:90vw; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.15); }
+            .modal-header { padding:20px 24px 0; }
+            .modal-title { font-size:18px; font-weight:700; color:#111827; margin:0; }
+            .modal-body { padding:20px 24px; }
+            .modal-footer { display:flex; justify-content:flex-end; gap:8px; padding:16px 24px; border-top:1px solid #f3f4f6; }
+            .small-text { font-size:12px; color:#9ca3af; }
+            .top-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+            .top-nav-left h1 { font-size:24px; font-weight:700; color:#111827; margin:0; }
+            .container-fluid { width:100%; }
+            .text-center { text-align:center; }
+            .p-24 { padding:24px; }
+        </style>
+    </head>
+    <body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                        <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        
+        // 섹션 매핑
+        const sectionMap = {
+            'branches.html': 'operations', 'academy-management.html': 'operations', 
+            'courses.html': 'operations', 'users.html': 'operations',
+            'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+            'point-management.html': 'point', 'point-settings.html': 'point', 
+            'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+            'director-reports.html': 'report', 'notices.html': 'report', 
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav">
+   <div class="top-nav-left"><h1>🎁 기프티콘 설정</h1></div>
+   <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+   </div>
+   <div class="container-fluid p-24">
+   <div class="card mb-24">
+   <div class="card-header">
+   <h2>기프티콘 상품 목록</h2>
+   <button class="btn btn-primary" onclick="openCreateModal()">+ 상품 추가</button>
+   </div>
+   <div class="card-body">
+   <div class="table-responsive">
+   <table class="table">
+   <thead>
+   <tr><th>상품명</th><th>종류</th><th>금액</th><th>필요 포인트</th><th>순서</th><th>상태</th><th>관리</th></tr>
+   </thead>
+   <tbody id="settingsTable"></tbody>
+   </table>
+   </div>
+   </div>
+   </div>
+   </div>
+   </main>
+   </div>
+
+   <div class="modal-overlay" id="createModal">
+   <div class="modal">
+   <div class="modal-header"><h3 class="modal-title" id="modalTitle">기프티콘 추가</h3></div>
+   <div class="modal-body">
+   <div class="form-group">
+   <label>상품명</label>
+   <input type="text" class="input" id="editName" placeholder="예: 치킨 기프티콘">
+   </div>
+   <div class="form-group">
+   <label>종류</label>
+   <select class="input" id="editType">
+   <option value="문화상품권">문화상품권</option>
+   <option value="치킨">치킨</option>
+   <option value="커피">커피</option>
+   <option value="편의점">편의점</option>
+   <option value="기타">기타</option>
+   </select>
+   </div>
+   <div class="form-group">
+   <label>금액 (원)</label>
+   <input type="number" class="input" id="editValue" placeholder="예: 20000">
+   </div>
+   <div class="form-group">
+   <label>필요 포인트</label>
+   <input type="number" class="input" id="editPoints" placeholder="예: 2000">
+   </div>
+   <div class="form-group">
+   <label>정렬 순서</label>
+   <input type="number" class="input" id="editOrder" placeholder="1" value="0">
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-primary" onclick="saveItem()">저장</button>
+   <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/hamburger.js?v=20260610a"></script>
+   <script src="/common/js/nav.js?v=20260610a"></script>
+   <script>
+   let editingId = null;
+
+   document.addEventListener('DOMContentLoaded', function() {
+   const u = JSON.parse(localStorage.getItem('user') || '{}');
+   if (u.name) document.getElementById('sidebarUserName').textContent = u.name;
+   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+   loadItems();
+   });
+
+   async function loadItems() {
+   const res = await apiGet('/headquarters/gifticon-settings');
+   const data = res.data || [];
+   document.getElementById('settingsTable').innerHTML = data.map(g => `
+   <tr>
+   <td><strong>${g.name}</strong></td>
+   <td>${g.gifticon_type}</td>
+   <td>${g.value.toLocaleString()}원</td>
+   <td><span style="color:#4F5EF8;font-weight:700">${g.points_required.toLocaleString()}p</span></td>
+   <td>${g.sort_order}</td>
+   <td><span class="badge badge-success">● 활성</span></td>
+   <td>
+   <button class="btn btn-sm btn-primary" onclick="editItem(${g.id},'${g.name}','${g.gifticon_type}',${g.value},${g.points_required},${g.sort_order})">수정</button>
+   <button class="btn btn-sm btn-danger" onclick="deleteItem(${g.id})">삭제</button>
+   </td>
+   </tr>
+   `).join('');
+   }
+
+   function openCreateModal() {
+   editingId = null;
+   document.getElementById('modalTitle').textContent = '기프티콘 추가';
+   ['editName','editValue','editPoints','editOrder'].forEach(id => document.getElementById(id).value = '');
+   document.getElementById('editType').value = '문화상품권';
+   document.getElementById('createModal').classList.add('active');
+   document.getElementById('sidebarOverlay').classList.add('active');
+   }
+
+   function editItem(id, name, type, value, points, order) {
+   editingId = id;
+   document.getElementById('modalTitle').textContent = '기프티콘 수정';
+   document.getElementById('editName').value = name;
+   document.getElementById('editType').value = type;
+   document.getElementById('editValue').value = value;
+   document.getElementById('editPoints').value = points;
+   document.getElementById('editOrder').value = order;
+   document.getElementById('createModal').classList.add('active');
+   document.getElementById('sidebarOverlay').classList.add('active');
+   }
+
+   function closeModal() {
+   document.getElementById('createModal').classList.remove('active');
+   document.getElementById('sidebarOverlay').classList.remove('active');
+   }
+
+   async function saveItem() {
+   const payload = {
+   name: document.getElementById('editName').value,
+   gifticon_type: document.getElementById('editType').value,
+   value: parseInt(document.getElementById('editValue').value) || 0,
+   points_required: parseInt(document.getElementById('editPoints').value) || 0,
+   sort_order: parseInt(document.getElementById('editOrder').value) || 0,
+   };
+   if (!payload.name) { alert('상품명을 입력해주세요.'); return; }
+   try {
+   if (editingId) { await apiPut('/headquarters/gifticon-settings/' + editingId, payload); }
+   else { await apiPost('/headquarters/gifticon-settings', payload); }
+   closeModal(); loadItems();
+   } catch(e) { alert(e.message || '오류'); }
+   }
+
+   async function deleteItem(id) {
+   if (!confirm('삭제하시겠습니까?')) return;
+   try { await apiDelete('/headquarters/gifticon-settings/' + id); loadItems(); }
+   catch(e) { alert(e.message); }
+   }
+   </script>
+   </body>
+   </html>

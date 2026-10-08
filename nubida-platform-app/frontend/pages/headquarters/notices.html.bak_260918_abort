@@ -1,0 +1,1013 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>공지사항 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+            /* ── 모달 내부 스크롤 보장 (폼이 길어져도 하단 버튼/입력 접근 가능) ── */
+            #createNoticeModal .modal,
+            #editNoticeModal .modal {
+                max-height: calc(100vh - 48px);
+                display: flex;
+                flex-direction: column;
+            }
+            #createNoticeModal .modal-body,
+            #editNoticeModal .modal-body {
+                flex: 1 1 auto;
+                overflow-y: auto;
+                min-height: 0;
+            }
+            #createNoticeModal .modal-header,
+            #editNoticeModal .modal-header,
+            #createNoticeModal .modal-footer,
+            #editNoticeModal .modal-footer {
+                flex: 0 0 auto;
+            }
+
+            /* ── 모바일: 팝업 시간 폼 세로 배치 (겹침·오버플로 방지) ── */
+            @media (max-width:768px) {
+                .popup-datetime-row { flex-direction: column; align-items: stretch !important; width: 100%; grid-column: 1 / -1; }
+                .popup-datetime-row .form-group { flex: 1 1 auto !important; min-width: 0 !important; width: 100%; }
+                .target-checkbox-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+
+            /* ── 발행 대상 체크박스 그리드 ── */
+            .target-checkbox-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 8px;
+                margin-top: 4px;
+            }
+            .target-cb {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 12px;
+                border: 1px solid var(--border-subtle, #E5E7EB);
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 13px;
+                color: var(--text-secondary, #4B5563);
+                background: #FFFFFF;
+                transition: border-color .15s ease, background .15s ease, color .15s ease;
+                user-select: none;
+            }
+            .target-cb:hover { border-color: #C7CBF5; background: #FAFAFE; }
+            .target-cb input[type="checkbox"] {
+                width: 16px; height: 16px; margin: 0;
+                accent-color: var(--primary, #4F5EF8);
+                cursor: pointer;
+            }
+            .target-cb:has(input:checked) {
+                border-color: var(--primary, #4F5EF8);
+                background: rgba(79, 94, 248, 0.06);
+                color: var(--primary, #4F5EF8);
+                font-weight: 600;
+            }
+            .target-cb span { line-height: 1; white-space: nowrap; }
+
+            /* ── 팝업 표시 섹션 (체크박스 + 날짜 입력을 하나로 묶음) ── */
+            .popup-section {
+                margin-top: 14px;
+                padding: 14px 16px;
+                border: 1px solid var(--border-subtle, #E5E7EB);
+                border-radius: 10px;
+                background: #FCFCFE;
+                transition: border-color .15s ease, background .15s ease;
+            }
+            .popup-section.is-on {
+                border-color: var(--primary, #4F5EF8);
+                background: rgba(79, 94, 248, 0.04);
+            }
+            .popup-section-head {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                cursor: pointer;
+                user-select: none;
+            }
+            .popup-section-head input[type="checkbox"] {
+                width: 16px; height: 16px; margin: 0;
+                accent-color: var(--primary, #4F5EF8);
+                cursor: pointer;
+                flex: 0 0 auto;
+            }
+            .popup-section-head .popup-title {
+                font-size: 13.5px;
+                color: var(--text-primary, #111827);
+                font-weight: 600;
+                line-height: 1.3;
+            }
+            .popup-section-head .popup-sub {
+                font-size: 12px;
+                font-weight: 400;
+                color: var(--text-tertiary, #9CA3AF);
+            }
+            .popup-dates {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                align-items: flex-end;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px dashed var(--border-subtle, #E5E7EB);
+            }
+            .popup-dates .form-group { flex: 1; min-width: 200px; margin: 0; }
+            .popup-dates .form-label { font-size: 12px; margin-bottom: 4px; }
+            .popup-section:not(.is-on) .popup-dates {
+                opacity: .5;
+            }
+            .popup-hint {
+                display: none;
+                margin-top: 8px;
+                font-size: 12px;
+                color: var(--primary, #4F5EF8);
+                font-weight: 500;
+            }
+            .popup-section.is-on .popup-hint { display: block; }
+
+            /* ── 이미지 첨부 드롭존 ── */
+            .notice-image-drop { margin-top: 4px; }
+            .notice-image-drop-inner {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 18px;
+                border: 1.5px dashed var(--border-subtle, #D9DCE3);
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 13px;
+                color: var(--text-tertiary, #9CA3AF);
+                background: #FCFCFD;
+                transition: border-color .15s ease, color .15s ease, background .15s ease;
+            }
+            .notice-image-drop-inner:hover {
+                border-color: var(--primary, #4F5EF8);
+                color: var(--primary, #4F5EF8);
+                background: #FAFAFE;
+            }
+            .notice-image-drop-inner.dragover {
+                border-color: var(--primary, #4F5EF8);
+                background: rgba(79, 94, 248, 0.06);
+                color: var(--primary, #4F5EF8);
+            }
+            .notice-image-icon { font-size: 16px; font-weight: 600; line-height: 1; }
+            .notice-image-preview {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 10px;
+            }
+            .notice-image-preview:empty { margin-top: 0; }
+            .notice-image-thumb {
+                position: relative;
+                width: 90px; height: 90px;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid var(--border-subtle, #E5E7EB);
+                background: #F3F4F6;
+            }
+            .notice-image-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+            .notice-image-remove {
+                position: absolute; top: 4px; right: 4px;
+                width: 20px; height: 20px;
+                border: none; border-radius: 50%;
+                background: rgba(17, 24, 39, 0.62);
+                color: #FFFFFF;
+                font-size: 12px; line-height: 1;
+                cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                padding: 0;
+            }
+            .notice-image-remove:hover { background: rgba(220, 38, 38, 0.92); }
+
+            /* ── 발행 대상 칩 (목록) ── */
+            .target-chip {
+                display: inline-block;
+                padding: 3px 8px;
+                margin: 1px 2px 1px 0;
+                border-radius: 999px;
+                font-size: 11px;
+                font-weight: 500;
+                line-height: 1.3;
+                background: #F1F2F6;
+                color: var(--text-secondary, #4B5563);
+                border: 1px solid #E5E7EB;
+                white-space: nowrap;
+            }
+            .target-chip.main {
+                background: rgba(79, 94, 248, 0.08);
+                color: var(--primary, #4F5EF8);
+                border-color: rgba(79, 94, 248, 0.25);
+                font-weight: 600;
+            }
+        </style>
+</head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub active" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>공지사항</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+   <!-- 툴바 -->
+   <div class="notices-toolbar">
+   <div class="notices-toolbar-left">
+   <select class="form-input" id="statusFilter" onchange="loadNotices(1)" style="width:150px">
+   <option value="">전체 상태</option>
+   <option value="published">발행</option>
+   <option value="draft">임시저장</option>
+   </select>
+   <span class="small-text" id="noticeCount">0개</span>
+   </div>
+   <div class="notices-toolbar-right">
+   <button class="btn btn-primary btn-sm" onclick="openModal('createNoticeModal')">+ 새 공지사항</button>
+   </div>
+   </div>
+
+   <!-- 공지사항 목록 -->
+   <div class="notices-card">
+   <table class="notices-table" data-card-view>
+   <thead>
+   <tr>
+   <th style="width:50px">ID</th>
+   <th>제목</th>
+   <th style="width:90px">작성자</th>
+  <th style="width:80px">상태</th>
+  <th style="width:150px">발행 대상</th>
+  <th style="width:60px">고정</th>
+  <th style="width:60px">팝업</th>
+  <th style="width:60px">조회</th>
+   <th style="width:110px">작성일</th>
+   <th style="width:120px">작업</th>
+   </tr>
+   </thead>
+   <tbody id="noticeTableBody">
+   <tr class="notice-empty">
+   <td colspan="10">공지사항을 불러오는 중...</td>
+   </tr>
+   </tbody>
+   </table>
+   <div class="pagination-wrap" id="paginationWrap"></div>
+   </div>
+   </main>
+   </div>
+
+   <!-- 공지사항 생성 모달 -->
+   <div class="modal-overlay" id="createNoticeModal">
+   <div class="modal" style="max-width:640px">
+   <div class="modal-header">
+   <h3>📢 새 공지사항 작성</h3>
+   </div>
+   <div class="modal-body">
+   <div class="form-row">
+   <div class="full form-group">
+   <label class="form-label">제목 *</label>
+   <input type="text" class="form-input" id="newTitle" placeholder="공지사항 제목을 입력하세요">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">내용 *</label>
+   <textarea class="form-textarea" id="newContent" placeholder="공지사항 내용을 입력하세요"></textarea>
+   </div>
+   <div class="form-group">
+   <label class="form-label">작성자 *</label>
+   <input type="text" class="form-input" id="newAuthor" placeholder="작성자 이름">
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="newStatus">
+   <option value="published">발행</option>
+   <option value="draft">임시저장</option>
+   </select>
+   </div>
+  <div class="full checkbox-inline">
+  <input type="checkbox" id="newIsPinned">
+  <label for="newIsPinned">📌 상단 고정 (목록 최상단에 표시)</label>
+  </div>
+  <div class="full popup-section" id="newPopupSection">
+  <label class="popup-section-head" for="newIsPopup">
+  <input type="checkbox" id="newIsPopup">
+  <span class="popup-title">팝업으로 표시 <span class="popup-sub">— 로그인·메인페이지 접속 시 전체 화면 공지</span></span>
+  </label>
+  <div class="popup-dates">
+  <div class="form-group">
+  <label class="form-label">팝업 시작일시</label>
+  <input type="datetime-local" class="form-input" id="newPopupStart" style="width:100%">
+  </div>
+  <div class="form-group">
+  <label class="form-label">팝업 종료일시</label>
+  <input type="datetime-local" class="form-input" id="newPopupEnd" style="width:100%">
+  </div>
+  </div>
+  <div class="popup-hint">팝업으로 표시됩니다. 지정한 기간 동안 노출됩니다.</div>
+  </div>
+  <div class="full form-group">
+  <label class="form-label">발행 대상 <span style="font-weight:400;color:var(--text-tertiary);font-size:12px">(복수 선택 가능)</span></label>
+  <div class="target-checkbox-grid">
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb" data-target="main"><span>메인페이지</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb" data-target="student"><span>학생</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb" data-target="parent"><span>학부모</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb" data-target="director"><span>원장</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb" data-target="educare"><span>에듀케어</span></label>
+  </div>
+  <input type="hidden" id="newPublishTargets" value="">
+  </div>
+  <div class="full form-group">
+  <label class="form-label">첨부 이미지 <span style="font-weight:400;color:var(--text-tertiary);font-size:12px">(선택)</span></label>
+  <div class="notice-image-drop" id="newImageDrop">
+  <input type="file" id="newNoticeImage" accept="image/*" style="display:none">
+  <div class="notice-image-drop-inner" onclick="document.getElementById('newNoticeImage').click()">
+  <span class="notice-image-icon">＋</span>
+  <span>클릭하여 이미지 선택 (JPG·PNG·GIF·WEBP)</span>
+  </div>
+  </div>
+  <div class="notice-image-preview" id="newImagePreview"></div>
+  </div>
+  </div>
+  </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('createNoticeModal')">취소</button>
+   <button class="btn btn-primary" onclick="createNotice()">등록</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 공지사항 수정 모달 -->
+   <div class="modal-overlay" id="editNoticeModal">
+   <div class="modal" style="max-width:640px">
+   <div class="modal-header">
+   <h3>✏️ 공지사항 수정</h3>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="editNoticeId">
+   <div class="form-row">
+   <div class="full form-group">
+   <label class="form-label">제목</label>
+   <input type="text" class="form-input" id="editTitle" placeholder="공지사항 제목을 입력하세요">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">내용</label>
+   <textarea class="form-textarea" id="editContent" placeholder="공지사항 내용을 입력하세요"></textarea>
+   </div>
+   <div class="form-group">
+   <label class="form-label">작성자</label>
+   <input type="text" class="form-input" id="editAuthor" placeholder="작성자 이름">
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="editStatus">
+   <option value="published">발행</option>
+   <option value="draft">임시저장</option>
+   </select>
+   </div>
+  <div class="full checkbox-inline">
+  <input type="checkbox" id="editIsPinned">
+  <label for="editIsPinned">📌 상단 고정 (목록 최상단에 표시)</label>
+  </div>
+  <div class="full popup-section" id="editPopupSection">
+  <label class="popup-section-head" for="editIsPopup">
+  <input type="checkbox" id="editIsPopup">
+  <span class="popup-title">팝업으로 표시 <span class="popup-sub">— 로그인·메인페이지 접속 시 전체 화면 공지</span></span>
+  </label>
+  <div class="popup-dates">
+  <div class="form-group">
+  <label class="form-label">팝업 시작일시</label>
+  <input type="datetime-local" class="form-input" id="editPopupStart" style="width:100%">
+  </div>
+  <div class="form-group">
+  <label class="form-label">팝업 종료일시</label>
+  <input type="datetime-local" class="form-input" id="editPopupEnd" style="width:100%">
+  </div>
+  </div>
+  <div class="popup-hint">팝업으로 표시됩니다. 지정한 기간 동안 노출됩니다.</div>
+  </div>
+  <div class="full form-group">
+  <label class="form-label">발행 대상 <span style="font-weight:400;color:var(--text-tertiary);font-size:12px">(복수 선택 가능)</span></label>
+  <div class="target-checkbox-grid">
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb-edit" data-target="main"><span>메인페이지</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb-edit" data-target="student"><span>학생</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb-edit" data-target="parent"><span>학부모</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb-edit" data-target="director"><span>원장</span></label>
+  <label class="target-cb"><input type="checkbox" class="publish-target-cb-edit" data-target="educare"><span>에듀케어</span></label>
+  </div>
+  <input type="hidden" id="editPublishTargets" value="">
+  </div>
+  <div class="full form-group">
+  <label class="form-label">첨부 이미지 <span style="font-weight:400;color:var(--text-tertiary);font-size:12px">(선택)</span></label>
+  <div class="notice-image-drop" id="editImageDrop">
+  <input type="file" id="editNoticeImage" accept="image/*" style="display:none">
+  <div class="notice-image-drop-inner" onclick="document.getElementById('editNoticeImage').click()">
+  <span class="notice-image-icon">＋</span>
+  <span>클릭하여 이미지 선택 (JPG·PNG·GIF·WEBP)</span>
+  </div>
+  </div>
+  <div class="notice-image-preview" id="editImagePreview"></div>
+  </div>
+  </div>
+  </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('editNoticeModal')">취소</button>
+   <button class="btn btn-primary" onclick="updateNotice()">저장</button>
+   </div>
+   </div>
+   </div>
+
+
+   <script src="/common/js/api.js?v=20260911nav"></script>
+   <script src="/common/js/auth.js?v=20260911nav"></script>
+   <script src="/common/js/utils.js?v=20260911nav"></script>
+  <script>
+  // ===== XSS Helper =====
+  function escHtml(s) {
+    if (s == null) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // formatDate fallback: utils.js 로드 실패 시 대비
+  if (typeof formatDate !== 'function') {
+    window.formatDate = function(d) {
+      if (!d) return '-';
+      try {
+        const date = new Date(d);
+        if (isNaN(date.getTime())) return d;
+        return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      } catch(e) { return d; }
+    };
+  }
+
+  // ===== State =====
+  let allNotices = [];
+  let currentPage = 1;
+  let totalPages = 1;
+  const PER_PAGE = 20;
+
+  // ===== Status Labels =====
+  const statusLabels = {
+    'published': '발행',
+    'draft': '임시저장',
+  };
+
+  // 발행 대상 코드 → 라벨
+  const targetLabels = {
+    'main': '메인페이지',
+    'student': '학생',
+    'parent': '학부모',
+    'director': '원장',
+    'educare': '에듀케어',
+  };
+
+  function formatTargets(n) {
+    var raw = n.publish_targets || n.popup_targets || '';
+    if (!raw || raw === 'all' || raw === '전체') return '<span style="color:var(--text-tertiary)">전체</span>';
+    var parts = raw.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    if (!parts.length) return '<span style="color:var(--text-tertiary)">전체</span>';
+    return parts.map(function(p) {
+      var label = targetLabels[p] || p;
+      var isMain = (p === 'main');
+      return '<span class="target-chip' + (isMain ? ' main' : '') + '">' + escHtml(label) + '</span>';
+    }).join(' ');
+  }
+
+  // ===== Initialization =====
+  document.addEventListener('DOMContentLoaded', function() {
+    requireAuth();
+    renderSidebarUser();
+    onAuthReady(function() {
+      // 발행 대상 체크박스 변경 시 hidden 값 갱신
+      document.querySelectorAll('.publish-target-cb').forEach(function(cb) {
+        cb.addEventListener('change', function() { collectPublishTargets('new'); });
+      });
+      document.querySelectorAll('.publish-target-cb-edit').forEach(function(cb) {
+        cb.addEventListener('change', function() { collectPublishTargets('edit'); });
+      });
+      // 이미지 첨부 초기화
+      setupImageAttach('new');
+      setupImageAttach('edit');
+      // 팝업 섹션 초기화 (체크박스 ↔ 날짜 입력 연동)
+      setupPopupSection('new');
+      setupPopupSection('edit');
+      // 신규 작성 시 기본 전체 선택
+      applyPublishTargets('new', '');
+      loadNotices(1);
+    });
+  });
+
+  // ===== 팝업 섹션: 체크박스 ↔ 날짜 입력 연동 =====
+  // - 날짜를 입력하면 자동으로 체크 (실수 방지)
+  // - 체크 상태에 따라 .is-on 클래스로 시각적 활성/비활성 표시
+  function setupPopupSection(mode) {
+    var section = document.getElementById(mode + 'PopupSection');
+    var cb = document.getElementById(mode + 'IsPopup');
+    var startEl = document.getElementById(mode + 'PopupStart');
+    var endEl = document.getElementById(mode + 'PopupEnd');
+    if (!section || !cb) return;
+
+    function syncClass() {
+      section.classList.toggle('is-on', cb.checked);
+    }
+
+    // 체크박스 토글 → 클래스 동기화
+    cb.addEventListener('change', syncClass);
+
+    // 날짜 입력 시 자동 체크 (핵심: 체크 누락 방지)
+    function autoCheck() {
+      if (!cb.checked && (startEl.value || endEl.value)) {
+        cb.checked = true;
+        syncClass();
+      }
+    }
+    startEl.addEventListener('input', autoCheck);
+    endEl.addEventListener('input', autoCheck);
+
+    // 초기 상태 반영
+    syncClass();
+  }
+
+  // ===== Load Notices =====
+  async function loadNotices(page) {
+    currentPage = page || 1;
+    const status = document.getElementById('statusFilter').value;
+
+    try {
+      let url = '/headquarters/notices?page=' + currentPage + '&per_page=' + PER_PAGE;
+      if (status) url += '&status=' + encodeURIComponent(status);
+
+      const res = await apiGet(url);
+      allNotices = res.data || [];
+      totalPages = res.total_pages || 1;
+      renderNotices();
+      renderPaginationUI();
+      document.getElementById('noticeCount').textContent = (res.total || 0) + '개';
+    } catch (err) {
+      console.error('Failed to load notices:', err);
+      showAlert('공지사항 목록을 불러오는데 실패했습니다.', 'error');
+    }
+  }
+
+  // ===== Filter Notices =====
+  function filterNotices() {
+    loadNotices(1);
+  }
+
+  // ===== Render Notices =====
+  function renderNotices() {
+    const tbody = document.getElementById('noticeTableBody');
+
+    if (allNotices.length === 0) {
+      tbody.innerHTML = '<tr class="notice-empty"><td colspan="9">📢 등록된 공지사항이 없습니다.</td></tr>';
+      return;
+    }
+
+    // Pinned notices first, then by created_at desc
+    const sorted = [...allNotices].sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1;
+      if (!a.is_pinned && b.is_pinned) return 1;
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+
+    let html = '';
+    sorted.forEach(n => {
+      const statusLabel = statusLabels[n.status] || n.status || '-';
+      const statusClass = n.status || 'draft';
+      const pinnedIcon = n.is_pinned ? '📌' : '·';
+      const pinnedClass = n.is_pinned ? 'yes' : 'no';
+      const rowClass = n.is_pinned ? 'notice-pinned' : '';
+      const createdDate = n.created_at ? formatDate(n.created_at) : '-';
+      // Truncate title for display
+      const title = n.title || '-';
+      const titleDisplay = title.length > 50 ? escHtml(title.substring(0, 50)) + '…' : escHtml(title);
+
+      html += '<tr class="' + rowClass + '">';
+      html += '<td style="font-size:12px;color:var(--text-tertiary)">' + escHtml('' + n.id) + '</td>';
+      html += '<td><strong title="' + escHtml(title) + '">' + titleDisplay + '</strong></td>';
+      html += '<td style="font-size:12px">' + escHtml(n.author || '-') + '</td>';
+      html += '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>';
+      html += '<td>' + formatTargets(n) + '</td>';
+      html += '<td style="text-align:center"><span class="pinned-badge ' + pinnedClass + '">' + pinnedIcon + '</span></td>';
+      html += '<td style="text-align:center">' + (n.is_popup ? '<span class="status-badge popup" title="' + escHtml(n.popup_start || '') + ' ~ ' + escHtml(n.popup_end || '') + (n.popup_targets && n.popup_targets !== 'all' ? ' · 대상: ' + escHtml(n.popup_targets) : '') + '">📢</span>' : '<span style="color:var(--text-tertiary)">·</span>') + '</td>';
+      html += '<td style="text-align:center;font-size:12px;color:var(--text-tertiary)">' + (n.view_count != null ? escHtml('' + n.view_count) : '0') + '</td>';
+      html += '<td style="font-size:12px;color:var(--text-tertiary)">' + createdDate + '</td>';
+      html += '<td>';
+      html += '<div class="action-cell">';
+      html += '<button class="btn btn-ghost btn-xs" onclick="openEditModal(' + n.id + ')">✏️ 수정</button>';
+      html += '<button class="btn btn-ghost btn-xs" style="color:var(--danger)" onclick="confirmDeleteNotice(' + n.id + ',\'' + escHtml(n.title || '') + '\')">🗑️ 삭제</button>';
+      html += '</div>';
+      html += '</td>';
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  // ===== Pagination =====
+  function renderPaginationUI() {
+    const wrap = document.getElementById('paginationWrap');
+    let html = '';
+
+    if (currentPage > 1) {
+      html += '<button onclick="loadNotices(1)">«</button>';
+      html += '<button onclick="loadNotices(' + (currentPage - 1) + ')">‹</button>';
+    } else {
+      html += '<button disabled>«</button><button disabled>‹</button>';
+    }
+
+    const start = Math.max(1, currentPage - 2);
+    const end = Math.min(totalPages, currentPage + 2);
+    for (let i = start; i <= end; i++) {
+      html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="loadNotices(' + i + ')">' + i + '</button>';
+    }
+
+    if (currentPage < totalPages) {
+      html += '<button onclick="loadNotices(' + (currentPage + 1) + ')">›</button>';
+      html += '<button onclick="loadNotices(' + totalPages + ')">»</button>';
+    } else {
+      html += '<button disabled>›</button><button disabled>»</button>';
+    }
+
+    wrap.innerHTML = html;
+  }
+
+  // ===== 발행 대상 체크박스 (복수 선택) =====
+  // 체크박스 → hidden input 값 동기화
+  function collectPublishTargets(prefix) {
+    var cls = (prefix === 'new') ? '.publish-target-cb' : '.publish-target-cb-edit';
+    var cbs = Array.from(document.querySelectorAll(cls));
+    var selected = cbs.filter(function(cb) { return cb.checked; }).map(function(cb) { return cb.dataset.target; });
+    var hidden = document.getElementById(prefix + 'PublishTargets');
+    if (hidden) hidden.value = selected.join(',');
+    return selected;
+  }
+
+  // 서버 값 → 체크박스 복원
+  function applyPublishTargets(prefix, value) {
+    var cls = (prefix === 'new') ? '.publish-target-cb' : '.publish-target-cb-edit';
+    var cbs = Array.from(document.querySelectorAll(cls));
+    var parts = (value || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    // 하위호환: 'all'/'전체' 이거나 빈값이면 전체 선택
+    var isAll = parts.length === 0 || parts.indexOf('all') !== -1 || parts.indexOf('전체') !== -1;
+    cbs.forEach(function(cb) {
+      cb.checked = isAll ? true : parts.indexOf(cb.dataset.target) !== -1;
+    });
+    collectPublishTargets(prefix);
+  }
+
+  // ===== 이미지 첨부 (선택 1장, 즉시 업로드) =====
+  var noticeImageState = { new: null, edit: null };
+
+  function setupImageAttach(prefix) {
+    var fileInput = document.getElementById(prefix + 'NoticeImage');
+    var dropEl = document.getElementById(prefix + 'ImageDrop');
+    var inner = dropEl ? dropEl.querySelector('.notice-image-drop-inner') : null;
+    if (!fileInput || !inner) return;
+
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files && fileInput.files[0]) uploadNoticeImage(prefix, fileInput.files[0]);
+    });
+
+    ['dragenter', 'dragover'].forEach(function(ev) {
+      inner.addEventListener(ev, function(e) { e.preventDefault(); inner.classList.add('dragover'); });
+    });
+    ['dragleave', 'drop'].forEach(function(ev) {
+      inner.addEventListener(ev, function(e) { e.preventDefault(); inner.classList.remove('dragover'); });
+    });
+    inner.addEventListener('drop', function(e) {
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) uploadNoticeImage(prefix, f);
+    });
+  }
+
+  async function uploadNoticeImage(prefix, file) {
+    if (!file.type || file.type.indexOf('image/') !== 0) {
+      showAlert('이미지 파일만 첨부할 수 있습니다.', 'error');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showAlert('이미지 크기는 10MB 이하만 가능합니다.', 'error');
+      return;
+    }
+
+    var fd = new FormData();
+    fd.append('file', file);
+
+    var token = (typeof getToken === 'function') ? getToken() : (localStorage.getItem('token') || localStorage.getItem('access_token'));
+    var uploadBase = (typeof API_BASE !== 'undefined')
+      ? API_BASE
+      : ((window.location.protocol === 'https:' ? 'https:' : 'http:') + '//' + window.location.host + '/api/v1');
+    try {
+      var res = await fetch(uploadBase + '/headquarters/notices/upload-image', {
+        method: 'POST',
+        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+        body: fd
+      });
+      if (!res.ok) throw new Error('업로드 실패 (' + res.status + ')');
+      var json = await res.json();
+      // ApiResponse 구조: { success, message, data: { url, filename } }
+      var payload = (json && json.data) ? json.data : json;
+      var url = payload.url || payload.image_url || payload.path;
+      if (!url) throw new Error('업로드 응답에 URL이 없습니다.');
+
+      noticeImageState[prefix] = url;
+      renderImagePreview(prefix, url);
+    } catch (err) {
+      console.error('notice image upload failed:', err);
+      showAlert(err.message || '이미지 업로드에 실패했습니다.', 'error');
+    }
+  }
+
+  function renderImagePreview(prefix, url) {
+    var wrap = document.getElementById(prefix + 'ImagePreview');
+    if (!wrap) return;
+    if (!url) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = '<div class="notice-image-thumb">' +
+      '<img src="' + escHtml(url) + '" alt="첨부 이미지">' +
+      '<button type="button" class="notice-image-remove" title="이미지 제거" ' +
+      'onclick="removeNoticeImage(\'' + prefix + '\')">✕</button>' +
+      '</div>';
+  }
+
+  function removeNoticeImage(prefix) {
+    noticeImageState[prefix] = null;
+    var fileInput = document.getElementById(prefix + 'NoticeImage');
+    if (fileInput) fileInput.value = '';
+    renderImagePreview(prefix, null);
+  }
+
+  // 기존 서버 images 값(JSON 배열 문자열) → 첫 번째 이미지 복원
+  function parseFirstImage(images) {
+    if (!images) return null;
+    try {
+      var arr = (typeof images === 'string') ? JSON.parse(images) : images;
+      if (Array.isArray(arr) && arr.length) return arr[0];
+    } catch (e) { /* pass */ }
+    return null;
+  }
+
+  // ===== Create Notice =====
+  async function createNotice() {
+    const title = document.getElementById('newTitle').value.trim();
+    const content = document.getElementById('newContent').value.trim();
+    const author = document.getElementById('newAuthor').value.trim();
+    const status = document.getElementById('newStatus').value;
+    const is_pinned = document.getElementById('newIsPinned').checked;
+    const is_popup = document.getElementById('newIsPopup').checked;
+    const popup_start = document.getElementById('newPopupStart').value || '';
+    const popup_end = document.getElementById('newPopupEnd').value || '';
+    const publishTargets = collectPublishTargets('new');
+    const publish_targets = publishTargets.join(',');
+    // 팝업 대상은 발행 대상과 동일하게 사용 (하위호환 필드)
+    const popup_targets = publish_targets || 'all';
+    const images = noticeImageState['new'] ? JSON.stringify([noticeImageState['new']]) : '[]';
+
+    if (!title || !content || !author) {
+      showAlert('제목, 내용, 작성자는 필수 항목입니다.', 'error');
+      return;
+    }
+    if (publishTargets.length === 0) {
+      showAlert('발행 대상을 1개 이상 선택해주세요.', 'error');
+      return;
+    }
+
+    try {
+      await apiPost('/headquarters/notices', { title, content, author, status, is_pinned, is_popup, popup_start, popup_end, popup_targets, publish_targets, images });
+      showAlert('공지사항이 등록되었습니다.', 'success');
+      closeModal('createNoticeModal');
+      // 폼 초기화
+      document.getElementById('newTitle').value = '';
+      document.getElementById('newContent').value = '';
+      document.getElementById('newAuthor').value = '';
+      document.getElementById('newStatus').value = 'published';
+      document.getElementById('newIsPinned').checked = false;
+      document.getElementById('newIsPopup').checked = false;
+      document.getElementById('newPopupStart').value = '';
+      document.getElementById('newPopupEnd').value = '';
+      var newPopupSection = document.getElementById('newPopupSection');
+      if (newPopupSection) newPopupSection.classList.remove('is-on');
+      applyPublishTargets('new', '');
+      removeNoticeImage('new');
+      await loadNotices(1);
+    } catch (err) {
+      showAlert(err.message || '공지사항 등록에 실패했습니다.', 'error');
+    }
+  }
+
+  // ===== Open Edit Modal =====
+  function openEditModal(noticeId) {
+    const notice = allNotices.find(n => n.id === noticeId);
+    if (!notice) {
+      showAlert('공지사항 정보를 찾을 수 없습니다.', 'error');
+      return;
+    }
+
+    document.getElementById('editNoticeId').value = notice.id;
+    document.getElementById('editTitle').value = notice.title || '';
+    document.getElementById('editContent').value = notice.content || '';
+    document.getElementById('editAuthor').value = notice.author || '';
+    document.getElementById('editStatus').value = notice.status || 'published';
+    document.getElementById('editIsPinned').checked = notice.is_pinned || false;
+    document.getElementById('editIsPopup').checked = notice.is_popup || false;
+    document.getElementById('editPopupStart').value = notice.popup_start || '';
+    document.getElementById('editPopupEnd').value = notice.popup_end || '';
+    // 발행 대상 복원 (publish_targets 우선, 없으면 popup_targets 폴백)
+    var targetVal = notice.publish_targets || notice.popup_targets || '';
+    applyPublishTargets('edit', targetVal);
+    // 첨부 이미지 복원
+    var firstImg = parseFirstImage(notice.images);
+    noticeImageState['edit'] = firstImg;
+    renderImagePreview('edit', firstImg);
+
+    // 팝업 섹션 활성 상태 동기화
+    var editPopupSection = document.getElementById('editPopupSection');
+    if (editPopupSection) editPopupSection.classList.toggle('is-on', document.getElementById('editIsPopup').checked);
+
+    openModal('editNoticeModal');
+  }
+
+  // ===== Update Notice =====
+  async function updateNotice() {
+    const id = parseInt(document.getElementById('editNoticeId').value);
+    const title = document.getElementById('editTitle').value.trim();
+    const content = document.getElementById('editContent').value.trim();
+    const author = document.getElementById('editAuthor').value.trim();
+    const status = document.getElementById('editStatus').value;
+    const is_pinned = document.getElementById('editIsPinned').checked;
+    const is_popup = document.getElementById('editIsPopup').checked;
+    const popup_start = document.getElementById('editPopupStart').value || '';
+    const popup_end = document.getElementById('editPopupEnd').value || '';
+    const publishTargets = collectPublishTargets('edit');
+    const publish_targets = publishTargets.join(',');
+    const popup_targets = publish_targets || 'all';
+    const images = noticeImageState['edit'] ? JSON.stringify([noticeImageState['edit']]) : '[]';
+
+    if (!title || !content || !author) {
+      showAlert('제목, 내용, 작성자는 필수 항목입니다.', 'error');
+      return;
+    }
+    if (publishTargets.length === 0) {
+      showAlert('발행 대상을 1개 이상 선택해주세요.', 'error');
+      return;
+    }
+
+    try {
+      await apiPut('/headquarters/notices/' + id, { title, content, author, status, is_pinned, is_popup, popup_start, popup_end, popup_targets, publish_targets, images });
+      showAlert('공지사항이 수정되었습니다.', 'success');
+      closeModal('editNoticeModal');
+      await loadNotices(currentPage);
+    } catch (err) {
+      showAlert(err.message || '공지사항 수정에 실패했습니다.', 'error');
+    }
+  }
+
+  // ===== Delete Notice =====
+  function confirmDeleteNotice(id, title) {
+    if (confirm('"' + (title || '') + '" 공지사항을 삭제하시겠습니까?')) {
+      deleteNotice(id);
+    }
+  }
+
+  async function deleteNotice(id) {
+    try {
+      await apiDelete('/headquarters/notices/' + id);
+      showAlert('공지사항이 삭제되었습니다.', 'success');
+      await loadNotices(currentPage);
+    } catch (err) {
+      showAlert(err.message || '공지사항 삭제에 실패했습니다.', 'error');
+    }
+  }
+  </script>
+     <script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+     </html>

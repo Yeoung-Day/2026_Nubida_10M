@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>시간표 — 누비다플랫폼</title>
+<link rel="icon" type="image/png" href="/favicon.ico">
+
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260910nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/pages/student/style.css?v=20260804c">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+
+
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+                <a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+                <a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+                <a class="nav-item" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+                <a class="nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+                <a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">학생</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>시간표</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="timetableDate"></span>
+                </div>
+            </div>
+
+            <!-- View Tabs -->
+            <div class="tt-view-tabs">
+                <button class="tt-view-tab active" data-view="week" onclick="switchTimetableView('week')">
+                    📅 주간 시간표
+                </button>
+                <button class="tt-view-tab" data-view="list" onclick="switchTimetableView('list')">
+                    📋 내 일정
+                </button>
+            </div>
+
+            <!-- Weekly Grid View -->
+            <div id="ttWeekView" class="tt-week-view">
+                <div class="tt-section-header">
+                    <div class="tt-section-title">주간 수업 일정</div>
+                </div>
+                <div class="card card-premium">
+                    <div class="card-body" style="overflow-x:auto; padding: var(--space-5) var(--space-4);">
+                        <table class="tt-grid" id="timetable">
+                            <thead id="timetableHead"></thead>
+                            <tbody id="timetableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Schedule List View -->
+            <div id="ttListView" class="tt-list-view" style="display:none;">
+                <div class="tt-section-header">
+                    <div class="tt-section-title">
+                        내 일정
+                        <span class="badge badge-info" id="scheduleCount">0개</span>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="openAddScheduleModal()">
+                        ✚ 일정 추가
+                    </button>
+                </div>
+                <div id="personalScheduleList">
+                    <div class="tt-empty">
+                        <div class="tt-empty-icon">📅</div>
+                        <h3>등록된 일정이 없습니다</h3>
+                        <p>새 일정을 추가하여 학습 계획을 관리해보세요.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Schedule Detail Modal (for class schedule) -->
+    <div class="modal-overlay" id="scheduleModal">
+        <div class="modal">
+            <h2 id="scheduleModalTitle">수업 상세</h2>
+            <div id="scheduleDetail"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('scheduleModal')">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Personal Schedule Modal -->
+    <div class="modal-overlay" id="personalScheduleModal">
+        <div class="modal">
+            <h2 id="personalScheduleModalTitle">✚ 일정 추가</h2>
+            <form id="personalScheduleForm" onsubmit="savePersonalSchedule(event)">
+                <input type="hidden" id="editScheduleId" value="">
+
+                <div class="form-group">
+                    <label for="psTitle">일정 제목</label>
+                    <input type="text" id="psTitle" class="form-input" placeholder="일정 제목을 입력하세요" required maxlength="200">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="psDate">날짜</label>
+                        <input type="date" id="psDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="psColor">색상</label>
+                        <div class="tt-color-picker" id="psColorPicker">
+                            <button type="button" class="tt-color-option active" data-color="#4F5EF8" style="background:#4F5EF8" onclick="selectScheduleColor(this)"></button>
+                            <button type="button" class="tt-color-option" data-color="#4F5EF8" style="background:#4F5EF8" onclick="selectScheduleColor(this)"></button>
+                            <button type="button" class="tt-color-option" data-color="#10B981" style="background:#10B981" onclick="selectScheduleColor(this)"></button>
+                            <button type="button" class="tt-color-option" data-color="#F59E0B" style="background:#F59E0B" onclick="selectScheduleColor(this)"></button>
+                            <button type="button" class="tt-color-option" data-color="#EF4444" style="background:#EF4444" onclick="selectScheduleColor(this)"></button>
+                            <button type="button" class="tt-color-option" data-color="#8B5CF6" style="background:#8B5CF6" onclick="selectScheduleColor(this)"></button>
+                            <button type="button" class="tt-color-option" data-color="#EC4899" style="background:#EC4899" onclick="selectScheduleColor(this)"></button>
+                            <button type="button" class="tt-color-option" data-color="#6B7280" style="background:#6B7280" onclick="selectScheduleColor(this)"></button>
+                        </div>
+                        <input type="hidden" id="psColor" value="#4F5EF8">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="psStartTime">시작 시간 <span class="small-text" style="color:var(--text-tertiary)">(선택)</span></label>
+                        <input type="time" id="psStartTime" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="psEndTime">종료 시간 <span class="small-text" style="color:var(--text-tertiary)">(선택)</span></label>
+                        <input type="time" id="psEndTime" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="psMemo">메모 <span class="small-text" style="color:var(--text-tertiary)">(선택)</span></label>
+                    <textarea id="psMemo" class="form-textarea" placeholder="메모를 입력하세요" rows="3"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('personalScheduleModal')">취소</button>
+                    <button type="submit" class="btn btn-secondary" id="personalScheduleSubmitBtn">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260908a"></script>
+    <script src="/common/js/utils.js?v=20260804b"></script>
+    <script src="/common/js/pages-student.js?v=20260804b"></script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    
+    <script>
+    // ============================================================
+    // Timetable Page - Personal Schedule Management
+    // ============================================================
+
+    let personalSchedules = [];
+
+    // ---- View Switching ----
+    function switchTimetableView(view) {
+        document.querySelectorAll('.tt-view-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tt-view-tab[data-view="${view}"]`).classList.add('active');
+        document.getElementById('ttWeekView').style.display = view === 'week' ? '' : 'none';
+        document.getElementById('ttListView').style.display = view === 'list' ? '' : 'none';
+        if (view === 'list') loadPersonalSchedules();
+    }
+
+    // ---- Load Personal Schedules ----
+    async function loadPersonalSchedules() {
+        try {
+            const res = await apiGet('/student/my-schedule');
+            personalSchedules = Array.isArray(res) ? res : (res?.data || []);
+            renderPersonalSchedules();
+        } catch(e) {
+            console.error('Personal schedule load error:', e);
+            document.getElementById('personalScheduleList').innerHTML = 
+                '<div class="tt-empty"><div class="tt-empty-icon">⚠️</div><h3>일정을 불러올 수 없습니다</h3></div>';
+        }
+    }
+
+    function renderPersonalSchedules() {
+        const container = document.getElementById('personalScheduleList');
+        const countEl = document.getElementById('scheduleCount');
+        if (!container) return;
+
+        const count = personalSchedules.length;
+        if (countEl) countEl.textContent = count + '개';
+
+        if (count === 0) {
+            container.innerHTML = `
+                <div class="tt-empty">
+                    <div class="tt-empty-icon">📅</div>
+                    <h3>등록된 일정이 없습니다</h3>
+                    <p>새 일정을 추가하여 학습 계획을 관리해보세요.</p>
+                    <button class="btn btn-secondary btn-sm mt-16" onclick="openAddScheduleModal()">✚ 첫 일정 추가</button>
+                </div>
+            `;
+            return;
+        }
+
+        // Group by date
+        const grouped = {};
+        personalSchedules.forEach(s => {
+            const dateKey = s.date || '';
+            if (!grouped[dateKey]) grouped[dateKey] = [];
+            grouped[dateKey].push(s);
+        });
+
+        // Sort dates descending
+        const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+        container.innerHTML = sortedDates.map(dateKey => {
+            const items = grouped[dateKey];
+            const d = new Date(dateKey + 'T00:00:00');
+            const dayName = weekdays[d.getDay()] || '';
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const today = new Date();
+            const isToday = d.toDateString() === today.toDateString();
+
+            return `
+                <div class="tt-date-group">
+                    <div class="tt-date-header" style="${isToday ? 'border-bottom-color: var(--secondary);' : ''}">
+                        <div class="tt-date-badge" style="${isToday ? 'background: var(--secondary);' : ''}">${day}</div>
+                        <div class="tt-date-info">
+                            <div class="tt-date-dayname">${isToday ? '오늘' : dayName + '요일'} · ${month}월</div>
+                            <div class="tt-date-full">${dateKey}</div>
+                        </div>
+                        <div class="tt-date-count">${items.length}개</div>
+                    </div>
+                    ${items.map(s => renderScheduleCard(s)).join('')}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderScheduleCard(s) {
+        const timeStr = (s.start_time || s.end_time) 
+            ? `<span class="tt-schedule-time">🕐 ${s.start_time || ''}${s.start_time && s.end_time ? ' ~ ' : ''}${s.end_time || ''}</span>`
+            : '';
+        const memoStr = s.memo 
+            ? `<div class="tt-schedule-memo">${esc(s.memo)}</div>` 
+            : '';
+        const color = s.color || '#4F5EF8';
+
+        return `
+            <div class="tt-schedule-card" style="cursor:default">
+                <div class="tt-schedule-color-dot" style="background:${color}"></div>
+                <div class="tt-schedule-body">
+                    <div class="tt-schedule-title">${esc(s.title)}</div>
+                    ${timeStr}
+                    ${memoStr}
+                </div>
+                <div class="tt-schedule-actions">
+                    <button class="tt-schedule-action-btn" onclick="event.stopPropagation(); openEditScheduleModal('${s.id}')" title="수정">✏️</button>
+                    <button class="tt-schedule-action-btn danger" onclick="event.stopPropagation(); deletePersonalSchedule('${s.id}')" title="삭제">🗑️</button>
+                </div>
+            </div>
+        `;
+    }
+
+    // ---- Add Schedule Modal ----
+    function openAddScheduleModal() {
+        document.getElementById('personalScheduleModalTitle').textContent = '✚ 일정 추가';
+        document.getElementById('editScheduleId').value = '';
+        document.getElementById('psTitle').value = '';
+        document.getElementById('psDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('psStartTime').value = '';
+        document.getElementById('psEndTime').value = '';
+        document.getElementById('psMemo').value = '';
+        document.getElementById('psColor').value = '#4F5EF8';
+        document.querySelectorAll('.tt-color-option').forEach(el => el.classList.remove('active'));
+        document.querySelector('.tt-color-option[data-color="#4F5EF8"]').classList.add('active');
+        document.getElementById('personalScheduleSubmitBtn').textContent = '저장';
+        openModal('personalScheduleModal');
+    }
+
+    function openEditScheduleModal(id) {
+        const s = personalSchedules.find(x => String(x.id) === String(id));
+        if (!s) return;
+
+        document.getElementById('personalScheduleModalTitle').textContent = '✏️ 일정 수정';
+        document.getElementById('editScheduleId').value = s.id;
+        document.getElementById('psTitle').value = s.title || '';
+        document.getElementById('psDate').value = s.date || '';
+        document.getElementById('psStartTime').value = s.start_time || '';
+        document.getElementById('psEndTime').value = s.end_time || '';
+        document.getElementById('psMemo').value = s.memo || '';
+
+        const color = s.color || '#4F5EF8';
+        document.getElementById('psColor').value = color;
+        document.querySelectorAll('.tt-color-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.color === color);
+        });
+
+        document.getElementById('personalScheduleSubmitBtn').textContent = '수정';
+        openModal('personalScheduleModal');
+    }
+
+    function selectScheduleColor(el) {
+        document.querySelectorAll('.tt-color-option').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('psColor').value = el.dataset.color;
+    }
+
+    // ---- Save Schedule ----
+    async function savePersonalSchedule(event) {
+        event.preventDefault();
+        const id = document.getElementById('editScheduleId').value;
+        const title = document.getElementById('psTitle').value.trim();
+        const date = document.getElementById('psDate').value;
+        const startTime = document.getElementById('psStartTime').value;
+        const endTime = document.getElementById('psEndTime').value;
+        const memo = document.getElementById('psMemo').value.trim();
+        const color = document.getElementById('psColor').value;
+
+        if (!title) {
+            showAlert('일정 제목을 입력해주세요.', 'danger');
+            return;
+        }
+        if (!date) {
+            showAlert('날짜를 선택해주세요.', 'danger');
+            return;
+        }
+
+        const data = { title, date, start_time: startTime || null, end_time: endTime || null, memo, color };
+
+        try {
+            if (id) {
+                await apiPut(`/student/my-schedule/${id}`, data);
+                showAlert('일정이 수정되었습니다.', 'success');
+            } else {
+                await apiPost('/student/my-schedule', data);
+                showAlert('일정이 추가되었습니다.', 'success');
+            }
+            closeModal('personalScheduleModal');
+            await loadPersonalSchedules();
+        } catch(e) {
+            console.error('Save schedule error:', e);
+            showAlert('저장 중 오류가 발생했습니다.', 'danger');
+        }
+    }
+
+    // ---- Delete Schedule ----
+    async function deletePersonalSchedule(id) {
+        if (!confirm('정말 이 일정을 삭제하시겠습니까?')) return;
+        try {
+            await apiDelete(`/student/my-schedule/${id}`);
+            showAlert('일정이 삭제되었습니다.', 'success');
+            await loadPersonalSchedules();
+        } catch(e) {
+            console.error('Delete schedule error:', e);
+            showAlert('삭제 중 오류가 발생했습니다.', 'danger');
+        }
+    }
+
+    // ---- Override showScheduleDetail for class schedule modal ----
+    // (The original showScheduleDetail in pages-student.js remains, but we enhance it)
+    </script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+    <script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

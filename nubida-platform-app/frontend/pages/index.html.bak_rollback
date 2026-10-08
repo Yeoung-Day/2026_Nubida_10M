@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>누비다플랫폼 — AI 메이커 코딩 교육 통합 시스템</title>
+    <meta name="description" content="본사 관리부터 학부모 모니터링까지, 메이커 코딩 + AI 교육에 특화된 통합 플랫폼입니다.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/pages/landing.css?v=20260603_redesign">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="/" class="nav-logo-text" style="font-family:'Inter', sans-serif; font-weight:800; font-size:20px; color:#18181B; text-decoration:none; letter-spacing:-0.03em;">
+                NUBIDA<span style="color:#4F5EF8; margin-left:1px;">.</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="#features" class="nav-link">기능</a>
+            <a href="#portals" class="nav-link">역할별 포털</a>
+            <a href="#gallery" class="nav-link">갤러리</a>
+            <a href="/pages/guide-videos.html" class="nav-link">가이드 영상</a>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn nav-start" onclick="location.href='/pages/login.html'" style="background:#4F5EF8; color:#FFFFFF; border-radius:var(--radius-md); font-weight:600; padding:10px 22px; font-size:13px; box-shadow: 0 4px 12px rgba(79, 94, 248, 0.15);">시작하기</button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg"><div class="grad1"></div></div>
+        <div class="hero-inner">
+            <div>
+                <div class="hero-badge hero-anim hero-anim-d1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4F5EF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    메이커 코딩 교육의 진화
+                </div>
+                <h1 class="hero-anim hero-anim-d2">공부방 운영의<br><span class="hl">완벽한 통합 솔루션</span></h1>
+                <p class="hero-sub hero-anim hero-anim-d3">본사 관리부터 학부모 모니터링까지, 아두이노 코딩 교육에 특화된 올인원 플랫폼</p>
+                <div class="hero-actions hero-anim hero-anim-d4">
+                    <button class="btn-primary-landing" onclick="location.href='/pages/login.html'">
+                        서비스 시작하기
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                    <button class="btn-secondary-landing" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">더 알아보기</button>
+                </div>
+            </div>
+            <div class="hero-image hero-anim hero-anim-d4">
+                <div class="hero-glow"></div>
+                <div class="hero-image-wrap">
+                    <img src="/common/assets/design-images/future_korean_education_1779004527860.png" alt="미래 교실 풍경" style="width:100%;height:auto;display:block;" referrerpolicy="no-referrer">
+                </div>
+                <div class="hero-float">
+                    <div class="hero-float-num">50+</div>
+                    <div class="hero-float-label">운영 에듀케어 수</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats / Features Icons -->
+    <section class="stats" id="features">
+        <div class="stats-inner">
+            <div class="stat-card rv">
+                <div class="stat-icon" style="background:#EFF6FF;color:#4F5EF8;">🤖</div>
+                <h3>AI 맞춤형 학습</h3>
+                <p>개별 학생의 학습 성향을 분석하여 최적화된 메이커 코딩 커리큘럼을 제공합니다.</p>
+            </div>
+            <div class="stat-card rv">
+                <div class="stat-icon" style="background:#ECFDF5;color:#10B981;">💻</div>
+                <h3>아두이노 코딩</h3>
+                <p>실시간 코드 작성과 하드웨어 연동으로 창의력과 문제 해결 능력을 키웁니다.</p>
+            </div>
+            <div class="stat-card rv">
+                <div class="stat-icon" style="background:#F5F3FF;color:#7C3AED;">🎯</div>
+                <h3>통합 포트폴리오</h3>
+                <p>결과물, 성적, 출결을 한눈에 관리하는 데이터 기반 학습 관리 시스템.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature: AI 대시보드 -->
+    <section class="feature">
+        <div class="feature-inner">
+            <div class="rv-l">
+                <div class="feature-image-wrap">
+                    <img src="/common/assets/design-images/ai_learning_platform_ui_1779004560505.png" alt="AI 학습 플랫폼 UI" style="width:100%;height:auto;display:block;" referrerpolicy="no-referrer">
+                </div>
+            </div>
+            <div class="rv-r">
+                <div class="feature-tag">실시간 분석</div>
+                <h2>데이터로 보는<br>성장의 증거</h2>
+                <p>교사는 학생 개개인의 취약점을 실시간 대시보드로 파악하고, 학생은 자신의 진입 지점부터 단계별로 성장하는 과정을 시각적으로 확인합니다.</p>
+                <ul class="feature-list">
+                    <li><span class="dot"></span>실시간 학습 도달도 분석</li>
+                    <li><span class="dot"></span>지능형 오답 노트 및 보충 학습</li>
+                    <li><span class="dot"></span>학부모 소통용 AI 인사이트 리포트</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portals -->
+    <section class="portals" id="portals">
+        <div class="portals-inner">
+            <div class="gallery-hdr rv">
+                <div class="feature-tag" style="margin-bottom:12px">역할별 포털</div>
+                <h2>각 역할에 최적화된 인터페이스</h2>
+                <p>공부방 운영의 모든 구성원을 위한 맞춤형 대시보드</p>
+            </div>
+            <div class="portal-grid rv">
+                <div class="portal-card" onclick="location.href='/pages/login.html'">
+                    <div class="ico" style="background:#FDF8F0;color:#A67C54;">🏢</div>
+                    <h3>본사 관리</h3>
+                    <p>에듀케어 모니터링, 시스템 설정, 사용자 및 결제 관리</p>
+                </div>
+                <div class="portal-card" onclick="location.href='/pages/login.html'">
+                    <div class="ico" style="background:#F0F9F4;color:#2E7D5E;">👨‍🏫</div>
+                    <h3>원장</h3>
+                    <p>학급/시험 관리, 성적·출결 처리, 포트폴리오 확인</p>
+                </div>
+                <div class="portal-card" onclick="location.href='/pages/login.html'">
+                    <div class="ico" style="background:#EFF6FF;color:#4F5EF8;">📍</div>
+                    <h3>에듀케어</h3>
+                    <p>강좌·수강생·직원 관리, 매출 및 일정</p>
+                </div>
+                <div class="portal-card" onclick="location.href='/pages/login.html'">
+                    <div class="ico" style="background:#FEF2F2;color:#DC4C4C;">👦</div>
+                    <h3>학생</h3>
+                    <p>강좌 수강, 학습 진도, 성적 조회, 포트폴리오</p>
+                </div>
+                <div class="portal-card" onclick="location.href='/pages/login.html'">
+                    <div class="ico" style="background:#F0F7FA;color:#2B6F6E;">👨‍👩‍👧</div>
+                    <h3>학부모</h3>
+                    <p>자녀 학습 현황, 성적·포트폴리오 조회, 상담</p>
+                </div>
+                <div class="portal-card" onclick="location.href='/pages/maker/login.html'">
+                    <div class="ico" style="background:linear-gradient(135deg,#EFF6FF,#F0FDF4);color:#4F5EF8;">🔧</div>
+                    <h3>메이커 코딩</h3>
+                    <p>Arduino 기반 차시별 학습, 코드 작성, 포트폴리오</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery: 메이커 코딩 교육 -->
+    <section class="gallery" id="gallery">
+        <div class="gallery-inner">
+            <div class="gallery-hdr rv">
+                <h2>메이커 코딩 교육 비주얼 라이브러리</h2>
+                <p>아두이노, 3D 모델링, AI가 융합된 다양한 교육 환경을 만나보세요</p>
+            </div>
+            <div class="gallery-grid rv">
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/common/assets/design-images/ai_tutor_interaction_1779005503442.png" alt="AI 튜터 코딩" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <h4>AI 튜터 코딩</h4>
+                    <p>실시간 코드 리뷰와 개인화된 설명을 제공하는 AI 코딩 어시스턴트</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/common/assets/design-images/arduino_coding_education_1779007970947.png" alt="아두이노 메이커" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <h4>아두이노 메이커</h4>
+                    <p>C언어 기반 임베디드 제어, 센서와 액추에이터를 활용한 프로젝트</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/common/assets/design-images/interactive_digital_textbook_science_1779005523044.png" alt="인터랙티브 과학" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <h4>인터랙티브 생명과학</h4>
+                    <p>3D 모델링을 통해 복잡한 생물학적 구조를 직접 조작하며 학습</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/common/assets/design-images/future_campus_collaboration_1779005540029.png" alt="스마트 협업 캠퍼스" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <h4>스마트 협업 캠퍼스</h4>
+                    <p>공간 제약 없이 고성능 기기로 협력하는 학습 환경</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/common/assets/design-images/wood_maker_coding_education_1779006548861.png" alt="우드 메이커 코딩" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <h4>우드 메이커 코딩</h4>
+                    <p>천연 목재와 전자 하드웨어를 융합한 핸즈온 코딩 교육</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/common/assets/design-images/debugging_future_education_1779007597825.png" alt="미래형 디버깅" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <h4>디버깅 & 알고리즘</h4>
+                    <p>시각적 데이터 흐름을 통해 복잡한 알고리즘 문제 해결</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners -->
+    <section class="partners">
+        <div class="partners-inner">
+            <h3 class="rv">함께 만들어가는 교육 생태계</h3>
+            <div class="partner-logos rv">
+                <div class="partner-item">
+                    <svg class="partner-svg" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="56" height="56" rx="8" fill="#00979D" opacity="0.12"/>
+                        <rect x="2" y="2" width="56" height="56" rx="8" stroke="#00979D" stroke-width="1.5" opacity="0.3"/>
+                        <text x="30" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#00979D" text-anchor="middle">A</text>
+                        <text x="72" y="32" font-family="Inter,sans-serif" font-size="18" font-weight="700" fill="#1E293B">ARDUINO</text>
+                        <text x="72" y="46" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Open-source electronics</text>
+                    </svg>
+                </div>
+                <div class="partner-item">
+                    <svg class="partner-svg" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="56" height="56" rx="8" fill="#A22846" opacity="0.12"/>
+                        <rect x="2" y="2" width="56" height="56" rx="8" stroke="#A22846" stroke-width="1.5" opacity="0.3"/>
+                        <text x="30" y="38" font-family="Arial" font-size="20" font-weight="bold" fill="#A22846" text-anchor="middle">RPi</text>
+                        <text x="72" y="32" font-family="Inter,sans-serif" font-size="16" font-weight="700" fill="#1E293B">RASPBERRY PI</text>
+                        <text x="72" y="46" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Single-board computers</text>
+                    </svg>
+                </div>
+                <div class="partner-item">
+                    <svg class="partner-svg" viewBox="0 0 210 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="56" height="56" rx="8" fill="#00A9D8" opacity="0.12"/>
+                        <rect x="2" y="2" width="56" height="56" rx="8" stroke="#00A9D8" stroke-width="1.5" opacity="0.3"/>
+                        <text x="30" y="38" font-family="Arial" font-size="18" font-weight="bold" fill="#00A9D8" text-anchor="middle">μ:bit</text>
+                        <text x="72" y="32" font-family="Inter,sans-serif" font-size="16" font-weight="700" fill="#1E293B">MICRO:BIT</text>
+                        <text x="72" y="46" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Pocket-sized computer</text>
+                    </svg>
+                </div>
+                <div class="partner-item">
+                    <svg class="partner-svg" viewBox="0 0 190 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="56" height="56" rx="8" fill="#3776AB" opacity="0.12"/>
+                        <rect x="2" y="2" width="56" height="56" rx="8" stroke="#3776AB" stroke-width="1.5" opacity="0.3"/>
+                        <text x="30" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#3776AB" text-anchor="middle">Py</text>
+                        <text x="72" y="32" font-family="Inter,sans-serif" font-size="16" font-weight="700" fill="#1E293B">PYTHON</text>
+                        <text x="72" y="46" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Programming language</text>
+                    </svg>
+                </div>
+<!-- GPT/CHATGPT removed per 대표님 요청 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="testimonial rv">
+        <div class="testimonial-card">
+            <div class="quote">"</div>
+            <p>"메이커 코딩 교육을 위한 통합 시스템으로 공부방 운영의 효율성이 크게 향상되었습니다. 본사, 원장, 학생, 학부모까지 모든 구성원이 하나의 플랫폼에서 소통하고 관리할 수 있어 교육의 질이 한 단계 올라갔습니다."</p>
+            <div class="testimonial-author">— 누비다플랫폼 교육 연구소</div>
+            <div class="testimonial-role">Nubida Platform Education Lab</div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="cta-inner rv">
+            <h2>지금 바로 시작하세요</h2>
+            <p>메이커 코딩 교육 시스템의 모든 기능을 체험해보세요</p>
+            <button class="btn-primary-landing" onclick="location.href='/pages/login.html'">
+                서비스 시작하기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-l">
+                    <span>누비다플랫폼</span>
+            </div>
+            <div class="footer-r">
+                <a href="#">회사소개</a>
+                <a href="#">정책</a>
+                <a href="#">파트너십</a>
+                <a href="#">문의하기</a>
+            </div>
+        </div>
+        <div class="footer-btm">© 2026 누비다플랫폼. All rights reserved.</div>
+    </footer>
+
+    <script>
+        const rv = document.querySelectorAll('.rv, .rv-l, .rv-r');
+        const ob = new IntersectionObserver(e => {
+            e.forEach(en => {
+                if(en.isIntersecting) { en.target.classList.add('vis'); ob.unobserve(en.target); }
+            });
+        }, { threshold:0.1, rootMargin:'0px 0px -40px 0px' });
+        rv.forEach(el => ob.observe(el));
+    </script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

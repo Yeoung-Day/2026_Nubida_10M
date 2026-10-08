@@ -1,0 +1,1 @@
+static/sherpa/sherpa-onnx-wasm-main-tts.js

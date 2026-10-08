@@ -1,0 +1,89 @@
+/* ===== 애니메이션 키프레임 및 유틸리티 클래스 ===== */
+/* common.css의 @keyframes 및 .animate-* / .delay-* 스타일을 컴포넌트 단위로 분리 */
+
+/* ---- 키프레임 정의 ---- */
+
+/* 나타나기 (페이드 인) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 위로 올라오며 나타나기 */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 아래로 내려오며 나타나기 */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 왼쪽에서 슬라이드 인 */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* 오른쪽에서 슬라이드 인 */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* 축소된 상태에서 확대되며 나타나기 */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* 깜빡임 효과 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* 위아래로 부유하는 효과 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* 모달 진입 애니메이션 - 축소+약간 하단에서 확대 */
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 회전 애니메이션 (로딩 스피너 등) */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- 애니메이션 유틸리티 클래스 ---- */
+
+/* 페이드 계열 */
+.animate-fade-in     { animation: fadeIn 0.6s ease-out both; }
+.animate-fade-up     { animation: fadeInUp 0.8s ease-out both; }
+.animate-fade-down   { animation: fadeInDown 0.6s ease-out both; }
+
+/* 슬라이드 계열 */
+.animate-slide-left  { animation: slideInLeft 0.6s ease-out both; }
+.animate-slide-right { animation: slideInRight 0.6s ease-out both; }
+
+/* 스케일 계열 */
+.animate-scale-in    { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* 반복 애니메이션 */
+.animate-pulse       { animation: pulse 2s ease-in-out infinite; }
+.animate-float       { animation: float 3s ease-in-out infinite; }
+.animate-spin        { animation: spin 1s linear infinite; }
+
+/* ---- 지연 애니메이션 (스태거 효과) ---- */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }

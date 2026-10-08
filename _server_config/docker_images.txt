@@ -1,0 +1,9 @@
+nubida-platform-app:nubida-platform-app-live-llmsplit	1326fd5748ff	1.6GB
+alpine/socat:latest	87589c7da233	15.8MB
+alpine:latest	320994c3b997	8.42MB
+docker-chatai-app:latest	e4552e4d2d5e	142MB
+docker-shop-app:latest	26b31bc1de21	352MB
+docker-music-ai:latest	7d49b0790265	8.32GB
+redis:alpine	cad4195a4376	94.7MB
+mariadb:latest	85aad53d41c7	335MB
+nvcr.io/nvidia/k8s/dcgm-exporter:3.3.5-3.4.1-ubuntu22.04	4934bb542a77	1.47GB

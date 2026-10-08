@@ -1,0 +1,291 @@
+/* ============================================================
+   누비다플랫폼 — 원장 결제 (payments.html)
+   월 정산 → 본사 로열티 입금 → 승인 요청
+   ============================================================ */
+
+.pm-month-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary, #64748B);
+}
+.pm-month-picker input[type="month"] {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #0F172A);
+    background: #fff;
+    font-family: inherit;
+}
+
+/* ---------- 계좌 ---------- */
+.pm-account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    background: #fff;
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.pm-account-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94A3B8;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+}
+.pm-account-number {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-primary, #0F172A);
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+}
+.pm-account-holder {
+    font-size: 12.5px;
+    color: #64748B;
+    font-weight: 600;
+    margin-top: 5px;
+}
+.pm-copy-btn {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid #E2E8F0;
+    background: #fff;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #4F5EF8;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+    white-space: nowrap;
+}
+.pm-copy-btn:hover { background: #F8F9FF; border-color: #C7D0FA; }
+
+/* ---------- 정산 요약 ---------- */
+.pm-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+.pm-sum-card {
+    background: #fff;
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: 14px;
+    padding: 18px 20px;
+}
+.pm-sum-card.pm-hl { border-color: #C7D0FA; background: linear-gradient(180deg,#F8F9FF 0%,#fff 100%); }
+.pm-sum-card.pm-hl-net { border-color: #BBF7D0; background: linear-gradient(180deg,#F7FEF9 0%,#fff 100%); }
+.pm-sum-card.pm-hl-royalty { border-color: #FDE3C0; background: linear-gradient(180deg,#FFFAF3 0%,#fff 100%); }
+.pm-sum-label { font-size: 12.5px; font-weight: 600; color: #64748B; margin-bottom: 7px; }
+.pm-sum-value { font-size: 23px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary, #0F172A); }
+.pm-hl .pm-sum-value { color: #4F5EF8; }
+.pm-hl-net .pm-sum-value { color: #16A34A; }
+.pm-hl-royalty .pm-sum-value { color: #E08A2B; }
+.pm-sum-sub { font-size: 11.5px; color: #94A3B8; font-weight: 500; margin-top: 4px; }
+
+/* ---------- 입금 신청 폼 ---------- */
+.pm-form-card {
+    background: #fff;
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 18px;
+}
+.pm-form-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary, #0F172A);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+}
+.pm-form-desc { font-size: 12.5px; color: #94A3B8; font-weight: 500; margin-bottom: 18px; }
+.pm-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+.pm-field { display: flex; flex-direction: column; gap: 7px; }
+.pm-field label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #64748B;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.pm-field label .req { color: #EF4444; }
+.pm-field input {
+    height: 42px;
+    padding: 0 13px;
+    border: 1px solid #E2E8F0;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary, #0F172A);
+    font-family: inherit;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+}
+.pm-field input:focus {
+    outline: none;
+    border-color: #4F5EF8;
+    box-shadow: 0 0 0 3px rgba(79,94,248,.1);
+}
+.pm-field input::placeholder { color: #B0B8C4; font-weight: 500; }
+.pm-field-hint { font-size: 11.5px; color: #94A3B8; font-weight: 500; }
+.pm-field-hint b { color: #4F5EF8; font-weight: 700; }
+
+.pm-submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-top: 1px dashed #E2E8F0;
+    padding-top: 16px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+.pm-submit-note { font-size: 12px; color: #94A3B8; font-weight: 500; line-height: 1.5; }
+.pm-submit-btn {
+    height: 44px;
+    padding: 0 26px;
+    background: #4F5EF8;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s;
+    white-space: nowrap;
+}
+.pm-submit-btn:hover { background: #3D4BE0; }
+.pm-submit-btn:disabled { background: #C7CBE6; cursor: not-allowed; }
+
+/* 현재 상태 배너 */
+.pm-status-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    border: 1px solid;
+}
+.pm-status-banner.pm-pending { background: #FFFBEB; border-color: #FDE68A; }
+.pm-status-banner.pm-approved { background: #F0FDF4; border-color: #BBF7D0; }
+.pm-status-banner.pm-rejected { background: #FEF2F2; border-color: #FECACA; }
+.pm-status-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: rgba(255,255,255,.7);
+}
+.pm-status-text b { display: block; font-size: 14.5px; font-weight: 800; margin-bottom: 2px; }
+.pm-status-text span { font-size: 12.5px; font-weight: 500; color: #64748B; }
+.pm-pending .pm-status-text b { color: #B45309; }
+.pm-approved .pm-status-text b { color: #15803D; }
+.pm-rejected .pm-status-text b { color: #DC2626; }
+
+/* ---------- 이력 테이블 ---------- */
+.pm-card {
+    background: #fff;
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: 14px;
+    overflow: hidden;
+}
+.pm-card-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid #F1F5F9;
+}
+.pm-card-head h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary, #0F172A);
+    letter-spacing: -0.02em;
+}
+.pm-table { width: 100%; border-collapse: collapse; }
+.pm-table thead th {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-align: left;
+    padding: 10px 22px;
+    background: #F8FAFC;
+    border-bottom: 1px solid #EEF2F7;
+    white-space: nowrap;
+}
+.pm-table tbody td {
+    padding: 13px 22px;
+    border-bottom: 1px solid #F1F5F9;
+    font-size: 13.5px;
+    color: var(--text-primary, #0F172A);
+}
+.pm-table tbody tr:last-child td { border-bottom: none; }
+.pm-table tbody tr:hover { background: #FCFDFF; }
+.pm-ym { font-weight: 700; letter-spacing: -0.01em; }
+.pm-money { font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.pm-depositor { font-weight: 600; color: #64748B; font-size: 12.5px; }
+
+.pm-badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 7px;
+    white-space: nowrap;
+}
+.pm-badge-pending { background: #FEF3C7; color: #B45309; }
+.pm-badge-approved { background: #DCFCE7; color: #15803D; }
+.pm-badge-rejected { background: #FEE2E2; color: #DC2626; }
+
+.pm-empty { text-align: center; color: #94A3B8; padding: 48px 20px !important; font-size: 13px; }
+
+.pm-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(20px);
+    background: #0F172A;
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all .22s ease;
+    z-index: 9999;
+    box-shadow: 0 8px 24px rgba(15,23,42,.2);
+}
+.pm-toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+.pm-toast.is-error { background: #DC2626; }
+
+@media (max-width: 900px) {
+    .pm-summary { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+    .pm-summary { grid-template-columns: 1fr; gap: 10px; }
+    .pm-form-grid { grid-template-columns: 1fr; }
+    .pm-account { flex-direction: column; align-items: flex-start; }
+    .pm-submit-row { flex-direction: column; align-items: stretch; }
+    .pm-submit-btn { width: 100%; }
+    .pm-table thead th, .pm-table tbody td { padding-left: 14px; padding-right: 14px; }
+}

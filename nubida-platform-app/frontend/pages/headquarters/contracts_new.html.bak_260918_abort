@@ -1,0 +1,1116 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>계약 관리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260805c">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260804b">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260804c">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+            /* ── 페이지 로딩 오버레이 ── */
+            .page-loading-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px) }
+            .page-loading-overlay.hide { display:none }
+            .page-loading-overlay .loading-icon { width:48px; height:48px; border:4px solid #e8e8f0; border-top-color:var(--accent); border-radius:50%; animation:spinner-spin 0.8s linear infinite; margin-bottom:16px }
+            @keyframes spinner-spin { to { transform:rotate(360deg) } }
+            .page-loading-overlay .loading-label { font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:4px }
+            .page-loading-overlay .loading-sub { font-size:13px; color:var(--text-tertiary) }
+            .page-loading-overlay .loading-progress { width:180px; height:3px; background:var(--border-subtle); border-radius:4px; overflow:hidden; margin-top:12px }
+            .page-loading-overlay .loading-progress-bar { height:100%; width:0; background:linear-gradient(90deg, var(--accent), #6C7AFF); border-radius:4px; animation:loading-bar 2s ease-in-out infinite }
+            @keyframes loading-bar { 0%{ width:0; margin-left:0 } 50%{ width:60%; margin-left:20% } 100%{ width:0; margin-left:100% } }
+        </style>
+    <script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+    <body>
+        <!-- 페이지 로딩 오버레이 -->
+        <div class="page-loading-overlay" id="pageLoading">
+            <div class="loading-icon"></div>
+            <div class="loading-label">에듀케어 정보를 불러오는 중</div>
+            <div class="loading-sub">잠시만 기다려주세요</div>
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+        </div>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon">📊</span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section">메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon">🏢</span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon">🏫</span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon">📚</span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon">📁</span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon">❓</span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon">📑</span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon">🌐</span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon">📝</span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+    </div>
+</nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        
+   // 섹션 매핑
+   const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   if (!sub) return;
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>📄 계약 관리</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+   <!-- ===== 계약 관리 ===== -->
+   <!-- ===== 계약 관리 탭 ===== -->
+
+   <!-- 툴바 -->
+   <div class="branches-toolbar">
+   <div class="branches-toolbar-left">
+   <select class="form-input" id="statusFilter" onchange="loadBranches(1)" style="width:120px">
+   <option value="">전체 상태</option>
+   <option value="active">운영중</option>
+   <option value="inactive">정지</option>
+   <option value="pending">휴무</option>
+   </select>
+   <input type="text" class="form-input" id="searchInput" placeholder="에듀케어명/코드 검색..." oninput="filterBranches()" style="width:200px">
+   <span class="small-text" id="branchCount">0개</span>
+   </div>
+   <div class="branches-toolbar-right">
+   <button class="btn btn-primary btn-sm" onclick="openCreateBranchModal()">+ 지사 추가</button>
+   </div>
+   </div>
+
+   <!-- 지사 목록 -->
+   <div class="branches-card">
+   <table class="branches-table" data-card-view>
+   <thead>
+   <tr>
+   <th style="width:50px">ID</th>
+   <th>에듀케어명</th>
+   <th style="width:100px">코드</th>
+   <th style="width:80px">타입</th>
+   <th>주소</th>
+   <th>연락처</th>
+   <th>이메일</th>
+   <th style="width:80px">상태</th>
+   <th style="width:100px">계약기간</th>
+   <th style="width:140px">작업</th>
+   </tr>
+   </thead>
+   <tbody id="branchTableBody">
+   <tr class="branch-empty">
+   <td colspan="10">지사 정보를 불러오는 중...</td>
+   </tr>
+   </tbody>
+   </table>
+   <div class="pagination-wrap" id="paginationWrap"></div>
+   </div>
+   <!-- ===== 계약 관리 탭 ===== -->
+   <div class="tab-content" id="tab-contracts">
+   <div class="contracts-tabs">
+   <button class="contracts-tab active" data-type="" onclick="switchContractTab('')">📋 전체</button>
+   <button class="contracts-tab" data-type="direct" onclick="switchContractTab('direct')">🏢 직영 원장</button>
+   <button class="contracts-tab" data-type="franchise" onclick="switchContractTab('franchise')">🏪 프랜차이즈 원장</button>
+   </div>
+   <div class="contracts-stats">
+   <div class="stat-item"><span class="stat-label">🏢 직영</span><span class="stat-value" id="statDirect">0명</span></div>
+   <div class="stat-divider"></div>
+   <div class="stat-item"><span class="stat-label">🏪 프랜차이즈</span><span class="stat-value" id="statFranchise">0명</span></div>
+   <div class="stat-divider"></div>
+   <div class="stat-item"><span class="stat-label">⏳ 만료 예정 (30일)</span><span class="stat-value" id="statExpiring">0건</span></div>
+   <div class="stat-divider"></div>
+   <div class="stat-item"><span class="stat-label">📋 전체 계약</span><span class="stat-value" id="statTotal">0건</span></div>
+   </div>
+   <div class="contracts-toolbar">
+   <div class="contracts-toolbar-left">
+   <select class="form-input" id="cStatusFilter" onchange="loadContracts(1)" style="width:130px">
+   <option value="">전체 상태</option>
+   <option value="active">활성</option>
+   <option value="expired">만료</option>
+   <option value="terminated">해지</option>
+   <option value="pending">대기</option>
+   </select>
+   <input type="text" class="form-input" id="cSearchInput" placeholder="원장명/소속 검색..." oninput="filterContracts()" style="width:150px">
+   <span class="small-text" id="contractCount">0건</span>
+   </div>
+   <div class="contracts-toolbar-right">
+   <button class="btn btn-primary btn-sm" onclick="openCreateContractModal()">+ 새 계약</button>
+   </div>
+   </div>
+   <div class="contracts-card">
+   <table class="contracts-table" data-card-view>
+   <thead>
+   <tr>
+   <th style="width:50px">ID</th>
+   <th>소속</th>
+   <th>원장명</th>
+   <th style="width:100px">유형</th>
+   <th style="width:170px">계약 기간</th>
+   <th style="width:90px">월 회비</th>
+   <th style="width:70px">로열티</th>
+   <th style="width:70px">상태</th>
+   <th style="width:160px">관리</th>
+   </tr>
+   </thead>
+    <tbody id="contractTableBody">
+    </tbody>
+   </table>
+   <div class="contracts-pagination" id="cPaginationWrap"></div>
+   </div>
+   </div>
+
+   <!-- ===== 강좌 카테고리 권한 탭 ===== -->
+   <div class="tab-content" id="tab-categories">
+   <div class="categories-toolbar">
+   <div class="categories-toolbar-left">
+   <label class="form-label" style="margin:0 8px 0 0">학원 선택</label>
+   <select class="form-input" id="branchCategorySelect" onchange="onBranchSelectForCategories()" style="width:280px">
+   <option value="">← 학원을 선택하세요</option>
+   </select>
+   <span class="small-text" id="selectedBranchInfo"></span>
+   </div>
+   </div>
+
+   <div id="categoryPermissionPanel" style="display:none;margin-top:20px;">
+   <div class="cat-perm-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+   <h3 id="catPermTitle" style="font-size:18px;font-weight:700;margin:0">📚 강좌 카테고리 권한 설정</h3>
+   <button class="btn btn-primary btn-sm" onclick="saveCategoryPermissions()">💾 권한 저장</button>
+   </div>
+   <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">
+   아래 카테고리 중 해당 학원(원장)에게 노출할 강좌 카테고리를 선택하세요.
+   선택된 카테고리만 원장 페이지에서 보이고 강좌를 등록할 수 있습니다.
+   </p>
+   <div id="categoryToggleList" class="cat-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">
+   <div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-tertiary)">카테고리 정보를 불러오는 중...</div>
+   </div>
+   <div style="margin-top:20px;text-align:right">
+   <span id="catCountInfo" class="small-text" style="margin-right:12px"></span>
+   <button class="btn btn-ghost btn-sm" onclick="selectAllCategories(true)">모두 선택</button>
+   <button class="btn btn-ghost btn-sm" onclick="selectAllCategories(false)" style="margin-right:12px">모두 해제</button>
+   <button class="btn btn-primary btn-sm" onclick="saveCategoryPermissions()">💾 권한 저장</button>
+   </div>
+   </div>
+
+   <div id="categoryPermEmpty" style="display:none;margin-top:40px;text-align:center;padding:60px 0;color:var(--text-tertiary)">
+   <div style="font-size:48px;margin-bottom:12px">📚</div>
+   <h3 style="font-weight:600;margin-bottom:8px">학원을 선택해주세요</h3>
+   <p>위 드롭다운에서 카테고리 권한을 설정할 학원을 선택하세요.</p>
+   </div>
+   </div>
+   </main>
+   </div>
+
+   <!-- 지사 생성 모달 -->
+   <div class="modal-overlay" id="createBranchModal">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header">
+   <h3>🏢 새 지사 추가</h3>
+   </div>
+   <div class="modal-body">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">에듀케어명 *</label>
+   <input type="text" class="form-input" id="newName" placeholder="예: 부산 센텀지사">
+   </div>
+   <div class="form-group">
+   <label class="form-label">에듀케어 코드 *</label>
+   <input type="text" class="form-input" id="newCode" placeholder="예: BUSAN_CENTER" style="text-transform:uppercase">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">주소</label>
+   <input type="text" class="form-input" id="newAddress" placeholder="지사 주소">
+   </div>
+   <div class="form-group">
+   <label class="form-label">연락처</label>
+   <input type="text" class="form-input" id="newPhone" placeholder="051-000-0000">
+   </div>
+   <div class="form-group">
+   <label class="form-label">이메일</label>
+   <input type="email" class="form-input" id="newEmail" placeholder="branch@example.com">
+   </div>
+   <div class="form-group">
+   <label class="form-label">에듀케어 관리자</label>
+   <select class="form-input" id="newAdminId">
+   <option value="">선택 안 함</option>
+   </select>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeCustomModal('createBranchModal')">취소</button>
+   <button class="btn btn-primary" onclick="createBranch()">지사 생성</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 지사 수정 모달 -->
+   <div class="modal-overlay" id="editBranchModal">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header">
+   <h3>✏️ 지사 정보 수정</h3>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="editBranchId">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">에듀케어명</label>
+   <input type="text" class="form-input" id="editName">
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="editStatus">
+   <option value="active">운영중</option>
+   <option value="inactive">정지</option>
+   <option value="pending">휴무</option>
+   </select>
+   </div>
+   <div class="full form-group">
+   <label class="form-label">주소</label>
+   <input type="text" class="form-input" id="editAddress">
+   </div>
+   <div class="form-group">
+   <label class="form-label">연락처</label>
+   <input type="text" class="form-input" id="editPhone">
+   </div>
+   <div class="form-group">
+   <label class="form-label">이메일</label>
+   <input type="email" class="form-input" id="editEmail">
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeCustomModal('editBranchModal')">취소</button>
+   <button class="btn btn-primary" onclick="updateBranch()">저장</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 새 계약 생성 모달 -->
+   <div class="modal-overlay" id="createContractModal">
+   <div class="modal" style="max-width:600px">
+   <div class="modal-header"><h3>📄 새 계약</h3></div>
+   <div class="modal-body">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">원장 선택 *</label>
+   <select class="form-input" id="newContractDirector"><option value="">원장을 선택하세요</option></select>
+   </div>
+   <div class="form-group">
+   <label class="form-label">계약 유형 *</label>
+   <div class="radio-group">
+   <label><input type="radio" name="newContractType" value="direct" checked onchange="toggleBranchSelect()"> 직영</label>
+   <label><input type="radio" name="newContractType" value="franchise" onchange="toggleBranchSelect()"> 프랜차이즈</label>
+   </div>
+   </div>
+   <div class="form-group" id="newContractBranchGroup" style="display:none">
+   <label class="form-label">소속 지사 *</label>
+   <select class="form-input" id="newContractBranch"><option value="">지사를 선택하세요</option></select>
+   </div>
+   <div class="form-group">
+   <label class="form-label">계약 시작일 *</label>
+   <input type="date" class="form-input" id="newContractStart">
+   </div>
+   <div class="form-group">
+   <label class="form-label">계약 종료일 *</label>
+   <input type="date" class="form-input" id="newContractEnd">
+   </div>
+   <div class="form-group">
+   <label class="form-label">월 회비 (₩)</label>
+   <input type="number" class="form-input" id="newContractFee" value="0" min="0" placeholder="0">
+   </div>
+   <div class="form-group">
+   <label class="form-label">로열티율 (%)</label>
+   <input type="number" class="form-input" id="newContractRoyalty" value="0" min="0" max="100" step="0.1" placeholder="0">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">메모</label>
+   <textarea class="form-input form-textarea" id="newContractMemo" placeholder="계약 관련 메모" rows="3"></textarea>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeCustomModal('createContractModal')">취소</button>
+   <button class="btn btn-primary" onclick="createContract()">계약 생성</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 계약 수정 모달 -->
+   <div class="modal-overlay" id="editContractModal">
+   <div class="modal" style="max-width:600px">
+   <div class="modal-header"><h3>✏️ 계약 수정</h3></div>
+   <div class="modal-body">
+   <input type="hidden" id="editContractId">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">원장명</label>
+   <input type="text" class="form-input" id="editContractDirector" readonly style="background:var(--bg-subtle)">
+   </div>
+   <div class="form-group">
+   <label class="form-label">계약 유형</label>
+   <div class="radio-group">
+   <label><input type="radio" name="editContractType" value="direct" onchange="toggleEditBranchSelect()"> 직영</label>
+   <label><input type="radio" name="editContractType" value="franchise" onchange="toggleEditBranchSelect()"> 프랜차이즈</label>
+   </div>
+   </div>
+   <div class="form-group" id="editContractBranchGroup" style="display:none">
+   <label class="form-label">소속 지사</label>
+   <select class="form-input" id="editContractBranch"><option value="">지사를 선택하세요</option></select>
+   </div>
+   <div class="form-group">
+   <label class="form-label">계약 시작일</label>
+   <input type="date" class="form-input" id="editContractStart">
+   </div>
+   <div class="form-group">
+   <label class="form-label">계약 종료일</label>
+   <input type="date" class="form-input" id="editContractEnd">
+   </div>
+   <div class="form-group">
+   <label class="form-label">월 회비 (₩)</label>
+   <input type="number" class="form-input" id="editContractFee" min="0">
+   </div>
+   <div class="form-group">
+   <label class="form-label">로열티율 (%)</label>
+   <input type="number" class="form-input" id="editContractRoyalty" min="0" max="100" step="0.1">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">메모</label>
+   <textarea class="form-input form-textarea" id="editContractMemo" rows="3"></textarea>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+  <button class="btn btn-ghost" onclick="closeCustomModal('editContractModal')">취소</button>
+  <button class="btn btn-primary" onclick="updateContract()">저장</button>
+  </div>
+  </div>
+
+<script src="/common/js/api.js?v=20260910login"></script>
+<script src="/common/js/auth.js?v=20260908a"></script>
+<script>
+/* ===== 상태 변수 ===== */
+let currentBranchPage = 1;
+let currentContractPage = 1;
+let totalBranchPages = 1;
+let totalContractPages = 1;
+let allBranches = [];
+let allContracts = [];
+let selectedCategoriesBranchId = null;
+let allCategories = [];
+
+/* ===== 헬퍼 함수 ===== */
+function esc(s) {
+    if (s == null) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function showToast(msg, type) {
+    const existing = document.getElementById('pageToast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.id = 'pageToast';
+    t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:400px;';
+    const colors = { success:'#10B981', error:'#EF4444', warning:'#F59E0B', info:'#4F5EF8' };
+    const bgColors = { success:'#F0FDF4', error:'#FEF2F2', warning:'#FFFBEB', info:'#EFF6FF' };
+    t.style.background = bgColors[type] || '#F0FDF4';
+    t.style.color = colors[type] || '#10B981';
+    t.style.border = '1px solid ' + (colors[type] || '#10B981');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { if (t.parentNode) t.remove(); }, 3000);
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'active': '<span class="badge badge-success">● 운영중</span>',
+        'inactive': '<span class="badge badge-danger">● 정지</span>',
+        'pending': '<span class="badge badge-warning">● 휴무</span>'
+    };
+    return map[status] || '<span class="badge">' + (status || '-') + '</span>';
+}
+
+function getContractStatusBadge(status) {
+    const map = {
+        'active': '<span class="badge badge-success">● 활성</span>',
+        'expired': '<span class="badge badge-secondary">● 만료</span>',
+        'terminated': '<span class="badge badge-danger">● 해지</span>',
+        'pending': '<span class="badge badge-warning">● 대기</span>'
+    };
+    return map[status] || '<span class="badge">' + (status || '-') + '</span>';
+}
+
+function formatDate(str) {
+    if (!str) return '-';
+    try {
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
+        return d.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' });
+    } catch(e) { return str; }
+}
+
+function formatAmount(v) {
+    if (v == null) return '₩0';
+    return '₩' + Number(v).toLocaleString();
+}
+
+/* ===== 탭 전환 ===== */
+function switchTab(tabName) {
+    // 1. 모든 탭 내용 숨기기
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    // 2. 모든 탭 버튼 스타일 초기화
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.style.borderBottom = '2px solid transparent';
+        btn.style.color = 'var(--text-tertiary)';
+        btn.style.fontWeight = '500';
+    });
+    // 3. 대상 탭 내용 표시 & 버튼 활성화
+    const content = document.getElementById('tab-' + tabName);
+    if (content) content.style.display = 'block';
+    const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+    if (btn) {
+        btn.style.borderBottom = '2px solid var(--primary)';
+        btn.style.color = 'var(--primary)';
+        btn.style.fontWeight = '600';
+    }
+    // 4. 탭별 데이터 초기화 후 로드
+    if (tabName === 'branches') {
+        document.getElementById('branchTableBody').innerHTML = '<tr class="branch-empty"><td colspan="10">로딩 중...</td></tr>';
+        loadBranches(currentBranchPage);
+    } else if (tabName === 'contracts') {
+        document.getElementById('contractTableBody').innerHTML = ''; // 빈 값으로 시작
+        loadContracts(currentContractPage);
+    } else if (tabName === 'categories') {
+        document.getElementById('branchCategorySelect').innerHTML = '<option value="">← 학원을 선택하세요</option>';
+        document.getElementById('categoryPermissionPanel').style.display = 'none';
+        document.getElementById('categoryPermEmpty').style.display = '';
+        document.getElementById('categoryToggleList').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-tertiary)">카테고리 정보를 불러오는 중...</div>';
+        loadBranchSelectForCategories();
+    }
+}
+
+/* ===== 지사(에듀케어) CRUD ===== */
+async function loadBranches(page) {
+    currentBranchPage = page || 1;
+    const tbody = document.getElementById('branchTableBody');
+    tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">로딩 중...</td></tr>';
+    // 5초 fallback: 오버레이 강제 해제
+    var fallbackTimer = setTimeout(function() {
+        var ol = document.getElementById('pageLoading');
+        if (ol) ol.classList.add('hide');
+    }, 5000);
+    try {
+        const params = { page: currentBranchPage, per_page: 20 };
+        const status = document.getElementById('statusFilter').value;
+        const search = document.getElementById('searchInput').value.trim();
+        if (status) params.status = status;
+        if (search) params.search = search;
+        console.log('[branches] loadBranches 호출:', params);
+        const res = await apiGet('/headquarters/branches?' + new URLSearchParams(params));
+        console.log('[branches] loadBranches 응답:', res);
+        // 응답 데이터 검증 강화
+        const data = res && res.data;
+        allBranches = Array.isArray(data) ? data : [];
+        const total = (res && typeof res.total === 'number') ? res.total : allBranches.length;
+        totalBranchPages = Math.max(1, Math.ceil(total / 20));
+        document.getElementById('branchCount').textContent = total + '개';
+        // 오버레이 숨김
+        clearTimeout(fallbackTimer);
+        var ol = document.getElementById('pageLoading');
+        if (ol) ol.classList.add('hide');
+        if (!allBranches.length) {
+            tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">등록된 지사가 없습니다.</td></tr>';
+            renderBranchPagination();
+            return;
+        }
+        tbody.innerHTML = allBranches.map(b => {
+            const statusBadge = getStatusBadge(b.status);
+            const periodStr = b.contract_start ? formatDate(b.contract_start) + ' ~ ' + formatDate(b.contract_end) : '-';
+            return '<tr>' +
+                '<td>' + b.id + '</td>' +
+                '<td><strong>' + esc(b.name || '') + '</strong></td>' +
+                '<td>' + esc(b.code || '') + '</td>' +
+                '<td>' + esc(b.branch_type || '-') + '</td>' +
+                '<td style="font-size:13px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(b.address || '-') + '</td>' +
+                '<td>' + esc(b.phone || '-') + '</td>' +
+                '<td style="font-size:12px">' + esc(b.email || '-') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td style="font-size:12px">' + periodStr + '</td>' +
+                '<td><div style="display:flex;gap:4px">' +
+                '<button class="btn btn-ghost btn-sm" onclick="openEditBranchModal(' + b.id + ')" style="font-size:11px">✏️</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteBranch(' + b.id + ')" style="font-size:11px">🗑️</button>' +
+                '</div></td></tr>';
+        }).join('');
+        renderBranchPagination();
+    } catch (e) {
+        clearTimeout(fallbackTimer);
+        var ol = document.getElementById('pageLoading');
+        if (ol) ol.classList.add('hide');
+        console.error('[branches] loadBranches 실패:', e, e.stack);
+        tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">불러오기 실패: ' + esc(e.message) + '</td></tr>';
+        showToast('데이터를 불러올 수 없습니다', 'error');
+    }
+}
+
+function filterBranches() { currentBranchPage = 1; loadBranches(1); }
+
+function renderBranchPagination() {
+    const el = document.getElementById('paginationWrap');
+    if (totalBranchPages <= 1) { el.innerHTML = ''; return; }
+    let html = '<button class="page-btn" onclick="goBranchPage(1)" ' + (currentBranchPage <= 1 ? 'disabled' : '') + '>«</button>';
+    html += '<button class="page-btn" onclick="goBranchPage(' + (currentBranchPage - 1) + ')" ' + (currentBranchPage <= 1 ? 'disabled' : '') + '>‹</button>';
+    const start = Math.max(1, currentBranchPage - 2);
+    const end = Math.min(totalBranchPages, currentBranchPage + 2);
+    for (let i = start; i <= end; i++) {
+        html += '<button class="page-btn' + (i === currentBranchPage ? ' active' : '') + '" onclick="goBranchPage(' + i + ')">' + i + '</button>';
+    }
+    html += '<button class="page-btn" onclick="goBranchPage(' + (currentBranchPage + 1) + ')" ' + (currentBranchPage >= totalBranchPages ? 'disabled' : '') + '>›</button>';
+    html += '<button class="page-btn" onclick="goBranchPage(' + totalBranchPages + ')" ' + (currentBranchPage >= totalBranchPages ? 'disabled' : '') + '>»</button>';
+    el.innerHTML = html;
+}
+
+function goBranchPage(page) {
+    if (page < 1 || page > totalBranchPages) return;
+    currentBranchPage = page;
+    loadBranches(page);
+}
+
+async function openCreateBranchModal() {
+    try {
+        const res = await apiGet('/headquarters/users?role=admin&per_page=100');
+        const users = res.data || [];
+        const select = document.getElementById('newAdminId');
+        select.innerHTML = '<option value="">선택 안 함</option>' +
+            users.map(u => '<option value="' + u.id + '">' + esc(u.name || u.username) + '</option>').join('');
+    } catch (e) {}
+    document.getElementById('createBranchModal').style.display = 'flex';
+}
+
+async function createBranch() {
+    const name = document.getElementById('newName').value.trim();
+    const code = document.getElementById('newCode').value.trim();
+    const address = document.getElementById('newAddress').value.trim();
+    const phone = document.getElementById('newPhone').value.trim();
+    const email = document.getElementById('newEmail').value.trim();
+    const admin_id = document.getElementById('newAdminId').value;
+    if (!name) { showToast('에듀케어명을 입력하세요', 'error'); return; }
+    if (!code) { showToast('에듀케어 코드를 입력하세요', 'error'); return; }
+    const payload = { name, code, address, phone, email };
+    if (admin_id) payload.admin_id = parseInt(admin_id);
+    try {
+        await apiPost('/headquarters/branches', payload);
+        showToast('지사가 생성되었습니다', 'success');
+        document.getElementById('createBranchModal').style.display = 'none';
+        document.getElementById('newName').value = '';
+        document.getElementById('newCode').value = '';
+        document.getElementById('newAddress').value = '';
+        document.getElementById('newPhone').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newAdminId').value = '';
+        loadBranches(1);
+    } catch (e) { showToast('생성 실패: ' + (e.message || ''), 'error'); }
+}
+
+async function openEditBranchModal(id) {
+    try {
+        const res = await apiGet('/headquarters/branches/' + id);
+        const b = res.data || res;
+        document.getElementById('editBranchId').value = b.id;
+        document.getElementById('editName').value = b.name || '';
+        document.getElementById('editStatus').value = b.status || 'active';
+        document.getElementById('editAddress').value = b.address || '';
+        document.getElementById('editPhone').value = b.phone || '';
+        document.getElementById('editEmail').value = b.email || '';
+        document.getElementById('editBranchModal').style.display = 'flex';
+    } catch (e) { showToast('정보를 불러올 수 없습니다', 'error'); }
+}
+
+async function updateBranch() {
+    const id = document.getElementById('editBranchId').value;
+    const name = document.getElementById('editName').value.trim();
+    const status = document.getElementById('editStatus').value;
+    const address = document.getElementById('editAddress').value.trim();
+    const phone = document.getElementById('editPhone').value.trim();
+    const email = document.getElementById('editEmail').value.trim();
+    if (!name) { showToast('에듀케어명을 입력하세요', 'error'); return; }
+    try {
+        await apiPut('/headquarters/branches/' + id, { name, status, address, phone, email });
+        showToast('지사 정보가 수정되었습니다', 'success');
+        document.getElementById('editBranchModal').style.display = 'none';
+        loadBranches(currentBranchPage);
+    } catch (e) { showToast('수정 실패: ' + (e.message || ''), 'error'); }
+}
+
+async function deleteBranch(id) {
+    if (!confirm('정말 이 지사를 삭제하시겠습니까?')) return;
+    try {
+        await apiDelete('/headquarters/branches/' + id);
+        showToast('지사가 삭제되었습니다', 'success');
+        loadBranches(currentBranchPage);
+    } catch (e) { showToast('삭제 실패: ' + (e.message || ''), 'error'); }
+}
+
+/* ===== 계약 CRUD ===== */
+async function loadContracts(page) {
+    currentContractPage = page || 1;
+    const tbody = document.getElementById('contractTableBody');
+    tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">로딩 중...</td></tr>';
+    try {
+        const params = { page: currentContractPage, per_page: 20 };
+        const status = document.getElementById('cStatusFilter').value;
+        const search = document.getElementById('cSearchInput').value.trim();
+        if (status) params.status = status;
+        if (search) params.search = search;
+        console.log('[branches] loadContracts 호출:', params);
+        const res = await apiGet('/headquarters/contracts?' + new URLSearchParams(params));
+        console.log('[branches] loadContracts 응답:', res);
+        // 응답 데이터 검증 강화
+        const data = res && res.data;
+        allContracts = Array.isArray(data) ? data : [];
+        const total = (res && typeof res.total === 'number') ? res.total : allContracts.length;
+        totalContractPages = Math.max(1, Math.ceil(total / 20));
+        document.getElementById('contractCount').textContent = total + '건';
+        const direct = allContracts.filter(c => c.contract_type === 'direct').length;
+        const franchise = allContracts.filter(c => c.contract_type === 'franchise').length;
+        const expiring = allContracts.filter(c => {
+            if (!c.end_date) return false;
+            const days = (new Date(c.end_date) - new Date()) / (1000 * 60 * 60 * 24);
+            return days >= 0 && days <= 30;
+        }).length;
+        document.getElementById('statDirect').textContent = direct + '명';
+        document.getElementById('statFranchise').textContent = franchise + '명';
+        document.getElementById('statExpiring').textContent = expiring + '건';
+        document.getElementById('statTotal').textContent = total + '건';
+        if (!allContracts.length) {
+            tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">등록된 계약이 없습니다.</td></tr>';
+            renderContractPagination();
+            return;
+        }
+        tbody.innerHTML = allContracts.map(c => {
+            const statusBadge = getContractStatusBadge(c.status);
+            const periodStr = c.start_date ? formatDate(c.start_date) + ' ~ ' + formatDate(c.end_date) : '-';
+            const typeLabel = c.contract_type === 'direct' ? '직영' : c.contract_type === 'franchise' ? '프랜차이즈' : (c.contract_type || '-');
+            return '<tr>' +
+                '<td>' + c.id + '</td>' +
+                '<td>' + esc(c.branch_name || '-') + '</td>' +
+                '<td><strong>' + esc(c.director_name || '-') + '</strong></td>' +
+                '<td>' + typeLabel + '</td>' +
+                '<td style="font-size:12px">' + periodStr + '</td>' +
+                '<td>' + formatAmount(c.monthly_fee) + '</td>' +
+                '<td>' + (c.royalty_rate != null ? c.royalty_rate + '%' : '-') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td><div style="display:flex;gap:4px">' +
+                '<button class="btn btn-ghost btn-sm" onclick="openEditContractModal(' + c.id + ')" style="font-size:11px">✏️</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteContract(' + c.id + ')" style="font-size:11px">🗑️</button>' +
+                '</div></td></tr>';
+        }).join('');
+        renderContractPagination();
+    } catch (e) {
+        console.error('[branches] loadContracts 실패:', e, e.stack);
+        tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">불러오기 실패: ' + esc(e.message) + '</td></tr>';
+        showToast('데이터를 불러올 수 없습니다', 'error');
+    }
+}
+
+function filterContracts() { currentContractPage = 1; loadContracts(1); }
+
+function renderContractPagination() {
+    const el = document.getElementById('cPaginationWrap');
+    if (totalContractPages <= 1) { el.innerHTML = ''; return; }
+    let html = '<button class="page-btn" onclick="goContractPage(1)" ' + (currentContractPage <= 1 ? 'disabled' : '') + '>«</button>';
+    html += '<button class="page-btn" onclick="goContractPage(' + (currentContractPage - 1) + ')" ' + (currentContractPage <= 1 ? 'disabled' : '') + '>‹</button>';
+    const start = Math.max(1, currentContractPage - 2);
+    const end = Math.min(totalContractPages, currentContractPage + 2);
+    for (let i = start; i <= end; i++) {
+        html += '<button class="page-btn' + (i === currentContractPage ? ' active' : '') + '" onclick="goContractPage(' + i + ')">' + i + '</button>';
+    }
+    html += '<button class="page-btn" onclick="goContractPage(' + (currentContractPage + 1) + ')" ' + (currentContractPage >= totalContractPages ? 'disabled' : '') + '>›</button>';
+    html += '<button class="page-btn" onclick="goContractPage(' + totalContractPages + ')" ' + (currentContractPage >= totalContractPages ? 'disabled' : '') + '>»</button>';
+    el.innerHTML = html;
+}
+
+function goContractPage(page) {
+    if (page < 1 || page > totalContractPages) return;
+    currentContractPage = page;
+    loadContracts(page);
+}
+
+function switchContractTab(type) {
+    document.querySelectorAll('.contracts-tab').forEach(t => t.classList.remove('active'));
+    const btn = document.querySelector('.contracts-tab[data-type="' + type + '"]');
+    if (btn) btn.classList.add('active');
+    currentContractPage = 1;
+    loadContracts(1);
+}
+
+function toggleBranchSelect() {
+    const type = document.querySelector('input[name="newContractType"]:checked');
+    document.getElementById('newContractBranchGroup').style.display = (type && type.value === 'franchise') ? '' : 'none';
+}
+
+async function openCreateContractModal() {
+    try {
+        const res = await apiGet('/headquarters/directors?per_page=100');
+        const directors = res.data || [];
+        const select = document.getElementById('newContractDirector');
+        select.innerHTML = '<option value="">원장을 선택하세요</option>' +
+            directors.map(d => '<option value="' + d.id + '">' + esc(d.name || d.director_name) + ' (' + esc(d.branch_name || '-') + ')</option>').join('');
+    } catch (e) {}
+    try {
+        const res = await apiGet('/headquarters/branches?per_page=100');
+        const branches = res.data || [];
+        const select = document.getElementById('newContractBranch');
+        select.innerHTML = '<option value="">지사를 선택하세요</option>' +
+            branches.map(b => '<option value="' + b.id + '">' + esc(b.name) + '</option>').join('');
+    } catch (e) {}
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newContractStart').value = today;
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+    document.getElementById('newContractEnd').value = nextYear.toISOString().split('T')[0];
+    document.getElementById('newContractFee').value = '0';
+    document.getElementById('newContractRoyalty').value = '0';
+    document.getElementById('newContractMemo').value = '';
+    document.getElementById('newContractBranchGroup').style.display = 'none';
+    document.getElementById('createContractModal').style.display = 'flex';
+}
+
+async function createContract() {
+    const director_id = document.getElementById('newContractDirector').value;
+    const typeEl = document.querySelector('input[name="newContractType"]:checked');
+    const contract_type = typeEl ? typeEl.value : 'direct';
+    const branch_id = document.getElementById('newContractBranch').value;
+    const start_date = document.getElementById('newContractStart').value;
+    const end_date = document.getElementById('newContractEnd').value;
+    const monthly_fee = parseInt(document.getElementById('newContractFee').value) || 0;
+    const royalty_rate = parseFloat(document.getElementById('newContractRoyalty').value) || 0;
+    const memo = document.getElementById('newContractMemo').value.trim();
+    if (!director_id) { showToast('원장을 선택하세요', 'error'); return; }
+    if (contract_type === 'franchise' && !branch_id) { showToast('소속 지사를 선택하세요', 'error'); return; }
+    if (!start_date) { showToast('계약 시작일을 선택하세요', 'error'); return; }
+    if (!end_date) { showToast('계약 종료일을 선택하세요', 'error'); return; }
+    const payload = { director_id: parseInt(director_id), contract_type, start_date, end_date, monthly_fee, royalty_rate, memo };
+    if (contract_type === 'franchise' && branch_id) payload.branch_id = parseInt(branch_id);
+    try {
+        await apiPost('/headquarters/contracts', payload);
+        showToast('계약이 생성되었습니다', 'success');
+        document.getElementById('createContractModal').style.display = 'none';
+        loadContracts(1);
+    } catch (e) { showToast('생성 실패: ' + (e.message || ''), 'error'); }
+}
+
+function toggleEditBranchSelect() {
+    const type = document.querySelector('input[name="editContractType"]:checked');
+    document.getElementById('editContractBranchGroup').style.display = (type && type.value === 'franchise') ? '' : 'none';
+}
+
+async function openEditContractModal(id) {
+    try {
+        const res = await apiGet('/headquarters/contracts/' + id);
+        const c = res.data || res;
+        document.getElementById('editContractId').value = c.id;
+        document.getElementById('editContractDirector').value = c.director_name || '';
+        document.querySelectorAll('input[name="editContractType"]').forEach(r => { r.checked = r.value === c.contract_type; });
+        toggleEditBranchSelect();
+        try {
+            const branchRes = await apiGet('/headquarters/branches?per_page=100');
+            const branches = branchRes.data || [];
+            const select = document.getElementById('editContractBranch');
+            select.innerHTML = '<option value="">지사를 선택하세요</option>' +
+                branches.map(b => '<option value="' + b.id + '" ' + (b.id === c.branch_id ? 'selected' : '') + '>' + esc(b.name) + '</option>').join('');
+        } catch (e) {}
+        document.getElementById('editContractStart').value = c.start_date ? c.start_date.split('T')[0] : '';
+        document.getElementById('editContractEnd').value = c.end_date ? c.end_date.split('T')[0] : '';
+        document.getElementById('editContractFee').value = c.monthly_fee || 0;
+        document.getElementById('editContractRoyalty').value = c.royalty_rate || 0;
+        document.getElementById('editContractMemo').value = c.memo || '';
+        document.getElementById('editContractModal').style.display = 'flex';
+    } catch (e) { showToast('정보를 불러올 수 없습니다', 'error'); }
+}
+
+async function updateContract() {
+    const id = document.getElementById('editContractId').value;
+    const typeEl = document.querySelector('input[name="editContractType"]:checked');
+    const contract_type = typeEl ? typeEl.value : 'direct';
+    const branch_id = document.getElementById('editContractBranch').value;
+    const start_date = document.getElementById('editContractStart').value;
+    const end_date = document.getElementById('editContractEnd').value;
+    const monthly_fee = parseInt(document.getElementById('editContractFee').value) || 0;
+    const royalty_rate = parseFloat(document.getElementById('editContractRoyalty').value) || 0;
+    const memo = document.getElementById('editContractMemo').value.trim();
+    const payload = { contract_type, start_date, end_date, monthly_fee, royalty_rate, memo };
+    if (contract_type === 'franchise' && branch_id) payload.branch_id = parseInt(branch_id);
+    try {
+        await apiPut('/headquarters/contracts/' + id, payload);
+        showToast('계약이 수정되었습니다', 'success');
+        document.getElementById('editContractModal').style.display = 'none';
+        loadContracts(currentContractPage);
+    } catch (e) { showToast('수정 실패: ' + (e.message || ''), 'error'); }
+}
+
+async function deleteContract(id) {
+    if (!confirm('정말 이 계약을 삭제하시겠습니까?')) return;
+    try {
+        await apiDelete('/headquarters/contracts/' + id);
+        showToast('계약이 삭제되었습니다', 'success');
+        loadContracts(currentContractPage);
+    } catch (e) { showToast('삭제 실패: ' + (e.message || ''), 'error'); }
+}
+
+/* ===== 카테고리 권한 ===== */
+async function loadBranchSelectForCategories() {
+    try {
+        console.log('[branches] loadBranchSelectForCategories 호출');
+        const res = await apiGet('/headquarters/branches?per_page=100');
+        console.log('[branches] loadBranchSelectForCategories 응답:', res);
+        const data = res && res.data;
+        const branches = Array.isArray(data) ? data : [];
+        const select = document.getElementById('branchCategorySelect');
+        select.innerHTML = '<option value="">← 학원을 선택하세요</option>' +
+            branches.map(b => '<option value="' + b.id + '">' + esc(b.name) + '</option>').join('');
+        if (selectedCategoriesBranchId) {
+            select.value = selectedCategoriesBranchId;
+            onBranchSelectForCategories();
+        } else {
+            document.getElementById('categoryPermissionPanel').style.display = 'none';
+            document.getElementById('categoryPermEmpty').style.display = '';
+        }
+    } catch (e) {
+        console.error('[branches] loadBranchSelectForCategories 실패:', e, e.stack);
+        showToast('지사 목록을 불러올 수 없습니다', 'error');
+    }
+}
+
+async function onBranchSelectForCategories() {
+    const branchId = document.getElementById('branchCategorySelect').value;
+    if (!branchId) {
+        document.getElementById('categoryPermissionPanel').style.display = 'none';
+        document.getElementById('categoryPermEmpty').style.display = '';
+        selectedCategoriesBranchId = null;
+        return;
+    }
+    selectedCategoriesBranchId = parseInt(branchId);
+    document.getElementById('categoryPermEmpty').style.display = 'none';
+    document.getElementById('categoryPermissionPanel').style.display = '';
+    try {
+        console.log('[branches] onBranchSelectForCategories - 브랜치 상세 요청:', branchId);
+        const res = await apiGet('/headquarters/branches/' + branchId);
+        console.log('[branches] 브랜치 상세 응답:', res);
+        const b = res && (res.data || res);
+        document.getElementById('selectedBranchInfo').textContent = esc(b.name || '') + ' (' + esc(b.code || '') + ')';
+        document.getElementById('catPermTitle').textContent = '📚 강좌 카테고리 권한 설정 — ' + esc(b.name || '');
+    } catch (e) {
+        console.error('[branches] 브랜치 상세 로드 실패:', e, e.stack);
+    }
+    try {
+        console.log('[branches] 카테고리/권한 로드 시작');
+        const [catRes, permRes] = await Promise.all([
+            apiGet('/headquarters/categories?per_page=100'),
+            apiGet('/headquarters/branches/' + branchId + '/categories')
+        ]);
+        console.log('[branches] 카테고리 응답:', catRes);
+        console.log('[branches] 권한 응답:', permRes);
+        const catData = catRes && catRes.data;
+        allCategories = Array.isArray(catData) ? catData : [];
+        // GET /headquarters/branches/{id}/categories returns {branch_id, branch_name, categories: [...]}
+        const permData = permRes && (permRes.data || permRes);
+        const categories = (permData && (Array.isArray(permData.categories) ? permData.categories : null)) || [];
+        const permittedKeys = new Set(
+            categories
+                .filter(function(c) { return c && c.is_active_for_branch; })
+                .map(function(c) { return c.key; })
+        );
+        const list = document.getElementById('categoryToggleList');
+        if (!allCategories.length) {
+            list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-tertiary)">등록된 카테고리가 없습니다.</div>';
+            return;
+        }
+        list.innerHTML = allCategories.map(cat => {
+            const checked = cat && cat.key && permittedKeys.has(cat.key) ? 'checked' : '';
+            return '<label class="cat-toggle" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;background:var(--bg-canvas)">' +
+                '<input type="checkbox" class="cat-checkbox" data-cat-key="' + esc(cat.key) + '" ' + checked + ' style="width:18px;height:18px">' +
+                '<span>' + esc(cat.name) + '</span></label>';
+        }).join('');
+        const checkedCount = document.querySelectorAll('.cat-checkbox:checked').length;
+        document.getElementById('catCountInfo').textContent = '선택: ' + checkedCount + '/' + allCategories.length + '개';
+    } catch (e) {
+        console.error('[branches] 카테고리 권한 로드 실패:', e, e.stack);
+        showToast('카테고리 정보를 불러올 수 없습니다', 'error');
+    }
+}
+
+function selectAllCategories(select) {
+    document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = select);
+    const checkedCount = document.querySelectorAll('.cat-checkbox:checked').length;
+    document.getElementById('catCountInfo').textContent = '선택: ' + checkedCount + '/' + allCategories.length + '개';
+}
+
+async function saveCategoryPermissions() {
+    if (!selectedCategoriesBranchId) { showToast('학원을 선택하세요', 'error'); return; }
+    const checkedKeys = [];
+    document.querySelectorAll('.cat-checkbox:checked').forEach(cb => checkedKeys.push(cb.dataset.catKey));
+    try {
+        // PUT /headquarters/branches/{id}/categories expects {categories: [{key: "...", ...}]}
+        await apiPut('/headquarters/branches/' + selectedCategoriesBranchId + '/categories', {
+            categories: checkedKeys.map(function(key) { return { key: key }; })
+        });
+        showToast('카테고리 권한이 저장되었습니다', 'success');
+    } catch (e) { showToast('저장 실패: ' + (e.message || ''), 'error'); }
+}
+
+/* ===== 공통 모달 함수 ===== */
+function closeCustomModal(id) { document.getElementById(id).style.display = 'none'; }
+
+/* ===== 초기화 ===== */
+document.addEventListener('DOMContentLoaded', function() {
+    requireAuth();
+    document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+    const u = getCurrentUser();
+    if (u && u.name) document.getElementById('sidebarUserName').textContent = u.name;
+    if (u && u.role) {
+        const roleLabels = { 'super_admin': '최고관리자', 'admin': '관리자', 'branch_admin': '지사 관리자', 'branch_manager': '지사 관리자', 'branch_staff': '지사 직원', 'director': '공부방장' };
+        document.getElementById('sidebarUserRole').textContent = roleLabels[u.role] || u.role;
+    }
+    // 페이지 로딩 오버레이 표시
+    var overlay = document.getElementById('pageLoading');
+    if (overlay) overlay.classList.remove('hide');
+    onAuthReady(function() {
+        loadBranches(1);
+        // 오버레이는 loadBranches 성공 시 hide됨
+    });
+    // 타임아웃: 15초 지나도 데이터 안 오면 오버레이 숨기고 에러 표시
+    setTimeout(function() {
+        if (overlay && !overlay.classList.contains('hide')) {
+            overlay.classList.add('hide');
+            document.getElementById('branchTableBody').innerHTML = '<tr class="branch-empty"><td colspan="10">⏱️ 서버 응답이 지연되고 있습니다. 페이지를 새로고침 해주세요.</td></tr>';
+        }
+    }, 15000);
+});
+</script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

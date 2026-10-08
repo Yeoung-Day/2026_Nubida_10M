@@ -1,0 +1,487 @@
+/**
+ * song-generator.js — [신규 260918] 누비다 AI 스튜디오 "🎵 AI 노래"
+ * ══════════════════════════════════════════════════════════════
+ * ACE-Step 1.5 로 실제 노래(가창)를 생성한다.
+ *
+ *   - 백엔드: /api/ai/song        (생성 요청 → task_id)
+ *             /api/ai/song/status (진행 상황 폴링)
+ *
+ * ★ 기존 '작업실'의 가창(sherpa TTS 피치변조)과는 완전히 별개 기능이다.
+ *
+ * ★ GPU 를 공유하므로 생성 중에는 Ollama(AI 채팅) 가 잠시 중지된다.
+ *   사용자에게 진행 단계를 명확히 보여준다.
+ * ══════════════════════════════════════════════════════════════
+ */
+
+// ── [260920] 간주(인트로) 단축 지시 ──────────────────────────────
+//   ★ 실측: 어쿠스틱 장르는 반주 인트로가 4.5~6.5초까지 길어져
+//           가사가 뒤로 밀리고 노래가 늦게 시작하는 문제가 있었다.
+//   ★ 이 문구를 붙이면 보컬이 1초 이내에 시작한다 (실측 확인).
+const SONG_INTRO_FIX = ', vocal starts within 1 second, no long instrumental intro, short intro';
+
+// ── 스타일 프리셋 (프롬프트 + 장르 태그) ──────────────────────────
+const SONG_STYLES = {
+    ballad: {
+        label: '🌙 발라드',
+        desc: '잔잔하고 감성적',
+        prompt: 'korean pop ballad, emotional, clear female vocal, piano, strings, slow tempo' + SONG_INTRO_FIX,
+    },
+    kpop: {
+        label: '✨ K-POP',
+        desc: '밝고 경쾌한 댄스',
+        prompt: 'korean dance pop, upbeat, energetic, synth, female vocal, catchy hooks' + SONG_INTRO_FIX,
+    },
+    hiphop: {
+        label: '🎤 힙합',
+        desc: '강한 비트, 랩',
+        prompt: 'korean hip hop, boom bap beat, rhythmic rap vocal, bass, drums' + SONG_INTRO_FIX,
+    },
+    rock: {
+        label: '🎸 록',
+        desc: '시원한 밴드 사운드',
+        prompt: 'korean rock band, electric guitar, driving drums, powerful vocal' + SONG_INTRO_FIX,
+    },
+    acoustic: {
+        label: '🪕 어쿠스틱',
+        desc: '기타 한 대, 따뜻한',
+        prompt: 'korean acoustic folk, fingerstyle guitar, warm gentle vocal, intimate' + SONG_INTRO_FIX,
+    },
+    children: {
+        label: '🧸 동요',
+        desc: '아이들을 위한 밝은 노래',
+        prompt: 'korean children song, bright cheerful melody, simple playful vocal, ukulele' + SONG_INTRO_FIX,
+    },
+};
+
+window.SONG_STYLE_KEY = 'ballad';
+window.SONG_POLL_TIMER = null;
+window.SONG_BUSY = false;
+
+// ── 초기화 ────────────────────────────────────────────────────
+function songInit() {
+    const grid = document.getElementById('song-style-grid');
+    if (!grid) return;
+    if (!grid.dataset.built) {
+        grid.innerHTML = '';
+        Object.entries(SONG_STYLES).forEach(([key, s]) => {
+            const el = document.createElement('div');
+            el.className = 'ai-genre-card' + (key === window.SONG_STYLE_KEY ? ' active' : '');
+            el.dataset.key = key;
+            el.innerHTML = `<div class="ai-genre-label">${s.label}</div>
+                            <div class="ai-genre-desc">${s.desc}</div>`;
+            el.onclick = () => songPickStyle(key);
+            grid.appendChild(el);
+        });
+        grid.dataset.built = '1';
+    }
+    songLoadStoredLyrics();
+    songApplyLockedDuration();
+}
+
+// [260919] 코드에 노래 길이가 지정돼 있으면 길이 선택 UI 를 숨기고 고정 표시.
+//   관리자가 코드 발급 시 30초로 정하면 학생은 선택할 수 없고 30초로만 만들어진다.
+function songApplyLockedDuration() {
+    fetch('/api/access/status')
+        .then(r => r.json())
+        .then(j => {
+            const fixed = j && j.duration_sec ? parseInt(j.duration_sec, 10) : 0;
+            if (!fixed) return;                    // 자유 모드 — 그대로 두기
+            window.SONG_LOCKED_DURATION = fixed;
+
+            const sel = document.getElementById('song-duration');
+            if (sel) {
+                // 선택지를 고정값 하나만 남긴다 (다른 길이를 아예 못 보게)
+                sel.innerHTML = '<option value="' + fixed + '" selected>' +
+                                fixed + '초로 고정됨</option>';
+                sel.disabled = true;
+            }
+            // 옵션 라벨도 안내 문구로 교체
+            const lab = sel && sel.closest('.song-opt');
+            if (lab) {
+                const sp = lab.querySelector('span');
+                if (sp) sp.textContent = '길이';
+            }
+        })
+        .catch(() => {});
+}
+
+function songPickStyle(key) {
+    window.SONG_STYLE_KEY = key;
+    document.querySelectorAll('#song-style-grid .ai-genre-card').forEach(el => {
+        el.classList.toggle('active', el.dataset.key === key);
+    });
+}
+
+// ── 가사 연동 ──────────────────────────────────────────────────
+function songFillFromAi() {
+    // AI 도우미가 생성한 가사(window.AI_LAST_LYRICS) 가져오기
+    const arr = window.AI_LAST_LYRICS;
+    if (!arr || !arr.length) {
+        songSetError('AI 작곡가에서 먼저 가사를 만들어주세요. (🤖 AI 작곡가 → ✍️ 가사 자동 만들기)');
+        return;
+    }
+    // [verse]/[chorus] 구조로 감싸면 ACE-Step 이 곡 구조를 더 잘 잡는다
+    const lines = arr.filter(l => l && l.trim());
+    const half = Math.max(1, Math.ceil(lines.length / 2));
+    const verse = lines.slice(0, half).join('\n');
+    const chorus = lines.slice(half).join('\n');
+    let text = '[verse]\n' + verse;
+    if (chorus) text += '\n\n[chorus]\n' + chorus;
+
+    document.getElementById('song-lyrics').value = text;
+    songClearError();
+    try { localStorage.setItem('nubida_song_lyrics', text); } catch (e) {}
+
+    // 제목도 자동 제안
+    const t = document.getElementById('song-title-input2');
+    const topicEl = document.getElementById('ai-topic');
+    if (t && !t.value.trim() && topicEl && topicEl.value.trim()) {
+        t.value = topicEl.value.trim();
+    }
+}
+
+const SONG_EXAMPLE = `[verse]
+아침 햇살이 창가에 내려와
+어제의 고민을 천천히 녹여가
+작은 목소리로 노래를 부르면
+세상이 조금씩 환해져 가네
+
+[chorus]
+우리 함께 걸어가 이 길을
+작은 발걸음도 소중한 걸
+넘어져도 다시 일어나
+너와 나의 계절은 계속될 거야`;
+
+function songLoadExample() {
+    document.getElementById('song-lyrics').value = SONG_EXAMPLE;
+    songClearError();
+}
+
+function songLoadStoredLyrics() {
+    // 노래 페이지에서 작업한 가사를 기억 (페이지 이동 후 복귀 대비)
+    try {
+        const saved = localStorage.getItem('nubida_song_lyrics');
+        const el = document.getElementById('song-lyrics');
+        if (saved && el && !el.value.trim()) el.value = saved;
+    } catch (e) {}
+    const el = document.getElementById('song-lyrics');
+    if (el) {
+        el.addEventListener('input', () => {
+            try { localStorage.setItem('nubida_song_lyrics', el.value); } catch (e) {}
+            // ★ [260920] 입력할 때마다 '몇 줄까지 담기는지' 실시간 안내
+            try { songUpdateLyricNotice(); } catch (e) {}
+        });
+        try { songUpdateLyricNotice(); } catch (e) {}
+    }
+}
+
+// ── 에러/진행 UI ──────────────────────────────────────────────
+function songSetError(msg) {
+    const el = document.getElementById('song-error');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+
+function songClearError() {
+    const el = document.getElementById('song-error');
+    if (el) el.style.display = 'none';
+}
+
+// ── [260920 재측정] 가사 '최소' 줄 수 안내 ──────────────────────
+//   ★ 실측 (2026-09-20, ffmpeg volumedetect):
+//       가사  2줄 / 30초 → 마지막 9.0초 무음 ❌
+//       가사  4줄 / 30초 → 마지막 1.2초 무음 ✅
+//       가사  6줄 / 30초 → 마지막 1.5초 무음 ✅
+//       가사  8줄 / 30초 → 마지막 0.8초 무음 ✅ (가장 안정적)
+//   → 가사가 '많은' 것은 문제가 아니다. '적은' 것이 무음을 만든다.
+//   → 자르지 않는다. 부족할 때만 같은 가사를 반복해 채운다.
+const SONG_MIN_LINES = { 20: 3, 30: 4, 40: 6 };
+
+function songMinLines(duration) {
+    const d = parseInt(duration, 10) || 30;
+    if (SONG_MIN_LINES[d]) return SONG_MIN_LINES[d];
+    return Math.max(2, Math.round(d / 7));
+}
+
+function songCountLines(text) {
+    return (text || '').split('\n')
+        .map(s => s.trim())
+        .filter(s => s && !(s.startsWith('[') && s.endsWith(']'))).length;
+}
+
+function songSetNotice(msg) {
+    const el = document.getElementById('song-lyric-notice');
+    if (!el) return;
+    if (!msg) { el.style.display = 'none'; el.textContent = ''; return; }
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+
+function songUpdateLyricNotice() {
+    const ta = document.getElementById('song-lyrics');
+    const el = document.getElementById('song-lyric-notice');
+    if (!ta || !el) return;
+    const dur = window.SONG_LOCKED_DURATION
+        || parseInt((document.getElementById('song-duration') || {}).value, 10) || 30;
+    const min = songMinLines(dur);
+    const n = songCountLines(ta.value);
+
+    if (n === 0) { songSetNotice(''); return; }
+
+    // 가사가 충분하면 안내 없음 (자르지 않는다)
+    if (n >= min) { songSetNotice(''); return; }
+
+    // 가사가 부족하면 무음이 생긴다는 걸 알려준다
+    songSetNotice(`입력한 가사는 ${n}줄이에요. ${dur}초 곡에는 ${min}줄 이상이 좋아요. `
+        + `같은 가사를 한 번 더 반복해서 채워 드릴게요.`);
+}
+
+function songSetProgress(pct, text) {
+    const card = document.getElementById('song-progress-card');
+    const fill = document.getElementById('song-progress-fill');
+    const st = document.getElementById('song-progress-status');
+    if (card) card.style.display = 'block';
+    if (fill) fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    if (st && text) st.textContent = text;
+}
+
+function songHideProgress() {
+    const card = document.getElementById('song-progress-card');
+    if (card) card.style.display = 'none';
+}
+
+// ── 생성 ──────────────────────────────────────────────────────
+async function songGenerate() {
+    if (window.SONG_BUSY) {
+        songSetError('이미 노래를 만드는 중입니다. 조금만 기다려주세요.');
+        return;
+    }
+
+    const lyrics = (document.getElementById('song-lyrics').value || '').trim();
+    if (lyrics.length < 10) {
+        songSetError('가사를 10자 이상 입력해주세요.');
+        return;
+    }
+
+    const style = SONG_STYLES[window.SONG_STYLE_KEY] || SONG_STYLES.ballad;
+    // [260919] 코드 고정 길이가 있으면 그 값을 사용 (UI 조작 우회도 원천 차단)
+    const duration = window.SONG_LOCKED_DURATION
+        || parseInt(document.getElementById('song-duration').value, 10) || 30;
+    const steps = parseInt(document.getElementById('song-steps').value, 10) || 8;
+    const title = (document.getElementById('song-title-input2').value || '').trim();
+
+    // [260919] 곡 제목 필수 (게시판 업로드 시 제목으로 쓰이므로)
+    const titleInput = document.getElementById('song-title-input2');
+    if (!title) {
+        songSetError('곡 제목을 입력해주세요.');
+        if (titleInput) { titleInput.focus(); titleInput.style.borderColor = '#e74c3c'; }
+        return;
+    }
+    if (titleInput) { titleInput.style.borderColor = ''; }
+
+    window.SONG_BUSY = true;
+    songClearError();
+    const btn = document.getElementById('song-generate-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '🎧 만드는 중...'; }
+    document.getElementById('song-result-card').style.display = 'none';
+
+    songSetProgress(3, '요청을 보내는 중...');
+
+    try {
+        const res = await fetch('/api/ai/song', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                lyrics: lyrics,
+                prompt: style.prompt,
+                style_key: window.SONG_STYLE_KEY,
+                duration: duration,
+                steps: steps,
+                title: title,
+                language: 'ko',
+            }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            // ★ 429: 대기 안내 (레이트 리밋 / 다른 곡 생성 중)
+            if (res.status === 429) {
+                songReset();
+                const msg = data.error || '지금은 만들 수 없어요.';
+                songSetError('⏳ ' + msg);
+                if (data.retry_after) {
+                    songSetProgress(0, '⏳ ' + data.retry_after + '초 후 다시 시도해 주세요');
+                } else {
+                    songSetProgress(0, '⏳ ' + msg);
+                }
+                return;
+            }
+            throw new Error(data.error || data.message || ('서버 오류 (' + res.status + ')'));
+        }
+        if (!data.task_id) throw new Error('작업 번호를 받지 못했습니다.');
+
+        // ★ 가사가 부족해 보충된 경우 안내 (반복 채움)
+        if (data.lyrics_added && data.notice) {
+            songSetNotice(data.notice);
+        } else {
+            songSetNotice('');
+        }
+
+        // ★ 접수 즉시 순번 안내 (폴링을 기다리지 않음)
+        if (typeof data.queue_ahead === 'number' && data.queue_ahead > 0) {
+            const eta = data.eta ? Math.max(1, Math.ceil(data.eta / 60)) : null;
+            songSetProgress(4, '⏳ 대기 ' + (data.queue_ahead + 1) + '번째예요'
+                + (eta ? ' (약 ' + eta + '분 남음)' : ''));
+        } else {
+            songSetProgress(8, '🎧 곧 시작해요...');
+        }
+        songPollStatus(data.task_id);
+
+    } catch (e) {
+        songReset();
+        songSetError('노래를 시작하지 못했습니다: ' + e.message);
+    }
+}
+
+function songPollStatus(taskId) {
+    if (window.SONG_POLL_TIMER) clearInterval(window.SONG_POLL_TIMER);
+
+    let tick = 0;
+    const poll = async () => {
+        tick++;
+        try {
+            const res = await fetch('/api/ai/song/status?task_id=' + encodeURIComponent(taskId));
+            const d = await res.json().catch(() => ({}));
+
+            if (!res.ok) throw new Error(d.error || '상태 확인 실패');
+
+            // ★ 대기 중이면 순번을 명확히 표시
+            if (d.status === 'queued') {
+                let msg = d.message || '대기 중...';
+                if (typeof d.queue_ahead === 'number' && d.queue_ahead > 0) {
+                    const eta = d.eta ? Math.max(1, Math.ceil(d.eta / 60)) : null;
+                    msg = '대기 ' + (d.queue_ahead + 1) + '번째예요'
+                        + (eta ? ' (약 ' + eta + '분 남음)' : '');
+                }
+                songSetProgress(4, '⏳ ' + msg);
+                return;   // 진행률은 올리지 않음
+            }
+
+            // 진행률: 서버가 주면 사용, 아니면 경과시간 기반 추정
+            let pct = d.progress;
+            if (typeof pct !== 'number') {
+                pct = Math.min(92, 8 + tick * 3);
+            }
+            songSetProgress(pct, d.message || '만드는 중...');
+
+            if (d.status === 'done') {
+                // ★ 파일 주소(url)가 아직 준비 안 된 순간이 있다 (파일 저장 직후 레이스).
+                //   그 경우 완료 처리하지 않고 다음 폴링에서 다시 확인한다.
+                const readyUrl = d.url || d.audio_url;
+                if (!readyUrl) {
+                    songSetProgress(99, '마무리 중...');
+                    return;
+                }
+                clearInterval(window.SONG_POLL_TIMER);
+                window.SONG_POLL_TIMER = null;
+                songSetProgress(100, '완성!');
+                setTimeout(() => {
+                    songHideProgress();
+                    songShowResult(d);
+                }, 400);
+                songReset();
+                return;
+            }
+            if (d.status === 'error') {
+                clearInterval(window.SONG_POLL_TIMER);
+                window.SONG_POLL_TIMER = null;
+                songHideProgress();
+                songReset();
+                songSetError('노래 만들기에 실패했어요: ' + (d.message || '알 수 없는 오류'));
+                return;
+            }
+        } catch (e) {
+            // 일시적 오류는 계속 시도 (최대 5회 연속 실패 시 중단)
+            if (tick > 5 && tick % 5 === 0) {
+                songSetProgress(Math.min(92, 8 + tick * 3), '연결을 확인하는 중...');
+            }
+        }
+
+        // ★ 안전장치: 3초 × 120회 = 6분 넘게 끝나지 않으면 중단하고 안내
+        if (tick > 120) {
+            if (window.SONG_POLL_TIMER) clearInterval(window.SONG_POLL_TIMER);
+            window.SONG_POLL_TIMER = null;
+            songHideProgress();
+            songReset();
+            songSetError('노래 만들기가 평소보다 오래 걸리고 있어요. 잠시 후 다시 시도해 주세요.');
+        }
+    };
+
+    poll();
+    window.SONG_POLL_TIMER = setInterval(poll, 3000);
+}
+
+function songShowResult(d) {
+    const card = document.getElementById('song-result-card');
+    const audio = document.getElementById('song-audio');
+    const titleEl = document.getElementById('song-result-title');
+    const dl = document.getElementById('song-download');
+
+    const url = d.url || d.audio_url;
+    if (!url) {
+        songSetError('완성된 파일 주소를 받지 못했습니다.');
+        return;
+    }
+
+    if (titleEl) titleEl.textContent = d.title || 'AI 노래';
+    if (audio) {
+        audio.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+        audio.load();
+    }
+    if (dl) {
+        dl.href = url;
+        dl.setAttribute('download', (d.title || 'nubida_song') + '.mp3');
+    }
+    if (card) card.style.display = 'block';
+    songClearError();
+    // [260919] 게시판 업로드용 학교 폴더 목록 채우기
+    if (typeof loadFoldersForSong === 'function') {
+        loadFoldersForSong();
+    }
+    try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+}
+
+function songReset() {
+    window.SONG_BUSY = false;
+    const btn = document.getElementById('song-generate-btn');
+    if (btn) { btn.disabled = false; btn.textContent = '🎵 노래 만들기'; }
+}
+
+// ── 페이지 진입 훅 ────────────────────────────────────────────
+// showPage() 가 page-song 을 열 때 초기화
+(function hookShowPage() {
+    const orig = window.showPage;
+    if (typeof orig !== 'function') {
+        // showPage 가 아직 정의되지 않은 경우 대비
+        document.addEventListener('DOMContentLoaded', () => {
+            const o2 = window.showPage;
+            if (typeof o2 === 'function') {
+                window.showPage = function (id) {
+                    o2.apply(this, arguments);
+                    if (id === 'page-song') { try { songInit(); } catch (e) {} }
+                };
+            }
+        });
+        return;
+    }
+    window.showPage = function (id) {
+        orig.apply(this, arguments);
+        if (id === 'page-song') {
+            try { songInit(); } catch (e) { console.warn('songInit 실패', e); }
+        }
+    };
+})();
+
+document.addEventListener('DOMContentLoaded', () => {
+    try { songInit(); } catch (e) {}
+});

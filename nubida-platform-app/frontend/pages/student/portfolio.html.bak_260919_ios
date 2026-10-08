@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>학습 노트 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+<link rel="stylesheet" href="/common/css/nubida-bundle.css?v=20260910nav">
+<link rel="manifest" href="/manifest.json?v=20260804b">
+<meta name="theme-color" content="#4F5EF8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="누비다">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- Monaco Editor CDN -->
+<link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.min.css">
+<style>
+/* =============================================================
+포트폴리오 — 정돈된 그리드 박스 스타일
+============================================================= */
+
+/* box 기준 통일 */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── 메인 배경 (그라디언트) ── */
+.main-content {
+background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);
+min-height: 100vh;
+}
+
+/* ── 위젯 ── */
+.weekly-widget {
+background: linear-gradient(135deg, #4F5EF8, #7c3aed);
+border-radius: 16px;
+padding: 20px 24px;
+color: #fff;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 20px;
+gap: 16px;
+flex-wrap: wrap;
+line-height: 1.5;
+box-shadow: 0 4px 20px rgba(79,70,229,0.2);
+}
+.weekly-widget-left { display: flex; align-items: center; gap: 14px; }
+.weekly-widget-icon { font-size: 28px; line-height: 1; width: 40px; text-align: center; }
+.weekly-widget-info h3 { font-size: 16px; font-weight: 700; margin: 0 0 2px 0; }
+.weekly-widget-info p { font-size: 12px; margin: 0; opacity: 0.8; }
+.weekly-widget-right { display: flex; align-items: center; gap: 14px; }
+.weekly-count {
+font-size: 22px; font-weight: 800;
+background: rgba(255,255,255,0.15);
+padding: 4px 18px; border-radius: 50px; min-width: 48px; text-align: center;
+}
+.weekly-widget-actions { display: flex; gap: 8px; }
+.weekly-widget-actions .btn {
+background: rgba(255,255,255,0.15); color: #fff;
+border: 1px solid rgba(255,255,255,0.2);
+font-size: 12px; padding: 6px 14px;
+}
+.weekly-widget-actions .btn:hover { background: rgba(255,255,255,0.25); }
+
+/* ── 필터 ── */
+.filter-row {
+display: flex; gap: 10px; align-items: center;
+margin-bottom: 20px; flex-wrap: wrap;
+}
+.filter-row .form-select { min-width: 150px; height: 36px; font-size: 13px; }
+.filter-count { font-size: 13px; color: var(--text-tertiary); margin-left: auto; }
+
+/* ── 툴바 ── */
+.portfolio-toolbar { display: flex; gap: 8px; align-items: center; }
+
+/* ── 상태 뱃지 ── */
+.pf-status {
+display: inline-flex; align-items: center;
+padding: 0 10px; border-radius: 50px;
+font-size: 11px; font-weight: 600; height: 22px;
+line-height: 1; white-space: nowrap;
+}
+.pf-status.draft { background: #fef3c7; color: #92400e; }
+.pf-status.published { background: #dbeafe; color: #1e40af; }
+.pf-status.approved { background: #d1fae5; color: #065f46; }
+
+/* ── 저널 카드 그리드 ── */
+.journal-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 16px;
+}
+
+/* ── 저널 카드 (고정 자리) ── */
+.journal-card {
+background: #ffffff;
+border: 1px solid #eef0f8;
+border-radius: 16px;
+padding: 12px;
+cursor: pointer;
+transition: all 0.2s ease;
+display: flex;
+flex-direction: column;
+box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.journal-card:hover {
+border-color: #c7d2fe;
+box-shadow: 0 4px 20px rgba(79,70,229,0.08);
+transform: translateY(-2px);
+}
+
+/* 카드 내부: 사진 영역 */
+.journal-card-photos {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 1px;
+border-radius: 4px;
+overflow: hidden;
+margin-bottom: 0;
+flex-shrink: 0;
+}
+.journal-card-photos.single { grid-template-columns: 1fr; }
+.journal-card-photos.triple { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.journal-card-photos.triple img:nth-child(1) { grid-column: 1 / -1; }
+.journal-card-photo {
+width: 100%;
+height: 80px;
+object-fit: cover;
+display: block;
+background: #F3F4F6;
+}
+.journal-card-photo.single {
+height: 120px;
+display: block;
+}
+.journal-card-photos:not(.single) .journal-card-photo {
+height: 70px;
+}
+.journal-card-photos-section {
+display: block;
+margin-bottom: 0;
+}
+.journal-card-photos-section.single {
+display: block;
+grid-template-columns: none;
+}
+
+/* 카드 내부: 헤더 (제목 + 날짜) */
+.journal-card-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 6px;
+margin-bottom: 2px;
+}
+.journal-card-title {
+font-size: 13px; font-weight: 600;
+color: var(--text-primary);
+line-height: 1.3;
+flex: 1; min-width: 0;
+white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.journal-card-date {
+font-size: 10px; color: var(--text-tertiary);
+white-space: nowrap; flex-shrink: 0;
+line-height: 1.3;
+}
+
+/* 카드 내부: 내용 */
+.journal-card-content {
+font-size: 12px; color: var(--text-secondary);
+line-height: 1.5;
+display: -webkit-box;
+-webkit-line-clamp: 3; -webkit-box-orient: vertical;
+overflow: hidden;
+min-height: 0;
+flex: 1;
+}
+
+/* 섹션 간격 최소화 */
+.journal-card-section {
+margin: 0;
+}
+.journal-card-section:last-of-type {
+margin-bottom: 0;
+}
+.journal-card-section-empty {
+display: none;
+}
+.journal-card-no-photo { display: none; }
+.journal-card-content-empty {
+color: var(--text-tertiary);
+font-style: italic;
+font-size: 11px;
+min-height: 0;
+}
+.journal-card-photos-section {
+margin-bottom: 0;
+}
+.journal-card-content-area {
+margin-top: 2px;
+}
+
+/* 카드 내부: 푸터 */
+.journal-card-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding-top: 4px;
+border-top: 1px solid var(--border-subtle);
+margin-top: 2px;
+min-height: 26px;
+}
+.journal-card-actions { display: flex; gap: 2px; }
+.journal-card-actions button {
+background: none; border: none; cursor: pointer;
+font-size: 12px; padding: 2px; border-radius: 4px;
+transition: background 0.12s; line-height: 1;
+}
+.journal-card-actions button:hover { background: var(--bg-subtle); }
+.journal-card-subject { font-size: 10px; color: var(--text-tertiary); }
+
+/* ── 내용 박스 (3개 섹션: 배운내용/새로알게된점/어려웠던점) ── */
+.content-box {
+background: #f8f9ff;
+border: 1px solid #eef0f8;
+border-radius: 8px;
+padding: 6px 10px;
+margin-bottom: 2px;
+}
+.content-box:last-child {
+margin-bottom: 0;
+}
+.content-box-label {
+font-size: 10px;
+font-weight: 600;
+color: #4F5EF8;
+margin-bottom: 1px;
+line-height: 1.3;
+}
+.content-box-text {
+font-size: 11px;
+color: #4b5563;
+line-height: 1.4;
+}
+/* ── 주별 템플릿 content-box 변형 ── */
+.content-box.code-box {
+background: #1e1e1e;
+border-color: #333;
+}
+.content-box.code-box .content-box-label { color: #82aaff; }
+.content-box-code {
+margin: 0; padding: 4px 0;
+font-family: 'Consolas','Courier New',monospace;
+font-size: 11px; line-height: 1.5; color: #d4d4d4;
+overflow-x: auto; white-space: pre-wrap;
+}
+.content-box.output-box {
+background: #f3f4f6;
+border-color: #d1d5db;
+}
+.content-box.algo-box {
+background: #f0fdf4;
+border-color: #bbf7d0;
+}
+.content-box.algo-box .content-box-label { color: #166534; }
+.content-box.reflection-box {
+background: #fffbeb;
+border-color: #fde68a;
+}
+.content-box.reflection-box .content-box-label { color: #92400e; }
+
+/* ── 상세 모달 ── */
+.journal-detail-title { font-size: 20px; font-weight: 700; margin-bottom: 14px; line-height: 1.4; }
+.journal-detail-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--text-tertiary); margin-bottom: 24px; }
+.journal-detail-content { font-size: 15px; line-height: 1.8; white-space: pre-wrap; color: var(--text-primary); }
+.journal-detail-section {
+background: var(--bg-elevated);
+border: 1px solid var(--border-subtle);
+border-radius: 12px;
+padding: 16px 20px;
+margin-bottom: 14px;
+}
+.journal-detail-section-empty { display: none; }
+.journal-detail-no-photo { display: none; }
+.journal-detail-photos { display: flex; flex-wrap: wrap; gap: 8px; }
+.journal-detail-photo { width: 160px; height: 160px; border-radius: 10px; object-fit: cover; cursor: pointer; }
+
+/* ── 템플릿 ── */
+.section-label { font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--accent); line-height: 1.4; }
+.template-textarea { margin-bottom: 12px; }
+.template-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.template-btn {
+padding: 6px 14px; border: 1px solid var(--border-subtle);
+border-radius: 8px; background: var(--bg-elevated);
+cursor: pointer; font-size: 12px; transition: all 0.15s ease;
+line-height: 1.5; color: var(--text-secondary);
+}
+.template-btn:hover { border-color: var(--accent); color: var(--accent); }
+.template-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── 주별 템플릿 전용 ── */
+.template-type-toggle {
+display: flex; gap: 0; margin-bottom: 16px;
+border: 1px solid var(--border-subtle);
+border-radius: 10px; overflow: hidden;
+}
+.template-type-toggle button {
+flex: 1; padding: 10px 16px; border: none; cursor: pointer;
+font-size: 13px; font-weight: 600; transition: all 0.15s;
+background: var(--bg-elevated); color: var(--text-secondary);
+}
+.template-type-toggle button.active {
+background: var(--accent); color: #fff;
+}
+.template-type-toggle button:not(:last-child) {
+border-right: 1px solid var(--border-subtle);
+}
+
+/* Monaco Editor 컨테이너 */
+.monaco-container {
+border: 1px solid var(--border-subtle);
+border-radius: 8px;
+overflow: hidden;
+margin-bottom: 12px;
+}
+.monaco-editor-wrapper {
+height: 250px;
+width: 100%;
+}
+.monaco-analysis-wrapper {
+height: 180px;
+width: 100%;
+}
+
+/* Monaco CDN fallback textarea */
+.monaco-fallback {
+font-family: 'Consolas', 'Courier New', monospace;
+font-size: 13px;
+line-height: 1.5;
+resize: vertical;
+min-height: 200px;
+}
+
+/* 알고리즘 분석 카드 */
+.algo-analysis-box {
+background: #f0fdf4;
+border: 1px solid #bbf7d0;
+border-radius: 8px;
+padding: 12px 14px;
+margin-bottom: 12px;
+}
+.algo-analysis-box .algo-label {
+font-size: 11px;
+font-weight: 600;
+color: #166534;
+margin-bottom: 4px;
+}
+.algo-analysis-box .algo-text {
+font-size: 12px;
+color: #374151;
+line-height: 1.5;
+white-space: pre-wrap;
+}
+.code-analysis-row {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+margin-bottom: 12px;
+}
+@media (max-width: 768px) {
+.code-analysis-row { grid-template-columns: 1fr; }
+}
+
+/* 주별 카드 뱃지 */
+.journal-card-template-badge {
+display: inline-flex; align-items: center;
+padding: 2px 8px; border-radius: 4px;
+font-size: 10px; font-weight: 600;
+margin-left: 6px;
+}
+.journal-card-template-badge.daily { background: #dbeafe; color: #1e40af; }
+.journal-card-template-badge.weekly { background: #dcfce7; color: #166534; }
+
+/* ── 업로드 ── */
+.upload-dropzone {
+border: 2px dashed var(--border-subtle);
+border-radius: 12px; padding: 24px;
+text-align: center; cursor: pointer;
+transition: all 0.15s; background: var(--bg-subtle);
+}
+.upload-dropzone:hover,
+.upload-dropzone.drag-over { border-color: var(--accent); background: rgba(79,70,229,0.04); }
+.upload-icon { font-size: 24px; margin-bottom: 8px; line-height: 1; }
+.upload-dropzone p { font-size: 13px; color: var(--text-secondary); margin: 0 0 4px 0; }
+.upload-dropzone .small-text { font-size: 11px; color: var(--text-tertiary); margin: 0; }
+.photo-grid-preview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.photo-grid-item {
+aspect-ratio: 1; border-radius: 10px; overflow: hidden;
+position: relative; background: var(--bg-subtle);
+display: flex; align-items: center; justify-content: center;
+}
+.photo-grid-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-grid-remove {
+position: absolute; top: 6px; right: 6px;
+width: 24px; height: 24px; border-radius: 50%;
+background: rgba(0,0,0,0.5); color: #fff; border: none;
+cursor: pointer; font-size: 13px;
+display: flex; align-items: center; justify-content: center;
+}
+.photo-count-label { font-size: 12px; color: var(--text-tertiary); font-weight: 400; }
+
+/* ── 폼 섹션 (모달 내부 박스 분리) ── */
+.form-section {
+background: var(--bg-elevated);
+border: 1px solid var(--border-subtle);
+border-radius: 12px;
+padding: 16px 20px;
+margin-bottom: 16px;
+}
+.form-section .form-group:last-child {
+margin-bottom: 0;
+}
+.form-section .form-group {
+margin-bottom: 12px;
+}
+
+/* =============================================================
+   PF-PREMIUM  —  포트폴리오 페이지 전용 정돈(프리미엄) 스타일
+   (이 페이지에만 적용 — 공통 컴포넌트에 영향 없음)
+   목표: Modal·상세·카드·작성양식을 한 톤으로 세련·가독성있게
+   ============================================================= */
+#portfolioPage, body { --pf-ink:#111827; }
+
+/* ── 상세(보기) 모달 헤더 · 메타 ── */
+#detailModal .modal { background:#fff; }
+.pf-detail-head { margin-bottom: 4px; }
+.pf-detail-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:600; padding:3px 11px;
+  border-radius:50px; margin-bottom:8px;
+}
+.pf-detail-badge.public  { background:#EEF6FF; color:#2563EB; }
+.pf-detail-badge.private { background:#F3F4F6; color:#6B7280; }
+#detailModal .journal-detail-title {
+  font-size:20px; font-weight:700; letter-spacing:-.02em;
+  color:var(--pf-ink,#111827); margin:0 0 6px; line-height:1.35;
+}
+.pf-detail-meta { margin:0 0 4px; gap:5px; align-items:center; color:#6B7280; font-size:12px; }
+.pf-meta-lbl { color:#6B7280; font-weight:500; }
+.pf-meta-sep { color:#cbd5e1; }
+
+/* 원장 코멘트 */
+.pf-dirnote {
+  background:linear-gradient(180deg,#FBFAFF,#F6F4FF);
+  border:1px solid #E7E5FF; border-left:3px solid #4F5EF8;
+  border-radius:12px; padding:14px 18px; margin:6px 0 14px;
+}
+.pf-dirnote-hd { font-size:12px; font-weight:700; color:#4F46E5; margin-bottom:7px; display:flex; align-items:center; gap:6px; }
+.pf-dirnote-tx { font-size:14.5px; line-height:1.75; color:#384151; white-space:pre-wrap; }
+
+/* 사진 스트립 */
+.pf-phostrip { margin:0 0 14px; }
+.pf-phostrip.is-empty { display:none; }
+.pf-phostrip .journal-detail-photos { display:flex; flex-wrap:wrap; gap:10px; }
+.pf-phostrip .journal-detail-photo {
+  width:136px; height:136px; border-radius:12px; object-fit:cover;
+  border:1px solid #eef0f6; box-shadow:0 1px 3px rgba(15,23,42,.05);
+  transition:transform .15s ease;
+}
+.pf-phostrip .journal-detail-photo:hover { transform:scale(1.035); }
+.pf-phostrip .journal-detail-photo.single { width:220px; height:160px; }
+
+/* 상세 본문 컨테이너 */
+.pf-detail-body {
+  background:#fff; border:1px solid #eef0f6; border-radius:14px;
+  padding:8px 0; margin:0;
+}
+/* 컨텐츠 섹션 박스: 단일 톤으로 통일 (라벨 하나의 강조색) */
+.pf-detail-body .content-box {
+  margin:0 0 8px; border:0; border-radius:10px;
+  background:#F7F8FB; padding:10px 14px;
+}
+.pf-detail-body .content-box:last-child { margin-bottom:0; }
+.pf-detail-body .content-box-label {
+  margin-bottom:4px; font-size:12px; font-weight:700; color:#4F5EF8;
+}
+.pf-detail-body .content-box-text {
+  color:#3a4353; font-size:13.5px; line-height:1.7; white-space:pre-wrap;
+}
+.pf-detail-body .content-box.code-box { background:#111827; }
+.pf-detail-body .content-box.code-box .content-box-label { color:#8ab4ff; }
+.pf-detail-body .content-box-code {
+  color:#d6dce8; font-size:12.5px; line-height:1.65;
+  padding:8px 12px; border-radius:8px;
+}
+.pf-empty { color:#9aa3b2; font-style:italic; padding:6px 4px; }
+
+/* 상태/라벨 계열 단일화 */
+.pf-detail-body .content-box.algo-box,
+.pf-detail-body .content-box.output-box,
+.pf-detail-body .content-box.reflection-box { background:#F7F8FB; }
+.pf-detail-body .content-box.algo-box .content-box-label,
+.pf-detail-body .content-box.output-box .content-box-label,
+.pf-detail-body .content-box.reflection-box .content-box-label { color:#4F5EF8; }
+
+/* ── 저널 카드 미리보기 평탄화(작은 색박스 제거) ── */
+.journal-card { border-radius:16px; border-color:#ECEEF5; padding:14px; background:#fff; }
+.journal-card .content-box {
+  display:block; background:transparent !important; border:0 !important;
+  padding:3px 0; margin:0;
+}
+.journal-card .content-box-label { display:none; }
+.journal-card .content-box-code { background:transparent; padding:0; color:inherit; }
+.journal-card-title { font-size:14.5px; font-weight:650; }
+.journal-card-photos { border-radius:6px; overflow:hidden; }
+
+/* ── 주간 템플릿 카드 (.pf-wcard) ── */
+.pf-wcard { border-radius:12px; overflow:hidden; margin-bottom:12px; border:1px solid #EAECF4; }
+.pf-wcard-hd {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 14px; font-size:12.5px; font-weight:650; color:#30343e;
+  background:#F7F8FB; border-bottom:1px solid #ECEEF5;
+}
+.pf-wcard-hd > span { font-size:13px; }
+.pf-wcard-sub { margin-left:auto; font-style:normal; font-size:10.5px; color:#98a1b2; font-weight:500; }
+.pf-wcard.is-code .pf-wcard-hd.is-dark { background:#161B29; border-bottom:1px solid #21273d; color:#c7d0e0; }
+.pf-wcard.is-code textarea {
+  background:#111827; color:#d6dce8; border:none; border-radius:0;
+  font-family:'Consolas','Courier New',monospace; font-size:13px; line-height:1.6; resize:vertical;
+}
+.pf-wcard.is-code textarea::placeholder { color:#64748b; }
+.pf-wcard.is-content .pf-wcard-hd { background:#fff; border-color:#EEF0F6; color:#4F5EF8; }
+.pf-wcard.is-content textarea,
+.pf-wcard.is-output textarea,
+.pf-wcard.is-algo textarea,
+.pf-wcard.is-reflect textarea { border:none; border-radius:0; background:#fff; }
+
+/* ── 작성/수정 모달 공통 다듬기 ── */
+#portfolioModal .modal h2 { font-size:18px; }
+#portfolioModal .template-type-toggle { border-radius:12px; margin-bottom:16px; }
+#portfolioModal .template-type-toggle button { font-size:13px; }
+#portfolioModal .form-section { border-radius:14px; border-color:#ECEEF5; background:#fff; }
+#portfolioModal .form-select, #portfolioModal .form-input,
+#portfolioModal .form-label, #portfolioModal label { font-size:13px; color:var(--pf-ink,#111827); }
+#portfolioModal .section-label { font-size:13px; font-weight:700; color:#4F5EF8; margin:2px 0 4px; display:flex; align-items:center; gap:5px; }
+#portfolioModal .template-btn { border-radius:999px; font-size:12px; border-color:#E5E7F0; background:#fff; }
+#portfolioModal .upload-dropzone { border-radius:14px; padding:20px; }
+#portfolioModal .upload-dropzone p { font-size:12.5px; }
+
+/* ── 상세 모달 하단 버튼 정렬 ── */
+#detailModal .modal-actions { border-top:1px solid #EEF0F6; margin-top:6px; }
+
+/* =============================================================
+   PF-CARD  —  저널 카드(한 장 요약) 항목 재설계
+   한 장의 학습 기록을 Head/본문/태그로 구분되게 정리.
+   ============================================================= */
+.journal-grid { grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap:18px; }
+/* 카드 본체(article) */
+.pf-crd-title:hover, .weekly-widget:hover, .journal-card:hover { cursor:pointer; }
+
+/* 카드(캔버스) 새 구성 — article.journal-card 안쪽 .pf-crd 그리드 */
+#journalContainer .journal-card {
+  background:#fff;
+  border:1px solid #e7eaf3;
+  border-radius:16px;
+  box-shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px -18px rgba(16,24,40,.25);
+  padding:16px;
+  overflow:hidden;             /* 상단 라운드 유지+호버 */
+  transition:box-shadow .18s ease, transform .18s ease;
+  position:relative;
+}
+#journalContainer .journal-card:hover {
+  border-color:#d6d9ff; box-shadow:0 10px 30px -14px rgba(79,70,229,.35);
+  transform:translateY(-2px);
+}
+/* 액션 버튼 — 항상은 아니고 hover 톤으로 은은하게 */
+.pf-crd-actions {
+  position:absolute; top:12px; right:12px; display:flex; gap:6px;
+  opacity:0; transition:opacity .15s ease; z-index:3;
+}
+.journal-card:hover .pf-crd-actions,
+.journal-card:focus-within .pf-crd-actions { opacity:1; }
+.pf-act {
+  width:28px; height:28px; border-radius:8px; border:1px solid #e5e7f0;
+  background:rgba(255,255,255,.92); color:#5b6476; font-size:12px; line-height:1;
+  display:inline-flex; align-items:center; justify-content:center;
+  cursor:pointer; box-shadow:0 1px 2px rgba(16,24,40,.08); transition:all .12s;
+}
+.pf-act:hover { background:#fff; color:#4F5EF8; transform:translateY(-1px); }
+.pf-act.is-del:hover { color:#E5396D; border-color:#fdd; }
+/* 헤드: 타입 키 + 날짜 (상단 구분) */
+.pf-crd-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.pf-crd-type {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:10.5px; font-weight:700; letter-spacing:.02em;
+  padding:3px 10px; border-radius:50px;
+}
+.pf-crd-type.is-daily { background:#EEF2FF; color:#4F46E5; }
+.pf-crd-type.is-week  { background:#F1F5F9; color:#334155; }
+.pf-crd-date { font-size:11px; color:#98a1b2; font-weight:500; }
+/* 커버 사진(있으면) */
+.pf-crd-photos { display:flex; gap:4px; margin:0 0 13px; border-radius:10px; overflow:hidden; height:132px; }
+.pf-crd-photos .journal-card-photos { display:contents; }   /* 안쪽 흩어진 그리드 무시 → 위 flex 궤 */
+.pf-crd-photos img.journal-card-photo {
+  width:100%; height:132px; object-fit:cover; flex:1 1 0; min-width:0; border:0; border-radius:0;
+}
+.pf-crd-photos img.journal-card-photo.single { flex:1 1 100%; }
+.pf-crd-photos img.journal-card-photo:nth-child(n+3) { display:none; } /* 최상 2장만 */
+/* 본문 */
+.pf-crd-body { min-width:0; }
+.pf-crd-title {
+  font-size:16px; font-weight:700; line-height:1.35; letter-spacing:-.01em;
+  color:#111827; margin:0 0 4px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.pf-crd-subject {
+  font-size:11.5px; color:#9aa3b2; font-weight:500; margin:0 0 8px;
+  padding-bottom:9px; border-bottom:1px solid #f1f3f8;
+}
+.pf-crd-excerpt {
+  font-size:12.5px; line-height:1.6; color:#4b5563; margin:0;
+  min-height:40px;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+.pf-dim { color:#b6bdc9; }
+.pf-crd-meta {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:12px; padding-top:10px; border-top:1px solid #f1f3f8;
+}
+.pf-crd-state { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; }
+.pf-crd-state i { width:6px; height:6px; border-radius:50%; display:inline-block; }
+.pf-crd-state.ok    { color:#059669; } .pf-crd-state.ok i    { background:#10b981; }
+.pf-crd-state.pub   { color:#2563eb; } .pf-crd-state.pub i   { background:#3b82f6; }
+.pf-crd-state.draft { color:#b45309; } .pf-crd-state.draft i { background:#f59e0b; }
+.pf-crd-state.priv  { color:#6b7280; } .pf-crd-state.priv i  { background:#9ca3af; }
+.pf-crd-phcount { font-size:11px; color:#98a1b2; }
+/* 모바일에서도 액션이 보이도록 */
+@media (hover:none) {
+  .pf-crd-actions { opacity:.72; }
+  .pf-crd-photos img.journal-card-photo:nth-child(n+4){ display:block; }
+}
+
+/* =============================================================
+   PF-DETAIL-UP  —  상세 보기 모달(modal modal-lg) 카드 톤 통일
+   카드와 같은 'Head 뱃지 → 제목 → 본문 → 푸터' 문법 + 리딩 폭
+   ============================================================= */
+#detailModal .modal.modal-lg {
+  border-radius:18px; border:1px solid #ECEFF6;
+  box-shadow:0 24px 60px -22px rgba(16,24,40,.35);
+  max-width:880px;
+}
+#detailContent { padding:2px 2px 0; }
+/* 뱃지 그룹: 타입(코딩/이론) · 상태 를 카드 어휘와 동일하게 */
+.pf-detail-badges { display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.pf-type-pill {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; font-weight:700; letter-spacing:.01em;
+  padding:4px 12px; border-radius:50px;
+}
+.pf-type-pill.is-daily { background:#EEF2FF; color:#4F46E5; border:1px solid #E0E7FF; }
+.pf-type-pill.is-week  { background:#F1F5F9; color:#334155; border:1px solid #E2E8F0; }
+.pf-detail-badge.pf-detail-state { background:#fff; border:1px solid #E5E7F0; color:#6B7280; padding:4px 11px; margin-bottom:0; }
+.pf-detail-badge.pf-detail-state i { width:7px; height:7px; border-radius:50%; background:#9ca3af; display:inline-block; }
+.pf-detail-badge.pf-detail-state.public  { color:#1D4ED8; border-color:#DBEAFE; background:#EFF6FF; }
+.pf-detail-badge.pf-detail-state.public i  { background:#3b82f6; }
+.pf-detail-badge.pf-detail-state.private { color:#6B7280; border-color:#E5E7F0; background:#F9FAFB; }
+.pf-detail-badge.pf-detail-state.private i{ background:#9ca3af; }
+/* 헤더 제목·메타 여백, 본문과 가는 구분 */
+.pf-detail-head { padding-bottom:14px; border-bottom:1px solid #F1F3F8; margin-bottom:16px; }
+#detailModal .journal-detail-title { font-size:22px; line-height:1.3; }
+.pf-detail-meta { margin-top:8px; }
+/* 원장 코멘트: 리딩 컬럼 위 짧은 구분의 전문 인용 카드 */
+.pf-dirnote { border-radius:12px; }
+/* 사진 스트립 캡션 공백 정렬 */
+.pf-detail-metabar { margin-bottom:14px; }
+/* 본문 리딩 폭(너무 넓으면 처집을 유지폭) — 여백 늘림 */
+.pf-detail-body { border-color:transparent; }
+.pf-detail-body .content-box-label {
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; letter-spacing:.04em; text-transform:uppercase; opacity:.92;
+}
+
+
+/* =============================================================
+   PF-SHEET  —  작성/편집 모달 (이론·코딩) 전문 기록 시트
+   ============================================================= */
+#portfolioModal .modal.modal-lg.pf-sheet {
+  border-radius:20px; border:1px solid #ECEFF6;
+  box-shadow:0 30px 70px -24px rgba(16,24,40,.40);
+  max-width:860px;
+}
+/* 상단 헤더(제목 + 힌트 문단) */
+#portfolioModal .pf-sheet-head { display:flex; align-items:flex-start; justify-content:space-between; padding:2px 0 0; margin-bottom:14px; }
+#portfolioModal .pf-sheet-sub { margin:8px 0 0; font-size:12px; color:#98a1b2; font-weight:500; }
+#portfolioModal .modal h2#modalTitle { font-size:20px; font-weight:700; color:#111827; }
+/* 본문 스크롤 영역: 단계 섹션이 끊김 없이 흐름 */
+#portfolioModal .pf-sheet-body { display:flex; flex-direction:column; gap:16px; }
+/* ── 단계 섹션 ── */
+#portfolioModal .pf-sec { border:1px solid #ECEEF5; border-radius:16px; background:#fff; overflow:hidden; }
+#portfolioModal .pf-sec-hd {
+  display:flex; align-items:center; gap:10px;
+  padding:11px 16px; background:linear-gradient(180deg,#FAFBFF,#F6F8FE);
+  border-bottom:1px solid #EDF0F8;
+}
+#portfolioModal .pf-num {
+  width:22px; height:22px; border-radius:7px; flex:none;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:#4F5EF8; color:#fff; font-size:11.5px; font-weight:700;
+}
+#portfolioModal .pf-sec-t { font-size:13px; font-weight:700; color:#1F2437; letter-spacing:-.01em; }
+#portfolioModal .pf-sec-note { font-style:normal; font-size:10.5px; color:#98a1b2; font-weight:600; margin-left:4px; }
+#portfolioModal .pf-sec-bd { padding:16px; }
+/* 필드 레이아웃 */
+#portfolioModal .pf-field { margin-bottom:12px; }
+#portfolioModal .pf-field:last-child { margin-bottom:0; }
+#portfolioModal .pf-field label { display:block; font-size:11.5px; font-weight:700; color:#5B6476; letter-spacing:.02em; margin-bottom:6px; }
+#portfolioModal .pf-fields.two { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+#portfolioModal .pf-field .form-input,
+#portfolioModal .pf-field .form-select,
+#portfolioModal .pf-field select.form-select,
+#portfolioModal .pf-field input.form-input {
+  width:100%; border-radius:10px; border:1px solid #E4E7F0; background:#FBFCFE;
+  padding:10px 12px; font-size:13px; color:#1F2437; transition:border-color .15s, box-shadow .15s, background .15s;
+}
+#portfolioModal .pf-field .form-input:focus,
+#portfolioModal .pf-field .form-select:focus { outline:none; border-color:#9DA7F5; background:#fff; box-shadow:0 0 0 3px rgba(79,94,248,.10); }
+/* 이론 학습 내용 — 카드형 메모 (weekly와 한 톤) */
+#portfolioModal .pf-memo { border:1px solid #ECEEF5; border-radius:12px; overflow:hidden; margin-bottom:12px; background:#fff; }
+#portfolioModal .pf-memo:last-of-type { margin-bottom:0; }
+#portfolioModal .pf-memo-hd {
+  display:flex; align-items:center; gap:7px; padding:8px 13px; font-size:12px; font-weight:650; color:#4F46E5;
+  background:#F7F8FF; border-bottom:1px solid #EDF0FA;
+}
+#portfolioModal .pf-memo-hd > span { font-size:12.5px; }
+#portfolioModal .pf-memo-tx {
+  width:100%; border:0; background:#fff; padding:10px 13px; font-size:13.5px; line-height:1.7; color:#2a3040;
+  font-family:inherit; resize:vertical; min-height:70px; display:block; box-sizing:border-box;
+}
+#portfolioModal .pf-memo-tx:focus { outline:none; }
+/* 공개 발행 스위치 한 줄 */
+#portfolioModal .pf-pubrow { margin-top:12px; padding:10px 14px; border:1px solid #ECEEF5; border-radius:12px; background:#FAFBFE; }
+#portfolioModal .pf-pub { display:flex; align-items:center; gap:10px; cursor:pointer; }
+#portfolioModal .pf-pub input { width:16px; height:16px; accent-color:#4F5EF8; margin:0; }
+#portfolioModal .pf-pub span { display:flex; flex-direction:column; gap:1px; }
+#portfolioModal .pf-pub b { font-size:12.5px; color:#1F2437; font-weight:700; }
+#portfolioModal .pf-pub small { font-size:11px; color:#98a1b2; }
+/* 코딩 wcard 세부 다듬기(시트 통일) */
+#portfolioModal .pf-sec .pf-sec-bd { padding-top:14px; }
+#portfolioModal .pf-sec .pf-wcard { border-radius:12px; }
+/* 하단 액션 */
+#portfolioModal .pf-sheet-actions { margin-top:16px; padding-top:14px; border-top:1px solid #EEF0F6; }
+@media (max-width:600px){
+  #portfolioModal .pf-fields.two { grid-template-columns:1fr; }
+  #portfolioModal .modal .pf-sheet-sub { display:none; }
+}
+
+
+
+/* =============================================================
+   PF-CODELAB  —  코딩(주별) 템플릿 전문 "개발일지" 구성
+   이모티콘 남발 줄이고 에디터·콘솔 끼리만 스튜디오 어휘 유지
+   ============================================================= */
+#weeklyTemplateArea .pf-sec .pf-sec-bd { padding:14px; }
+/* 카드 계열: 구분 · 명료 */
+#weeklyTemplateArea .pf-wcard {
+  border-radius:14px; margin-bottom:12px;
+  box-shadow:0 6px 18px -16px rgba(16,24,40,.5);
+}
+#weeklyTemplateArea .pf-wcard:last-child { margin-bottom:0; }
+
+/* 머리글을 각 카드 신호줄에 맞게 — 입력칸과 선명히 단절 */
+#weeklyTemplateArea .pf-wcard-hd { min-height:41px; padding:9px 15px; }
+
+/* ── ① 내용 요약 카드: 지식 메모 캡션 ── */
+#weeklyTemplateArea .pf-wcard.is-content .pf-wcard-hd {
+  background:#F6F6FB; border-bottom:1px solid #ECEFF6; color:#4F46E5;
+}
+#weeklyTemplateArea .pf-wcard.is-content textarea,
+#weeklyTemplateArea .pf-wcard.is-algo textarea,
+#weeklyTemplateArea .pf-wcard.is-reflect textarea {
+  background:#FBFCFE; border-top:1px solid transparent; font-size:13.5px; line-height:1.7;
+}
+/* ── ② 코드 작성: 진짜 에디터 크롬(신호등 점 + 여백) ── */
+#weeklyTemplateArea .pf-wcard.is-code { background:#0E1420; border:1px solid #1E2936; border-radius:16px; overflow:hidden; }
+#weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark {
+  position:relative; padding-left:84px; background:#141B2B; color:#DAE3F2; min-height:46px;
+}
+#weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark > span { margin-right:0; opacity:.55; }
+#weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark::before {
+  content:""; position:absolute; left:20px; top:50%; transform:translateY(-50%);
+  width:9px; height:9px; border-radius:50%; background:#FF5F57;
+  box-shadow:16px 0 0 #FEBC2E, 32px 0 0 #28C840;
+}
+#weeklyTemplateArea .pf-wcard.is-code .pf-wcard-sub {
+  margin-left:auto; color:#5C6C88; background:#0E1626; border-radius:999px;
+  padding:2px 10px; font-size:10.5px; letter-spacing:.06em;
+}
+#weeklyTemplateArea .pf-wcard.is-code textarea {
+  background:transparent; color:#CBD5E1; padding:16px 18px; margin:0;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace !important;
+  font-size:13px; line-height:1.75; caret-color:#7DD3FC; resize:vertical;
+}
+#weeklyTemplateArea .pf-wcard.is-code textarea::placeholder { color:#3C4A62; }
+#weeklyTemplateArea .pf-wcard.is-code textarea:focus { outline:1px solid #334155; outline-offset:-1px; }
+
+/* ── ③ 실행 결과 = 콘솔 터미널(다크 유지) ── */
+#weeklyTemplateArea .pf-wcard.is-output { background:#0B0E16; border:1px solid #1C2333; border-radius:16px; overflow:hidden; }
+#weeklyTemplateArea .pf-wcard.is-output .pf-wcard-hd.is-light {
+  background:#141B2B; color:#8CA0C4; border:none; padding-left:20px;
+  font-family:'SFMono-Regular',Consolas,Menlo,monospace !important; font-size:11.5px; letter-spacing:.02em; font-weight:600;
+}
+#weeklyTemplateArea .pf-wcard.is-output textarea {
+  background:transparent; color:#7EE2A8; padding:14px 18px; margin:0;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace !important;
+  font-size:13px; line-height:1.7; resize:vertical; caret-color:#7EE2A8;
+}
+#weeklyTemplateArea .pf-wcard.is-output textarea::placeholder { color:#3E5066; }
+#weeklyTemplateArea .pf-wcard.is-output textarea:focus { outline:1px solid #243147; outline-offset:-1px; }
+
+/* 알고리즘·회고 카드 머리 — 아이콘 강조를 캡션 톤으로 */
+#weeklyTemplateArea .pf-wcard.is-algo .pf-wcard-hd,
+#weeklyTemplateArea .pf-wcard.is-reflect .pf-wcard-hd,
+#weeklyTemplateArea .pf-wcard.is-content .pf-wcard-hd {
+  font-size:12.5px; letter-spacing:.01em;
+}
+#weeklyTemplateArea .pf-wcard-hd > span { font-size:13px; }
+
+/* 좁은 화면에서도 편하게 */
+@media (max-width:560px){
+  #weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark { padding-left:70px; }
+  #weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark::before { left:16px; transform:translateY(-50%) scale(.85); }
+}
+
+
+
+/* ============================================================
+   WEEKLY-TWEAK — 노란 신호등/하이라이트 제거 · 다크 툴바 단순화
+   ============================================================ */
+#weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark { padding-left:20px; }
+#weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark::before { content:none !important; }
+#weeklyTemplateArea .pf-wcard.is-code .pf-wcard-hd.is-dark > span { opacity:1; }
+#weeklyTemplateArea .pf-wcard.is-code,
+#weeklyTemplateArea .pf-wcard.is-output { box-shadow:none; }
+#weeklyTemplateArea .pf-wcard.is-code textarea:focus,
+#weeklyTemplateArea .pf-wcard.is-output textarea:focus { outline:1px solid #334155; box-shadow:none; }
+
+</style>
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+<div class="app-layout">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto"></a></div></div>
+<nav class="sidebar-nav">
+<div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+<a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+<a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+<a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+<a class="nav-item" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+<div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+<a class="active nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+<div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+<a class="nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+<a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+<div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+<a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+</nav>
+<div class="sidebar-footer">
+<div class="user-name" id="sidebarUserName">사용자</div>
+<div class="user-role" id="sidebarUserRole">학생</div>
+<button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+</div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<main class="main-content">
+<div class="top-nav">
+<div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>📖 학습 노트</h1></div>
+<div class="top-nav-right portfolio-toolbar no-print">
+<button class="btn btn-outline btn-sm" onclick="exportPortfolio()">📤 내보내기</button>
+</div>
+</div>
+
+<div class="weekly-widget no-print">
+<div class="weekly-widget-left">
+<div class="weekly-widget-icon">📝</div>
+<div class="weekly-widget-info">
+<h3>이번 주 학습 기록</h3>
+<p>이번 주에 작성한 학습 노트 개수입니다.</p>
+</div>
+</div>
+<div class="weekly-widget-right">
+<span class="weekly-count" id="weeklyPortfolioCount">0</span>
+<div class="weekly-widget-actions">
+<button class="btn btn-sm" onclick="openAddModal()">✏️ 새 기록</button>
+<button class="btn btn-sm" onclick="applyTemplate('today')">📋 오늘 배운 내용</button>
+</div>
+</div>
+</div>
+
+<div class="filter-row no-print">
+<select class="form-select" id="courseFilter" onchange="filterByCourse()">
+<option value="all">전체 강좌</option>
+</select>
+<select class="form-select" id="statusFilter" onchange="filterByCourse()">
+<option value="all">전체 상태</option>
+<option value="draft">📄 임시</option>
+<option value="published">📝 발행</option>
+<option value="approved">✅ 승인</option>
+</select>
+<span class="filter-count" id="portfolioCountLabel">총 0개</span>
+</div>
+
+<div id="journalContainer">
+<div class="empty-state">
+<div class="empty-icon">📖</div>
+<h3>아직 기록이 없습니다</h3>
+<p>오늘 배운 내용을 기록해 보세요!</p>
+</div>
+</div>
+
+<div class="modal-overlay" id="detailModal">
+<div class="modal modal-lg">
+<div id="detailContent"></div>
+<div class="modal-actions no-print">
+<button class="btn btn-text" onclick="closeModal('detailModal')">닫기</button>
+<button class="btn btn-filled" id="detailEditBtn">✏️ 수정</button>
+<button class="btn btn-danger" id="detailDeleteBtn">🗑️ 삭제</button>
+<button class="btn btn-outline" onclick="printDetail()">🖨️ 인쇄</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="portfolioModal">
+<div class="modal modal-lg pf-sheet">
+
+  <div class="pf-sheet-head">
+    <div class="pf-sheet-head-l">
+      <h2 id="modalTitle">✏️ 새 학습 기록</h2>
+      <p class="pf-sheet-sub">배운 내용을 정리하면 복습과 성장이 확실해집니다.</p>
+    </div>
+    <input type="hidden" id="editId">
+    <input type="hidden" id="imageUrls" value="[]">
+  </div>
+
+  <!-- 템플릿 유형 선택 -->
+  <div class="template-type-toggle no-print" id="templateTypeToggle">
+    <button type="button" class="active" data-template="daily" onclick="switchTemplateType('daily')">📘 이론/제작 템플릿</button>
+    <button type="button" data-template="weekly" onclick="switchTemplateType('weekly')">💻 코딩 템플릿</button>
+  </div>
+
+  <div class="pf-sheet-body">
+
+    <!-- ====== 이론/제작 템플릿 ====== -->
+    <div id="dailyTemplateArea">
+      <section class="pf-sec">
+        <header class="pf-sec-hd"><span class="pf-num">1</span><span class="pf-sec-t">기본 정보</span></header>
+        <div class="pf-sec-bd">
+          <div class="pf-fields two">
+            <div class="pf-field">
+              <label>📚 강좌 선택</label>
+              <select class="form-select" id="portSubject"><option value="">강좌를 선택하세요</option></select>
+            </div>
+            <div class="pf-field">
+              <label>📅 날짜</label>
+              <input type="date" class="form-input" id="portDate">
+            </div>
+          </div>
+          <div class="pf-field">
+            <label>📌 제목</label>
+            <input type="text" class="form-input" id="portTitle" placeholder="학습 기록 제목을 입력하세요">
+          </div>
+        </div>
+      </section>
+
+      <section class="pf-sec">
+        <header class="pf-sec-hd"><span class="pf-num">2</span><span class="pf-sec-t">학습 내용</span></header>
+        <div class="pf-sec-bd">
+          <div class="pf-memo">
+            <div class="pf-memo-hd"><span>📝</span> 오늘 배운 내용</div>
+            <textarea class="pf-memo-tx" id="portContentToday" rows="3" placeholder="오늘 배운 내용을 입력하세요..."></textarea>
+          </div>
+          <div class="pf-memo">
+            <div class="pf-memo-hd"><span>💡</span> 새로 알게 된 점</div>
+            <textarea class="pf-memo-tx" id="portContentNew" rows="3" placeholder="새로 알게 된 점을 입력하세요..."></textarea>
+          </div>
+          <div class="pf-memo">
+            <div class="pf-memo-hd"><span>🤔</span> 어려웠던 점</div>
+            <textarea class="pf-memo-tx" id="portContentDiff" rows="3" placeholder="어려웠던 점을 입력하세요..."></textarea>
+          </div>
+          <!-- hidden combined content -->
+          <textarea id="portContent" style="display:none"></textarea>
+        </div>
+      </section>
+
+      <div class="pf-pubrow">
+        <label class="pf-pub"><input type="checkbox" id="portPublic" checked><span><b>공개 발행</b><small>원장님이 확인할 수 있도록 공개합니다.</small></span></label>
+      </div>
+    </div><!-- /dailyTemplateArea -->
+
+    <!-- ====== 코딩 템플릿 ====== -->
+    <div id="weeklyTemplateArea" style="display:none;">
+      <section class="pf-sec">
+        <header class="pf-sec-hd"><span class="pf-num">1</span><span class="pf-sec-t">기본 정보</span></header>
+        <div class="pf-sec-bd">
+          <div class="pf-fields two">
+            <div class="pf-field">
+              <label>📚 강좌 선택</label>
+              <select class="form-select" id="weeklyCourse"><option value="">강좌를 선택하세요</option></select>
+            </div>
+            <div class="pf-field">
+              <label>📅 날짜</label>
+              <input type="text" class="form-input" id="weeklyPortWeek" placeholder="오늘 날짜가 자동 입력됩니다">
+            </div>
+          </div>
+          <div class="pf-field">
+            <label>📌 제목</label>
+            <input type="text" class="form-input" id="weeklyPortTitle" placeholder="주별 학습 기록 제목">
+          </div>
+        </div>
+      </section>
+
+      <section class="pf-sec">
+        <header class="pf-sec-hd"><span class="pf-num">2</span><span class="pf-sec-t">학습 일지</span></header>
+        <div class="pf-sec-bd">
+          <div class="pf-wcard is-content">
+            <div class="pf-wcard-hd"><span>📝</span> 학습 내용 요약</div>
+            <textarea class="template-textarea form-textarea" id="weeklyContent" rows="3" placeholder="이번 주 학습 내용을 요약하세요..."></textarea>
+          </div>
+          <div class="pf-wcard is-code">
+            <div class="pf-wcard-hd is-dark"><span>💻</span> 코드 작성 <em class="pf-wcard-sub">Python</em></div>
+            <textarea class="template-textarea form-textarea" id="weeklyCodeEditor" rows="8" placeholder="# 코드를 입력하세요&#10;# 예: print('Hello World')"></textarea>
+          </div>
+          <input type="hidden" id="weeklyCodeContent">
+          <div class="pf-wcard is-output">
+            <div class="pf-wcard-hd is-light"><span>⚙️</span> 실행 결과</div>
+            <textarea class="template-textarea form-textarea" id="weeklyCodeOutput" rows="3" placeholder="코드 실행 결과를 입력하세요..."></textarea>
+          </div>
+          <div class="pf-wcard is-algo">
+            <div class="pf-wcard-hd is-light"><span>🔍</span> 알고리즘 분석</div>
+            <textarea class="template-textarea form-textarea" id="weeklyAlgoEditor" rows="4" placeholder="사용한 알고리즘에 대해 설명해주세요..."></textarea>
+          </div>
+          <input type="hidden" id="weeklyAlgoDescription">
+          <div class="pf-wcard is-reflect">
+            <div class="pf-wcard-hd is-light"><span>💭</span> 회고 / 느낀 점</div>
+            <textarea class="template-textarea form-textarea" id="weeklyReflection" rows="3" placeholder="이번 주 학습에 대한 회고를 작성하세요..."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <div class="pf-pubrow">
+        <label class="pf-pub"><input type="checkbox" id="weeklyPublic" checked><span><b>공개 발행</b><small>원장님이 확인할 수 있도록 공개합니다.</small></span></label>
+      </div>
+    </div><!-- /weeklyTemplateArea -->
+
+    <!-- 업로드 영역 -->
+    <section class="pf-sec no-print" id="uploadSection">
+      <header class="pf-sec-hd"><span class="pf-num">3</span><span class="pf-sec-t">사진 첨부 <em class="pf-sec-note">선택</em></span></header>
+      <div class="pf-sec-bd">
+        <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">☁️</div>
+          <p>클릭하거나 드래그하여 사진 추가</p>
+          <p class="small-text">JPG, PNG (최대 10장)</p>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFiles(this.files)">
+        <div class="photo-grid-preview" id="imagePreviewContainer"></div>
+        <p class="photo-count-label" id="photoCount">선택된 사진 없음</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="modal-actions pf-sheet-actions">
+    <button class="btn btn-text" onclick="closeModal('portfolioModal')">취소</button>
+    <button class="btn btn-filled" id="saveBtn" onclick="savePortfolio()">💾 저장</button>
+  </div>
+
+</div>
+</div><!-- /portfolioModal -->
+
+</main>
+</div><!-- /app-layout -->
+
+<div class="modal-overlay" id="imageModal" onclick="closeModal('imageModal')">
+  <div class="modal modal-lg" style="max-width:90vw;background:transparent;box-shadow:none;padding:0">
+    <img id="imageModalContent" src="" alt="확대 이미지" style="width:100%;border-radius:12px">
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/common/js/nubida-bundle.js?v=20260910login"></script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

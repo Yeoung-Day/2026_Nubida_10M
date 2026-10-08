@@ -1,0 +1,48 @@
+<nav class="top-navbar">
+    <div class="top-navbar-left">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+        <a href="dashboard.html" class="top-navbar-logo"><img src="/common/assets/logo.svg?v=20260706g" alt="누비다플랫폼">누비다</a>
+    </div>
+    <div class="top-navbar-center">
+        <a class="top-nav-item active" href="dashboard.html"><span class="icon">🏠</span>대시보드</a>
+        <a class="top-nav-item" href="children.html"><span class="icon">👨‍👩‍👧</span>자녀</a>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'parentLearnMenu')"><span class="icon">📖</span>학습 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="parentLearnMenu">
+                <a class="top-navbar-dropdown-item" href="grades.html"><span class="icon">📝</span>성적 조회</a>
+                <a class="top-navbar-dropdown-item" href="portfolio.html"><span class="icon">🎨</span>포트폴리오</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'parentPayMenu')"><span class="icon">💰</span>결제 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="parentPayMenu">
+                <a class="top-navbar-dropdown-item" href="payments.html"><span class="icon">💳</span>결제 내역</a>
+                <a class="top-navbar-dropdown-item" href="pay-tuition.html"><span class="icon">💰</span>수업료 납부</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'parentCommMenu')"><span class="icon">💬</span>소통 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="parentCommMenu">
+                <a class="top-navbar-dropdown-item" href="counseling.html"><span class="icon">📞</span>상담 신청</a>
+                <a class="top-navbar-dropdown-item" href="chat.html"><span class="icon">💬</span>채팅</a>
+            </div>
+        </div>
+        <a class="top-nav-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+    </div>
+    <div class="top-navbar-right">
+        <div class="top-navbar-dropdown">
+            <div class="top-navbar-user" onclick="toggleDropdown(event,'parentUserMenu')">
+                <div class="top-navbar-avatar">학</div>
+                <div>
+                    <div class="top-navbar-user-name" id="topNavUserName">학부모</div>
+                    <div class="top-navbar-user-role">학부모</div>
+                </div>
+            </div>
+            <div class="top-navbar-dropdown-menu" id="parentUserMenu">
+                <a class="top-navbar-dropdown-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+                <div class="top-navbar-dropdown-divider"></div>
+                <a class="top-navbar-dropdown-item" href="#" onclick="handleLogout()"><span class="icon">🚪</span>로그아웃</a>
+            </div>
+        </div>
+    </div>
+</nav>

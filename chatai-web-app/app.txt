@@ -1,0 +1,61 @@
+const express = require('express');
+const mysql = require('mysql2/promise');
+const axios = require('axios');
+const path = require('path');
+const session = require('express-session');
+
+const app = express();
+app.use(express.json());
+app.use(express.static('public'));
+app.use(session({ secret: 'hiphop-secret', resave: false, saveUninitialized: true }));
+
+// DB 설정
+const dbConfig = {
+    host: 'music-db',
+    user: 'nubidaplet',
+    password: '***MASKED***',
+    database: 'chatai_db'
+};
+
+// 로그인 및 회원가입 (학번이 없으면 자동가입)
+app.post('/api/login', async (req, res) => {
+    const { studentId, password, name } = req.body;
+    
+    try {
+        const pool = mysql.createPool(dbConfig);
+        const [rows] = await pool.query('SELECT * FROM students WHERE student_id = ?', [studentId]);
+        
+        if (rows.length === 0) {
+            // 1. 처음 온 학생이라면 즉시 등록 (자동 회원가입)
+            await pool.query('INSERT INTO students (student_id, password, name) VALUES (?, ?, ?)', [studentId, password, name]);
+            req.session.studentId = studentId;
+            return res.json({ success: true, message: "회원가입 및 로그인 성공!" });
+        } 
+        
+        // 2. 이미 등록된 학생이라면 비밀번호 확인
+        if (rows[0].password !== password) {
+            return res.status(401).json({ message: "비밀번호가 틀립니다." });
+        }
+        
+        req.session.studentId = studentId;
+        res.json({ success: true, message: "로그인 성공!" });
+    } catch (err) {
+        res.status(500).json({ error: "DB 오류" });
+    }
+});
+
+// 가사 생성 API (매우 빠른 응답용)
+app.post('/api/generate', async (req, res) => {
+    if (!req.session.studentId) return res.status(403).json({ message: '로그인 필요' });
+    const { topic } = req.body;
+    try {
+        const response = await axios.post('http://ollama:11434/api/generate', {
+            model: 'llama3.2:1b', // 가장 가벼운 모델
+            prompt: `주제: ${topic}. 이 주제로 8마디 한국어 힙합 가사를 써줘. 라임(Rhyme)을 맞춰서 가사만 짧게 출력해.`,
+            stream: false
+        });
+        res.json({ lyrics: response.data.response });
+    } catch (err) { res.status(500).json({ message: 'AI 서버 대기 중...' }); }
+});
+
+app.listen(3000, () => console.log('HipHop Server running on port 3000'));

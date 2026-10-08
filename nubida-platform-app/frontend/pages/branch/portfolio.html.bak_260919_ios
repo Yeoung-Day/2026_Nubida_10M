@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>포트폴리오 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/branch/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+<style id="br-portfolio-design">
+/* ============================================================
+   에듀케어(branch) 포트폴리오 — 전문적 · 세련된 미니멀 리디자인
+   기존 클래스 오버라이드 전용 (구조/ID/JS 변경 없음)
+   ============================================================ */
+:root,
+.main-content {
+  --pf-accent: #4F5EF8;
+  --pf-accent-soft: #EEF2FF;
+  --pf-bg-top: #FBFCFE;
+  --pf-bg-bottom: #F6F8FC;
+  --pf-border: #E8ECF5;
+  --pf-label: #98A1B2;
+  --pf-text: #1F2437;
+  --pf-muted: #5A6478;
+  --pf-shadow: 0 1px 2px rgba(31,36,55,.04), 0 1px 3px rgba(31,36,55,.03);
+  --pf-shadow-md: 0 4px 14px rgba(31,36,55,.07), 0 1px 3px rgba(31,36,55,.04);
+}
+
+/* ---------- 배경 / 캔버스 ---------- */
+.main-content {
+  background: linear-gradient(180deg, var(--pf-bg-top) 0%, var(--pf-bg-bottom) 100%);
+  min-height: 100vh;
+}
+
+/* ---------- 상단 네비 ---------- */
+.top-nav {
+  padding: 16px 28px;
+}
+.top-nav h1 {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+  color: var(--pf-text);
+}
+
+/* ---------- 뷰 토글 (갤러리 / 테이블) ---------- */
+.view-toggle {
+  background: #F1F3F9;
+  border: 1px solid var(--pf-border);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 2px;
+  box-shadow: inset 0 1px 2px rgba(31,36,55,.02);
+}
+.vt-btn {
+  border-radius: 9px;
+  padding: 7px 15px;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--pf-muted);
+  letter-spacing: -.01em;
+  transition: all .16s ease;
+}
+.vt-btn:hover { color: var(--pf-text); }
+.vt-btn.active {
+  background: #FFFFFF;
+  color: var(--pf-accent);
+  box-shadow: var(--pf-shadow);
+}
+
+/* ---------- 필터 바 — 정돈된 카드형 그리드 ---------- */
+.filter-bar {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  background: #FFFFFF;
+  border: 1px solid var(--pf-border);
+  border-radius: 16px;
+  box-shadow: var(--pf-shadow);
+}
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 7px;
+  min-width: 0;
+}
+.filter-item label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--pf-label);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.filter-bar select,
+.filter-bar input,
+.filter-bar .btn {
+  height: 40px;
+  box-sizing: border-box;
+}
+.filter-bar .form-select {
+  width: 100%;
+  border: 1px solid var(--pf-border);
+  border-radius: 10px;
+  background-color: #FBFCFE;
+  color: var(--pf-text);
+  font-size: 13.5px;
+  padding: 0 12px;
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.filter-bar .form-select:hover { background-color: #F6F8FC; }
+.filter-bar .form-select:focus {
+  outline: none;
+  background-color: #FFFFFF;
+  border-color: var(--pf-accent);
+  box-shadow: 0 0 0 3px var(--pf-accent-soft);
+}
+
+/* 초기화 버튼 — 깔끔한 ghost */
+.filter-bar .btn-text {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--pf-border);
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: var(--pf-muted);
+  font-size: 13px;
+  font-weight: 550;
+  transition: all .16s ease;
+}
+.filter-bar .btn-text:hover {
+  border-color: #D6DDEC;
+  background: #F9FAFE;
+  color: var(--pf-text);
+}
+
+/* ---------- 갤러리 그리드 (JS가 .portfolio-card를 직접 생성) ---------- */
+#portfolioGridView {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+#portfolioGridView .portfolio-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  background: #FFFFFF;
+  border: 1px solid var(--pf-border);
+  border-radius: 16px;
+  padding: 0;
+  margin-bottom: 0;
+  box-shadow: var(--pf-shadow);
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+#portfolioGridView .portfolio-card:hover {
+  transform: translateY(-2px);
+  border-color: #DCE3F2;
+  box-shadow: var(--pf-shadow-md);
+}
+#portfolioGridView .portfolio-thumb {
+  width: 100%;
+  height: 132px;
+  border-radius: 0;
+  background: linear-gradient(135deg, #F3F5FB 0%, #E9EDF8 100%);
+  color: #A7B0C6;
+  font-size: 34px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+#portfolioGridView .portfolio-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0 !important;
+  display: block;
+}
+#portfolioGridView .portfolio-info {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#portfolioGridView .portfolio-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pf-text);
+  letter-spacing: -.01em;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#portfolioGridView .portfolio-meta {
+  font-size: 12.5px;
+  color: var(--pf-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#portfolioGridView .portfolio-date {
+  font-size: 11.5px;
+  color: var(--pf-label);
+  margin-top: 2px;
+}
+
+/* ---------- 카드 (테이블 컨테이너 등) ---------- */
+.card,
+.main-content .card {
+  background: #FFFFFF;
+  border: 1px solid var(--pf-border);
+  border-radius: 16px;
+  box-shadow: var(--pf-shadow);
+  overflow: hidden;
+}
+.card-body { padding: 0; }
+.table-wrapper { border-radius: 16px; overflow: hidden; }
+
+/* ---------- 데이터 테이블 ---------- */
+.data-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+.data-table thead th {
+  background: #F7F9FC;
+  color: var(--pf-label);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--pf-border);
+  border-radius: 0;
+  text-align: left;
+  white-space: nowrap;
+}
+.data-table thead th:first-child { border-radius: 0; }
+.data-table thead th:last-child { border-radius: 0; }
+.data-table tbody tr:nth-child(even) { background: transparent; }
+.data-table tbody td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #F1F4FA;
+  color: var(--pf-text);
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+.data-table tbody tr:hover td { background: #F9FAFE; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ---------- 상태 배지 (pill + dot) ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px 3px 9px;
+  font-size: 12px;
+  font-weight: 550;
+  border-radius: 999px;
+  line-height: 1.5;
+  letter-spacing: -.005em;
+}
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  opacity: .85;
+}
+.badge-success { background: #E7F6EF; color: #1B8A5A; }
+.badge-warning { background: #FEF3E2; color: #B27310; }
+.badge-info    { background: #EEF2FF; color: #4F5EF8; }
+.badge-danger  { background: #FDEDED; color: #C93A3A; }
+.badge-neutral { background: #F1F3F9; color: #5A6478; }
+.badge-primary { background: #EEF2FF; color: #4F5EF8; }
+
+/* ---------- 버튼 ---------- */
+.btn {
+  border-radius: 10px;
+  font-weight: 550;
+  letter-spacing: -.01em;
+  transition: all .16s ease;
+}
+.btn-primary {
+  background: var(--pf-accent);
+  border-color: var(--pf-accent);
+  color: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(79,94,248,.22);
+}
+.btn-primary:hover {
+  background: #4553E8;
+  border-color: #4553E8;
+  box-shadow: 0 3px 8px rgba(79,94,248,.28);
+}
+.btn-sm { padding: 6px 12px; font-size: 12.5px; }
+
+/* 저장/취소(.btn-filled) → 프라이머리로 승격 */
+.modal-actions .btn-filled,
+.btn-filled {
+  background: var(--pf-accent);
+  border: 1px solid var(--pf-accent);
+  color: #FFFFFF;
+  border-radius: 10px;
+  font-weight: 550;
+  box-shadow: 0 1px 2px rgba(79,94,248,.22);
+}
+.btn-filled:hover {
+  background: #4553E8;
+  border-color: #4553E8;
+  color: #FFFFFF;
+  box-shadow: 0 3px 8px rgba(79,94,248,.28);
+}
+/* 모달 취소(.btn-text) → ghost */
+.modal-actions .btn-text,
+.btn-ghost {
+  background: #FFFFFF;
+  border: 1px solid var(--pf-border);
+  color: var(--pf-muted);
+  border-radius: 10px;
+}
+.modal-actions .btn-text:hover,
+.btn-ghost:hover {
+  background: #F9FAFE;
+  border-color: #D6DDEC;
+  color: var(--pf-text);
+}
+
+/* ---------- 모달 (radius 16px, 헤더 구분선, 액션 상단 보더) ---------- */
+.modal {
+  border-radius: 16px;
+  border: 1px solid var(--pf-border);
+  box-shadow: 0 24px 60px rgba(31,36,55,.18), 0 4px 12px rgba(31,36,55,.06);
+  padding: 24px 26px;
+}
+.modal h2,
+.modal > #modalTitle,
+#detailContent > h2 {
+  font-size: 18px;
+  font-weight: 650;
+  color: var(--pf-text);
+  letter-spacing: -.015em;
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--pf-border);
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 16px;
+  margin-top: 18px;
+  border-top: 1px solid var(--pf-border);
+}
+
+/* ---------- 폼 정돈 ---------- */
+.modal .form-group { margin-bottom: 16px; }
+.modal .form-group > label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pf-label);
+  letter-spacing: .01em;
+  margin-bottom: 7px;
+}
+.modal .form-input,
+.modal .form-textarea,
+.modal .form-select {
+  border: 1px solid var(--pf-border);
+  border-radius: 10px;
+  background-color: #FBFCFE;
+  color: var(--pf-text);
+  font-size: 13.5px;
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.modal .form-input:focus,
+.modal .form-textarea:focus,
+.modal .form-select:focus {
+  outline: none;
+  background-color: #FFFFFF;
+  border-color: var(--pf-accent);
+  box-shadow: 0 0 0 3px var(--pf-accent-soft);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* 업로드 드롭존 — 은은하게 */
+.upload-dropzone {
+  border: 1.5px dashed #D8DFEE;
+  border-radius: 14px;
+  background: #FBFCFE;
+  transition: border-color .16s ease, background-color .16s ease;
+}
+.upload-dropzone:hover,
+.upload-dropzone.drag-over {
+  border-color: var(--pf-accent);
+  background: var(--pf-accent-soft);
+}
+.upload-dropzone .upload-icon { font-size: 26px; opacity: .85; }
+.upload-dropzone p { color: var(--pf-muted); }
+
+/* 토글 라벨 */
+.toggle-label { font-size: 14px; font-weight: 550; color: var(--pf-text); }
+.toggle-input { accent-color: var(--pf-accent); border-radius: 5px; }
+
+/* 태그 컨테이너 */
+.tags-container {
+  border: 1px solid var(--pf-border);
+  border-radius: 10px;
+  background: #FBFCFE;
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+.tags-container:focus-within {
+  border-color: var(--pf-accent);
+  box-shadow: 0 0 0 3px var(--pf-accent-soft);
+}
+.tags-container .tag { background: var(--pf-accent-soft); color: var(--pf-accent); }
+
+/* ---------- 빈 상태 ---------- */
+.empty-state {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--pf-muted);
+}
+.empty-state .empty-icon {
+  font-size: 40px;
+  opacity: .55;
+  margin-bottom: 12px;
+}
+.empty-state p { font-size: 14px; color: var(--pf-muted); margin: 0; }
+
+/* ---------- 상세 모달 내용 ---------- */
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13px;
+  color: var(--pf-muted);
+  margin-top: 12px;
+}
+.portfolio-detail-content {
+  background: #F7F9FC;
+  border: 1px solid var(--pf-border);
+  border-radius: 12px;
+  font-size: 13.5px;
+  color: var(--pf-text);
+}
+.portfolio-detail-images img {
+  border-radius: 10px;
+  border: 1px solid var(--pf-border);
+}
+
+/* ---------- 수치 정렬 ---------- */
+.stat-value,
+.tabular-nums,
+.data-table td { font-variant-numeric: tabular-nums; }
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 720px) {
+  .filter-bar {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 14px;
+    padding: 16px;
+  }
+  .filter-bar .btn-text { width: 100%; justify-content: center; }
+  #portfolioGridView { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   ★ 260913 v2 — 세련도 업그레이드 레이어
+   (정적 이모지 → SVG, 셀렉트 chevron, 사이드바 블루,
+    필터바 정돈, 토글/빈상태/카드/테이블 정리)
+   ============================================================ */
+
+/* ---------- 상단 타이틀 아이콘 ---------- */
+.top-nav h1 {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 18px;
+  font-weight: 750;
+}
+.top-nav h1 .tn-ico {
+  width: 20px; height: 20px;
+  color: var(--pf-accent);
+  flex-shrink: 0;
+}
+
+/* ---------- 뷰 토글 — 아이콘 SVG + 여유 있는 패딩 ---------- */
+.view-toggle {
+  background: #EEF1F7;
+  border: 1px solid var(--pf-border);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 3px;
+}
+.vt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pf-muted);
+  line-height: 1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all .16s ease;
+}
+.vt-btn .vt-ico { width: 15px; height: 15px; flex-shrink: 0; }
+.vt-btn:hover { color: var(--pf-text); background: rgba(255,255,255,.6); }
+.vt-btn.active {
+  background: #FFFFFF;
+  color: var(--pf-accent);
+  box-shadow: 0 1px 3px rgba(31,36,55,.08), 0 1px 2px rgba(31,36,55,.04);
+}
+.vt-btn.active .vt-ico { color: var(--pf-accent); }
+
+/* ---------- 필터 바 — 균형 잡힌 그리드 ---------- */
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  background: #FFFFFF;
+  border: 1px solid var(--pf-border);
+  border-radius: 16px;
+  box-shadow: var(--pf-shadow);
+}
+.filter-bar .filter-item { flex: 1 1 0; min-width: 0; max-width: 300px; }
+.filter-bar .filter-item:last-child { flex: 0 0 auto; max-width: none; }
+.filter-bar .filter-item label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pf-label);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+/* 셀렉트 chevron(▾) — 배경 SVG 로 추가 */
+.filter-bar select.form-select,
+.filter-bar .form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--pf-border);
+  border-radius: 11px;
+  background-color: #FBFCFE;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235A6478' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  background-size: 14px;
+  color: var(--pf-text);
+  font-size: 13.5px;
+  font-weight: 550;
+  padding: 0 36px 0 13px;
+  cursor: pointer;
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.filter-bar .form-select:hover { background-color: #F6F8FC; border-color: #DCE3F2; }
+.filter-bar .form-select:focus {
+  outline: none;
+  background-color: #FFFFFF;
+  border-color: var(--pf-accent);
+  box-shadow: 0 0 0 3px var(--pf-accent-soft);
+}
+.filter-bar select.form-select:disabled,
+.filter-bar .form-select:disabled { opacity: .55; cursor: default; }
+
+/* 초기화 버튼 */
+.filter-bar .btn-text {
+  height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--pf-border);
+  border-radius: 11px;
+  background: #FFFFFF;
+  color: var(--pf-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .16s ease;
+  white-space: nowrap;
+}
+.filter-bar .btn-text:hover {
+  border-color: #D6DDEC;
+  background: #F9FAFE;
+  color: var(--pf-text);
+}
+
+/* ---------- 사이드바 활성 메뉴 — 브랜드 블루 (이 페이지 한정) ---------- */
+.sidebar-nav .nav-item.active {
+  background: var(--pf-accent) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(79,94,248,.28);
+}
+.sidebar-nav .nav-item.active .nav-label,
+.sidebar-nav .nav-item.active .icon,
+.sidebar-nav .nav-item.active svg { color: #FFFFFF !important; }
+
+/* ---------- 빈 상태 — 이모지 제거 + 아이콘 배지 ---------- */
+.empty-state {
+  padding: 76px 24px;
+  text-align: center;
+  color: var(--pf-muted);
+}
+.empty-state .empty-icon {
+  font-size: 0 !important;      /* JS가 넣은 📭 이모지 숨김 */
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #EEF2FF, #F8FAFF);
+  border: 1px solid #E0E7FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 빈 상태 전용 아이콘 (폴더/문서) */
+#portfolioGridView .empty-state .empty-icon::before,
+.empty-state .empty-icon::before {
+  content: "";
+  width: 30px;
+  height: 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpath d='M9 13h6'/%3E%3C/svg%3E");
+}
+.empty-state p { font-size: 13.5px; color: var(--pf-muted); margin: 0; font-weight: 550; }
+.empty-state h3 { font-size: 15px; font-weight: 700; color: var(--pf-text); margin: 0 0 5px; }
+
+/* 로딩 상태는 스피너 */
+.empty-state.is-loading .empty-icon::before {
+  content: "";
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2.5px solid #E0E7FF;
+  border-top-color: var(--pf-accent);
+  background-image: none;
+  animation: pfSpin .8s linear infinite;
+}
+@keyframes pfSpin { to { transform: rotate(360deg); } }
+
+/* ---------- 갤러리 카드 — 썸네일 이모지 → 아이콘 타일 ---------- */
+#portfolioGridView .portfolio-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0 !important;          /* JS 이모지 숨김 */
+  height: 138px;
+  background: linear-gradient(135deg, #F3F5FB 0%, #E9EDF8 100%);
+  position: relative;
+  overflow: hidden;
+}
+#portfolioGridView .portfolio-thumb::before {
+  content: "";
+  width: 42px; height: 42px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A7B0C6' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2.5'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.6'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E");
+}
+/* 이미지 썸네일이 있으면 아이콘 숨김 */
+#portfolioGridView .portfolio-thumb:has(img)::before { display: none; }
+#portfolioGridView .portfolio-thumb img { border-radius: 0 !important; }
+
+/* 카드 정보 정돈 */
+#portfolioGridView .portfolio-card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+#portfolioGridView .portfolio-info { padding: 15px 17px 17px; gap: 5px; }
+#portfolioGridView .portfolio-title {
+  font-size: 14.5px;
+  font-weight: 650;
+  letter-spacing: -.012em;
+}
+#portfolioGridView .portfolio-meta {
+  font-size: 12.5px;
+  color: var(--pf-muted);
+  font-weight: 500;
+}
+#portfolioGridView .portfolio-date {
+  font-size: 11.5px;
+  color: var(--pf-label);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+/* ---------- 업로드 드롭존 아이콘 ---------- */
+.upload-dropzone .upload-icon {
+  font-size: 0 !important;
+  width: 44px; height: 44px;
+  margin: 0 auto 10px;
+  border-radius: 13px;
+  background: #EEF2FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.upload-dropzone .upload-icon svg {
+  width: 22px; height: 22px;
+  color: var(--pf-accent);
+}
+
+/* ---------- 테이블 헤더 아이콘 톤 ---------- */
+.data-table thead th { letter-spacing: .05em; }
+
+/* ---------- 반응형 (v2) ---------- */
+@media (max-width: 720px) {
+  .filter-bar { flex-direction: column; align-items: stretch; gap: 14px; }
+  .filter-bar .filter-item { max-width: none; }
+  .filter-bar .btn-text { width: 100%; }
+}
+
+</style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>운영</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="employees.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">원장 관리</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">수강생 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>교육</div>
+                <a class="nav-item" href="studios.html" style="display:none"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">공부방 관리</span></a>
+                <a class="nav-item" href="schedule.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">일정 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>보고</div>
+                <a class="nav-item" href="branch-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="active nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg>소통</div>
+                <a class="nav-item" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">에듀케어 설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">에듀케어</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1><svg class="tn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>포트폴리오</h1></div>
+                <div class="top-nav-right">
+                    <div class="view-toggle" id="viewToggle">
+                        <button class="vt-btn active" data-view="grid" onclick="setView('grid')"><svg class="vt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>갤러리</button>
+                        <button class="vt-btn" data-view="table" onclick="setView('table')"><svg class="vt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="10" x2="9" y2="20"/></svg>테이블</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-item">
+                    <label>강좌/클래스</label>
+                    <select class="form-select" id="filterCourse" onchange="onFilterChange()">
+                        <option value="">전체 클래스</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label>학생</label>
+                    <select class="form-select" id="filterStudent" onchange="onFilterChange()">
+                        <option value="">전체 학생</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <button class="btn btn-text btn-sm" onclick="resetFilters()">초기화</button>
+                </div>
+            </div>
+            <!-- Portfolio Grid View -->
+            <div id="portfolioGridView"></div>
+            <!-- Portfolio Table View -->
+            <div id="portfolioTableView" style="display:none">
+                <div class="card">
+                    <div class="card-body" style="padding:0">
+                        <div class="table-wrapper">
+                            <table class="data-table" data-card-view>
+                                <thead>
+                                    <tr>
+                                        <th>제목</th>
+                                        <th>학생</th>
+                                        <th>과목</th>
+                                        <th>유형</th>
+                                        <th>공개</th>
+                                        <th>등록일</th>
+                                        <th>액션</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr><td colspan="7" class="small-text" style="text-align:center;padding:var(--space-7)">로딩 중...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- View Details Modal (read-only) -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal modal-lg">
+            <div id="detailContent">
+                <div class="empty-state is-loading"><div class="empty-icon"></div><p>불러오는 중...</p></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-filled" onclick="closeModal('detailModal')">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="portfolioModal">
+        <div class="modal modal-lg">
+            <h2 id="modalTitle">새 포트폴리오 항목</h2>
+            <input type="hidden" id="editId">
+            <input type="hidden" id="imageUrls" value="[]">
+            <div class="form-group">
+                <label>제목</label>
+                <input class="form-input" id="portTitle" placeholder="포트폴리오 제목을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label>보고서 내용</label>
+                <textarea class="form-textarea" id="portContent" placeholder="보고서 내용을 자유롭게 작성하세요&#10;여러 줄 작성 가능합니다." rows="6" style="min-height:120px"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>과목</label>
+                    <select class="form-select" id="portSubject">
+                        <option value="">과목 선택</option>
+                        <option value="메이커코딩">메이커코딩</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>파일 유형</label>
+                    <select class="form-select" id="portFileType">
+                        <option value="image">이미지</option>
+                        <option value="pdf">PDF</option>
+                        <option value="link">링크</option>
+                        <option value="video">동영상</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>파일 URL</label>
+                <input class="form-input" id="portFileUrl" placeholder="파일 URL 또는 링크 주소">
+            </div>
+            <!-- 사진 첨부 영역 -->
+            <div class="form-group">
+                <label>사진 첨부</label>
+                <div class="upload-dropzone" id="uploadDropzone"
+                     ondragover="event.preventDefault();this.classList.add('drag-over')"
+                     ondragleave="this.classList.remove('drag-over')"
+                     ondrop="event.preventDefault();this.classList.remove('drag-over');handleDrop(event)"
+                     onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+                    <p>사진을 드래그하거나 클릭하여 업로드</p>
+                    <p class="small-text">JPG, PNG, GIF, WebP 지원</p>
+                    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/gif,image/webp" multiple style="display:none" onchange="handleFileSelect(event)">
+                </div>
+                <div id="imagePreviewContainer" class="image-preview-container"></div>
+            </div>
+            <div class="form-group">
+                <label>설명</label>
+                <textarea class="form-textarea" id="portDescription" placeholder="포트폴리오에 대한 설명을 입력하세요" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>태그</label>
+                <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()">
+                    <div id="tagList"></div>
+                    <input type="text" id="tagInput" placeholder="태그 입력 후 Enter" onkeydown="handleTagKey(event)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="toggle-label">
+                    <input type="checkbox" class="toggle-input" id="portPublic" checked>
+                    공개 포트폴리오
+                </label>
+                <span class="small-text">공개 시 학부모 및 선생님이 볼 수 있습니다</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-text" onclick="closeModal('portfolioModal')">취소</button>
+                <button class="btn btn-filled" onclick="savePortfolio()">저장</button>
+            </div>
+        </div>
+    </div>
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script src="/common/js/pages-branch.js?v=20260911nav"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requireAuth();
+            renderSidebarUser();
+        });
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="누비다플랫폼 전국 교육센터(직영/프랜차이즈) 위치를 지도에서 한눈에 확인하세요. 가까운 누비다 학원 찾기와 가맹 상담 안내.">
+    <title>학원 찾기 — 누비다플랫폼 전국 교육센터 안내</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F5EF8;
+            --primary-dark: #3E4BD8;
+            --primary-light: #EEF0FF;
+            --text: #18181B;
+            --text-sub: #71717A;
+            --text-mute: #A1A1AA;
+            --bg: #FAFAFC;
+            --card: #FFFFFF;
+            --border: #ECECF0;
+            --green: #10B981;
+            --orange: #F59E0B;
+            --danger: #EF4444;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 10px 30px rgba(24, 24, 27, 0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        /* ===== Navigation (index.html과 동일 패턴) ===== */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 48px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-left { display: flex; align-items: center; gap: 32px; }
+        .nav-logo-text {
+            font-family: 'Inter', sans-serif; font-weight: 800; font-size: 20px;
+            color: var(--text); text-decoration: none; letter-spacing: -0.03em;
+        }
+        .nav-logo-text span { color: var(--primary); margin-left: 1px; }
+        .nav-center { display: flex; align-items: center; gap: 8px; }
+        .nav-link {
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+        .nav-link:hover { background: #F4F4F5; color: var(--text); }
+        .nav-link.active { color: var(--primary); background: var(--primary-light); font-weight: 600; }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+
+        /* ── 교육앱 드롭다운 (landing.css 와 동일 규칙) ── */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > .nav-link { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; background: none; border: none; font-family: inherit; }
+        .nav-dropdown > .nav-link .nav-caret { width: 10px; height: 10px; flex-shrink: 0; transition: transform .22s ease; }
+        .nav-dropdown.open > .nav-link .nav-caret { transform: rotate(180deg); }
+        .nav-dropdown.open > .nav-link { background: #F1F5F9; color: #0F172A; }
+        .nav-dropdown-menu {
+            position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(-6px);
+            min-width: 276px; background: #FFFFFF; border: 1px solid #E8EAF0; border-radius: 16px;
+            box-shadow: 0 18px 44px rgba(15,23,42,0.13), 0 2px 6px rgba(15,23,42,0.05);
+            padding: 8px; opacity: 0; visibility: hidden; transition: opacity .2s ease, transform .2s ease, visibility .2s;
+            z-index: 1200;
+        }
+        .nav-dropdown-menu::before { content: ''; position: absolute; top: -10px; left: 0; right: 0; height: 10px; }
+        .nav-dropdown.open .nav-dropdown-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .nav-dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px;
+            text-decoration: none; transition: background .16s ease;
+        }
+        .nav-dropdown-item:hover { background: #F6F8FC; }
+        .nav-dropdown-icon {
+            width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1;
+            background: #EEF2FF;
+        }
+        .nav-dropdown-icon.bg-ai      { background: #EEF2FF; }
+        .nav-dropdown-icon.bg-chat    { background: #ECFDF5; }
+        .nav-dropdown-icon.bg-startup { background: #FFF7ED; }
+        .nav-dropdown-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .nav-dropdown-title { font-size: 13.5px; font-weight: 600; color: #0F172A; letter-spacing: -0.1px; }
+        .nav-dropdown-desc { font-size: 11.5px; color: #8A93A5; font-weight: 400; }
+        .nav-dropdown-sep { height: 1px; background: #F1F3F8; margin: 6px 8px; }
+
+        .nav-btn {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-start { background: #18181B; color: #fff; box-shadow: 0 2px 8px rgba(24, 24, 27, 0.25); }
+        .nav-start:hover { background: #27272A; transform: translateY(-1px); }
+
+        /* === Mobile Nav: 햄버거 토글 (공개 페이지 공통 반응형) === */
+        .nav-burger { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 0; border: none; border-radius: 10px; background: transparent; cursor: pointer; flex-shrink: 0; margin-left: 2px; }
+        .nav-burger span { display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--text); transition: transform .25s, opacity .25s; }
+        .nav-burger:hover { background: #F4F4F5; }
+        .nav-burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-burger.active span:nth-child(2) { opacity: 0; }
+        .nav-burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        @media (max-width: 900px) {
+            .nav { padding: 0 16px; height: 60px; }
+            .nav-burger { display: flex; }
+            .nav-center { position: absolute; top: 100%; left: 0; right: 0; display: none; flex-direction: column; align-items: stretch; gap: 2px; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 16px 32px rgba(24, 24, 27, 0.08); padding: 10px 14px; z-index: 999; }
+            .nav.menu-open .nav-center { display: flex; }
+            .nav.menu-open .nav-center .nav-link { padding: 13px 16px; border-radius: 10px; font-size: 15px; font-weight: 600; white-space: nowrap; }
+            .nav.menu-open .nav-center .nav-link.active { background: var(--primary-light); }
+            .nav-dropdown { width: 100%; }
+            .nav-dropdown > .nav-link { width: 100%; justify-content: space-between; }
+            .nav-dropdown-menu {
+                position: static; transform: none; opacity: 1; visibility: visible; display: none;
+                box-shadow: none; border: none; border-radius: 10px; background: #F8FAFC;
+                min-width: 0; padding: 6px; margin: 2px 0 4px;
+            }
+            .nav-dropdown.open .nav-dropdown-menu { display: block; transform: none; }
+            .nav-dropdown-item { padding: 9px 10px; }
+            .nav-dropdown-icon { width: 32px; height: 32px; border-radius: 9px; font-size: 15px; }
+            .nav-dropdown-title { font-size: 13px; }
+            .nav-dropdown-desc { font-size: 11px; }
+
+        }
+
+        /* ===== Page header ===== */
+        .page-header {
+            padding: 120px 48px 36px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+        .page-header .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 5px 12px;
+            border-radius: 999px;
+            margin-bottom: 16px;
+        }
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.25;
+        }
+        .page-header h1 em { font-style: normal; color: var(--primary); }
+        .page-header p.sub {
+            margin-top: 10px;
+            color: var(--text-sub);
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 560px;
+        }
+        .page-header .summary-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text-mute);
+        }
+        .page-header .summary-stats b {
+            color: var(--text);
+            font-size: 15px;
+            margin-right: 3px;
+        }
+
+        /* ===== 기관 유형 안내 (에듀케어 vs 학원) ===== */
+        .type-guide {
+            max-width: 1240px;
+            margin: 0 auto 22px;
+            padding: 0 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .tg-card {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            padding: 20px 22px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .tg-card .tg-ico {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tg-card.educare .tg-ico { background: #FEF3E2; color: #B45309; }
+        .tg-card.academy .tg-ico { background: #F3EBFF; color: #6D28D9; }
+        .tg-body { min-width: 0; }
+        .tg-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        .tg-head .tg-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+        .tg-head .tg-tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            padding: 2.5px 8px;
+            border-radius: 999px;
+        }
+        .tg-card.educare .tg-tag { background: #FEF3E2; color: #B45309; }
+        .tg-card.academy .tg-tag { background: #F3EBFF; color: #6D28D9; }
+        .tg-desc {
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: var(--text-sub);
+        }
+        .tg-desc b { color: var(--text); font-weight: 700; }
+        @media (max-width: 860px) {
+            .type-guide { grid-template-columns: 1fr; padding: 0 20px; }
+        }
+
+        /* ===== Map + List layout ===== */
+        .map-wrap {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 48px 24px;
+        }
+        .map-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            min-height: 620px;
+            box-shadow: var(--shadow);
+        }
+        /* 좌측 — 필터 + 지사 목록 */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            background: var(--card);
+            min-width: 0;
+        }
+        .filter-bar {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            background: #FBFBFC;
+        }
+        .filter-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: var(--text-mute);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .region-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-height: 88px;
+            overflow-y: auto;
+        }
+        .region-chip {
+            padding: 5px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 12px;
+            color: var(--text-sub);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.18s;
+        }
+        .region-chip:hover { border-color: var(--primary); color: var(--primary); }
+        .region-chip.active {
+            background: var(--text);
+            border-color: var(--text);
+            color: #fff;
+            font-weight: 600;
+        }
+        /* ===== 기관 유형 네비게이션 탭 ===== */
+        .type-nav {
+            display: flex;
+            gap: 4px;
+            background: #F2F3F7;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        .type-nav-btn {
+            flex: 1;
+            padding: 8px 6px;
+            border: none;
+            background: transparent;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sub);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+        .type-nav-btn .dot { width: 7px; height: 7px; border-radius: 50%; background: #C7CAD4; }
+        .type-nav-btn.active {
+            background: #fff;
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(24, 24, 27, 0.12);
+        }
+        .type-nav-btn.active .dot { background: var(--primary); }
+        /* 유형별 색상 점 */
+        .type-nav-btn[data-kind="educare"].active .dot { background: #F59E0B; }
+        .type-nav-btn[data-kind="academy"].active .dot { background: #7C3AED; }
+        .branch-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            max-height: 520px;
+            scrollbar-width: thin;
+            scrollbar-color: #E4E4E7 transparent;
+        }
+        .branch-list::-webkit-scrollbar { width: 5px; }
+        .branch-list::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 999px; }
+        .branch-item {
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.15s, box-shadow 0.15s;
+            border: 1px solid transparent;
+            margin-bottom: 4px;
+        }
+        .branch-item:hover { background: #F6F6F8; }
+        .branch-item.active {
+            background: var(--primary-light);
+            border-color: #DDE2FF;
+        }
+        .branch-item .row1 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .branch-item .name {
+            font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
+            flex: 1; min-width: 0;
+            overflow-wrap: anywhere; word-break: keep-all;
+        }
+        .branch-type {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+        .branch-type.direct { background: var(--primary-light); color: var(--primary); }
+        .branch-type.franchise { background: #FEF3E2; color: #C2740A; }
+        /* 유형 배지: 에듀케어=주황 / 학원=보라 */
+        .branch-type.educare { background: #FEF3E2; color: #C2740A; }
+        .branch-type.academy { background: #F5EBFF; color: #7E22CE; }
+        /* 지역(시·도) 목록 그룹 제목 */
+        .list-group-title {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #F4F5F9;
+            margin: 0 -6px 4px;
+            padding: 7px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.02em;
+            border: 1px solid #ECEFF4;
+            border-left: 3px solid var(--primary);
+            border-radius: 6px;
+        }
+        .branch-item .addr {
+            font-size: 12px;
+            color: var(--text-sub);
+            line-height: 1.5;
+            display: flex;
+            gap: 6px;
+            align-items: flex-start;
+            min-width: 0;
+            overflow-wrap: anywhere; word-break: keep-all;
+        }
+        .branch-item .addr svg { flex-shrink: 0; margin-top: 1px; }
+        .branch-item .phone {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-sub);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            min-width: 0;
+        }
+        .branch-item .phone a { color: var(--text-sub); text-decoration: none; }
+        .branch-item .phone a:hover { color: var(--primary); }
+        .branch-item .geo-none {
+            font-size: 10px;
+            color: var(--text-mute);
+            margin-top: 6px;
+        }
+        /* 오픈 예정 지사 — 주소·전화 대신 안내 라인 */
+        .branch-item.is-soon { opacity: 0.82; }
+        .branch-item.is-soon:hover { opacity: 1; }
+        .branch-item .soon-line {
+            margin-top: 7px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+        .branch-item .soon-badge {
+            flex-shrink: 0;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: #B45309;
+            background: #FEF6E7;
+            border-radius: 999px;
+            padding: 2.5px 9px;
+        }
+        .branch-item .soon-text {
+            font-size: 11.5px;
+            color: var(--text-mute);
+            line-height: 1.45;
+            min-width: 0;
+            overflow-wrap: anywhere; word-break: keep-all;
+        }
+        /* 본사 항목 — 지사와 구분되는 강조 프레임 (목록 최상단 고정) */
+        .branch-item.hq-item {
+            border: 1.5px solid #C7CDFF;
+            background: linear-gradient(135deg, #F0F2FF 0%, #FFFFFF 55%, #F7F8FF 100%);
+            box-shadow: 0 6px 18px rgba(79, 94, 248, 0.10);
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .branch-item.hq-item:hover { background: linear-gradient(135deg, #E7EAFF 0%, #F4F5FF 60%); }
+        .branch-item.hq-item.active {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            box-shadow: 0 6px 20px rgba(79, 94, 248, 0.18);
+        }
+        .branch-item.hq-item .hq-star {
+            width: 22px; height: 22px;
+            border-radius: 7px;
+            background: var(--primary);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(79, 94, 248, 0.35);
+        }
+        .branch-item.hq-item .name { color: var(--primary-dark); }
+        .branch-item.hq-item .hq-tag {
+            font-size: 10px;
+            font-weight: 700;
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+        .branch-item.hq-item .hq-note {
+            font-size: 11px;
+            color: var(--primary);
+            margin-top: 7px;
+            font-weight: 600;
+        }
+        .list-empty {
+            padding: 40px 16px;
+            text-align: center;
+            color: var(--text-mute);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .list-loading {
+            padding: 48px 16px;
+            text-align: center;
+            color: var(--text-mute);
+            font-size: 13px;
+        }
+        .spinner {
+            width: 22px; height: 22px;
+            border: 2.5px solid #E4E4E7;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 우측 — 지도 */
+        .map-side {
+            position: relative;
+            min-width: 0;
+            background: #E9E9EC;
+        }
+        #map { width: 100%; height: 100%; min-height: 620px; }
+        .map-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F4F4F5;
+            text-align: center;
+            padding: 32px;
+            z-index: 2;
+        }
+        .map-fallback.hidden { display: none; }
+        .map-fallback .inner { max-width: 360px; }
+        .map-fallback .icon {
+            width: 56px; height: 56px;
+            border-radius: 18px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .map-fallback h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .map-fallback p { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+        .map-fallback code {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+        /* 지도 로딩 중 */
+        .map-loading {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            background: #E9E9EC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            color: var(--text-mute);
+            font-size: 13px;
+            transition: opacity 0.3s;
+        }
+        .map-loading.hidden { opacity: 0; pointer-events: none; }
+
+        /* ===== CTA ===== */
+        .cta-section {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 12px 48px 64px;
+        }
+        .cta-card {
+            background: linear-gradient(135deg, #18181B 0%, #26262B 100%);
+            border-radius: 20px;
+            padding: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-card::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            right: -80px; top: -120px;
+            background: radial-gradient(circle, rgba(79, 94, 248, 0.35) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cta-card h2 {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+            max-width: 560px;
+        }
+        .cta-card h2 em { font-style: normal; color: #9AA5FF; }
+        .cta-card p { color: #B9B9C2; font-size: 14px; margin-top: 8px; line-height: 1.6; }
+        .cta-actions { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; }
+        .btn {
+            padding: 12px 26px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(79,94,248,0.35); }
+        .btn-ghost-light { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.18); }
+        .btn-ghost-light:hover { background: rgba(255,255,255,0.16); }
+
+        /* ===== Footer ===== */
+        .footer {
+            border-top: 1px solid var(--border);
+            background: #fff;
+            padding: 32px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-mute);
+        }
+        .footer .links a { color: var(--text-mute); text-decoration: none; margin-left: 16px; }
+        .footer .links a:hover { color: var(--primary); }
+
+        /* ===== Modal ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(24,24,27,0.5);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 440px;
+            width: 100%;
+            padding: 32px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+            animation: pop 0.2s ease;
+        }
+        @keyframes pop { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+        .modal .m-sub { font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 20px; }
+        .contact-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #F7F7F9;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .contact-row .c-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .contact-row .c-label { font-size: 11px; color: var(--text-mute); }
+        .contact-row .c-value { font-size: 14px; font-weight: 600; margin-top: 1px; }
+        .contact-row .c-value a { color: var(--text); text-decoration: none; }
+        .contact-row .c-value a:hover { color: var(--primary); }
+        .modal .note {
+            font-size: 12px;
+            color: var(--text-mute);
+            background: #FEF9E7;
+            border: 1px solid #F5EBC0;
+            padding: 10px 14px;
+            border-radius: 10px;
+            line-height: 1.6;
+            margin: 18px 0 20px;
+        }
+        .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+        .btn-close { background: #F4F4F5; color: var(--text-sub); }
+        .btn-close:hover { background: #E9E9EC; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .map-layout { grid-template-columns: 320px 1fr; }
+        }
+        @media (max-width: 768px) {
+            .page-header { padding: 96px 16px 24px; }
+            .page-header h1 { font-size: 24px; }
+            .map-wrap { padding: 0 16px 16px; }
+            .map-layout {
+                grid-template-columns: 1fr;
+                min-height: 0;
+            }
+            .side-panel { border-right: none; border-bottom: 1px solid var(--border); }
+            .branch-list { max-height: 300px; }
+            .map-side { order: -1; }
+            #map { min-height: 340px; }
+            .cta-section { padding: 12px 16px 40px; }
+            .cta-card { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+            .footer { padding: 24px 16px; flex-direction: column; align-items: flex-start; }
+            .footer .links a { margin-left: 0; margin-right: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Navigation ===== -->
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="/" class="nav-logo-text"><img src="/common/assets/brand/nubida-logo-light.png" alt="누비다플랫폼" style="height:16px;width:auto;display:block;"></a>
+        </div>
+        <div class="nav-center" id="navCenter">
+            <a href="/pages/company.html" class="nav-link">회사소개</a>
+            <a href="/pages/find-academy.html" class="nav-link active">교육기관 찾기</a>
+            <a href="/pages/guide-videos.html" class="nav-link">가이드 영상</a>
+            <a href="/pages/partnership.html" class="nav-link">파트너십</a>
+            <a href="/pages/contact.html" class="nav-link">문의하기</a>
+        </div>
+        <div class="nav-links">
+            <a href="/pages/login.html" class="nav-btn nav-start">시작하기</a>
+                    <button class="nav-burger" id="navBurger" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+</div>
+    </nav>
+
+    <!-- ===== Page header ===== -->
+    <header class="page-header">
+        <span class="eyebrow">📍 전국 교육센터 안내</span>
+        <h1>가까운 누비다 <em>교육센터</em>를 찾아보세요</h1>
+        <p class="sub">누비다플랫폼의 직영 · 프랜차이즈 교육센터 오픈 소식을 지도에서 확인하세요. 가맹 · 개원 상담은 본사에서 안내해 드립니다.</p>
+        <div class="summary-stats">
+            <span><b id="stat-branch">0</b>개 오픈 예정</span>
+            <span><b id="stat-region">0</b>개 지역</span>
+            <span id="stat-fallback"></span>
+        </div>
+    </header>
+
+    <!-- ===== 기관 유형 안내 ===== -->
+    <section class="type-guide">
+        <div class="tg-card educare">
+            <div class="tg-ico">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/><path d="M9 18v.01"/></svg>
+            </div>
+            <div class="tg-body">
+                <div class="tg-head"><span class="tg-name">에듀케어</span><span class="tg-tag">모집 · 상담 중심</span></div>
+                <p class="tg-desc"><b>학원 · 공부방 모집과 상담</b>을 중심으로 운영되는 센터입니다. 원장님의 학원·공부방 개원과 가맹 상담을 전담하며, 전화 상담으로 빠르게 안내받을 수 있습니다.</p>
+            </div>
+        </div>
+        <div class="tg-card academy">
+            <div class="tg-ico">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <div class="tg-body">
+                <div class="tg-head"><span class="tg-name">학원</span><span class="tg-tag">학생 교육 중심</span></div>
+                <p class="tg-desc"><b>학생 교육</b>을 중심으로 운영되는 곳입니다. 누비다 커리큘럼에 따라 실제 수업과 학습 관리가 이루어지며, 수강을 원하는 학생·학부모님이 이용합니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Map + List ===== -->
+    <section class="map-wrap">
+        <div class="map-layout">
+            <!-- 좌측: 필터 + 목록 -->
+            <div class="side-panel">
+                <div class="filter-bar">
+                    <div class="type-nav" id="typeNav">
+                        <button class="type-nav-btn active" data-kind="all"><span class="dot"></span>전체</button>
+                        <button class="type-nav-btn" data-kind="educare" title="학원·공부방 모집 상담 중심"><span class="dot"></span>에듀케어</button>
+                        <button class="type-nav-btn" data-kind="academy" title="학생 교육 중심"><span class="dot"></span>학원</button>
+                    </div>
+                    <div class="filter-title">지역 필터</div>
+                    <div class="region-chips" id="regionChips">
+                        <button class="region-chip active" data-region="">전체</button>
+                    </div>
+                </div>
+                <div class="branch-list" id="branchList">
+                    <div class="list-loading"><div class="spinner"></div>센터 정보를 불러오는 중...</div>
+                </div>
+            </div>
+            <!-- 우측: 지도 -->
+            <div class="map-side">
+                <div class="map-loading" id="mapLoading"><div class="spinner"></div>지도를 불러오는 중...</div>
+                <div id="map"></div>
+                <div class="map-fallback hidden" id="mapFallback">
+                    <div class="inner">
+                        <div class="icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4F5EF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </div>
+                        <h3>지도를 불러오지 못했어요</h3>
+                        <p id="mapFallbackText">지도 서비스 연결에 실패했습니다.<br>잠시 후 다시 시도해 주세요.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="cta-section">
+        <div class="cta-card">
+            <div>
+                <h2>누비다와 함께 교육의 미래를<br>열어갈 <em>원장님</em>을 찾고 있어요</h2>
+                <p>직영 · 프랜차이즈 운영 문의부터 개원 상담까지, 누비다 본사가 직접 안내해 드립니다.</p>
+            </div>
+            <div class="cta-actions">
+                <a href="/pages/register.html" class="btn btn-ghost-light">원장 회원가입</a>
+                <button class="btn btn-primary" onclick="openContactModal()">상담 문의하기</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        <div>© 2026 누비다플랫폼. All rights reserved.</div>
+        <div class="links" id="footerLinks">
+            <a href="/pages/company.html">회사소개</a>
+            <a href="/pages/policy.html?tab=terms">이용약관</a>
+            <a href="/pages/policy.html?tab=privacy">개인정보처리방침</a>
+            <a href="/pages/partnership.html">파트너십</a>
+            <a href="/pages/contact.html">문의하기</a>
+        </div>
+    </footer>
+
+    <!-- ===== 상담 안내 모달 ===== -->
+    <div class="modal-overlay" id="contactModal" onclick="if(event.target===this)closeContactModal()">
+        <div class="modal">
+            <h3 data-c-modal-title>가맹 · 개원 상담 안내</h3>
+            <p class="m-sub" data-c-modal-sub>누비다 교육센터(직영/프랜차이즈) 운영에 관한 문의는 아래 경로로 접수해 주세요. 본사 담당자가 1:1로 상담해 드립니다.</p>
+            <div class="contact-row">
+                <div class="c-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <div>
+                    <div class="c-label">상담 전화</div>
+                    <div class="c-value"><a href="tel:1661-0000" data-c-phone>1661-0000</a></div>
+                </div>
+            </div>
+            <div class="contact-row">
+                <div class="c-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+                </div>
+                <div>
+                    <div class="c-label">이메일</div>
+                    <div class="c-value"><a href="mailto:adj29089@naver.com" data-c-email>adj29089@naver.com</a></div>
+                </div>
+            </div>
+            <div class="note" data-c-modal-note>💡 가입 후 <b>본사 1:1 문의</b>를 이용하시면 지사 정보와 상담 내역을 온라인으로 편리하게 관리할 수 있어요.</div>
+            <div class="modal-actions">
+                <button class="btn btn-close" onclick="closeContactModal()">닫기</button>
+                <a href="/pages/register.html" class="btn btn-primary" style="text-decoration:none;">회원가입 하러가기</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Kakao Map SDK ===== -->
+    <!-- appkey: 누비다플랫폼 JavaScript 키 (대표님 카카오 콘솔 등록 완료) -->
+    <script>
+        // ===== 상수 =====
+        var KAKAO_APP_KEY = 'baa294fcf6b3312e9ced6b08ce10d1c6';
+        var API_URL = '/api/v1/headquarters/branches/public-map';
+
+        // ===== 본사 상수 =====
+        // 대표님 본사 주소(2026-09-07 접수): 부산광역시 사상구 사상로 349번길 59, 3층
+        var HQ = {
+            id: 'hq',
+            name: '누비다플랫폼',
+            label: '누비다플랫폼 [본사]',
+            address: '부산광역시 사상구 사상로 349번길 59, 3층',
+            region: '부산광역시',
+            phone: '1661-0000'
+        };
+        // 본사 지오코딩 실패 시 fallback 좌표 — 부산 사상구 사상로 349번길 일대(사상구청 인근) 약좌표
+        var HQ_FALLBACK = { lat: 35.1527, lng: 128.9914 };
+
+        // ===== 상태 =====
+        var branches = [];
+        var markers = [];
+        var currentRegion = '';          // 지역(시·도) 필터
+        var currentKind = 'all';         // 기관 유형 필터: 'all' | 'educare' | 'academy'
+        var displayBranches = [];        // 지도에 그려야 할 대상 (필터 반영)
+        var activeMarkerKey = null;      // 현재 열린 팝업 식별(key)
+        var activeMarkerId = null;
+        var mapObj = null;
+        var geocoder = null;
+        var kakaoReady = false;
+        // 본사 상태
+        var hqLatLng = null;          // 지오코딩 성공 시 {lat,lng}, 실패 시 HQ_FALLBACK
+        var hqGeocodeDone = false;    // 본사 좌표 확정 여부
+        var branchMarkersDone = false; // 지사 마커 배치 완료 여부
+        var hqMarker = null;
+        var hqInfo = null;
+
+        // ===== 전국 뷰 상수 (남한 전체가 보이는 고정 시야) =====
+        var NATION_CENTER = { lat: 36.35, lng: 127.9 };  // 한반도 남부 중심
+        var NATION_LEVEL = 13;                            // 카카오 지도 레벨 13 = 전국
+
+        // ===== 돔 헬퍼 =====
+        function $(s) { return document.querySelector(s); }
+        function openContactModal() { $('#contactModal').classList.add('open'); }
+        function closeContactModal() { $('#contactModal').classList.remove('open'); }
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeContactModal(); });
+
+        // ===== 지사 목록 fetch =====
+        function fetchBranches() {
+            fetch(API_URL, { cache: 'no-store' })
+                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                .then(function (json) {
+                    var list = (json && json.data) || [];
+                    branches = list;
+                    displayBranches = branches;   // 초기: 전체 대상
+                    renderStats();
+                    renderChips();
+                    renderList(branches);
+                    if (kakaoReady && branches.length) placeMarkers();
+                })
+                .catch(function (err) {
+                    // 지사 API 실패/빈 DB여도 본사는 항상 목록·지도에 노출한다
+                    branches = [];
+                    displayBranches = branches;
+                    renderStats();
+                    renderChips();
+                    renderList(branches);
+                    $('#branchList').insertAdjacentHTML('beforeend',
+                        '<div class="list-empty" style="padding-top:8px;">지사(교육센터) 정보를 불러오지 못했어요.<br>잠시 후 다시 시도해 주세요.<br><br><span style="font-size:11px;color:#A1A1AA;">(' + err.message + ')</span></div>'
+                    );
+                    if (kakaoReady && branches.length) placeMarkers();
+                });
+        }
+
+        function renderStats() {
+            var regions = {};
+            branches.forEach(function (b) { if (b.region) regions[b.region] = true; });
+            $('#stat-branch').textContent = branches.length;
+            $('#stat-region').textContent = Object.keys(regions).length;
+        }
+
+        // 유형에 맞는 기관만 추리기 (지역 + 유형 교차 필터)
+        function filterBranches() {
+            return branches.filter(function (b) {
+                if (b.kind !== 'academy' && b.kind !== 'educare') return false; // 보수적
+                if (currentKind !== 'all' && b.kind !== currentKind) return false;
+                if (currentRegion && b.region !== currentRegion) return false;
+                return true;
+            });
+        }
+
+        function bindTypeNav() {
+            var nav = $('#typeNav');
+            if (!nav || nav.dataset.bound) return;
+            nav.dataset.bound = '1';
+            nav.querySelectorAll('.type-nav-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    currentKind = btn.getAttribute('data-kind') || 'all';
+                    nav.querySelectorAll('.type-nav-btn').forEach(function (c) { c.classList.toggle('active', c === btn); });
+                    applyListFilter();
+                });
+            });
+        }
+
+        // 현재 지역+유형 필터를 목록·지도에 일괄 반영
+        function applyListFilter() {
+            displayBranches = filterBranches();  // 현재 필터(지역+유형) 대상 → 지도에 그린다
+            renderList(displayBranches);
+            if (kakaoReady && mapObj) {
+                if (displayBranches.length) {
+                    placeMarkers();               // 대상 기관만 다시 마커 배치
+                } else {
+                    clearMarkers();
+                    maybeFitAll();                // 기관 없어도 본사 최소 배치
+                }
+            }
+        }
+
+        function renderChips() {
+            var seen = {};
+            branches.forEach(function (b) { if (b.region && !seen[b.region]) seen[b.region] = true; });
+            var html = '<button class="region-chip active" data-region="">전체</button>';
+            Object.keys(seen).sort().forEach(function (r) {
+                html += '<button class="region-chip" data-region="' + escapeHtml(r) + '">' + escapeHtml(r) + '</button>';
+            });
+            $('#regionChips').innerHTML = html;
+            $('#regionChips').querySelectorAll('.region-chip').forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    currentRegion = chip.getAttribute('data-region') || '';
+                    $('#regionChips').querySelectorAll('.region-chip').forEach(function (c) {
+                        c.classList.toggle('active', c === chip);
+                    });
+                    applyListFilter();
+                });
+            });
+            bindTypeNav();
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, function (m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
+        }
+
+        function typeLabel(t) { return t === 'franchise' ? '프랜차이즈' : '직영'; }
+
+        // 기관 유형 라벨: 백엔드가 확정 유형(edu=에듀케어 / academy=학원)을 주면 그대로,
+        // 아직 없으면 기존 contract_type(direct 직영-학원계열 / franchise 프랜차이즈-에듀케어계열)으로 라벨링.
+        function typeLabel2(b) {
+            var t = b.branch_type;
+            if (t === 'edu' || t === 'educare') return '에듀케어';
+            if (t === 'academy' || t === 'director') return '학원';
+            if (t === 'franchise') return '에듀케어';
+            return '학원'; // direct 계열 기본
+        }
+
+        function hqItemHtml() {
+            return '<div class="branch-item hq-item" data-key="__hq__">'
+                + '<div class="row1"><span class="hq-star">★</span><span class="name">' + escapeHtml(HQ.name) + '</span><span class="hq-tag">본사</span></div>'
+                + '<div class="addr"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4F5EF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>' + escapeHtml(HQ.address) + '</span></div>'
+                + '<div class="hq-note">누비다플랫폼 본사 · 가맹/개원 상담 안내</div>'
+                + '</div>';
+        }
+
+        function renderList(list) {
+            var el = $('#branchList');
+            // 본사 항목 항상 최상단 (지역/유형 필터와 무관)
+            var html = hqItemHtml();
+            var items = (list || []).slice();
+            if (!items.length) {
+                // 본사(hq-item)는 위에 항상 렌더되므로 empty 문구는 '센터 없음 + 본사 상담 유도'
+                var msg = currentRegion ? '이 지역에 오픈 예정인 교육센터가 아직 없어요.<br>가맹/개원 상담은 위 ★ 본사로 문의해 주세요.' : '아직 오픈한 교육센터가 없어요.<br>가맹/개원 상담은 위 ★ 본사로 문의해 주세요.';
+                html += '<div class="list-empty">' + msg + '</div>';
+            } else {
+                // 지역(시·도) 헤더 그룹으로 목록을 나눈다
+                var groups = {};
+                items.forEach(function (b) {
+                    var key = b.region || '기타';
+                    (groups[key] = groups[key] || []).push(b);
+                });
+                var keys = Object.keys(groups);
+                // 선택된 지역을 맨 앞으로, 그 외는 시/도명 순 정렬 (기타는 끝)
+                keys.sort(function (a, b) {
+                    var ae = a === '기타' ? 1 : 0, be = b === '기타' ? 1 : 0;
+                    if (ae !== be) return ae - be;
+                    if (currentRegion === a) return -1;
+                    if (currentRegion === b) return 1;
+                    return a.localeCompare(b, 'ko');
+                });
+                keys.forEach(function (region) {
+                    html += '<div class="list-group-title">' + escapeHtml(region) + '</div>';
+                    groups[region].forEach(function (b) {
+                        var badgeCls = b.kind === 'academy' ? 'academy' : 'educare'; // 학원=보라 / 에듀케어=주황
+                        var typeName = typeLabel2(b);
+                        var key = b.key || (b.kind + '-' + b.id);
+                        html += '<div class="branch-item is-soon" data-key="' + escapeHtml(key) + '">'
+                            + '<div class="row1"><span class="name">' + escapeHtml(b.name) + '</span>'
+                            + '<span class="branch-type ' + badgeCls + '">' + typeName + '</span></div>'
+                            + '<div class="soon-line"><span class="soon-badge">오픈 예정</span><span class="soon-text">센터 준비 중입니다 · 상담은 본사로 문의해 주세요</span></div>'
+                            + '</div>';
+                    });
+                });
+            }
+            el.innerHTML = html;
+            // 목록 클릭 → key 기반 라우팅
+            el.querySelectorAll('.branch-item').forEach(function (item) {
+                item.addEventListener('click', function () {
+                    var k = item.getAttribute('data-key');
+                    if (k === '__hq__' || item.classList.contains('hq-item')) { selectHQ(); return; }
+                    selectByKey(k);
+                });
+            });
+        }
+
+        function phoneSafe(p) { return String(p || '').replace(/[^0-9+]/g, ''); }
+
+        function findBranch(id) {
+            for (var i = 0; i < branches.length; i++) if (branches[i].id === id) return branches[i];
+            return null;
+        }
+
+        // ===== 카카오 맵 =====
+        function loadKakaoMap() {
+            var script = document.createElement('script');
+            script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_APP_KEY + '&libraries=services&autoload=false';
+            script.onload = function () {
+                // autoload=false SDK: 로드 직후 kakao.maps는 아직 정의되지 않으므로
+                // kakao.maps.load(callback)로 초기화를 완료해야 한다.
+                try {
+                    if (window.kakao && window.kakao.maps && window.kakao.maps.load) {
+                        window.kakao.maps.load(function () {
+                            kakaoReady = true;
+                            initMap();
+                        });
+                    } else {
+                        showMapFail('지도 SDK를 불러오지 못했어요.<br>관리자에게 도메인 등록 상태를 확인해 주세요.');
+                    }
+                } catch (e) {
+                    showMapFail('지도 SDK 오류가 발생했습니다.<br>관리자에게 도메인 등록 상태를 확인해 주세요.');
+                }
+            };
+            script.onerror = function () {
+                showMapFail('지도 서비스 연결에 실패했습니다.');
+            };
+            document.head.appendChild(script);
+            setTimeout(function () {
+                if (!window.kakao || !window.kakao.maps) showMapFail('지도 서비스 응답이 없습니다.<br>도메인 등록 상태를 확인해 주세요.');
+            }, 12000);
+        }
+
+        function initMap() {
+            window.kakao.maps.load(function () {
+                kakaoReady = true;
+                var center = new kakao.maps.LatLng(NATION_CENTER.lat, NATION_CENTER.lng); // 전국 중심
+                var opts = { center: center, level: NATION_LEVEL };
+                mapObj = new kakao.maps.Map($('#map'), opts);
+                geocoder = new kakao.maps.services.Geocoder();
+                $('#mapLoading').classList.add('hidden');
+                geocodeHQ(); // 본사 지오코딩 시작 — 지사 유무와 무관, 실패 시 fallback 좌표
+                if (branches.length) {
+                    placeMarkers();
+                } else {
+                    maybeFitAll(); // 지사가 없어도 본사만으로 지도 배치
+                }
+            });
+        }
+
+        function placeMarkers() {
+            clearMarkers();
+            branchMarkersDone = false;
+            var coords = {};
+            var pending = 0;
+            var list = displayBranches; // 현재 지도 대상 (필터 반영)
+            list.forEach(function (b) {
+                if (!b.address) { b._lat = null; return; }
+                pending++;
+                (function (branch) {
+                    geocoder.addressSearch(branch.address, function (result, status) {
+                        pending--;
+                        if (status === kakao.maps.services.Status.OK && result && result.length) {
+                            branch._lat = parseFloat(result[0].y);
+                            branch._lng = parseFloat(result[0].x);
+                        } else {
+                            branch._lat = null;
+                        }
+                        if (pending === 0) {
+                            drawMarkers();
+                            branchMarkersDone = true;
+                            maybeFitAll();
+                        }
+                    });
+                })(b);
+            });
+            if (pending === 0) { drawMarkers(); branchMarkersDone = true; maybeFitAll(); }
+        }
+
+        function clearMarkers() {
+            markers.forEach(function (m) { m.setMap(null); });
+            markers = [];
+        }
+
+        function drawMarkers() {
+            clearMarkers();
+            var pin = {
+                educare: makePin('#F59E0B'),  // 에듀케어(지사) 주황
+                academy: makePin('#7C3AED'),  // 학원 보라
+                hq: makePin('#4F5EF8')        // 공통/직영 남색 폴백
+            };
+            displayBranches.forEach(function (b) {
+                if (b._lat == null || b._lng == null) return;
+                var kind = b.kind;
+                var img = pin[kind === 'educare' ? 'educare' : (kind === 'academy' ? 'academy' : 'hq')];
+                var marker = new kakao.maps.Marker({
+                    map: mapObj,
+                    position: new kakao.maps.LatLng(b._lat, b._lng),
+                    image: img,
+                    clickable: true
+                });
+                var iw = makeInfoWindow(b);
+                kakao.maps.event.addListener(marker, 'click', function () { openInfo(iw, marker, b); });
+                b._marker = marker;
+                markers.push(marker);
+            });
+        }
+
+        function makePin(hex) {
+            var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="32" viewBox="0 0 26 32">'
+                + '<path d="M13 1C7.1 1 2.5 5.6 2.5 11.4 2.5 19.4 13 31 13 31s10.5-11.6 10.5-19.6C23.5 5.6 18.9 1 13 1z" fill="' + hex + '" stroke="#fff" stroke-width="2"/>'
+                + '<circle cx="13" cy="11.4" r="4" fill="#fff"/></svg>';
+            var blob = new Blob([svg], { type: 'image/svg+xml' });
+            var url = URL.createObjectURL(blob);
+            var size = new kakao.maps.Size(26, 32);
+            var opt = { offset: new kakao.maps.Point(13, 31), shape: 'circle', coords: ['13', '11', '6'] };
+            return new kakao.maps.MarkerImage(url, size, opt);
+        }
+
+        // ===== 본사 전용 =====
+        // 일반 지사 핀(26x32)보다 크게 만든 강조 핀(34x42) — 브랜드색 + 별 (대표님 지시 2026-09-07: 전체 축소)
+        function makeHQPin() {
+            var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="42" viewBox="0 0 34 42">'
+                + '<path d="M17 1C9.1 1 2.6 7.1 2.6 14.8 2.6 24.9 17 41 17 41s14.4-16.1 14.4-26.1C31.4 7.1 24.9 1 17 1z" fill="#4F5EF8" stroke="#fff" stroke-width="2"/>'
+                + '<circle cx="17" cy="14.8" r="6.2" fill="#fff"/>'
+                + '<polygon points="17,9.5 18.3,13 22,13.1 19.1,15.5 20.2,19.2 17,17 13.8,19.2 14.9,15.5 12,13.1 15.7,13" fill="#4F5EF8"/></svg>';
+            var blob = new Blob([svg], { type: 'image/svg+xml' });
+            var url = URL.createObjectURL(blob);
+            var size = new kakao.maps.Size(34, 42);
+            var opt = { offset: new kakao.maps.Point(17, 41), shape: 'circle', coords: ['17', '14', '7'] };
+            return new kakao.maps.MarkerImage(url, size, opt);
+        }
+
+        // 본사 주소 → 좌표 (실패 시 HQ_FALLBACK 상수 사용)
+        function geocodeHQ() {
+            geocoder.addressSearch(HQ.address, function (result, status) {
+                if (status === kakao.maps.services.Status.OK && result && result.length) {
+                    hqLatLng = { lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) };
+                    console.log('[본사] 지오코딩 성공: ' + HQ.address + ' → lat=' + hqLatLng.lat + ', lng=' + hqLatLng.lng);
+                } else {
+                    hqLatLng = { lat: HQ_FALLBACK.lat, lng: HQ_FALLBACK.lng };
+                    console.warn('[본사] 지오코딩 실패 → fallback 좌표 사용: ' + HQ_FALLBACK.lat + ', ' + HQ_FALLBACK.lng);
+                }
+                hqGeocodeDone = true;
+                drawHQMarker();
+                maybeFitAll();
+            });
+        }
+
+        function drawHQMarker() {
+            if (!kakaoReady || !mapObj || !hqLatLng) return;
+            if (hqMarker) hqMarker.setMap(null);
+            hqMarker = new kakao.maps.Marker({
+                map: mapObj,
+                position: new kakao.maps.LatLng(hqLatLng.lat, hqLatLng.lng),
+                image: makeHQPin(),
+                clickable: true,
+                zIndex: 10
+            });
+            hqInfo = makeHQInfoWindow();
+            kakao.maps.event.addListener(hqMarker, 'click', function () { openHQInfo(); });
+        }
+
+        function makeHQInfoWindow() {
+            var html = '<div style="padding:14px 18px;font-family:Inter,\'Noto Sans KR\',sans-serif;min-width:250px;max-width:360px;width:max-content;box-sizing:border-box;font-size:13px;line-height:1.55;">'
+                + '<div style="display:flex;align-items:center;gap:7px;font-weight:800;font-size:15px;color:#3E4BD8;white-space:normal;overflow-wrap:anywhere;word-break:keep-all;">' + escapeHtml(HQ.label) + '</div>'
+                + '<div style="color:#71717A;margin-top:6px;line-height:1.55;white-space:normal;overflow-wrap:anywhere;word-break:keep-all;">' + escapeHtml(HQ.address) + '</div>'
+                + '<div style="margin-top:8px;padding-top:8px;border-top:1px solid #F0F0F4;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+                + '<span style="display:inline-flex;align-items:center;gap:5px;color:#71717A;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' + escapeHtml(HQ.phone) + '</span>'
+                + '<span style="margin-left:auto;display:inline-block;background:#EEF0FF;color:#4F5EF8;font-weight:700;font-size:10px;padding:2px 8px;border-radius:999px;">본사</span>'
+                + '</div></div>';
+            return new kakao.maps.InfoWindow({ content: html, zIndex: 30 });
+        }
+
+        // 본사 좌표 확정 && 지사 마커 배치(필요시) 완료 → 최종 fit
+        function maybeFitAll() {
+            if (!kakaoReady || !hqGeocodeDone) return;
+            if (branches.length && !branchMarkersDone) return;
+            // 지역 필터가 없을 때는 항상 전국 뷰 (특정 지역으로 튀지 않도록)
+            if (!currentRegion) { fitNationwide(); return; }
+            fitToBranches(branches.filter(function (x) { return x.region === currentRegion; }));
+        }
+
+        // ===== 전국 뷰 =====
+        function fitNationwide() {
+            if (!kakaoReady || !mapObj) return;
+            mapObj.setCenter(new kakao.maps.LatLng(NATION_CENTER.lat, NATION_CENTER.lng));
+            mapObj.setLevel(NATION_LEVEL);
+        }
+
+        function makeInfoWindow(b) {
+            var html = '<div style="padding:12px 16px;font-family:Inter,\'Noto Sans KR\',sans-serif;min-width:220px;max-width:340px;width:max-content;box-sizing:border-box;font-size:13px;line-height:1.55;">'
+                + '<div style="font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px;min-width:0;white-space:normal;overflow-wrap:anywhere;word-break:keep-all;">' + '<span style="overflow-wrap:anywhere;word-break:keep-all;">' + escapeHtml(b.name) + '</span>' + '</div>'
+                + '<div style="color:#71717A;margin-top:5px;">오픈 예정 센터입니다. 상담은 본사로 문의해 주세요.</div>'
+                + '<div style="margin-top:6px;"><span style="display:inline-block;background:' + (b.branch_type==='edu'?'#E7F6FF;color:#0E7490':b.branch_type==='academy'?'#F5EBFF;color:#7E22CE':'#EEF0FF;color:#4F5EF8') + ';font-weight:700;font-size:10px;padding:2.5px 9px;border-radius:999px;">' + typeLabel2(b) + '</span> <span style="display:inline-block;background:#FEF6E7;color:#B45309;font-weight:700;font-size:10px;padding:2.5px 9px;border-radius:999px;">오픈 예정</span></div>'
+                + '</div>';
+            return new kakao.maps.InfoWindow({ content: html, zIndex: 20 });
+        }
+
+        var ACTIVE_HQ = '__hq__';
+
+        // key로 엔트리 찾기 (id 충돌 없이 kind+id 유일 키 사용)
+        function findByKey(key) {
+            for (var i = 0; i < branches.length; i++) {
+                if (branches[i].key === key) return branches[i];
+            }
+            return null;
+        }
+
+        function openInfo(iw, marker, b) {
+            var k = b.key || (b.kind + '-' + b.id);
+            if (activeMarkerKey != null && activeMarkerKey !== k) {
+                if (activeMarkerKey === ACTIVE_HQ) {
+                    if (hqInfo) hqInfo.close();
+                } else {
+                    var prev = findByKey(activeMarkerKey);
+                    if (prev && prev._iw) prev._iw.close();
+                }
+            }
+            iw.open(mapObj, marker);
+            b._iw = iw;
+            activeMarkerKey = k;
+            highlightList(k);
+        }
+
+        function selectByKey(k) {
+            var b = findByKey(k);
+            if (!b) return;
+            // 클릭한 기관이 현재 지역 필터 밖이면 필터를 그 지역으로 재적용
+            if (currentRegion && b.region !== currentRegion) {
+                currentRegion = b.region || '';
+                $('#regionChips').querySelectorAll('.region-chip').forEach(function (c) {
+                    c.classList.toggle('active', c.getAttribute('data-region') === currentRegion);
+                });
+                applyListFilter();
+                b = findByKey(k); // 목록 재렌더 후에도 keek 객체 유지(마커생성 대기 중일 수 있어 코랄릭스)
+            }
+            if (kakaoReady && b._lat != null && b._marker) {
+                mapObj.panTo(new kakao.maps.LatLng(b._lat, b._lng));
+                mapObj.setLevel(4);
+                openInfo(b._iw || makeInfoWindow(b), b._marker, b);
+            } else {
+                if (kakaoReady && b._lat != null) mapObj.panTo(new kakao.maps.LatLng(b._lat, b._lng));
+                highlightList(k);
+            }
+        }
+
+        // ===== 본사 선택/하이라이트 =====
+        function selectHQ() {
+            if (kakaoReady && hqLatLng) {
+                mapObj.panTo(new kakao.maps.LatLng(hqLatLng.lat, hqLatLng.lng));
+                mapObj.setLevel(4);
+                openHQInfo();
+            } else {
+                highlightList(ACTIVE_HQ);
+            }
+        }
+
+        function openHQInfo() {
+            if (activeMarkerKey != null && activeMarkerKey !== ACTIVE_HQ) {
+                var prev = findByKey(activeMarkerKey);
+                if (prev && prev._iw) prev._iw.close();
+            }
+            if (hqMarker) { hqInfo.open(mapObj, hqMarker); }
+            activeMarkerKey = ACTIVE_HQ;
+            highlightList(ACTIVE_HQ);
+        }
+
+        function highlightList(id) {
+            document.querySelectorAll('.branch-item').forEach(function (item) {
+                var matched = (id === ACTIVE_HQ) ? item.classList.contains('hq-item')
+                    : item.getAttribute('data-key') === id;
+                item.classList.toggle('active', matched);
+            });
+            var act = document.querySelector('.branch-item.active');
+            if (act && act.scrollIntoView) act.scrollIntoView({ block: 'nearest' });
+        }
+
+        function fitToBranches(list) {
+            if (!kakaoReady || !mapObj) return;
+            var pts = [];
+            list.forEach(function (b) { if (b._lat != null && b._lng != null) pts.push(new kakao.maps.LatLng(b._lat, b._lng)); });
+            // 지사가 1개 이하면 전국 뷰 유지 (특정 지역으로 줌인하지 않음)
+            if (pts.length <= 1) { mapObj.setCenter(new kakao.maps.LatLng(NATION_CENTER.lat, NATION_CENTER.lng)); mapObj.setLevel(NATION_LEVEL); return; }
+            var bounds = new kakao.maps.LatLngBounds();
+            pts.forEach(function (p) { bounds.extend(p); });
+            mapObj.setBounds(bounds, 80, 80);
+            // 전국보다 더 넓게(축소) 보이지 않도록 상한 캡
+            if (mapObj.getLevel() > NATION_LEVEL) mapObj.setLevel(NATION_LEVEL);
+        }
+
+        // ===== 실패 처리 =====
+        function showMapFail(msg) {
+            $('#mapLoading').classList.add('hidden');
+            var fb = $('#mapFallback');
+            fb.classList.remove('hidden');
+            $('#mapFallbackText').innerHTML = msg + '<br><br><b style="color:#18181B;">카카오 지도</b> 도메인/키 오류이면<br>관리자에게 <code>JavaScript 키</code> 등록을 요청해 주세요.';
+        }
+
+        // ===== Init =====
+        fetchBranches();
+        loadKakaoMap();
+    </script>
+    <script src="/common/js/site-blocks.js?v=20260918nl"></script>
+    <script src="/common/js/public-site.js?v=20260914nav"></script>
+</body>
+</html>

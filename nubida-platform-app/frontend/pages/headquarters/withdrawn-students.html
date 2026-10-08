@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>탈퇴 학생 히스토리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260610b">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo-light.svg?v=20260610b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                        <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="/pages/firmware.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4M8 4h8"/><circle cx="9" cy="13" r="1.1"/><circle cx="15" cy="13" r="1.1"/></svg></span><span class="nav-label">교구 자료실</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="security.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="nav-label">보안 설정</span></a>
+        <a class="nav-item sub" href="access-control.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="nav-label">노래 AI 이용 관리</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">본사</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><h1>탈퇴 학생 히스토리</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span><button class="btn btn-ghost btn-xs" onclick="exportExcel('withdrawn-students')" style="margin-left:8px">📥 엑셀</button>
+                </div>
+            </div>
+
+            <!-- 툴바 -->
+            <div class="users-toolbar">
+                <div class="users-toolbar-left">
+                    <input type="text" class="form-input" id="searchInput" placeholder="학생명/아이디/이메일 검색..." oninput="filterStudents()" style="width:240px">
+                    <span class="small-text" id="studentCount">0명</span>
+                </div>
+                <div class="users-toolbar-right">
+                    <!-- additional actions if needed -->
+                </div>
+            </div>
+
+            <!-- 탈퇴 학생 목록 -->
+            <div class="users-card">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>학생명</th>
+                            <th>아이디</th>
+                            <th>이메일</th>
+                            <th>강좌명</th>
+                            <th>에듀케어명</th>
+                            <th>원장명</th>
+                            <th style="width:110px">종료일</th>
+                            <th style="width:160px">사유</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <tr class="user-empty">
+                            <td colspan="8">탈퇴 학생 정보를 불러오는 중...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination-wrap" id="paginationWrap"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script>
+    // ===== XSS 방지 헬퍼 =====
+    if (typeof esc !== 'function') {
+        window.esc = function(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        };
+    }
+
+    // ===== State =====
+    let allStudents = [];
+    let filteredStudents = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    const PER_PAGE = 20;
+
+    // ===== Initialization =====
+    document.addEventListener('DOMContentLoaded', async function() {
+        requireAuth();
+        renderSidebarUser();
+        await loadStudents(1);
+    });
+
+    // ===== Load Withdrawn Students =====
+    async function loadStudents(page) {
+        currentPage = page || 1;
+
+        try {
+            let url = '/headquarters/withdrawn-students?page=' + currentPage + '&per_page=' + PER_PAGE;
+
+            const res = await apiGet(url);
+            allStudents = res.data || [];
+            totalPages = res.total_pages || 1;
+            filteredStudents = [...allStudents];
+            renderStudents();
+            renderPaginationUI();
+            document.getElementById('studentCount').textContent = (res.total || 0) + '명';
+        } catch (err) {
+            console.error('Failed to load withdrawn students:', err);
+            showAlert('탈퇴 학생 목록을 불러오는데 실패했습니다.', 'error');
+        }
+    }
+
+    // ===== Render Students =====
+    function renderStudents() {
+        const tbody = document.getElementById('studentTableBody');
+
+        if (filteredStudents.length === 0) {
+            tbody.innerHTML = '<tr class="user-empty"><td colspan="8">👤 탈퇴한 학생 기록이 없습니다.</td></tr>';
+            return;
+        }
+
+        let html = '';
+        filteredStudents.forEach(s => {
+            const name = s.student_name || s.name || '-';
+            const username = s.username || '-';
+            const email = s.email || '-';
+            const courseName = s.course_name || s.course_title || '-';
+            const branchName = s.branch_name || '-';
+            const directorName = s.director_name || '-';
+            const endDate = s.ended_at || s.withdrawn_at || s.end_date || '-';
+            const reason = s.reason || s.withdrawal_reason || '-';
+
+            // Format end date
+            const formattedDate = endDate !== '-' ? endDate.split('T')[0] : '-';
+
+            html += '<tr>';
+            html += '<td><strong>' + esc(name) + '</strong></td>';
+            html += '<td>' + esc(username) + '</td>';
+            html += '<td style="font-size:12px">' + esc(email) + '</td>';
+            html += '<td>' + esc(courseName) + '</td>';
+            html += '<td>' + esc(branchName) + '</td>';
+            html += '<td>' + esc(directorName) + '</td>';
+            html += '<td style="font-size:12px;color:var(--text-tertiary)">' + formattedDate + '</td>';
+            html += '<td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(reason) + '">' + esc(reason) + '</td>';
+            html += '</tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    // ===== Filter (client-side search) =====
+    function filterStudents() {
+        const q = document.getElementById('searchInput').value.toLowerCase().trim();
+        if (!q) {
+            filteredStudents = [...allStudents];
+        } else {
+            filteredStudents = allStudents.filter(s =>
+                (s.student_name && s.student_name.toLowerCase().includes(q)) ||
+                (s.name && s.name.toLowerCase().includes(q)) ||
+                (s.username && s.username.toLowerCase().includes(q)) ||
+                (s.email && s.email.toLowerCase().includes(q)) ||
+                (s.course_name && s.course_name.toLowerCase().includes(q)) ||
+                (s.course_title && s.course_title.toLowerCase().includes(q)) ||
+                (s.branch_name && s.branch_name.toLowerCase().includes(q)) ||
+                (s.director_name && s.director_name.toLowerCase().includes(q)) ||
+                (s.reason && s.reason.toLowerCase().includes(q)) ||
+                (s.withdrawal_reason && s.withdrawal_reason.toLowerCase().includes(q))
+            );
+        }
+        renderStudents();
+    }
+
+    // ===== Pagination =====
+    function renderPaginationUI() {
+        const wrap = document.getElementById('paginationWrap');
+        let html = '';
+
+        if (currentPage > 1) {
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(1)">«</button>';
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(' + (currentPage - 1) + ')">‹</button>';
+        } else {
+            html += '<button class="btn btn-ghost btn-sm" disabled>«</button><button class="btn btn-ghost btn-sm" disabled>‹</button>';
+        }
+
+        const start = Math.max(1, currentPage - 2);
+        const end = Math.min(totalPages, currentPage + 2);
+        for (let i = start; i <= end; i++) {
+            html += '<button class="btn btn-sm ' + (i === currentPage ? 'btn-primary' : 'btn-ghost') + '" onclick="loadStudents(' + i + ')">' + i + '</button>';
+        }
+
+        if (currentPage < totalPages) {
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(' + (currentPage + 1) + ')">›</button>';
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(' + totalPages + ')">»</button>';
+        } else {
+            html += '<button class="btn btn-ghost btn-sm" disabled>›</button><button class="btn btn-ghost btn-sm" disabled>»</button>';
+        }
+
+        wrap.innerHTML = html;
+    }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

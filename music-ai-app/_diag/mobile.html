@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>누비다 AI 로딩 진단</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+         background:#0f172a; color:#f8fafc; margin:0; padding:14px; font-size:16px; line-height:1.55; }
+  h1 { font-size:19px; margin:0 0 4px; }
+  .sub { color:#94a3b8; font-size:13px; margin-bottom:14px; }
+  .card { background:#1e293b; border-radius:12px; padding:13px; margin-bottom:11px; }
+  .card h2 { font-size:14px; margin:0 0 9px; color:#38bdf8; letter-spacing:.3px; }
+  .row { display:flex; justify-content:space-between; align-items:baseline; padding:6px 0; border-bottom:1px solid #334155; gap:10px; }
+  .row:last-child { border-bottom:none; }
+  .k { color:#94a3b8; font-size:14px; flex-shrink:0; }
+  .v { font-weight:700; font-variant-numeric:tabular-nums; text-align:right; font-size:15px; }
+  .good { color:#4ade80; } .warn { color:#fbbf24; } .bad { color:#f87171; }
+  button { width:100%; padding:17px; font-size:18px; font-weight:800; border:none; border-radius:13px;
+           background:#0ea5e9; color:#fff; margin-bottom:12px; font-family:inherit; }
+  button:active { background:#0284c7; transform:scale(.99); }
+  button:disabled { background:#475569; }
+  #status { text-align:center; padding:11px; font-weight:700; font-size:15px; min-height:24px; }
+  .bar { height:9px; background:#334155; border-radius:5px; overflow:hidden; margin:9px 0; }
+  .bar > div { height:100%; background:#0ea5e9; width:0%; transition:width .25s; }
+  .verdict { text-align:center; padding:12px; border-radius:10px; font-weight:800; font-size:17px; margin:10px 0; }
+  .hint { color:#64748b; font-size:12px; text-align:center; margin-top:8px; }
+</style>
+</head>
+<body>
+<h1>🔍 누비다 AI 로딩 진단</h1>
+<div class="sub">로딩이 왜 느린지 측정합니다. 버튼만 누르세요. (약 1분 소요)</div>
+
+<button id="run">▶ 진단 시작</button>
+<div id="status">대기 중...</div>
+<div class="bar"><div id="bar"></div></div>
+<div id="out"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const S = (t) => { $('status').textContent = t; };
+const B = (p) => { $('bar').style.width = p + '%'; };
+
+function card(title, rows) {
+  const d = document.createElement('div');
+  d.className = 'card';
+  d.innerHTML = '<h2>' + title + '</h2>' + rows.map(r =>
+    '<div class="row"><span class="k">' + r[0] + '</span><span class="v ' + (r[2]||'') + '">' + r[1] + '</span></div>'
+  ).join('');
+  $('out').appendChild(d);
+}
+function verdict(text, cls) {
+  const d = document.createElement('div');
+  d.className = 'verdict ' + cls;
+  d.style.background = cls === 'bad' ? '#7f1d1d' : cls === 'warn' ? '#78350f' : '#14532d';
+  d.textContent = text;
+  $('out').appendChild(d);
+}
+const mbClass = (m) => m >= 50 ? 'good' : m >= 15 ? 'warn' : 'bad';
+
+async function measure(url, label) {
+  const t = performance.now();
+  const res = await fetch(url + '?d=' + Date.now(), { cache: 'no-store' });
+  const ttfb = performance.now() - t;
+  const total = +res.headers.get('content-length') || 0;
+  let loaded = 0;
+  const reader = res.body.getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    loaded += value.length;
+    $('status').textContent = label + ' 중... ' + Math.round(loaded/1024/1024*10)/10 + 'MB';
+  }
+  const dur = performance.now() - t;
+  const mbps = loaded * 8 / 1e6 / (dur / 1000);
+  return { label, mb: loaded/1024/1024, ttfb: Math.round(ttfb), dur: Math.round(dur), mbps: Math.round(mbps), cf: res.headers.get('cf-cache-status') };
+}
+
+$('run').onclick = async () => {
+  $('out').innerHTML = '';
+  $('run').disabled = true;
+  $('run').textContent = '측정 중...';
+  const conn = navigator.connection || {};
+  const tAll = performance.now();
+
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  card('📱 기기 정보', [
+    ['기기', isIOS ? 'iPhone/iPad' : (/Android/.test(navigator.userAgent) ? 'Android' : 'PC')],
+    ['iOS 버전', (navigator.userAgent.match(/OS (\d+[_\d]*) like/) || [])[1]?.replace(/_/g,'.') || '?'],
+    ['CPU 코어', navigator.hardwareConcurrency || '?'],
+    ['메모리', (navigator.deviceMemory || '제한됨') + (navigator.deviceMemory ? ' GB' : '')],
+    ['네트워크', conn.effectiveType || '?'],
+    ['회선 추정', (conn.downlink || '?') + ' Mbps', mbClass(conn.downlink || 0)],
+    ['RTT', (conn.rtt || '?') + ' ms', (conn.rtt || 0) < 100 ? 'good' : 'warn'],
+    ['WASM Threads', typeof SharedArrayBuffer !== 'undefined' ? '가능' : '불가(단일코어)']
+  ]);
+
+  const files = [
+    ['/static/sherpa/sherpa-onnx-wasm-main-tts.wasm', 'WASM 엔진 11MB'],
+    ['/static/models/ko-kss/model.onnx', '한국어 모델 60MB'],
+    ['/static/models/ko-kss/espeak-ng-data/phondata', '발음 데이터 0.5MB']
+  ];
+  const R = [];
+  for (let i = 0; i < files.length; i++) {
+    try { R.push(await measure(files[i][0], files[i][1])); }
+    catch (e) { R.push({ label: files[i][1], error: e.message }); }
+    B((i+1)/files.length*90);
+  }
+
+  card('📥 다운로드 속도', R.map(r => {
+    if (r.error) return [r.label, '실패', 'bad'];
+    return [r.label, r.dur + 'ms · ' + r.mbps + 'Mbps', mbClass(r.mbps)];
+  }));
+
+  const model = R.find(r => r.label.includes('60MB'));
+  const wasm = R.find(r => r.label.includes('WASM'));
+  const dlTotal = R.reduce((s,r) => s + (r.dur||0), 0);
+
+  // 우선 WASM 다운로드 시간을 뺀 순수 다운로드 추정
+  const dlSec = (dlTotal/1000).toFixed(1);
+
+  card('⏱️ 결론', [
+    ['60MB 모델', model ? (model.dur/1000).toFixed(1) + '초' : '측정실패',
+      model ? (model.dur < 10000 ? 'good' : model.dur < 30000 ? 'warn' : 'bad') : 'warn'],
+    ['총 다운로드', dlSec + '초'],
+    ['예상 전체 로딩', (dlTotal/1000 + 12).toFixed(0) + '초'],
+    ['측정 소요', ((performance.now()-tAll)/1000).toFixed(1) + '초']
+  ]);
+
+  if (model) {
+    const realMbps = model.mbps;
+    if (realMbps < 10) verdict('❌ 회선이 느립니다 (' + realMbps + 'Mbps) — 60MB가 ' + (60/realMbps*8).toFixed(0) + '초 걸립니다', 'bad');
+    else if (model.dur > 20000) verdict('⚠️ 다운로드가 느립니다 — 모바일 회선 상태를 확인하세요', 'warn');
+    else verdict('✅ 다운로드 정상 — 남은 지연은 기기 성능(WASM) 문제일 수 있습니다', 'good');
+  }
+
+  S('✅ 완료! 스크린샷을 찍어 보내주세요');
+  B(100);
+  $('run').disabled = false;
+  $('run').textContent = '▶ 다시 진단';
+};
+</script>
+</body>
+</html>

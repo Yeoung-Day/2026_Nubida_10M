@@ -1,0 +1,683 @@
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/auth.js?v=20260908a"></script>
+<script>
+/* ===== 상태 변수 ===== */
+let currentBranchPage = 1;
+let currentContractPage = 1;
+let totalBranchPages = 1;
+let totalContractPages = 1;
+let allBranches = [];
+let allContracts = [];
+let selectedCategoriesBranchId = null;
+let allCategories = [];
+
+/* ===== 헬퍼 함수 ===== */
+function esc(s) {
+    if (s == null) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function showToast(msg, type) {
+    const existing = document.getElementById('pageToast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.id = 'pageToast';
+    t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:400px;';
+    const colors = { success:'#10B981', error:'#EF4444', warning:'#F59E0B', info:'#4F5EF8' };
+    const bgColors = { success:'#F0FDF4', error:'#FEF2F2', warning:'#FFFBEB', info:'#EFF6FF' };
+    t.style.background = bgColors[type] || '#F0FDF4';
+    t.style.color = colors[type] || '#10B981';
+    t.style.border = '1px solid ' + (colors[type] || '#10B981');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { if (t.parentNode) t.remove(); }, 3000);
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'active': '<span class="badge badge-success">● 운영중</span>',
+        'inactive': '<span class="badge badge-danger">● 정지</span>',
+        'pending': '<span class="badge badge-warning">● 휴무</span>'
+    };
+    return map[status] || '<span class="badge">' + (status || '-') + '</span>';
+}
+
+function getContractStatusBadge(status) {
+    const map = {
+        'active': '<span class="badge badge-success">● 활성</span>',
+        'expired': '<span class="badge badge-secondary">● 만료</span>',
+        'terminated': '<span class="badge badge-danger">● 해지</span>',
+        'pending': '<span class="badge badge-warning">● 대기</span>'
+    };
+    return map[status] || '<span class="badge">' + (status || '-') + '</span>';
+}
+
+function formatDate(str) {
+    if (!str) return '-';
+    try {
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
+        return d.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' });
+    } catch(e) {
+        return str;
+    }
+}
+
+function formatAmount(v) {
+    if (v == null) return '₩0';
+    return '₩' + Number(v).toLocaleString();
+}
+
+/* ===== 탭 전환 ===== */
+function switchTab(tabName) {
+    // 모든 탭 콘텐츠 숨기기
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    // 모든 탭 버튼 비활성화
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.style.borderBottom = '2px solid transparent';
+        btn.style.color = 'var(--text-tertiary)';
+        btn.style.fontWeight = '500';
+    });
+    // 선택한 탭 표시
+    const content = document.getElementById('tab-' + tabName);
+    if (content) content.style.display = '';
+    // 선택한 버튼 활성화
+    const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+    if (btn) {
+        btn.style.borderBottom = '2px solid var(--primary)';
+        btn.style.color = 'var(--primary)';
+        btn.style.fontWeight = '600';
+    }
+    // 데이터 로드
+    if (tabName === 'branches') loadBranches(currentBranchPage);
+    else if (tabName === 'contracts') loadContracts(currentContractPage);
+    else if (tabName === 'categories') loadBranchSelectForCategories();
+}
+
+/* ===== 지사(에듀케어) CRUD ===== */
+
+// 지사 목록 로드
+async function loadBranches(page) {
+    currentBranchPage = page || 1;
+    const tbody = document.getElementById('branchTableBody');
+    tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">로딩 중...</td></tr>';
+    try {
+        const params = { page: currentBranchPage, per_page: 20 };
+        const status = document.getElementById('statusFilter').value;
+        const search = document.getElementById('searchInput').value.trim();
+        if (status) params.status = status;
+        if (search) params.search = search;
+
+        const res = await apiGet('/headquarters/branches?' + new URLSearchParams(params));
+        allBranches = res.data || [];
+        const total = res.total || 0;
+        totalBranchPages = Math.max(1, Math.ceil(total / 20));
+        document.getElementById('branchCount').textContent = total + '개';
+
+        if (!allBranches.length) {
+            tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">등록된 지사가 없습니다.</td></tr>';
+            renderBranchPagination();
+            return;
+        }
+
+        tbody.innerHTML = allBranches.map(b => {
+            const statusBadge = getStatusBadge(b.status);
+            const periodStr = b.contract_start ? formatDate(b.contract_start) + ' ~ ' + formatDate(b.contract_end) : '-';
+            return '<tr>' +
+                '<td>' + b.id + '</td>' +
+                '<td><strong>' + esc(b.name || '') + '</strong></td>' +
+                '<td>' + esc(b.code || '') + '</td>' +
+                '<td>' + esc(b.branch_type || '-') + '</td>' +
+                '<td style="font-size:13px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(b.address || '-') + '</td>' +
+                '<td>' + esc(b.phone || '-') + '</td>' +
+                '<td style="font-size:12px">' + esc(b.email || '-') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td style="font-size:12px">' + periodStr + '</td>' +
+                '<td><div style="display:flex;gap:4px">' +
+                '<button class="btn btn-ghost btn-sm" onclick="openEditBranchModal(' + b.id + ')" style="font-size:11px">✏️</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteBranch(' + b.id + ')" style="font-size:11px">🗑️</button>' +
+                '</div></td>' +
+                '</tr>';
+        }).join('');
+        renderBranchPagination();
+    } catch (e) {
+        tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">불러오기 실패: ' + esc(e.message) + '</td></tr>';
+        showToast('데이터를 불러올 수 없습니다', 'error');
+    }
+}
+
+function filterBranches() {
+    currentBranchPage = 1;
+    loadBranches(1);
+}
+
+function renderBranchPagination() {
+    const el = document.getElementById('paginationWrap');
+    if (totalBranchPages <= 1) { el.innerHTML = ''; return; }
+    let html = '<button class="page-btn" onclick="goBranchPage(1)" ' + (currentBranchPage <= 1 ? 'disabled' : '') + '>«</button>';
+    html += '<button class="page-btn" onclick="goBranchPage(' + (currentBranchPage - 1) + ')" ' + (currentBranchPage <= 1 ? 'disabled' : '') + '>‹</button>';
+    const start = Math.max(1, currentBranchPage - 2);
+    const end = Math.min(totalBranchPages, currentBranchPage + 2);
+    for (let i = start; i <= end; i++) {
+        html += '<button class="page-btn' + (i === currentBranchPage ? ' active' : '') + '" onclick="goBranchPage(' + i + ')">' + i + '</button>';
+    }
+    html += '<button class="page-btn" onclick="goBranchPage(' + (currentBranchPage + 1) + ')" ' + (currentBranchPage >= totalBranchPages ? 'disabled' : '') + '>›</button>';
+    html += '<button class="page-btn" onclick="goBranchPage(' + totalBranchPages + ')" ' + (currentBranchPage >= totalBranchPages ? 'disabled' : '') + '>»</button>';
+    el.innerHTML = html;
+}
+
+function goBranchPage(page) {
+    if (page < 1 || page > totalBranchPages) return;
+    currentBranchPage = page;
+    loadBranches(page);
+}
+
+// 지사 생성 모달
+async function openCreateBranchModal() {
+    // 관리자 목록 로드
+    try {
+        const res = await apiGet('/headquarters/users?role=admin');
+        const users = res.data || [];
+        const select = document.getElementById('newAdminId');
+        select.innerHTML = '<option value="">선택 안 함</option>' +
+            users.map(u => '<option value="' + u.id + '">' + esc(u.name || u.username) + '</option>').join('');
+    } catch (e) {
+        // 무시
+    }
+    document.getElementById('createBranchModal').style.display = 'flex';
+}
+
+function closeCreateBranchModal() {
+    document.getElementById('createBranchModal').style.display = 'none';
+}
+
+async function createBranch() {
+    const name = document.getElementById('newName').value.trim();
+    const code = document.getElementById('newCode').value.trim();
+    const address = document.getElementById('newAddress').value.trim();
+    const phone = document.getElementById('newPhone').value.trim();
+    const email = document.getElementById('newEmail').value.trim();
+    const admin_id = document.getElementById('newAdminId').value;
+
+    if (!name) { showToast('에듀케어명을 입력하세요', 'error'); return; }
+    if (!code) { showToast('에듀케어 코드를 입력하세요', 'error'); return; }
+
+    const payload = { name, code, address, phone, email };
+    if (admin_id) payload.admin_id = parseInt(admin_id);
+
+    try {
+        await apiPost('/headquarters/branches', payload);
+        showToast('지사가 생성되었습니다', 'success');
+        document.getElementById('createBranchModal').style.display = 'none';
+        // 폼 초기화
+        document.getElementById('newName').value = '';
+        document.getElementById('newCode').value = '';
+        document.getElementById('newAddress').value = '';
+        document.getElementById('newPhone').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newAdminId').value = '';
+        loadBranches(1);
+    } catch (e) {
+        showToast('생성 실패: ' + (e.message || ''), 'error');
+    }
+}
+
+// 지사 수정 모달
+async function openEditBranchModal(id) {
+    try {
+        const res = await apiGet('/headquarters/branches/' + id);
+        const b = res.data || res;
+        document.getElementById('editBranchId').value = b.id;
+        document.getElementById('editName').value = b.name || '';
+        document.getElementById('editStatus').value = b.status || 'active';
+        document.getElementById('editAddress').value = b.address || '';
+        document.getElementById('editPhone').value = b.phone || '';
+        document.getElementById('editEmail').value = b.email || '';
+        document.getElementById('editBranchModal').style.display = 'flex';
+    } catch (e) {
+        showToast('정보를 불러올 수 없습니다: ' + (e.message || ''), 'error');
+    }
+}
+
+function closeEditBranchModal() {
+    document.getElementById('editBranchModal').style.display = 'none';
+}
+
+async function updateBranch() {
+    const id = document.getElementById('editBranchId').value;
+    const name = document.getElementById('editName').value.trim();
+    const status = document.getElementById('editStatus').value;
+    const address = document.getElementById('editAddress').value.trim();
+    const phone = document.getElementById('editPhone').value.trim();
+    const email = document.getElementById('editEmail').value.trim();
+
+    if (!name) { showToast('에듀케어명을 입력하세요', 'error'); return; }
+
+    try {
+        await apiPut('/headquarters/branches/' + id, { name, status, address, phone, email });
+        showToast('지사 정보가 수정되었습니다', 'success');
+        document.getElementById('editBranchModal').style.display = 'none';
+        loadBranches(currentBranchPage);
+    } catch (e) {
+        showToast('수정 실패: ' + (e.message || ''), 'error');
+    }
+}
+
+// 지사 삭제
+async function deleteBranch(id) {
+    if (!confirm('정말 이 지사를 삭제하시겠습니까?')) return;
+    try {
+        await apiDelete('/headquarters/branches/' + id);
+        showToast('지사가 삭제되었습니다', 'success');
+        loadBranches(currentBranchPage);
+    } catch (e) {
+        showToast('삭제 실패: ' + (e.message || ''), 'error');
+    }
+}
+
+/* ===== 계약 CRUD ===== */
+
+// 계약 목록 로드
+async function loadContracts(page) {
+    currentContractPage = page || 1;
+    const tbody = document.getElementById('contractTableBody');
+    tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">로딩 중...</td></tr>';
+    try {
+        const params = { page: currentContractPage, per_page: 20 };
+        const status = document.getElementById('cStatusFilter').value;
+        const search = document.getElementById('cSearchInput').value.trim();
+        if (status) params.status = status;
+        if (search) params.search = search;
+
+        const res = await apiGet('/headquarters/contracts?' + new URLSearchParams(params));
+        allContracts = res.data || [];
+        const total = res.total || 0;
+        totalContractPages = Math.max(1, Math.ceil(total / 20));
+        document.getElementById('contractCount').textContent = total + '건';
+
+        // 통계 업데이트
+        const direct = allContracts.filter(c => c.contract_type === 'direct').length;
+        const franchise = allContracts.filter(c => c.contract_type === 'franchise').length;
+        const expiring = allContracts.filter(c => {
+            if (!c.end_date) return false;
+            const days = (new Date(c.end_date) - new Date()) / (1000 * 60 * 60 * 24);
+            return days >= 0 && days <= 30;
+        }).length;
+        document.getElementById('statDirect').textContent = direct + '명';
+        document.getElementById('statFranchise').textContent = franchise + '명';
+        document.getElementById('statExpiring').textContent = expiring + '건';
+        document.getElementById('statTotal').textContent = total + '건';
+
+        if (!allContracts.length) {
+            tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">등록된 계약이 없습니다.</td></tr>';
+            renderContractPagination();
+            return;
+        }
+
+        tbody.innerHTML = allContracts.map(c => {
+            const statusBadge = getContractStatusBadge(c.status);
+            const periodStr = c.start_date ? formatDate(c.start_date) + ' ~ ' + formatDate(c.end_date) : '-';
+            const typeLabel = c.contract_type === 'direct' ? '직영' : c.contract_type === 'franchise' ? '프랜차이즈' : (c.contract_type || '-');
+            return '<tr>' +
+                '<td>' + c.id + '</td>' +
+                '<td>' + esc(c.branch_name || '-') + '</td>' +
+                '<td><strong>' + esc(c.director_name || '-') + '</strong></td>' +
+                '<td>' + typeLabel + '</td>' +
+                '<td style="font-size:12px">' + periodStr + '</td>' +
+                '<td>' + formatAmount(c.monthly_fee) + '</td>' +
+                '<td>' + (c.royalty_rate != null ? c.royalty_rate + '%' : '-') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td><div style="display:flex;gap:4px">' +
+                '<button class="btn btn-ghost btn-sm" onclick="openEditContractModal(' + c.id + ')" style="font-size:11px">✏️</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteContract(' + c.id + ')" style="font-size:11px">🗑️</button>' +
+                '</div></td>' +
+                '</tr>';
+        }).join('');
+        renderContractPagination();
+    } catch (e) {
+        tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">불러오기 실패: ' + esc(e.message) + '</td></tr>';
+        showToast('데이터를 불러올 수 없습니다', 'error');
+    }
+}
+
+function filterContracts() {
+    currentContractPage = 1;
+    loadContracts(1);
+}
+
+function renderContractPagination() {
+    const el = document.getElementById('cPaginationWrap');
+    if (totalContractPages <= 1) { el.innerHTML = ''; return; }
+    let html = '<button class="page-btn" onclick="goContractPage(1)" ' + (currentContractPage <= 1 ? 'disabled' : '') + '>«</button>';
+    html += '<button class="page-btn" onclick="goContractPage(' + (currentContractPage - 1) + ')" ' + (currentContractPage <= 1 ? 'disabled' : '') + '>‹</button>';
+    const start = Math.max(1, currentContractPage - 2);
+    const end = Math.min(totalContractPages, currentContractPage + 2);
+    for (let i = start; i <= end; i++) {
+        html += '<button class="page-btn' + (i === currentContractPage ? ' active' : '') + '" onclick="goContractPage(' + i + ')">' + i + '</button>';
+    }
+    html += '<button class="page-btn" onclick="goContractPage(' + (currentContractPage + 1) + ')" ' + (currentContractPage >= totalContractPages ? 'disabled' : '') + '>›</button>';
+    html += '<button class="page-btn" onclick="goContractPage(' + totalContractPages + ')" ' + (currentContractPage >= totalContractPages ? 'disabled' : '') + '>»</button>';
+    el.innerHTML = html;
+}
+
+function goContractPage(page) {
+    if (page < 1 || page > totalContractPages) return;
+    currentContractPage = page;
+    loadContracts(page);
+}
+
+function switchContractTab(type) {
+    document.querySelectorAll('.contracts-tab').forEach(t => t.classList.remove('active'));
+    const btn = document.querySelector('.contracts-tab[data-type="' + type + '"]');
+    if (btn) btn.classList.add('active');
+    currentContractPage = 1;
+    loadContracts(1);
+}
+
+// 계약 생성 모달
+function toggleBranchSelect() {
+    const type = document.querySelector('input[name="newContractType"]:checked');
+    const group = document.getElementById('newContractBranchGroup');
+    if (type && type.value === 'franchise') {
+        group.style.display = '';
+    } else {
+        group.style.display = 'none';
+    }
+}
+
+async function openCreateContractModal() {
+    // 원장 목록 로드
+    try {
+        const res = await apiGet('/headquarters/directors?per_page=1000');
+        const directors = res.data || [];
+        const select = document.getElementById('newContractDirector');
+        select.innerHTML = '<option value="">원장을 선택하세요</option>' +
+            directors.map(d => '<option value="' + d.id + '">' + esc(d.name || d.director_name) + ' (' + esc(d.branch_name || '-') + ')</option>').join('');
+    } catch (e) {
+        // 무시
+    }
+    // 지사 목록 로드
+    try {
+        const res = await apiGet('/headquarters/branches?per_page=1000');
+        const branches = res.data || [];
+        const select = document.getElementById('newContractBranch');
+        select.innerHTML = '<option value="">지사를 선택하세요</option>' +
+            branches.map(b => '<option value="' + b.id + '">' + esc(b.name) + '</option>').join('');
+    } catch (e) {
+        // 무시
+    }
+    // 날짜 기본값
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newContractStart').value = today;
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+    document.getElementById('newContractEnd').value = nextYear.toISOString().split('T')[0];
+    document.getElementById('newContractFee').value = '0';
+    document.getElementById('newContractRoyalty').value = '0';
+    document.getElementById('newContractMemo').value = '';
+    document.getElementById('newContractBranchGroup').style.display = 'none';
+    document.getElementById('createContractModal').style.display = 'flex';
+}
+
+function closeCreateContractModal() {
+    document.getElementById('createContractModal').style.display = 'none';
+}
+
+async function createContract() {
+    const director_id = document.getElementById('newContractDirector').value;
+    const typeEl = document.querySelector('input[name="newContractType"]:checked');
+    const contract_type = typeEl ? typeEl.value : 'direct';
+    const branch_id = document.getElementById('newContractBranch').value;
+    const start_date = document.getElementById('newContractStart').value;
+    const end_date = document.getElementById('newContractEnd').value;
+    const monthly_fee = parseInt(document.getElementById('newContractFee').value) || 0;
+    const royalty_rate = parseFloat(document.getElementById('newContractRoyalty').value) || 0;
+    const memo = document.getElementById('newContractMemo').value.trim();
+
+    if (!director_id) { showToast('원장을 선택하세요', 'error'); return; }
+    if (contract_type === 'franchise' && !branch_id) { showToast('소속 지사를 선택하세요', 'error'); return; }
+    if (!start_date) { showToast('계약 시작일을 선택하세요', 'error'); return; }
+    if (!end_date) { showToast('계약 종료일을 선택하세요', 'error'); return; }
+
+    const payload = {
+        director_id: parseInt(director_id),
+        contract_type,
+        start_date,
+        end_date,
+        monthly_fee,
+        royalty_rate,
+        memo
+    };
+    if (contract_type === 'franchise' && branch_id) {
+        payload.branch_id = parseInt(branch_id);
+    }
+
+    try {
+        await apiPost('/headquarters/contracts', payload);
+        showToast('계약이 생성되었습니다', 'success');
+        document.getElementById('createContractModal').style.display = 'none';
+        loadContracts(1);
+    } catch (e) {
+        showToast('생성 실패: ' + (e.message || ''), 'error');
+    }
+}
+
+// 계약 수정 모달
+function toggleEditBranchSelect() {
+    const type = document.querySelector('input[name="editContractType"]:checked');
+    const group = document.getElementById('editContractBranchGroup');
+    if (type && type.value === 'franchise') {
+        group.style.display = '';
+    } else {
+        group.style.display = 'none';
+    }
+}
+
+async function openEditContractModal(id) {
+    try {
+        const res = await apiGet('/headquarters/contracts/' + id);
+        const c = res.data || res;
+        document.getElementById('editContractId').value = c.id;
+        document.getElementById('editContractDirector').value = c.director_name || '';
+
+        // 라디오 버튼 설정
+        const radioBtns = document.querySelectorAll('input[name="editContractType"]');
+        radioBtns.forEach(r => { r.checked = r.value === c.contract_type; });
+        toggleEditBranchSelect();
+
+        // 지사 목록 로드
+        try {
+            const branchRes = await apiGet('/headquarters/branches?per_page=1000');
+            const branches = branchRes.data || [];
+            const select = document.getElementById('editContractBranch');
+            select.innerHTML = '<option value="">지사를 선택하세요</option>' +
+                branches.map(b => '<option value="' + b.id + '" ' + (b.id === c.branch_id ? 'selected' : '') + '>' + esc(b.name) + '</option>').join('');
+        } catch (e) {}
+
+        document.getElementById('editContractStart').value = c.start_date ? c.start_date.split('T')[0] : '';
+        document.getElementById('editContractEnd').value = c.end_date ? c.end_date.split('T')[0] : '';
+        document.getElementById('editContractFee').value = c.monthly_fee || 0;
+        document.getElementById('editContractRoyalty').value = c.royalty_rate || 0;
+        document.getElementById('editContractMemo').value = c.memo || '';
+        document.getElementById('editContractModal').style.display = 'flex';
+    } catch (e) {
+        showToast('정보를 불러올 수 없습니다: ' + (e.message || ''), 'error');
+    }
+}
+
+function closeEditContractModal() {
+    document.getElementById('editContractModal').style.display = 'none';
+}
+
+async function updateContract() {
+    const id = document.getElementById('editContractId').value;
+    const typeEl = document.querySelector('input[name="editContractType"]:checked');
+    const contract_type = typeEl ? typeEl.value : 'direct';
+    const branch_id = document.getElementById('editContractBranch').value;
+    const start_date = document.getElementById('editContractStart').value;
+    const end_date = document.getElementById('editContractEnd').value;
+    const monthly_fee = parseInt(document.getElementById('editContractFee').value) || 0;
+    const royalty_rate = parseFloat(document.getElementById('editContractRoyalty').value) || 0;
+    const memo = document.getElementById('editContractMemo').value.trim();
+
+    const payload = { contract_type, start_date, end_date, monthly_fee, royalty_rate, memo };
+    if (contract_type === 'franchise' && branch_id) {
+        payload.branch_id = parseInt(branch_id);
+    }
+
+    try {
+        await apiPut('/headquarters/contracts/' + id, payload);
+        showToast('계약이 수정되었습니다', 'success');
+        document.getElementById('editContractModal').style.display = 'none';
+        loadContracts(currentContractPage);
+    } catch (e) {
+        showToast('수정 실패: ' + (e.message || ''), 'error');
+    }
+}
+
+// 계약 삭제
+async function deleteContract(id) {
+    if (!confirm('정말 이 계약을 삭제하시겠습니까?')) return;
+    try {
+        await apiDelete('/headquarters/contracts/' + id);
+        showToast('계약이 삭제되었습니다', 'success');
+        loadContracts(currentContractPage);
+    } catch (e) {
+        showToast('삭제 실패: ' + (e.message || ''), 'error');
+    }
+}
+
+/* ===== 카테고리 권한 ===== */
+
+async function loadBranchSelectForCategories() {
+    try {
+        const res = await apiGet('/headquarters/branches?per_page=1000');
+        const branches = res.data || [];
+        const select = document.getElementById('branchCategorySelect');
+        select.innerHTML = '<option value="">← 학원을 선택하세요</option>' +
+            branches.map(b => '<option value="' + b.id + '">' + esc(b.name) + '</option>').join('');
+        if (selectedCategoriesBranchId) {
+            select.value = selectedCategoriesBranchId;
+            onBranchSelectForCategories();
+        } else {
+            document.getElementById('categoryPermissionPanel').style.display = 'none';
+            document.getElementById('categoryPermEmpty').style.display = '';
+        }
+    } catch (e) {
+        showToast('지사 목록을 불러올 수 없습니다', 'error');
+    }
+}
+
+async function onBranchSelectForCategories() {
+    const branchId = document.getElementById('branchCategorySelect').value;
+    if (!branchId) {
+        document.getElementById('categoryPermissionPanel').style.display = 'none';
+        document.getElementById('categoryPermEmpty').style.display = '';
+        selectedCategoriesBranchId = null;
+        return;
+    }
+    selectedCategoriesBranchId = parseInt(branchId);
+    document.getElementById('categoryPermEmpty').style.display = 'none';
+    document.getElementById('categoryPermissionPanel').style.display = '';
+
+    // 학원 정보 표시
+    try {
+        const res = await apiGet('/headquarters/branches/' + branchId);
+        const b = res.data || res;
+        document.getElementById('selectedBranchInfo').textContent = esc(b.name) + ' (' + esc(b.code || '') + ')';
+    } catch (e) {}
+
+    // 카테고리 및 권한 로드
+    try {
+        const [catRes, permRes] = await Promise.all([
+            apiGet('/categories?per_page=1000'),
+            apiGet('/headquarters/branches/' + branchId + '/category-permissions')
+        ]);
+        allCategories = catRes.data || [];
+        const permissions = permRes.data || permRes.permissions || [];
+
+        const permittedIds = new Set(
+            (Array.isArray(permissions) ? permissions : []).map(p => p.category_id || p.id)
+        );
+
+        const list = document.getElementById('categoryToggleList');
+        if (!allCategories.length) {
+            list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-tertiary)">등록된 카테고리가 없습니다.</div>';
+            return;
+        }
+
+        list.innerHTML = allCategories.map(cat => {
+            const checked = permittedIds.has(cat.id) ? 'checked' : '';
+            return '<label class="cat-toggle" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;background:var(--bg-canvas)">' +
+                '<input type="checkbox" class="cat-checkbox" data-cat-id="' + cat.id + '" ' + checked + ' style="width:18px;height:18px">' +
+                '<span>' + esc(cat.name) + '</span>' +
+                '</label>';
+        }).join('');
+
+        const checkedCount = document.querySelectorAll('.cat-checkbox:checked').length;
+        document.getElementById('catCountInfo').textContent = '선택: ' + checkedCount + '/' + allCategories.length + '개';
+        document.getElementById('catPermTitle').textContent = '📚 강좌 카테고리 권한 설정 — ' + esc(b.name || '');
+    } catch (e) {
+        showToast('카테고리 정보를 불러올 수 없습니다', 'error');
+    }
+}
+
+function selectAllCategories(select) {
+    document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = select);
+    const checkedCount = document.querySelectorAll('.cat-checkbox:checked').length;
+    document.getElementById('catCountInfo').textContent = '선택: ' + checkedCount + '/' + allCategories.length + '개';
+}
+
+async function saveCategoryPermissions() {
+    if (!selectedCategoriesBranchId) {
+        showToast('학원을 선택하세요', 'error');
+        return;
+    }
+    const checkedIds = [];
+    document.querySelectorAll('.cat-checkbox:checked').forEach(cb => {
+        checkedIds.push(parseInt(cb.dataset.catId));
+    });
+    try {
+        await apiPut('/headquarters/branches/' + selectedCategoriesBranchId + '/category-permissions', {
+            category_ids: checkedIds
+        });
+        showToast('카테고리 권한이 저장되었습니다', 'success');
+    } catch (e) {
+        showToast('저장 실패: ' + (e.message || ''), 'error');
+    }
+}
+
+/* ===== 공통 모달 함수 ===== */
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+/* ===== 초기화 ===== */
+document.addEventListener('DOMContentLoaded', function() {
+    // 오늘 날짜 표시
+    document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+    // 사용자 정보 표시
+    const u = getCurrentUser();
+    if (u && u.name) document.getElementById('sidebarUserName').textContent = u.name;
+    if (u && u.role) {
+        const roleLabels = {
+            'super_admin': '최고관리자',
+            'admin': '관리자',
+            'branch_admin': '지사 관리자',
+            'branch_manager': '지사 관리자',
+            'branch_staff': '지사 직원',
+            'director': '공부방장'
+        };
+        document.getElementById('sidebarUserRole').textContent = roleLabels[u.role] || u.role;
+    }
+
+    // 초기 데이터 로드
+    loadBranches(1);
+});
+</script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

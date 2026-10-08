@@ -1,0 +1,863 @@
+/**
+ * 누비다머신 — 아두이노 연동 (ml-arduino.html)
+ *
+ * - Web Bluetooth(BLE)로 브라우저 ↔ 아두이노 BLE 모듈 무선 통신 (Chrome/Edge/Android)
+ * - 학습된 모델(IndexedDB 캐시 또는 서버 파일)로 실시간 분류
+ * - 분류 결과를 본사 지정 동작 프리셋(/ml/preset, 1~10번 클래스) + 난독화 명령으로 BLE 전송
+ *   ※ 2026-09-09 화면 단순화 — 매핑표 UI(좌측 패널) 완전 제거.
+ *      프리셋은 전송 시점에만 참조하는 읽기 전용 데이터 (학생 변경 불가)
+ *   프로토콜: ACTION:<action>:<target>  (예: ACTION:led_on:pin=13 / ACTION:servo:90)
+ *             'x' + HEX 난독화 프레임     ({n}{접두어}를 NubidaBT로 암호화 —
+ *             예: 1NubidaAi → x로 시작하는 프레임, 수신 펌웨어가 동일 KEY로 복호화)
+ *   ※ 평문 {n}{접두어}는 더 이상 와이어로 나가지 않는다. (common/js/nubida-bt.js)
+ * - BLE 연결은 공용 모듈 NubidaBLE(common/js/nubida-ble.js) 사용:
+ *   HM-10(FFE0/FFE1)·Nordic UART 자동 감지, 20B 청크 전송, notify 수신
+ */
+(function () {
+    'use strict';
+
+    // MobileNet v1 1.0/224 특징 추출기 — 로컬 서버에서 서빙 (오프라인/방화벽 환경 대응)
+    //  이전: https://storage.googleapis.com/... → 학교·기관 방화벽에서 차단되면
+    //        truncModel이 null이 되어 분류가 조용히 멈추는 문제가 있었음.
+    //  특징 추출기(MobileNet)는 성능 모드에 따라 특징 차원이 다르다:
+    //    high(1.0_224) → 1024차원  /  low(0.25_224) → 256차원
+    //  스튜디오에서 '저사양 모드'로 학습하면 head 모델은 256차원을 기대한다.
+    //  아두이노 페이지가 항상 1.0(1024차원)을 쓰면 차원 불일치로
+    //  "분류 프레임 처리 실패"가 발생하므로, 저장된 모델에 맞춰 자동 선택한다.
+    var MOBILENET_URL = '/common/js/vendor/mobilenet/model.json';
+    var MOBILENET_URL_025 = '/common/js/vendor/mobilenet_025/model.json';
+    var featureDim = 1024;   // 현재 로드된 특징 추출기의 출력 차원
+    var IMG_SIZE = 224;
+    var projectId = parseInt(new URLSearchParams(window.location.search).get('project') || '0', 10);
+    var classLabels = [];
+    var classes = [];
+    var presets = [];       // 본사 지정 동작 프리셋 (index 0 = 클래스 1번) — /ml/preset 읽기 전용
+    var mobilenet = null, truncModel = null, headModel = null;
+    var modelReady = false;     // 모델 로드 성공 여부 — 카메라 버튼 잠금 판단
+    var classifyFailCount = 0;  // 연속 분류 실패 횟수 — 조용한 실패 방지
+    var classifyGuardLogged = false; // 가드(모델 미준비) 안내 1회 제한
+    var classifyRunning = false;     // 자기재귀 타이머 동작 플래그
+    var stream = null;
+    var facingMode = 'user';
+    var ble = null;             // BLE 세션 (NubidaBLE.connect 결과) — Web Bluetooth 무선 연결
+    var classifyTimer = null;
+    var lastSent = '';          // 레거시 ACTION 명령 마지막 전송 (중복 방지)
+    var lastSentAt = 0;
+    var lastSentPlain = '';     // {n}{접두어} 평문 마지막 전송 — 난독화 프레임은
+    var lastSentPlainAt = 0;    // 매번 값이 바뀌므로 평문 기준으로 중복 방지한다
+    // 같은 값 반복 전송 최소 간격(ms) — 시리얼 모니터에 실시간으로 흐르게 하려면 작아야 한다.
+    //  분류 루프 유휴시간(CLASSIFY_IDLE_MS)보다 조금 크게 두어 매 바퀴 전송되도록 맞춘다.
+    var SEND_REPEAT_MS = 80;
+    var sendCount = 0;          // 아두이노 전송 성공 횟수 (실시간 스트리밍 확인용)
+    // 분류 루프가 한 바퀴 끝난 뒤 다음 추론까지 쉬는 시간(ms).
+    //  값이 클수록 시리얼 전송이 뜸해진다 — 실시간 스트리밍을 위해 작게 유지.
+    var CLASSIFY_IDLE_MS = 40;
+    var btPrefix = 'NubidaAi';  // 본사 설정 블루투스 접두어 (예: 1NubidaAi) — /ml/bt-prefix 조회
+
+    function $(id) { return document.getElementById(id); }
+    function el(tag, cls, text) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text !== undefined) e.textContent = text;
+        return e;
+    }
+    function token() { return localStorage.getItem('token') || localStorage.getItem('access_token') || ''; }
+    // 최근 상태 한 줄 표시 (2026-09-09: 시리얼 로그 박스 폐기 — txStatus로 단순화)
+    //  2026-09-13: 통신 로그 박스 부활 — "값이 오는데 안 보인다" 문제 해결.
+    //   txStatus(한 줄) 는 즉시 덮어써져 수신 메시지가 사라지므로,
+    //   히스토리를 남기는 commLog 를 함께 기록한다.
+    var commLogRows = 0;
+    var COMM_LOG_MAX = 300;
+    function log(msg, type) {
+        // ① 한 줄 상태 (기존 동작 유지)
+        var tx = $('txStatus');
+        if (tx) {
+            tx.textContent = msg;
+            tx.className = 'ml-tx-status' + (type === 'err' ? ' err' : type === 'ok' ? ' ok' : '');
+        }
+        // ② 히스토리 로그 (시간 + 수신/송신 구분)
+        var body = $('commLog');
+        if (!body) return;
+        var row = document.createElement('div');
+        var cls = 'row';
+        var t = String(msg);
+        if (type === 'err') cls += ' err';
+        else if (t.indexOf('📥') === 0) cls += ' rx';        // 수신
+        else if (t.indexOf('📤') === 0) cls += ' tx';        // 송신
+        else if (t.indexOf('✅') === 0 || t.indexOf('🧪') === 0) cls += ' tx';
+        else if (type === 'info' || t.indexOf('ℹ️') === 0) cls += ' info';
+        row.className = cls;
+        var d = new Date();
+        var ts = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2)
+               + ':' + ('0' + d.getSeconds()).slice(-2);
+        var span = document.createElement('span');
+        span.className = 'ts';
+        span.textContent = ts;
+        row.appendChild(span);
+        row.appendChild(document.createTextNode(t));
+        body.appendChild(row);
+        commLogRows++;
+        // 오래된 줄 제거 (무한 증가 방지)
+        while (body.childElementCount > COMM_LOG_MAX) body.removeChild(body.firstChild);
+        body.scrollTop = body.scrollHeight;      // 항상 최신이 보이게
+        var cnt = $('commCount');
+        if (cnt) cnt.textContent = '(' + commLogRows + ')';
+    }
+    window.clearCommLog = function () {
+        var body = $('commLog');
+        if (body) body.innerHTML = '';
+        commLogRows = 0;
+        var cnt = $('commCount');
+        if (cnt) cnt.textContent = '(0)';
+    };
+    window.copyCommLog = function () {
+        var body = $('commLog');
+        if (!body) return;
+        var txt = Array.prototype.map.call(body.children, function (r) {
+            return r.textContent;
+        }).join('\n');
+        try {
+            navigator.clipboard.writeText(txt).then(function () {
+                log('📋 통신 로그를 복사했어요 (' + commLogRows + '줄)', 'ok');
+            });
+        } catch (e) {}
+    };
+
+    /* ── 프로젝트/본사 프리셋 ───────────────────── */
+
+    // 본사 지정 동작 라벨 (전송 피드백 표시용) — 값은 백엔드/본사 설정과 동일해야 함
+    var PRESET_META = {
+        led_on:  { label: '💡 LED 켜기' },
+        led_off: { label: '🌑 LED 끄기' },
+        servo:   { label: '🔄 서보모터' },
+        buzzer:  { label: '🔔 부저' },
+        none:    { label: '— 동작 없음' }
+    };
+
+    async function init() {
+        if (!projectId) {
+            var res = await apiGet('/ml/projects');
+            var list = res.data || [];
+            if (!list.length) { $('resultBox').innerHTML = '<div class="ml-result-empty">프로젝트가 없어요 — 스튜디오에서 먼저 만들어 주세요</div>'; return; }
+            projectId = list[0].id;
+            window.history.replaceState(null, '', '?project=' + projectId);
+        }
+        var p = await apiGet('/ml/projects/' + projectId);
+        // 라벨 우선순위: ① 프로젝트 classes(샘플 기반) → ② 없으면 labels.json 이 채운다.
+        //  (샘플을 정리하면 classes가 비어 classLabels=[]가 되어
+        //   결과 렌더링과 프리셋 매칭이 조용히 깨졌다)
+        classLabels = (p.data.classes ? Object.keys(p.data.classes) : []);
+        classes = classLabels.map(function (name, i) { return { name: name, color: ['#4F5EF8','#F59E0B','#10B981','#EF4444','#8B5CF6'][i % 5] }; });
+
+        // 본사 설정 접두어 조회 — 화면에는 노출하지 않고 전송 암호화에만 사용
+        // (난독화 프레임에는 접두어가 평문으로 등장하지 않음)
+        try {
+            var bp = await apiGet('/ml/bt-prefix');
+            if (bp.data && bp.data.bt_prefix) btPrefix = bp.data.bt_prefix;
+        } catch (e) { /* 기본 접두어 유지 */ }
+
+        // 본사 지정 동작 프리셋 조회 (학생 수정 불가 — 읽기 전용, 전송 시에만 참조)
+        try {
+            var pr = await apiGet('/ml/preset');
+            presets = (pr.data && pr.data.presets) || [];
+        } catch (e) { presets = []; }
+        await loadModel();
+        if (classLabels.length) $('resultBox').innerHTML = '<div class="ml-result-empty">카메라를 켜면 분류가 시작돼요</div>';
+    }
+
+    function presetAt(i) {
+        var p = presets[i] || {};
+        return { action: (p.action || 'none'), target_value: (p.target_value || '') };
+    }
+
+    function presetLabel(i) {
+        var pr = presetAt(i);
+        var meta = PRESET_META[pr.action] || PRESET_META.none;
+        return { action: pr.action, label: meta.label, target_value: pr.target_value };
+    }
+
+    // ── 모델 준비 상태에 따른 UI 잠금/안내 ──────────────
+    //  모델이 없으면 카메라를 켜도 분류가 시작되지 않으므로(조용한 실패),
+    //  버튼을 비활성화하고 사유를 화면에 명시한다.
+    function setModelReadyUI(ready, reason) {
+        modelReady = !!ready;
+        var btnCam = $('btnCamera');
+        var box = $('resultBox');
+        if (btnCam) {
+            btnCam.disabled = !ready;
+            btnCam.title = ready ? '' : (reason || '모델을 먼저 학습·저장해 주세요.');
+            btnCam.style.opacity = ready ? '' : '0.5';
+            btnCam.style.cursor = ready ? '' : 'not-allowed';
+        }
+        if (!ready && box && !stream) {
+            box.innerHTML = '<div class="ml-result-empty">'
+                + '⚠️ 사용할 모델이 없어요.<br>'
+                + '<a href="ml-studio.html' + (projectId ? '?project=' + projectId : '') + '" '
+                + 'style="color:#0891B2;font-weight:600;text-decoration:underline;">'
+                + '← 스튜디오에서 모델 학습 후 다시 오세요</a><br>'
+                + '<span style="font-size:11px;color:#9CA3AF;">' + (reason || '') + '</span>'
+                + '</div>';
+        }
+    }
+
+    /* ── 모델 로드 ─────────────────────────────── */
+
+    async function loadModel() {
+        $('resultBox').innerHTML = '<div class="ml-result-empty">모델을 불러오는 중...</div>';
+        try {
+            // 1) IndexedDB 캐시 우선
+            try {
+                headModel = await tf.loadLayersModel('indexeddb://nubida-ml-' + projectId);
+                var cachedLabels = JSON.parse(localStorage.getItem('nubida-ml-labels-' + projectId) || '[]');
+                if (cachedLabels.length) { classLabels = cachedLabels; serverLabels = cachedLabels; }
+                // 캐시 모델도 기대 차원을 읽어둔다 (저사양 모드로 학습했을 수 있음)
+                try {
+                    var _ci = headModel.inputs[0].shape;
+                    headInputDim = _ci[_ci.length - 1] || 0;
+                } catch (eD) { headInputDim = 0; }
+            } catch (e) { headModel = null; }
+            // 2) 서버 저장 파일
+            if (!headModel) {
+                headModel = await loadModelFromServer();
+            }
+            if (!headModel) throw new Error('no model');
+            // 저장된 head 모델이 기대하는 차원에 맞춰 특징 추출기를 선택한다.
+            //  (IndexedDB 캐시 모델은 headInputDim=0 → 기본 1024 유지)
+            await ensureMobileNet(headInputDim || undefined);
+            // 차원 불일치 사전 검증 — 이 단계에서 잡으면 "분류 프레임 처리 실패" 대신
+            //  원인이 명확한 안내를 띄울 수 있다.
+            try {
+                var _hi = headModel.inputs[0].shape;
+                var _want = _hi[_hi.length - 1];
+                if (_want && featureDim && _want !== featureDim) {
+                    log('⚠️ 모델 차원 불일치: 모델은 ' + _want + '차원, 추출기는 ' + featureDim + '차원', 'err');
+                }
+            } catch (eV) {}
+            // classLabels 가 비어 있으면(샘플 정리 후 classes=[]) labels.json 값으로 보충한다.
+            //  비어 있으면 결과 렌더링이 안 되고 프리셋 매칭도 실패해
+            //  "분류는 되는데 아무 동작이 없는" 증상이 된다.
+            if (!classLabels.length && headModel) {
+                var nOut = 0;
+                try { nOut = headModel.outputs[0].shape[headModel.outputs[0].shape.length - 1]; } catch (eO) {}
+                if (serverLabels && serverLabels.length) {
+                    classLabels = serverLabels;
+                } else if (nOut > 0) {
+                    classLabels = [];
+                    for (var _ci = 0; _ci < nOut; _ci++) classLabels.push('클래스 ' + (_ci + 1));
+                }
+                if (classLabels.length) {
+                    classes = classLabels.map(function (name, i) {
+                        return { name: name, color: ['#4F5EF8','#F59E0B','#10B981','#EF4444','#8B5CF6'][i % 5] };
+                    });
+                }
+            }
+            log('✅ 모델 준비 완료 (특징 ' + featureDim + '차원 / 클래스 ' + classLabels.length + '개)', 'ok');
+            setModelReadyUI(true);
+            $('resultBox').innerHTML = '<div class="ml-result-empty">모델 준비 완료! 카메라를 켜면 분류가 시작돼요</div>';
+        } catch (e) {
+            $('resultBox').innerHTML = '<div class="ml-result-empty">모델을 찾을 수 없어요.<br>스튜디오에서 학습 후 다시 와 주세요.</div>';
+            setModelReadyUI(false, '스튜디오에서 [모델 학습]을 완료하면 자동 저장됩니다.');
+            log('모델 로드 실패: ' + e.message, 'err');
+        }
+    }
+
+    var headInputDim = 0;   // 서버 모델의 첫 Dense 입력 차원 (256 / 1024 / 0=미상)
+    var serverLabels = null; // 서버 labels.json 으로 확보한 클래스 이름 (classes 비었을 때 보충용)
+
+    async function loadModelFromServer() {
+        var base = API_BASE + '/ml/projects/' + projectId + '/model/file';
+        var headers = { 'Authorization': 'Bearer ' + token() };
+
+        // 0) 라벨 우선 확보 — 모델 저장 시 함께 올린 labels.json
+        //    (DB의 classes는 샘플 테이블에서 파생되어, 샘플 정리 후에는 비어 있을 수 있다.
+        //     이 경우 classLabels=[]가 되어 분류 결과 렌더링이 예외로 죽었다.)
+        try {
+            var lr = await fetch(base + '?file=labels.json', { headers: headers });
+            if (lr.ok) {
+                var labels = await lr.json();
+                if (Array.isArray(labels) && labels.length) { classLabels = labels; serverLabels = labels; }
+            }
+        } catch (e) { /* labels.json 없으면 기존 classLabels 유지 */ }
+
+        var mj = await fetch(base + '?file=model.json', { headers: headers });
+        if (!mj.ok) return null;
+        var modelJson = await mj.json();
+        var wb = await fetch(base + '?file=model.weights.bin', { headers: headers });
+        if (!wb.ok) return null;
+        var weightData = await wb.arrayBuffer();
+        // 형식 호환: NubidaMachine 저장형식({paths, weights[]} 묶음) → tfjs 4.22 fromMemory 평면 형식({name, shape, dtype}) 변환
+        var raw = modelJson.weightsManifest || [];
+        var flatSpecs = [];
+        if (raw.length && raw[0].weights) {
+            raw.forEach(function (g) {
+                (g.weights || []).forEach(function (w) {
+                    flatSpecs.push({ name: w.name, shape: w.shape, dtype: w.dtype });
+                });
+            });
+        } else {
+            flatSpecs = raw;  // 이미 평면 형식(최신 tf.saveLayersModel 산출물)
+        }
+        // head 모델이 기대하는 특징 차원을 커널 shape에서 읽는다.
+        //  예: dense_Dense1/kernel [256,64] → 입력 256차원 (저사양 MobileNet 0.25로 학습됨)
+        //      dense_Dense1/kernel [1024,64] → 입력 1024차원 (1.0_224로 학습됨)
+        //  이 값으로 특징 추출기를 골라야 차원 불일치("분류 프레임 처리 실패")가 사라진다.
+        headInputDim = 0;
+        try {
+            for (var _si = 0; _si < flatSpecs.length; _si++) {
+                var _s = flatSpecs[_si];
+                if (/kernel/i.test(_s.name || '') && _s.shape && _s.shape.length === 2) {
+                    headInputDim = _s.shape[0];
+                    break;
+                }
+            }
+        } catch (eDim) { headInputDim = 0; }
+        return tf.loadLayersModel(tf.io.fromMemory({
+            modelTopology: modelJson.modelTopology,
+            weightSpecs: flatSpecs,
+            weightData: weightData,
+        }));
+    }
+
+    async function ensureMobileNet(wantDim) {
+        // wantDim: head 모델이 기대하는 특징 차원(256 또는 1024).
+        //  이미 같은 차원의 추출기가 로드돼 있으면 재사용하고,
+        //  차원이 다르면 기존 것을 해제하고 올바른 것으로 다시 로드한다.
+        if (wantDim && mobilenet && featureDim !== wantDim) {
+            try { mobilenet.dispose(); } catch (e) {}
+            mobilenet = null;
+            truncModel = null;
+        }
+        if (mobilenet) return;
+        var url = (wantDim === 256) ? MOBILENET_URL_025 : MOBILENET_URL;
+        mobilenet = await tf.loadLayersModel(url);
+        var names = mobilenet.layers.map(function (l) { return l.name; });
+        var name = names.find(function (n) { return n.indexOf('global_average_pooling') !== -1; });
+        if (!name) name = names[names.length - 3];
+        truncModel = tf.model({ inputs: mobilenet.inputs, outputs: mobilenet.getLayer(name).output });
+        truncModel.trainable = false;
+        // 실제 출력 차원을 기록 (head와 대조해 불일치를 사전에 잡는다)
+        try { featureDim = truncModel.outputs[0].shape[truncModel.outputs[0].shape.length - 1]; } catch (e) {}
+    }
+
+    /* ── BLE (Web Bluetooth) — 무선 연결 ───────── */
+    // 2026-09-08: Web Serial(USB 케이블) → Web Bluetooth(BLE 모듈) 전환.
+    // 2026-09-09: 상태 뱃지는 상단 연결 행(serialStatus)으로 이동 — DOM id 유지.
+
+    function updateBleStatus(kind, name) {
+        var st = $('serialStatus');
+        var btn = $('btnSerial');
+        if (kind === 'connected') {
+            if (st) { st.textContent = '📡 BLE 연결됨: ' + (name || '장치'); st.className = 'ml-serial-status connected'; }
+            if (btn) btn.textContent = '⛓️ 연결 해제';
+        } else {
+            if (st) { st.textContent = '📡 블루투스 미연결'; st.className = 'ml-serial-status'; }
+            if (btn) btn.textContent = '🔗 아두이노 연결';
+        }
+    }
+
+    // BLE 연결 해제/끊김 공통 처리 (사용자 해제 + 장치 신호 끊김 모두)
+    function handleBleClosed(reason) {
+        ble = null;
+        updateBleStatus('disconnected');
+        log((reason || '블루투스 연결 해제'));
+    }
+
+    window.toggleSerial = async function () {
+        if (ble) {
+            try { await ble.disconnect(); } catch (e) {}
+            handleBleClosed();
+            return;
+        }
+        if (!window.NubidaBLE || !window.NubidaBLE.supported) {
+            var isAndroid = /Android/i.test(navigator.userAgent);
+            var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isIOS) {
+                alert('아이폰은 브라우저에서 블루투스를 지원하지 않아요.\n누비다 앱에서 연결해 주세요.');
+            } else if (isAndroid) {
+                alert('이 브라우저는 블루투스를 지원하지 않아요.\nChrome 브라우저로 열어 주세요. (Samsung Internet은 지원이 불안정합니다)');
+            } else {
+                alert('이 브라우저는 Web Bluetooth를 지원하지 않아요.\nChrome 또는 Edge 브라우저를 사용해 주세요.');
+            }
+            return;
+        }
+        if (!window.isSecureContext) {
+            alert('블루투스는 보안 연결(https)에서만 사용할 수 있어요.');
+            return;
+        }
+        try {
+            ble = await window.NubidaBLE.connect({
+                onLine: function (line) { btAckSeenAt = Date.now(); log('📥 아두이노: ' + line, 'ok'); },
+                onDiag: function (msg) { log('🔍 ' + msg, 'info'); },
+                onDisconnect: function () { handleBleClosed('📡 블루투스 연결이 끊어졌어요. 다시 연결해 주세요.'); }
+            });
+            updateBleStatus('connected', ble.name);
+            log('✅ 블루투스(BLE) 연결 성공: ' + ble.name);
+            // ── 연결 직후 자동 진단 전송 ──────────────────────────────
+            //  "연결은 되는데 값이 안 뜬다"의 원인을 즉시 판별한다.
+            //  아두이노 시리얼 모니터에 [진단] 이 뜨면 웹→아두이노 경로 정상.
+            setTimeout(async function () {
+                try {
+                    if (!ble) return;
+                    await ble.writeLine('PING');
+                    log('🧪 진단 신호(PING) 전송 — 아두이노 시리얼 모니터에 [진단] PING 이 뜨면 전송 정상', 'info');
+                } catch (e) {
+                    log('🧪 진단 전송 실패: ' + ((e && e.message) || e), 'err');
+                }
+            }, 800);
+        } catch (e) {
+            // 사용자 취소는 조용히, 그 외 오류는 원인 안내
+            var msg = (e && e.message) || '';
+            var cancelled = (e && e.name === 'NotFoundError') || /cancel|취소|User denied/i.test(msg);
+            if (!cancelled) {
+                log('블루투스 연결 실패: ' + msg, 'err');
+            }
+            ble = null;
+            updateBleStatus('disconnected');
+        }
+    };
+
+    // HC-05/HC-06/AT-06(블루투스 클래식 SPP)은 Web Bluetooth(BLE)로 연결할 수 없다.
+    //  · 안드로이드 앱  → Capacitor NubidaClassic 플러그인(RFCOMM) 으로 연결
+    //  · PC/안드로이드 웹 → USB 연결 시 Web Serial 로 연결
+    window.toggleSerialPort = async function () {
+        if (ble) {
+            try { await ble.disconnect(); } catch (e) {}
+            handleBleClosed();
+            return;
+        }
+        var NB = window.NubidaBLE || {};
+        var classicOk = !!NB.classicSupported;          // 안드로이드 앱 전용
+        var serialOk = !!NB.serialSupported;            // PC/웹 전용
+        var isNativeApp = !!classicOk || !('serial' in navigator);
+
+        if (!classicOk && !serialOk) {
+            var isHttps = (location.protocol === 'https:') || (location.hostname === 'localhost') || (location.hostname === '127.0.0.1');
+            var hasApi = ('serial' in navigator);
+            var msg;
+            if (!hasApi) {
+                msg = '이 브라우저에서는 HC-05/06/AT-06(클래식)을 연결할 수 없어요.\n\n' +
+                      '· 안드로이드: 누비다 앱을 설치해 주세요 (앱에서 연결 지원)\n' +
+                      '· 아이폰(iOS): 클래식 모듈 미지원 → BLE 모듈(HM-10/AT-09)을 사용하고 BLE 버튼을 눌러주세요\n' +
+                      '· PC: USB 케이블로 연결 후 Chrome/Edge 사용';
+            } else if (!isHttps) {
+                msg = '보안 연결(HTTPS)이 아니라 시리얼을 사용할 수 없어요.\nhttps:// 주소로 접속해 주세요.';
+            } else {
+                msg = '이 브라우저는 시리얼 연결을 지원하지 않아요. Chrome 또는 Edge(데스크톱)를 사용해 주세요.';
+            }
+            alert(msg);
+            return;
+        }
+
+        // ── 사전 진단: 왜 목록에 장치가 안 보이는지 사용자에게 먼저 알려준다 ──
+        if (serialOk && !classicOk) {
+            try {
+                var known = (navigator.serial.getPorts ? await navigator.serial.getPorts() : []);
+                log('🔍 시리얼 진단 — Web Serial 사용가능, 보안컨텍스트 정상, 기승인 포트 ' + known.length + '개', 'info');
+                log('ℹ️ 포트 선택창에는 USB 직렬(CH340)만 표시됩니다. HC-06/HC-05는 페어링해도 목록에 나오지 않아요 → USB 케이블로 연결하세요.', 'info');
+            } catch (e) {}
+        }
+
+        try {
+            var h = {
+                onLine: function (line) { btAckSeenAt = Date.now(); log('📥 아두이노: ' + line, 'ok'); },
+                onDisconnect: function () { handleBleClosed('🔌 연결이 끊어졌어요. 다시 연결해 주세요.'); }
+            };
+            // 안드로이드 앱 → 네이티브 RFCOMM / 그 외 → Web Serial
+            if (classicOk && NB.classicConnect) {
+                ble = await NB.classicConnect(h);
+                log('✅ 클래식 블루투스(HC-05/06/AT-06) 연결 성공 — ' + ble.name);
+            } else {
+                ble = await NB.serialConnect(h);
+                log('✅ 시리얼(HC-05/06/AT-06) 연결 성공 — 포트: ' + ble.name);
+            }
+            updateBleStatus('connected', ble.name);
+        } catch (e) {
+            var m2 = (e && e.message) || '';
+            if (!/cancel|취소|No port selected|canceled/i.test(m2)) {
+                log('연결 실패: ' + m2 + (isNativeApp ? ' (앱에서 블루투스 권한을 허용해 주세요)' : ' (HC-06을 PC에 먼저 페어링해 주세요)'), 'err');
+            }
+            ble = null;
+            updateBleStatus('disconnected');
+        }
+    };
+
+    async function closeSerial() {
+        try { if (ble) { await ble.disconnect(); } } catch (e) {}
+        ble = null;
+        updateBleStatus('disconnected');
+    }
+
+    // ACTION 명령 전송 — 성공 시 true (2026-09-09: 프레임 내용 화면 미노출)
+    async function sendCommand(action, targetValue) {
+        if (!ble) return false;
+        var cmd = 'ACTION:' + action + ':' + (targetValue || '');
+        var now = Date.now();
+        if (cmd === lastSent && now - lastSentAt < SEND_REPEAT_MS) return false; // 중복 방지
+        lastSent = cmd; lastSentAt = now;
+        try {
+            await ble.writeLine(cmd);
+            return true;
+        } catch (e) {
+            log('전송 실패: ' + e.message, 'err');
+            return false;
+        }
+    }
+
+    // {n}{접두어} 전송 (예: 1NubidaAi) — 성공 시 true
+    //  기본은 NubidaBT 난독화 프레임('x...')을 보낸다.
+    //  구형 펌웨어(난독화 복호화 미탑재)에서는 프레임을 해석하지 못하므로,
+    //  첫 전송에서 ack가 없으면 평문으로 자동 폴백한다.
+    //   - bleMode: 'encoded'(기본) | 'plain'(폴백 후 고정)
+    var bleMode = 'encoded';
+    var btAckSeenAt = 0;          // 아두이노가 뭔가 응답한 마지막 시각
+    var btEncodedTriedAt = 0;     // 난독화 모드로 첫 전송한 시각
+    var lastTxError = '';         // 마지막 전송 오류 (화면 표시용)
+
+    async function sendValue(value) {
+        if (!ble) return false;
+        var now = Date.now();
+        // 실시간 스트리밍: 같은 값이라도 짧은 간격으로 계속 보낸다.
+        //  (이전 1500ms 중복 차단은 카메라가 같은 사물을 계속 볼 때
+        //   시리얼 모니터에 값이 띄엄띄엄 찍히는 원인이었다)
+        if (value === lastSentPlain && now - lastSentPlainAt < SEND_REPEAT_MS) return false;
+        lastSentPlain = value; lastSentPlainAt = now;
+        // 난독화로 보낸 뒤 응답이 한 번도 없고 2초 이상 지났으면 평문으로 전환한다.
+        if (bleMode === 'encoded' && btEncodedTriedAt &&
+            !btAckSeenAt && now - btEncodedTriedAt > 2000) {
+            bleMode = 'plain';
+            log('ℹ️ 구형 펌웨어로 감지되어 평문 전송으로 전환했어요.', 'ok');
+        }
+        var payload = (bleMode === 'encoded' && window.NubidaBT)
+            ? window.NubidaBT.encode(value)
+            : value;
+        try {
+            await ble.writeLine(payload);
+            lastTxError = '';
+            // 송신도 로그에 남긴다 — "값이 안 간다"를 화면에서 바로 판별
+            log('📤 전송: ' + payload + (bleMode === 'plain' ? ' (평문)' : ''), 'info');
+            if (bleMode === 'encoded' && !btEncodedTriedAt) btEncodedTriedAt = now;
+            return true;
+        } catch (e) {
+            lastTxError = ((e && e.name) || '') + ' ' + ((e && e.message) || e);
+            log('❌ 전송 실패: ' + lastTxError, 'err');
+            return false;
+        }
+    }
+
+    /* ── 음성 명령 (카메라와 동일한 전송 경로 사용) ────────────
+     *  "일번"/"이번" → 1NubidaAi / 2NubidaAi 를 카메라와 똑같이 전송한다.
+     *  · Chrome / 삼성인터넷 / 엣지 : webkitSpeechRecognition (연속 인식)
+     *  · 아이폰(Safari) : SpeechRecognition 미지원 → 안내 후 종료
+     *  전송은 기존 sendValue() 를 그대로 쓰므로 난독화·중복방지·로그가 동일하다.
+     * ──────────────────────────────────────────────────────── */
+    var voiceRec = null;          // SpeechRecognition 인스턴스
+    var voiceOn = false;          // 듣는 중 여부
+
+    // 한국어/영어 발음 모두 대응하도록 숫자 표현을 폭넓게 매칭
+    var VOICE_NUM = [
+        { n: 1, words: ['일번', '1번', '일', '하나', 'first', 'one', '원'] },
+        { n: 2, words: ['이번', '2번', '이', '둘', 'second', 'two', '투'] },
+    ];
+
+    function voiceStatus(msg, color) {
+        var el = $('voiceStatus');
+        if (!el) return;
+        if (!msg) { el.style.display = 'none'; el.textContent = ''; return; }
+        el.style.display = '';
+        el.textContent = msg;
+        el.style.color = color || '';
+    }
+
+    // 인식 문장 → 서보 번호(1/2) 판별. 못 찾으면 0
+    function parseVoiceTarget(text) {
+        var t = (text || '').toLowerCase().replace(/\s+/g, '');
+        // ① "NubidaAi" 접두어가 함께 들린 경우 그 앞 숫자를 우선 사용
+        var m = t.match(/([12])\s*nubida/);
+        if (m) return parseInt(m[1], 10);
+        // ② 그 외에는 단어 매칭 (긴 표현 우선 — '이번'이 '이'보다 먼저 걸리도록)
+        var best = 0, bestLen = 0;
+        VOICE_NUM.forEach(function (g) {
+            g.words.forEach(function (w) {
+                if (w.length > bestLen && t.indexOf(w) >= 0) { best = g.n; bestLen = w.length; }
+            });
+        });
+        return best;
+    }
+
+    async function handleVoiceText(text) {
+        var n = parseVoiceTarget(text);
+        if (!n) {
+            voiceStatus('🎤 "' + text + '" — 일번 / 이번 이라고 말해주세요', '#e5484d');
+            return;
+        }
+        if (!ble) {
+            voiceStatus('🔗 먼저 BLE 연결을 해주세요', '#e5484d');
+            return;
+        }
+        var ok = await sendValue(n + btPrefix);
+        if (ok) {
+            voiceStatus('✅ "' + text + '" → ' + n + btPrefix + ' 전송', '#12a150');
+        } else {
+            voiceStatus('⚠️ 전송 실패 — BLE 연결을 확인해주세요', '#e5484d');
+        }
+    }
+
+    window.toggleVoice = function () {
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SR) {
+            voiceStatus('🎤 이 브라우저는 음성인식을 지원하지 않아요. Chrome·갤럭시·엣지를 사용해주세요. (아이폰 Safari 미지원)', '#e5484d');
+            return;
+        }
+        if (voiceOn) {                       // 듣기 중지
+            voiceOn = false;
+            try { voiceRec.stop(); } catch (e) {}
+            $('btnVoice').textContent = '🎤 음성 명령';
+            voiceStatus('🎤 음성 대기 중지', '');
+            return;
+        }
+        voiceRec = new SR();
+        voiceRec.lang = 'ko-KR';
+        voiceRec.continuous = true;          // 계속 듣기
+        voiceRec.interimResults = false;     // 확정된 문장만 처리
+        voiceRec.maxAlternatives = 1;
+
+        voiceRec.onstart = function () {
+            voiceOn = true;
+            $('btnVoice').textContent = '⏹ 음성 중지';
+            voiceStatus('🎤 듣는 중... "일번" 또는 "이번" 이라고 말하세요', '#4F5EF8');
+        };
+        voiceRec.onresult = function (e) {
+            for (var i = e.resultIndex; i < e.results.length; i++) {
+                if (e.results[i].isFinal) {
+                    var txt = (e.results[i][0].transcript || '').trim();
+                    if (txt) handleVoiceText(txt);
+                }
+            }
+        };
+        voiceRec.onerror = function (e) {
+            var code = (e && e.error) || '';
+            if (code === 'not-allowed' || code === 'service-not-allowed') {
+                voiceStatus('🎤 마이크 권한이 필요해요. 브라우저 주소창의 자물쇠를 눌러 허용해주세요.', '#e5484d');
+                voiceOn = false;
+                $('btnVoice').textContent = '🎤 음성 명령';
+            } else if (code === 'no-speech') {
+                voiceStatus('🎤 듣는 중... (소리가 안 들려요 — 다시 말해주세요)', '#4F5EF8');
+            } else {
+                voiceStatus('🎤 음성 오류: ' + code, '#e5484d');
+            }
+        };
+        voiceRec.onend = function () {       // continuous라도 끊기면 자동 재시작
+            if (voiceOn) { try { voiceRec.start(); } catch (e) {} }
+            else { $('btnVoice').textContent = '🎤 음성 명령'; }
+        };
+        try { voiceRec.start(); }
+        catch (e) { voiceStatus('🎤 음성인식을 시작할 수 없어요: ' + ((e && e.message) || e), '#e5484d'); }
+    };
+
+    /* ── 카메라/분류 ───────────────────────────── */
+
+    window.toggleCamera = async function () {
+        if (stream) { stopCamera(); return; }
+        // 모델 미준비 시 조용히 실패하지 않고 사유를 명확히 안내
+        if (!modelReady || !headModel) {
+            log('⚠️ 모델이 없어 분류를 시작할 수 없어요. 스튜디오에서 학습 후 다시 와 주세요.', 'err');
+            setModelReadyUI(false, '스튜디오에서 [모델 학습]을 완료하면 자동 저장됩니다.');
+            return;
+        }
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: facingMode, width: { ideal: 640 }, height: { ideal: 480 } },
+                audio: false,
+            });
+            var video = $('cameraVideo');
+            video.srcObject = stream;
+            await video.play();
+            $('cameraOverlay').classList.add('hidden');
+            if (headModel) startClassify();
+        } catch (e) {
+            alert('카메라를 사용할 수 없어요: ' + e.message);
+        }
+    };
+
+    window.flipCamera = async function () {
+        facingMode = facingMode === 'user' ? 'environment' : 'user';
+        var wasOn = !!stream;
+        stopCamera();
+        if (wasOn) setTimeout(toggleCamera, 150);
+    };
+
+    function stopCamera() {
+        if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+        $('cameraVideo').srcObject = null;
+        $('cameraOverlay').classList.remove('hidden');
+        stopClassify();
+    }
+
+    function startClassify() {
+        if (classifyTimer) return;
+        // setInterval은 이전 프레임이 끝나기 전에 다음 호출을 쌓아
+        //  (MobileNet 추론이 수백 ms~수 초 걸리는 기기에서) 결과가 영영 안 그려지는 문제가 있었다.
+        //  → 이전 추론이 끝난 뒤에만 다음 프레임을 예약하는 자기재귀 타이머로 교체.
+        //  대기시간을 줄여(150→40ms) 시리얼 모니터에 값이 최대한 촘촘히 흐르게 한다.
+        classifyRunning = true;
+        (function loop() {
+            if (!classifyRunning) return;
+            classifyTimer = setTimeout(async function () {
+                try { await runClassify(); } catch (e) { /* runClassify 내부에서 처리 */ }
+                if (classifyRunning) loop();
+            }, CLASSIFY_IDLE_MS);
+        })();
+    }
+
+    function stopClassify() {
+        classifyRunning = false;
+        if (classifyTimer) { clearTimeout(classifyTimer); classifyTimer = null; }
+    }
+
+    async function runClassify() {
+        if (!stream || !headModel || !truncModel) {
+            // 조용한 리턴 금지 — 왜 분류가 안 도는지 최초 1회만 원인을 노출한다.
+            if (!classifyGuardLogged && stream) {
+                classifyGuardLogged = true;
+                var missing = [];
+                if (!headModel) missing.push('분류 모델(headModel)');
+                if (!truncModel) missing.push('특징 추출기(MobileNet)');
+                var why = missing.length ? missing.join(', ') + '가 준비되지 않았어요.' : '카메라 스트림 없음';
+                log('⚠️ 분류 시작 불가: ' + why, 'err');
+                var box0 = $('resultBox');
+                if (box0 && missing.length) {
+                    box0.innerHTML = '<div class="ml-result-empty" style="color:#B45309;">'
+                        + '⚠️ ' + why + '<br>'
+                        + '<span style="font-size:11px;">네트워크(인터넷) 연결을 확인한 뒤 새로고침해 주세요. '
+                        + '특징 추출기는 최초 1회 인터넷에서 내려받습니다.</span></div>';
+                }
+            }
+            return;
+        }
+        var video = $('cameraVideo');
+        var vw = video.videoWidth || 640, vh = video.videoHeight || 480;
+        var c = document.createElement('canvas');
+        c.width = IMG_SIZE; c.height = IMG_SIZE;
+        var ctx = c.getContext('2d');
+        var side = Math.min(vw, vh);
+        ctx.drawImage(video, (vw - side) / 2, (vh - side) / 2, side, side, 0, 0, IMG_SIZE, IMG_SIZE);
+        try {
+            // WebGL을 못 쓰는 환경(그래픽 가속 꺼짐·원격접속·일부 태블릿)에서도 동작하도록
+            //  tf.browser.fromPixels는 WebGL 텍스처를 요구하므로, 캔버스 픽셀을 직접 텐서로 만든다.
+            var tensor;
+            try {
+                tensor = tf.browser.fromPixels(c).toFloat().div(255).expandDims(0);
+            } catch (pixErr) {
+                var id = ctx.getImageData(0, 0, IMG_SIZE, IMG_SIZE);
+                var arr = new Float32Array(IMG_SIZE * IMG_SIZE * 3);
+                for (var i = 0, j = 0; i < id.data.length; i += 4, j += 3) {
+                    arr[j] = id.data[i] / 255;
+                    arr[j + 1] = id.data[i + 1] / 255;
+                    arr[j + 2] = id.data[i + 2] / 255;
+                }
+                tensor = tf.tensor4d(arr, [1, IMG_SIZE, IMG_SIZE, 3]);
+            }
+            var feats = truncModel.predict(tensor);
+            var preds = headModel.predict(feats);
+            var probs = await preds.data();
+            tensor.dispose(); feats.dispose(); preds.dispose();
+
+            // 첫 성공 시점에 조용한 실패 카운터 해제
+            classifyFailCount = 0;
+
+            var rows = classLabels.map(function (label, i) { return { label: label, prob: probs[i] }; })
+                .sort(function (a, b) { return b.prob - a.prob; });
+            renderResults(rows);
+
+            // 본사 지정 프리셋 동작 전송 (최고 확률)
+            //  임계값 0.6 → 0.5: 2클래스 모델에서 애매할 때 "전송이 안 되는" 체감을 줄인다.
+            //  (0.6을 넘지 못하면 이전에는 아무 동작도 하지 않아 '값이 안 간다'로 보였다)
+            var top = rows[0];
+            if (top.prob >= 0.5) {
+                var ci = classLabels.indexOf(top.label);
+                if (ci >= 0) {
+                    var pr = presetLabel(ci);
+                    var okAction = false, okFrame = false;
+                    if (pr.action !== 'none') okAction = await sendCommand(pr.action, pr.target_value);
+                    // {클래스번호}{접두어} 전송 (난독화 → 필요 시 평문 자동 폴백)
+                    okFrame = await sendValue((ci + 1) + btPrefix);
+                    if (okAction || okFrame) {
+                        var desc = pr.action !== 'none'
+                            ? ' → ' + pr.label + (pr.target_value ? ' (' + pr.target_value + ')' : '')
+                            : '';
+                        // 전송 카운터 — 시리얼 모니터에 값이 계속 흐르는지 화면에서 확인 가능
+                        sendCount++;
+                        log('✅ [' + (ci + 1) + '] ' + top.label + desc + ' 아두이노 전송 완료'
+                            + (bleMode === 'plain' ? ' (평문)' : '')
+                            + ' · ' + sendCount + '회', 'ok');
+                    } else {
+                        // 전송이 아예 안 된 경우 — 원인을 화면에 남긴다 (조용한 실패 방지)
+                        log('⚠️ 분류는 되지만 아두이노로 전송되지 않았어요. '
+                            + (!ble ? '블루투스가 연결되지 않았습니다.'
+                                    : ('전송 오류: ' + (lastTxError || 'BLE 전송 특성을 확인해 주세요.'))), 'err');
+                    }
+                }
+            }
+        } catch (e) {
+            // 프레임 단위 오류는 무시하되, 계속 실패하면 원인을 화면에 노출한다.
+            //  (이전에는 완전 무음이라 "카메라는 켜지는데 분류가 안 된다"는 혼란을 유발)
+            classifyFailCount++;
+            if (classifyFailCount === 12) {
+                var msg = (e && e.message) || String(e);
+                var hint;
+                if (/not compatible with provided weight shape|shape .* not compatible/i.test(msg)) {
+                    // head 모델과 특징 추출기의 차원 불일치 (예: 256 vs 1024)
+                    hint = '모델과 특징 추출기의 차원이 맞지 않아요. '
+                         + '스튜디오에서 [모델 학습]을 다시 완료해 주세요. '
+                         + '(성능 모드가 바뀌면 모델을 다시 저장해야 해요)';
+                } else if (/webgl|backend|texture|GL_/i.test(msg)) {
+                    hint = '브라우저 그래픽(WebGL) 가속이 꺼져 있어요. Chrome 설정 → 시스템 → "그래픽 가속 사용"을 켜고 재시작해 주세요.';
+                } else {
+                    hint = msg;
+                }
+                log('⚠️ 분류 프레임 처리 실패: ' + hint, 'err');
+                var box = $('resultBox');
+                if (box) box.innerHTML = '<div class="ml-result-empty" style="color:#B45309;">'
+                    + '⚠️ 화면 분석에 실패하고 있어요.<br><span style="font-size:11px;">' + hint + '</span></div>';
+            }
+        }
+    }
+
+    function renderResults(rows) {
+        var box = $('resultBox');
+        box.innerHTML = '';
+        // 라벨을 못 받아온 경우(구버전 프로젝트)에도 화면이 죽지 않도록 방어
+        if (!rows || !rows.length) {
+            box.innerHTML = '<div class="ml-result-empty" style="color:#B45309;">'
+                + '⚠️ 분류 결과를 표시할 수 없어요.<br>'
+                + '<span style="font-size:11px;">모델의 클래스 정보를 찾지 못했습니다. '
+                + '스튜디오에서 모델을 다시 학습·저장해 주세요.</span></div>';
+            return;
+        }
+        var top = rows[0];
+        $('resultTop').style.display = 'block';
+        $('resultLabel').textContent = '[' + (classLabels.indexOf(top.label) + 1) + '] ' + top.label;
+        $('resultPct').textContent = Math.round(top.prob * 100) + '%';
+        rows.slice(0, 5).forEach(function (r) {
+            var row = el('div', 'ml-result-bar-row');
+            row.appendChild(el('span', 'ml-result-bar-label', '[' + (classLabels.indexOf(r.label) + 1) + '] ' + r.label));
+            var track = el('div', 'ml-result-bar-track');
+            var fill = el('div', 'ml-result-bar-fill');
+            fill.style.width = Math.max(2, Math.round(r.prob * 100)) + '%';
+            fill.style.background = '#4F5EF8';
+            track.appendChild(fill);
+            row.appendChild(track);
+            row.appendChild(el('span', 'ml-result-bar-pct', Math.round(r.prob * 100) + '%'));
+            box.appendChild(row);
+        });
+    }
+
+    /* ── 초기화 ───────────────────────────────── */
+
+    document.addEventListener('DOMContentLoaded', function () {
+        init().catch(function (e) {
+            $('resultBox').innerHTML = '<div class="ml-result-empty">초기화 실패: ' + e.message + '</div>';
+        });
+        window.addEventListener('beforeunload', function () { stopCamera(); closeSerial(); try { voiceOn = false; if (voiceRec) voiceRec.stop(); } catch (e) {} });
+    });
+})();

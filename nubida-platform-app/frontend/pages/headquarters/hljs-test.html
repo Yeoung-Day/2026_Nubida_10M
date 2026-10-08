@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>highlight.js 테스트</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/lib/highlightjs/atom-one-light.min.css?v=1">
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        pre { background: #fff !important; border: 1px solid #e5e7eb !important; border-radius: 10px !important; padding: 18px !important; overflow-x: auto !important; }
+        .test-section { margin-bottom: 40px; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
+    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+</head>
+<body>
+    <h1>highlight.js 테스트 페이지</h1>
+    <p>서버사이드 없이 순수 JS로 테스트</p>
+    
+    <div class="test-section">
+        <h2>1. 직접 HTML 삽입 (정적)</h2>
+        <pre class="code-block arduino hljs"><code class="hljs arduino">int touch1;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+}
+
+void loop() {
+  pinMode(11, INPUT);
+  touch1 = digitalRead(11);
+  delay(10);
+
+  if (touch1 > 0) {
+    digitalWrite(4, 150);
+  } else {
+    digitalWrite(4, LOW);
+  }
+  delay(1000);
+}</code></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>2. renderStudentLectureContent 시뮬레이션</h2>
+        <div id="testArea"></div>
+    </div>
+
+    <script src="/lib/highlightjs/highlight.min.js?v=2"></script>
+    <script src="/lib/highlightjs/cpp.min.js?v=2"></script>
+    <script src="/lib/highlightjs/arduino.min.js?v=2"></script>
+    <script src="/lib/highlightjs/python.min.js?v=2"></script>
+    <script>
+    var code = `int touch1;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+}
+
+void loop() {
+  pinMode(11, INPUT);
+  touch1 = digitalRead(11);
+  delay(10);
+
+  if (touch1 > 0) {
+    digitalWrite(4, 150);
+  } else {
+    digitalWrite(4, LOW);
+  }
+  delay(1000);
+}`;
+    var escCode = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var rawHtml = '<pre class="code-block arduino"><code>' + escCode + '</code></pre>';
+    
+    // 2a: renderStudentLectureContent 적용
+    var styled = rawHtml;
+    styled = styled.replace(/<pre class="code-block([^"]*)"><code>([\s\S]*?)<\/code><\/pre>/g, function(m, cls, codeContent) {
+        var lang = cls.trim() || 'text';
+        var langLabel = lang.charAt(0).toUpperCase() + lang.slice(1);
+        return '<div class="code-wrapper" style="background:#f5f5f5;border-radius:12px;overflow:hidden;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #e5e7eb">'
+            + '<div style="display:flex;align-items:center;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">'
+            + '<span style="font-size:11px;font-weight:600;color:#6b7280;letter-spacing:0.5px;text-transform:uppercase">' + langLabel + '</span>'
+            + '<span style="flex:1"></span>'
+            + '<button style="background:#f3f4f6;border:1px solid #e5e7eb;color:#374151;padding:3px 12px;border-radius:5px;font-size:10px;cursor:pointer" onclick="alert(\\'copy!\\')">📋 복사</button>'
+            + '</div>'
+            + '<pre style="margin:0;padding:18px;overflow-x:auto;font-size:13px;line-height:1.7;background:#fff;font-family:\\'JetBrains Mono\\',\\'Fira Code\\',\\'D2Coding\\',monospace;tab-size:4"><code style="border:none">' + codeContent + '</code></pre></div>';
+    });
+    
+    document.getElementById('testArea').innerHTML = styled;
+    
+    // highlight.js 적용
+    document.querySelectorAll('.code-wrapper pre code').forEach(function(el) {
+        el.classList.add('hljs');
+        var pre = el.closest('pre');
+        if (!pre) return;
+        var wrapper = pre.closest('.code-wrapper');
+        if (!wrapper) return;
+        var header = wrapper.querySelector('div:first-child span:first-child');
+        var lang = header ? header.textContent.trim().toLowerCase() : 'text';
+        var langMap = {c:'cpp','c++':'cpp','arduino':'arduino','cpp':'cpp','python':'python','py':'python','text':'plaintext'};
+        var hljsLang = langMap[lang] || 'plaintext';
+        if (hljs.highlightElement) {
+            el.classList.add(hljsLang);
+            hljs.highlightElement(el);
+        }
+    });
+    
+    document.getElementById('testArea').innerHTML += '<p style="margin-top:10px;color:green">✅ highlight.js 적용 완료</p>';
+    document.getElementById('testArea').innerHTML += '<p>저장된 HTML 구조: ' + document.querySelector('.code-wrapper')?.outerHTML.substring(0, 300) + '...</p>';
+    </script>
+</body>
+</html>

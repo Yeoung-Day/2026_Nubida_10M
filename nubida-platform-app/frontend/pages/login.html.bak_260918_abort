@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 — 누비다플랫폼</title>
+<link rel="icon" type="image/png" href="/favicon.ico">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="로그인 — 누비다플랫폼">
+    <meta property="og:description" content="누비다플랫폼에 로그인하고 메이커 코딩 + AI 교육 통합 시스템을 시작하세요.">
+    <meta property="og:url" content="https://xn--od1bqqv8i85hml3aulb.kr/pages/login.html">
+    <meta property="og:site_name" content="누비다플랫폼">
+    <meta property="og:locale" content="ko_KR">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260603_redesign">
+    <link rel="stylesheet" href="/common/css/pages/login.css?v=20260603_redesign">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-wrapper">
+            <div class="login-header">
+                <a href="/" class="login-logo-link" aria-label="누비다플랫폼 홈으로" title="누비다플랫폼 홈으로">
+                    <img src="/common/assets/brand/nubida-logo-light.png" alt="누비다플랫폼" class="login-logo-img">
+                </a>
+                <h1>누비다플랫폼</h1>
+                <p>메이커 코딩 교육 시스템</p>
+            </div>
+            <div class="login-card">
+                <h2>로그인</h2>
+                <p class="subtitle">계정 정보를 입력해주세요</p>
+                <div class="login-error" id="loginError"></div>
+                <form id="loginForm" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="username">아이디</label>
+                        <input type="text" class="form-input" id="username" placeholder="아이디를 입력하세요" autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">비밀번호</label>
+                        <input type="password" class="form-input" id="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password">
+                    </div>
+                    <div id="totpWrap" style="display:none;margin-bottom:14px;">
+                        <label for="totpCode" style="display:block;margin-bottom:6px;font-size:13px;color:#64748B;">
+                            🔐 2단계 인증 코드 (인증 앱의 6자리 숫자)
+                        </label>
+                        <input type="text" id="totpCode" inputmode="numeric" autocomplete="one-time-code"
+                               maxlength="11" placeholder="000000"
+                               style="width:100%;padding:12px 14px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:16px;letter-spacing:2px;text-align:center;box-sizing:border-box;">
+                        <div style="margin-top:6px;font-size:12px;color:#94A3B8;">
+                            기기를 분실했다면 복구코드(예: A1B2C-3D4E5)를 입력하세요.
+                        </div>
+                    </div>
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        <span class="spinner"></span>
+                        <span class="btn-text">로그인</span>
+                    </button>
+                    <div style="text-align:center;margin-top:16px;font-size:13px;color:#64748B;">
+                        <a href="/pages/find-id.html" style="color:#4F5EF8;text-decoration:none;font-weight:500;">아이디 찾기</a>
+                        <span style="margin:0 8px;">|</span>
+                        <a href="/pages/find-password.html" style="color:#4F5EF8;text-decoration:none;font-weight:500;">비밀번호 찾기</a>
+                        <span style="margin:0 8px;">|</span>
+                        <a href="/pages/register.html" style="color:#4F5EF8;text-decoration:none;font-weight:500;">회원가입</a>
+                    </div>
+                </form>
+            </div>
+            <div class="login-footer">&copy; 2026 누비다플랫폼. All rights reserved.</div>
+        </div>
+    </div>
+    <script src="/common/js/api.js?v=20260603_redesign"></script>
+    <script src="/common/js/auth.js?v=20260603_redesign"></script>
+    <script src="/common/js/utils.js?v=20260603_redesign"></script>
+    <script>
+        function fillLogin(u, p) {
+            document.getElementById('username').value = u;
+            document.getElementById('password').value = p;
+        }
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const err = document.getElementById('loginError');
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                err.textContent = '아이디와 비밀번호를 입력해주세요.';
+                err.style.display = 'block';
+                return;
+            }
+
+            btn.classList.add('loading');
+            btn.disabled = true;
+            err.style.display = 'none';
+            err.textContent = '';
+
+            // ── 2단계 인증(TOTP) 입력값 (있으면 함께 전송) ──
+            const totpEl = document.getElementById('totpCode');
+            const totpCode = totpEl ? totpEl.value.trim() : '';
+
+            try {
+                const payload = { username, password };
+                if (totpCode) payload.totp_code = totpCode;
+                const res = await apiPost('/auth/login', payload);
+
+                // ── 관리자 2단계 인증: 코드가 필요하다는 응답 ──
+                if (res && res.data && res.data.totp_required) {
+                    const wrap = document.getElementById('totpWrap');
+                    if (wrap) {
+                        wrap.style.display = 'block';
+                        const el = document.getElementById('totpCode');
+                        if (el) { el.focus(); }
+                    }
+                    err.style.display = 'block';
+                    err.textContent = '🔐 2단계 인증 코드를 입력해 주세요.';
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (res && res.status === 'error') {
+                    throw new Error(res.message || '로그인에 실패했습니다.');
+                }
+                const { access_token, user } = res.data;
+                localStorage.setItem('token', access_token);
+                localStorage.setItem('user', JSON.stringify(user));
+
+                const roleRoutes = {
+                    'super_admin': '/pages/headquarters/dashboard.html',
+                    'admin': '/pages/headquarters/dashboard.html',
+                    'branch_admin': '/pages/branch/dashboard.html',
+                    'branch_manager': '/pages/branch/dashboard.html',
+                    'branch_staff': '/pages/branch/dashboard.html',
+                    'director': '/pages/director/dashboard.html',
+                    'student': '/pages/student/dashboard.html',
+                    'parent': '/pages/parent/dashboard.html',
+                };
+                window.location.href = roleRoutes[user.role] || '/pages/branch/dashboard.html';
+            } catch(e) {
+                const msg = e.message || '';
+                if (msg.includes('2단계 인증') || msg.includes('totp')) {
+                    err.textContent = '🔐 2단계 인증 코드가 올바르지 않습니다. 인증 앱의 최신 코드를 입력해 주세요.';
+                } else if (msg.includes('401') || msg.includes('올바르지 않습니다') || msg.includes('아이디') || msg.includes('비밀번호')) {
+                    err.textContent = '❌ 아이디 또는 비밀번호가 올바르지 않습니다. 입력하신 정보를 확인 후 다시 시도해주세요.';
+                } else if (msg.includes('승인 대기') || msg.includes('403')) {
+                    err.textContent = '⏳ 승인 대기 중인 계정입니다. 관리자(원장 또는 본사)에게 문의하세요.';
+                } else if (msg.includes('비활성화') || msg.includes('관리자에게')) {
+                    err.textContent = '🚫 비활성화된 계정입니다. 관리자에게 문의하세요.';
+                } else if (msg.includes('404')) {
+                    err.textContent = '❌ 존재하지 않는 계정입니다. 회원가입 또는 아이디 찾기를 이용해주세요.';
+                } else if (msg.includes('500') || msg.includes('서버')) {
+                    err.textContent = '⚠️ 서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                } else {
+                    err.textContent = '❌ ' + (msg || '로그인에 실패했습니다. 다시 시도해주세요.');
+                }
+                err.style.display = 'block';
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+        document.getElementById('password').addEventListener('keydown', (e) => { if(e.key==='Enter') document.getElementById('loginForm').dispatchEvent(new Event('submit')); });
+    </script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

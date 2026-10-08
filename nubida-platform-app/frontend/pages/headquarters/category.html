@@ -1,0 +1,926 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>카테고리 강좌 관리 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+            .cat-header { display:flex; align-items:center; gap:12px; margin-bottom:16px }
+            .cat-header .cat-dot { width:14px;height:14px;border-radius:50%;display:inline-block }
+            .cat-header h2 { font-size:22px;font-weight:700;margin:0 }
+            .cat-header .back-link { font-size:14px;color:var(--text-secondary);cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px }
+            .cat-header .back-link:hover { color:var(--accent) }
+            /* ── 폴더 카드형 스타일 ── */
+            .folder-grid { display:flex; gap:12px; flex-wrap:wrap; padding:12px 0; align-items:stretch }
+            .folder-grid-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; width:100% }
+            .folder-grid-header .label { font-size:14px; font-weight:600; color:var(--text-secondary) }
+            .folder-card { display:flex; flex-direction:column; align-items:center; gap:6px; padding:16px 14px; min-width:130px; max-width:140px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; cursor:pointer; transition:all 0.2s }
+            .folder-card:hover { border-color:var(--accent); box-shadow:0 2px 10px rgba(0,0,0,0.06); transform:translateY(-1px) }
+            .folder-card.active { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 6%, transparent); box-shadow:0 0 0 1px var(--accent) }
+            .folder-card-icon { font-size:26px; line-height:1 }
+            .folder-card-name { font-size:14px; font-weight:600; color:var(--text-primary); text-align:center; line-height:1.3 }
+            .folder-card-count { font-size:11px; color:var(--text-tertiary) }
+            .folder-card-toggle { font-size:11px; cursor:pointer; padding:2px 8px; border-radius:10px; transition:all 0.2s }
+            .folder-card-toggle:hover { background:var(--bg-accent-light) }
+            .folder-card-toggle.on { color:var(--success) }
+            .folder-card-toggle.off { color:var(--text-tertiary) }
+            .folder-card-actions { display:flex; gap:6px; margin-top:2px }
+            .btn-icon { background:none; border:none; cursor:pointer; padding:2px 4px; border-radius:4px; font-size:14px; transition:all 0.15s; line-height:1 }
+            .btn-icon:hover { background:var(--bg-accent-light) }
+            .btn-icon.danger:hover { background:rgba(239,68,68,0.1) }
+            .folder-add-card { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:16px 14px; min-width:130px; max-width:140px; border:2px dashed var(--border-subtle); border-radius:12px; background:transparent; cursor:pointer; transition:all 0.2s; color:var(--accent) }
+            .folder-add-card:hover { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 4%, transparent) }
+            .folder-all-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:16px 14px; min-width:130px; max-width:140px; border:1px solid var(--border-subtle); border-radius:12px; cursor:pointer; transition:all 0.2s; background:var(--bg-surface) }
+            .folder-all-btn:hover { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 4%, transparent) }
+            .folder-all-btn.active { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 6%, transparent) }
+            .folder-all-btn .icon { font-size:22px }
+            .folder-all-btn .label { font-size:12px; font-weight:600; color:var(--text-primary) }
+            .courses-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:8px; flex-wrap:wrap }
+            .courses-toolbar-left { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+            .category-tag { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:500 }
+            .file-count { cursor:pointer; font-size:13px; color:var(--text-secondary); transition:color 0.2s }
+            .file-count:hover { color:var(--accent) }
+            .upload-zone.dragover { border-color:var(--accent) !important; background:var(--bg-accent-light) !important }
+            .upload-queue-item .upload-status { font-size:11px; min-width:50px; text-align:right }
+            .mat-upload-tabs { display:flex; gap:4px; margin-bottom:12px }
+            .mat-upload-tab { padding:6px 16px; border:1px solid var(--border-subtle); background:var(--bg-surface); border-radius:6px; cursor:pointer; font-size:13px; color:var(--text-secondary); transition:all 0.2s }
+            .mat-upload-tab:hover { border-color:var(--accent); color:var(--accent) }
+            .mat-upload-tab.active { background:var(--accent); color:#fff; border-color:var(--accent) }
+            /* ── 페이지 로딩 오버레이 ── */
+            .page-loading-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px) }
+            .page-loading-overlay.hide { display:none }
+            .page-loading-overlay .loading-icon { width:48px; height:48px; border:4px solid #e8e8f0; border-top-color:var(--accent); border-radius:50%; animation:spinner-spin 0.8s linear infinite; margin-bottom:16px }
+            @keyframes spinner-spin { to { transform:rotate(360deg) } }
+            .page-loading-overlay .loading-label { font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:4px }
+            .page-loading-overlay .loading-sub { font-size:13px; color:var(--text-tertiary) }
+            .page-loading-overlay .loading-progress { width:180px; height:3px; background:var(--border-subtle); border-radius:4px; overflow:hidden; margin-top:12px }
+            .page-loading-overlay .loading-progress-bar { height:100%; width:0; background:linear-gradient(90deg, var(--accent), #6C7AFF); border-radius:4px; animation:loading-bar 2s ease-in-out infinite }
+            @keyframes loading-bar {
+              0%{ width:0; margin-left:0 }
+              50%{ width:60%; margin-left:20% }
+              100%{ width:0; margin-left:100% }
+            }
+            .loading-timeout { display:flex; align-items:center; gap:8px; padding:24px 0; justify-content:center; width:100%; font-size:14px; color:var(--text-tertiary) }
+        </style>
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+    <body>
+        <!-- 페이지 로딩 오버레이 -->
+        <div class="page-loading-overlay" id="pageLoading">
+            <div class="loading-icon"></div>
+            <div class="loading-label">강좌 정보를 불러오는 중</div>
+            <div class="loading-sub">잠시만 기다려주세요</div>
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+        </div>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="/pages/firmware.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4M8 4h8"/><circle cx="9" cy="13" r="1.1"/><circle cx="15" cy="13" r="1.1"/></svg></span><span class="nav-label">교구 자료실</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="security.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="nav-label">보안 설정</span></a>
+        <a class="nav-item sub" href="access-control.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="nav-label">노래 AI 이용 관리</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav">
+   <div class="top-nav-left">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+   <div class="cat-header" style="margin-bottom:0">
+   <a class="back-link" href="courses.html">← 강좌 관리</a>
+   <span class="cat-dot" id="catDot" style="background:#4F5EF8"></span>
+   <h2 id="catTitle">강좌 관리</h2>
+   </div>
+   </div>
+   <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+   </div>
+
+   <!-- Folder Card Grid -->
+   <div class="folder-grid" id="folderGrid"></div>
+
+   <!-- Toolbar -->
+   <div class="courses-toolbar">
+   <div class="courses-toolbar-left">
+   <select class="form-input" id="statusFilter" onchange="loadCourses(1)" style="width:110px">
+   <option value="">전체 상태</option>
+   <option value="active">공개</option>
+   <option value="draft">비공개</option>
+   <option value="inactive">중지</option>
+   </select>
+   <input type="text" class="form-input" id="searchInput" placeholder="검색..." oninput="filterCourses()" style="width:160px">
+   <span class="small-text" id="courseCount">0개</span>
+   </div>
+   <div class="courses-toolbar-right">
+   <button class="btn btn-ghost btn-sm" onclick="batchDeleteCourses()" id="batchDeleteBtn" style="display:none">🗑️ 선택 삭제</button>
+   <button class="btn btn-primary btn-sm" onclick="openCreateCourseModal()">+ 강좌 추가</button>
+   </div>
+   </div>
+
+   <!-- Course Table -->
+   <div class="courses-card">
+   <table class="courses-table" data-card-view>
+   <thead>
+   <tr>
+   <th class="checkbox-col"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th>
+   <th style="width:50px">ID</th>
+   <th>강좌명</th>
+   <th style="width:60px">파일</th>
+   <th style="width:70px">활성</th>
+   <th style="width:90px">생성일</th>
+   <th style="width:180px">작업</th>
+   </tr>
+   </thead>
+      <tbody id="courseTableBody">
+    <tr class="c-empty"><td colspan="7" style="text-align:center;padding:40px 0;color:var(--text-tertiary)">📭 등록된 강좌가 없습니다</td></tr>
+    </tbody>
+   </table>
+   <div class="pagination-wrap" id="paginationWrap"></div>
+   </div>
+   </main>
+   </div>
+
+   <!-- Create Course Modal -->
+   <div class="modal-overlay" id="createCourseModal">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header"><h3>📖 새 강좌 추가</h3></div>
+   <div class="modal-body">
+   <div class="form-row">
+   <div class="full form-group">
+   <label class="form-label">강좌명 *</label>
+   <input type="text" class="form-input" id="newTitle" placeholder="예: 메이커 코딩 기초반">
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="newStatus"><option value="active" selected>공개</option><option value="draft">비공개</option></select>
+   </div>
+   <div class="full form-group">
+   <label class="form-label">설명</label>
+   <textarea class="form-input" id="newDescription" rows="3" placeholder="강좌에 대한 설명을 입력하세요"></textarea>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('createCourseModal')">취소</button>
+   <button class="btn btn-primary" onclick="createCourse()">강좌 생성</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- Edit Course Modal -->
+   <div class="modal-overlay" id="editCourseModal">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header"><h3>✏️ 강좌 정보 수정</h3></div>
+   <div class="modal-body">
+   <input type="hidden" id="editCourseId">
+   <div class="form-row">
+   <div class="full form-group"><label class="form-label">강좌명 *</label><input type="text" class="form-input" id="editTitle"></div>
+   <div class="form-group"><label class="form-label">상태</label>
+   <select class="form-input" id="editStatus"><option value="active">공개</option><option value="draft">비공개</option><option value="inactive">중지</option></select>
+   </div>
+   <div class="full form-group"><label class="form-label">설명</label><textarea class="form-input" id="editDescription" rows="3"></textarea></div>
+   <div class="full form-group"><label class="form-label">폴더 경로</label>
+   <select class="form-input" id="editFolderId"><option value="">폴더 없음 (전체)</option></select>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('editCourseModal')">취소</button>
+   <button class="btn btn-primary" onclick="updateCourse()">저장</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- Materials Modal -->
+   <div class="modal-overlay" id="materialsModal">
+   <div class="modal modal-xl">
+   <div class="modal-header"><h3>📖 <span id="matModalTitle">강좌명</span> — 학습 자료</h3></div>
+   <div class="modal-body">
+   <input type="hidden" id="matCourseId">
+   <div id="matUploadSection" style="display:none">
+   <div class="mat-upload-tabs">
+   <button class="mat-upload-tab active" data-utab="file" onclick="switchUploadTab('file')">📁 파일 업로드</button>
+   <button class="mat-upload-tab" data-utab="link" onclick="switchUploadTab('link')">🔗 링크 추가</button>
+   </div>
+   <div id="matUploadFileTab">
+   <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" style="padding:24px;border:2px dashed var(--border-subtle);border-radius:12px;text-align:center;cursor:pointer;transition:all 0.2s">
+   <p style="font-size:14px;font-weight:500;color:var(--text-secondary)">📤 파일을 선택하거나 여기에 드래그하세요</p>
+   <p style="font-size:12px;color:var(--text-tertiary)">📄 PDF · HWP · 🎬 MP4 · 🖼️ JPG · PNG</p>
+   <input type="file" id="fileInput" style="display:none" multiple onchange="onFilesSelected(this)">
+   </div>
+   <div id="uploadQueue" style="display:none;margin-top:12px;border-top:1px solid var(--border-subtle);padding-top:12px"></div>
+   </div>
+   <div id="matUploadLinkTab" style="display:none;padding:12px;border:1px dashed var(--border-subtle);border-radius:8px">
+   <div class="form-row">
+   <div class="full form-group"><label class="form-label">링크 URL *</label><input type="text" class="form-input" id="linkUrl" placeholder="https://..."></div>
+   <div class="form-group"><label class="form-label">제목 *</label><input type="text" class="form-input" id="linkTitle" placeholder="자료 제목"></div>
+   <div class="form-group"><label class="form-label">유형</label>
+   <select class="form-input" id="linkType"><option value="link">🔗 일반 링크</option><option value="embed">🎬 임베드</option></select>
+   </div>
+   <div class="full form-group"><label class="form-label">설명</label><input type="text" class="form-input" id="linkDescription" placeholder="간단한 설명"></div>
+   </div>
+   <button class="btn btn-primary btn-sm" onclick="addLinkMaterial()">링크 추가</button>
+   </div>
+   <div id="uploadProgressBar" style="display:none;margin-top:12px">
+   <div id="uploadProgressLabel" style="font-size:12px;color:var(--text-secondary);margin-bottom:4px"></div>
+   <div style="height:6px;background:var(--bg-accent-light);border-radius:3px;overflow:hidden"><div id="uploadProgressFill" style="height:100%;width:0%;background:var(--accent);border-radius:3px;transition:width 0.3s"></div></div>
+   </div>
+   </div>
+   <div id="matInfoBanner" style="display:none;padding:12px 16px;background:var(--bg-accent-light);border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--text-secondary)">📖 아래 자료를 클릭하여 학습하세요.</div>
+   <div id="materialList"><div class="empty-state" style="padding:40px 0"><div class="empty-icon">📭</div><h3>등록된 자료가 없습니다</h3></div></div>
+   <div id="videoPlayer" style="display:none;margin-top:16px;border-top:1px solid var(--border-subtle);padding-top:16px">
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h4 id="videoTitle" style="font-size:14px;font-weight:600"></h4><button class="btn btn-ghost btn-xs" onclick="stopVideo()">취소</button></div>
+   <video id="videoElement" controls style="width:100%;border-radius:8px;max-height:400px" controlsList="nodownload"><p>지원하지 않는 브라우저입니다.</p></video>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <span id="matCount" style="font-size:12px;color:var(--text-tertiary)"></span>
+   <button class="btn btn-ghost" onclick="closeModal('materialsModal');stopVideo()">취소</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- Folder Modal -->
+   <div class="modal-overlay" id="folderModal">
+   <div class="modal" style="max-width:480px">
+   <div class="modal-header"><h3 id="folderModalTitle">📁 새 폴더</h3></div>
+   <div class="modal-body">
+   <input type="hidden" id="editFolderId" value="">
+   <div class="form-row">
+   <div class="full form-group"><label class="form-label">폴더명 *</label><input type="text" class="form-input" id="folderNameInput" placeholder="예: 1주차" maxlength="100"></div>
+   <div class="full form-group"><label class="form-label">상위 폴더 (선택)</label>
+   <select class="form-input" id="folderParentSelect"><option value="">없음 (최상위)</option></select>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('folderModal')">취소</button>
+   <button class="btn btn-primary" id="folderSaveBtn" onclick="saveFolder()">폴더 생성</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- Rename Folder Modal -->
+   <div class="modal-overlay" id="renameFolderModal">
+   <div class="modal" style="max-width:400px">
+   <div class="modal-header"><h3>✏️ 폴더 이름 변경</h3></div>
+   <div class="modal-body">
+   <input type="hidden" id="renameFolderId" value="">
+   <div class="form-row"><div class="full form-group"><label class="form-label">새 폴더명</label><input type="text" class="form-input" id="renameFolderInput" maxlength="100"></div></div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('renameFolderModal')">취소</button>
+   <button class="btn btn-primary" onclick="renameFolder()">저장</button>
+   </div>
+   </div>
+   </div>
+
+  <script src="/common/js/api.js?v=20260918abort"></script>
+  <script src="/common/js/auth.js?v=20260911nav"></script>
+  <script src="/common/js/utils.js?v=20260911nav"></script>
+  <script>
+  // ============================================================
+  // 카테고리 상세 페이지 — 상태 변수
+  // ============================================================
+  let catKey = '';
+  let catName = '';
+  let catColor = '#4F5EF8';
+  let catBgColor = 'rgba(8,145,178,0.08)';
+  let allCourses = [], filteredCourses = [], curPage = 1, totalPages = 1;
+  let currentMaterials = [], currentMatCourseId = null;
+  let activeFolder = null;
+  let apiFolders = [];
+  const PER_PAGE = 100;
+  const statusLabels = { 'active': '공개', 'draft': '비공개', 'inactive': '중지' };
+
+  // ===== 초기화 (onAuthReady 패턴) =====
+  document.addEventListener('DOMContentLoaded', function() {
+    requireAuth();
+    renderSidebarUser();
+    const params = new URLSearchParams(window.location.search);
+    catKey = params.get('cat') || '';
+    if (!catKey) {
+      document.getElementById('catTitle').textContent = '잘못된 접근';
+      showAlert('카테고리 파라미터가 없습니다.', 'error');
+      document.getElementById('pageLoading').classList.add('hide');
+      return;
+    }
+    // 인증 확인 전이라도 오버레이 먼저 표시
+    var overlay = document.getElementById('pageLoading');
+    if (overlay) overlay.classList.remove('hide');
+    onAuthReady(function() {
+      loadCategoryInfo();
+      loadFolders();
+      loadCourses(1);
+    });
+  });
+
+  // ===== 카테고리 정보 =====
+  async function loadCategoryInfo() {
+    try {
+      const res = await apiGet('/headquarters/courses/categories');
+      const cats = res.data || [];
+      const found = cats.find(function(c) { return c.key === catKey; });
+      if (found) {
+        catName = found.name;
+        catColor = found.color || '#4F5EF8';
+        catBgColor = found.bg_color || 'rgba(8,145,178,0.08)';
+      } else {
+        catName = catKey;
+      }
+    } catch (e) {
+      catName = catKey;
+    }
+    document.getElementById('catTitle').textContent = catName + ' — 강좌 관리';
+    document.getElementById('catDot').style.background = catColor;
+    document.title = catName + ' — 누비다플랫폼';
+  }
+
+  // ===== 폴더 =====
+  function flattenTree(nodes, depth) {
+    if (depth === undefined) depth = 0;
+    var result = [];
+    nodes.forEach(function(n) {
+      var children = n.children || [];
+      result.push(Object.assign({}, n, { depth: depth }));
+      result = result.concat(flattenTree(children, depth + 1));
+    });
+    return result;
+  }
+
+  async function loadFolders() {
+    try {
+      var res = await apiGet('/headquarters/folders?category=' + encodeURIComponent(catKey));
+      apiFolders = flattenTree(res.data || []);
+    } catch (e) { apiFolders = []; }
+    renderFolders();
+  }
+
+  function renderFolders() {
+    var container = document.getElementById('folderGrid');
+    if (!container) return;
+    var html = '';
+
+    // "모든 강좌" 버튼
+    var isAll = !activeFolder;
+    html += '<div class="folder-all-btn' + (isAll ? ' active' : '') + '" onclick="selectFolder(null)" title="모든 강좌">';
+    html += '<div class="icon">📋</div><div class="label">전체</div></div>';
+
+    apiFolders.forEach(function(f) {
+      var isActive = activeFolder === f.id;
+      var depthPad = f.depth > 0 ? 'style="margin-left:' + (f.depth * 16) + 'px"' : '';
+      html += '<div class="folder-card' + (isActive ? ' active' : '') + '" ' + depthPad + ' onclick="selectFolder(\'' + f.id + '\')">';
+      html += '<div class="folder-card-icon">📁</div>';
+      html += '<div class="folder-card-name">' + esc(f.name) + '</div>';
+      html += '<div class="folder-card-count">' + (f.course_count || 0) + '개</div>';
+      html += '<div class="folder-card-actions">';
+      html += '<button class="btn-icon" onclick="event.stopPropagation();openRenameFolderModal(\'' + f.id + '\',\'' + esc(f.name.replace(/'/g, "\\'")) + '\')" title="이름 변경">✏️</button>';
+      html += '<button class="btn-icon danger" onclick="event.stopPropagation();deleteFolder(\'' + f.id + '\')" title="삭제">🗑️</button>';
+      html += '</div></div>';
+    });
+
+    // 폴더 추가 버튼
+    html += '<div class="folder-add-card" onclick="openFolderModal()">';
+    html += '<div style="font-size:24px">+</div>';
+    html += '<div style="font-size:12px;font-weight:600">새 폴더</div></div>';
+
+    container.innerHTML = html;
+  }
+
+  function selectFolder(id) {
+    activeFolder = id;
+    renderFolders();
+    loadCourses(1);
+  }
+
+  // ===== 폴더 CRUD =====
+  function openFolderModal() {
+    document.getElementById('editFolderId').value = '';
+    document.getElementById('folderNameInput').value = '';
+    document.getElementById('folderModalTitle').textContent = '📁 새 폴더';
+    document.getElementById('folderSaveBtn').textContent = '폴더 생성';
+    var sel = document.getElementById('folderParentSelect');
+    sel.innerHTML = '<option value="">없음 (최상위)</option>';
+    apiFolders.forEach(function(f) {
+      if (f.depth < 2) {
+        sel.innerHTML += '<option value="' + f.id + '">' + esc(f.name) + '</option>';
+      }
+    });
+    openModal('folderModal');
+  }
+
+  function openRenameFolderModal(id, name) {
+    document.getElementById('renameFolderId').value = id;
+    document.getElementById('renameFolderInput').value = name;
+    openModal('renameFolderModal');
+  }
+
+  async function saveFolder() {
+    var name = document.getElementById('folderNameInput').value.trim();
+    if (!name) { showAlert('폴더명을 입력하세요.', 'error'); return; }
+    var parentId = document.getElementById('folderParentSelect').value;
+    try {
+      await apiPost('/headquarters/folders', {
+        category: catKey,
+        name: name,
+        parent_id: parentId || null
+      });
+      showAlert('폴더가 생성되었습니다.', 'success');
+      closeModal('folderModal');
+      loadFolders();
+    } catch (e) {
+      showAlert(e.message || '폴더 생성 실패', 'error');
+    }
+  }
+
+  async function renameFolder() {
+    var id = document.getElementById('renameFolderId').value;
+    var name = document.getElementById('renameFolderInput').value.trim();
+    if (!name) { showAlert('폴더명을 입력하세요.', 'error'); return; }
+    try {
+      await apiPut('/headquarters/folders/' + id, { name: name });
+      showAlert('폴더명이 변경되었습니다.', 'success');
+      closeModal('renameFolderModal');
+      loadFolders();
+    } catch (e) {
+      showAlert(e.message || '폴더명 변경 실패', 'error');
+    }
+  }
+
+  async function deleteFolder(id) {
+    if (!confirm('정말 이 폴더를 삭제하시겠습니까?')) return;
+    try {
+      await apiDelete('/headquarters/folders/' + id);
+      showAlert('폴더가 삭제되었습니다.', 'success');
+      if (activeFolder === id) activeFolder = null;
+      loadFolders();
+      loadCourses(1);
+    } catch (e) {
+      showAlert(e.message || '폴더 삭제 실패', 'error');
+    }
+  }
+
+  // ===== 강좌 로드 =====
+  async function loadCourses(page) {
+    curPage = page || 1;
+    // 페이지 전체 로딩 오버레이 표시
+    var overlay = document.getElementById('pageLoading');
+    if (overlay) overlay.classList.remove('hide');
+    // 타임아웃 플래그 (15초)
+    var timedOut = false;
+    var timeoutId = setTimeout(function() {
+      timedOut = true;
+      var tbody = document.getElementById('courseTableBody');
+      if (tbody) {
+        tbody.innerHTML = '<tr class="c-empty"><td colspan="7" style="text-align:center;padding:40px 0;color:var(--text-tertiary)">⏱️ 서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.</td></tr>';
+      }
+      if (overlay) overlay.classList.add('hide');
+    }, 15000);
+    try {
+      var params = '?category=' + encodeURIComponent(catKey) + '&page=' + curPage + '&per_page=' + PER_PAGE;
+      if (activeFolder) params += '&folder_id=' + encodeURIComponent(activeFolder);
+      var statusVal = document.getElementById('statusFilter').value;
+      if (statusVal) params += '&status=' + encodeURIComponent(statusVal);
+      var searchVal = document.getElementById('searchInput').value.trim();
+      if (searchVal) params += '&search=' + encodeURIComponent(searchVal);
+
+      var res = await apiGet('/headquarters/courses' + params);
+      clearTimeout(timeoutId);
+      if (timedOut) return;
+      allCourses = res.data || [];
+      totalPages = res.pagination ? res.pagination.total_pages : 1;
+      filteredCourses = allCourses;
+      // 오버레이 숨김
+      if (overlay) overlay.classList.add('hide');
+      renderCourses();
+      renderPagination();
+    } catch (e) {
+      clearTimeout(timeoutId);
+      if (timedOut) return;
+      if (overlay) overlay.classList.add('hide');
+      var msg = e.message || '알 수 없는 오류';
+      if (msg.indexOf('NetworkError') !== -1 || msg.indexOf('Failed to fetch') !== -1 || msg.indexOf('network') !== -1) {
+        document.getElementById('courseTableBody').innerHTML = '<tr class="c-empty"><td colspan="7" style="text-align:center;padding:40px 0">❌ 서버에 연결할 수 없습니다</td></tr>';
+      } else {
+        document.getElementById('courseTableBody').innerHTML = '<tr class="c-empty"><td colspan="7" style="text-align:center;padding:40px 0">❌ 강좌 로딩 실패: ' + esc(msg) + '</td></tr>';
+      }
+    }
+  }
+
+  function filterCourses() { loadCourses(1); }
+
+  function renderCourses() {
+    var tbody = document.getElementById('courseTableBody');
+    if (!tbody) return;
+    if (!filteredCourses || filteredCourses.length === 0) {
+      tbody.innerHTML = '<tr class="c-empty"><td colspan="7">📭 등록된 강좌가 없습니다.</td></tr>';
+      document.getElementById('courseCount').textContent = '0개';
+      return;
+    }
+    var html = '';
+    filteredCourses.forEach(function(c) {
+      var statusLabel = statusLabels[c.status] || c.status || '알수없음';
+      var badgeClass = c.status === 'active' ? 'badge badge-success' : (c.status === 'draft' ? 'badge badge-warning' : 'badge badge-danger');
+      html += '<tr>';
+      html += '<td class="checkbox-col"><input type="checkbox" class="course-check" value="' + c.id + '"></td>';
+      html += '<td>' + c.id + '</td>';
+      html += '<td><strong>' + esc(c.title) + '</strong></td>';
+      html += '<td><a href="lecture-editor.html?course_id=' + c.id + '&title=' + encodeURIComponent(c.title) + '" class="file-count">📁 ' + (c.material_count || 0) + '</a></td>';
+      html += '<td><span class="' + badgeClass + '">' + statusLabel + '</span></td>';
+      html += '<td>' + formatDate(c.created_at) + '</td>';
+      html += '<td class="actions-col">';
+      html += '<button class="btn btn-ghost btn-xs" onclick="editCourse(' + c.id + ',\'' + esc(c.title.replace(/'/g, "\\'")) + '\',\'' + c.status + '\',\'' + esc((c.description || '').replace(/'/g, "\\'")) + '\',\'' + (c.folder_id || '') + '\')">✏️</button> ';
+      html += '<button class="btn btn-ghost btn-xs btn-danger" onclick="deleteCourse(' + c.id + ')">🗑️</button>';
+      html += '</td></tr>';
+    });
+    tbody.innerHTML = html;
+    document.getElementById('courseCount').textContent = filteredCourses.length + '개';
+    updateBatchDeleteBtn();
+  }
+
+  function renderPagination() {
+    var container = document.getElementById('paginationWrap');
+    if (!container) return;
+    if (totalPages <= 1) { container.innerHTML = ''; return; }
+    var html = '';
+    if (curPage > 1) html += '<button class="page-btn" onclick="loadCourses(' + (curPage - 1) + ')">‹</button>';
+    for (var i = 1; i <= totalPages; i++) {
+      if (i === curPage) html += '<button class="page-btn active">' + i + '</button>';
+      else if (Math.abs(i - curPage) <= 2 || i === 1 || i === totalPages)
+        html += '<button class="page-btn" onclick="loadCourses(' + i + ')">' + i + '</button>';
+    }
+    if (curPage < totalPages) html += '<button class="page-btn" onclick="loadCourses(' + (curPage + 1) + ')">›</button>';
+    container.innerHTML = html;
+  }
+
+  // ===== 강좌 CRUD =====
+  function openCreateCourseModal() {
+    document.getElementById('newTitle').value = '';
+    document.getElementById('newStatus').value = 'active';
+    document.getElementById('newDescription').value = '';
+    openModal('createCourseModal');
+  }
+
+  async function createCourse() {
+    var title = document.getElementById('newTitle').value.trim();
+    if (!title) { showAlert('강좌명을 입력하세요.', 'error'); return; }
+    var data = {
+      category: catKey,
+      title: title,
+      status: document.getElementById('newStatus').value,
+      description: document.getElementById('newDescription').value.trim()
+    };
+    if (activeFolder) data.folder_id = activeFolder;
+    try {
+      await apiPost('/headquarters/courses', data);
+      showAlert('강좌가 생성되었습니다.', 'success');
+      closeModal('createCourseModal');
+      loadCourses(1);
+    } catch (e) {
+      showAlert(e.message || '강좌 생성 실패', 'error');
+    }
+  }
+
+  function editCourse(id, title, status, description, folderId) {
+    document.getElementById('editCourseId').value = id;
+    document.getElementById('editTitle').value = title;
+    document.getElementById('editStatus').value = status;
+    document.getElementById('editDescription').value = description;
+    var sel = document.getElementById('editFolderId');
+    sel.innerHTML = '<option value="">폴더 없음 (전체)</option>';
+    apiFolders.forEach(function(f) {
+      var selected = f.id === folderId ? ' selected' : '';
+      sel.innerHTML += '<option value="' + f.id + '"' + selected + '>' + esc(f.name) + '</option>';
+    });
+    openModal('editCourseModal');
+  }
+
+  async function updateCourse() {
+    var id = document.getElementById('editCourseId').value;
+    var data = {
+      title: document.getElementById('editTitle').value.trim(),
+      status: document.getElementById('editStatus').value,
+      description: document.getElementById('editDescription').value.trim(),
+      folder_id: document.getElementById('editFolderId').value || null
+    };
+    if (!data.title) { showAlert('강좌명을 입력하세요.', 'error'); return; }
+    try {
+      await apiPut('/headquarters/courses/' + id, data);
+      showAlert('강좌가 수정되었습니다.', 'success');
+      closeModal('editCourseModal');
+      loadCourses(curPage);
+    } catch (e) {
+      showAlert(e.message || '강좌 수정 실패', 'error');
+    }
+  }
+
+  async function deleteCourse(id) {
+    if (!confirm('정말 이 강좌를 삭제하시겠습니까?')) return;
+    try {
+      await apiDelete('/headquarters/courses/' + id);
+      showAlert('강좌가 삭제되었습니다.', 'success');
+      loadCourses(curPage);
+    } catch (e) {
+      showAlert(e.message || '강좌 삭제 실패', 'error');
+    }
+  }
+
+  function toggleSelectAll(src) {
+    document.querySelectorAll('.course-check').forEach(function(cb) { cb.checked = src.checked; });
+    updateBatchDeleteBtn();
+  }
+
+  function updateBatchDeleteBtn() {
+    var checked = document.querySelectorAll('.course-check:checked').length;
+    document.getElementById('batchDeleteBtn').style.display = checked > 0 ? 'inline-block' : 'none';
+  }
+
+  async function batchDeleteCourses() {
+    var ids = [];
+    document.querySelectorAll('.course-check:checked').forEach(function(cb) { ids.push(cb.value); });
+    if (ids.length === 0) return;
+    if (!confirm(ids.length + '개 강좌를 삭제하시겠습니까?')) return;
+    try {
+      await apiPost('/headquarters/courses/batch-delete', { ids: ids });
+      showAlert(ids.length + '개 강좌가 삭제되었습니다.', 'success');
+      loadCourses(1);
+    } catch (e) {
+      showAlert(e.message || '일괄 삭제 실패', 'error');
+    }
+  }
+
+  // ===== 학습 자료 모달 =====
+  async function openMaterialsModal(courseId, courseTitle) {
+    currentMatCourseId = courseId;
+    document.getElementById('matModalTitle').textContent = courseTitle;
+    document.getElementById('matCourseId').value = courseId;
+    document.getElementById('matUploadSection').style.display = 'block';
+    document.getElementById('matInfoBanner').style.display = 'none';
+    stopVideo();
+    loadMaterials(courseId);
+    openModal('materialsModal');
+  }
+
+  async function loadMaterials(courseId) {
+    try {
+      var res = await apiGet('/courses/' + courseId + '/materials');
+      currentMaterials = res.data || [];
+      renderMaterials();
+    } catch (e) {
+      document.getElementById('materialList').innerHTML = '<div class="empty-state"><h3>❌ 로딩 실패</h3><p>' + esc(e.message) + '</p></div>';
+    }
+  }
+
+  function renderMaterials() {
+    var container = document.getElementById('materialList');
+    if (!container) return;
+    document.getElementById('matCount').textContent = '총 ' + currentMaterials.length + '개 자료';
+    if (currentMaterials.length === 0) {
+      container.innerHTML = '<div class="empty-state" style="padding:40px 0"><div class="empty-icon">📭</div><h3>등록된 자료가 없습니다</h3></div>';
+      return;
+    }
+    var html = '<div style="display:flex;flex-direction:column;gap:8px">';
+    currentMaterials.forEach(function(m) {
+      var icon = m.type === 'video' ? '🎬' : (m.type === 'link' || m.type === 'embed' ? '🔗' : '📄');
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid var(--border-subtle);border-radius:8px;background:var(--bg-surface)">';
+      html += '<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">';
+      html += '<span>' + icon + '</span>';
+      html += '<div style="flex:1;min-width:0">';
+      html += '<div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(m.title) + '</div>';
+      if (m.description) html += '<div style="font-size:12px;color:var(--text-tertiary)">' + esc(m.description) + '</div>';
+      html += '</div></div>';
+      html += '<div style="display:flex;gap:4px;flex-shrink:0">';
+      if (m.type === 'video' || m.file_url) {
+        html += '<button class="btn btn-ghost btn-xs" onclick="playVideo(\'' + esc((m.file_url || m.url || '').replace(/'/g, "\\'")) + '\',\'' + esc(m.title.replace(/'/g, "\\'")) + '\')">▶️</button>';
+      } else if (m.url) {
+        html += '<button class="btn btn-ghost btn-xs" onclick="window.open(\'' + esc(m.url.replace(/'/g, "\\'")) + '\',\'_blank\')">🔗</button>';
+      }
+      html += '<button class="btn btn-ghost btn-xs btn-danger" onclick="deleteMaterial(' + m.id + ')">🗑️</button>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  function switchUploadTab(tab) {
+    document.querySelectorAll('.mat-upload-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelector('.mat-upload-tab[data-utab="' + tab + '"]').classList.add('active');
+    document.getElementById('matUploadFileTab').style.display = tab === 'file' ? 'block' : 'none';
+    document.getElementById('matUploadLinkTab').style.display = tab === 'link' ? 'block' : 'none';
+  }
+
+  function onFilesSelected(input) {
+    var files = input.files;
+    if (!files || files.length === 0) return;
+    var queue = document.getElementById('uploadQueue');
+    queue.style.display = 'block';
+    for (var i = 0; i < files.length; i++) {
+      (function(file) {
+        var itemId = 'upload-' + Date.now() + '-' + i;
+        queue.innerHTML += '<div id="' + itemId + '" class="upload-queue-item" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border-subtle)">';
+        queue.innerHTML += '<span style="flex:1;font-size:13px">' + esc(file.name) + ' (' + (file.size / 1024).toFixed(1) + 'KB)</span>';
+        queue.innerHTML += '<span class="upload-status" id="' + itemId + '-status">대기 중...</span></div>';
+        uploadFile(file, itemId);
+      })(files[i]);
+    }
+    input.value = '';
+  }
+
+  async function uploadFile(file, itemId) {
+    var statusEl = document.getElementById(itemId + '-status');
+    if (statusEl) statusEl.textContent = '업로드 중...';
+    try {
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('course_id', currentMatCourseId);
+      var token = localStorage.getItem('token') || localStorage.getItem('access_token');
+      var res = await fetch('/api/v1/courses/' + currentMatCourseId + '/upload', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData
+      });
+      if (!res.ok) throw new Error('업로드 실패 (' + res.status + ')');
+      if (statusEl) statusEl.textContent = '✅ 완료';
+      loadMaterials(currentMatCourseId);
+    } catch (e) {
+      if (statusEl) statusEl.textContent = '❌ 실패';
+      showAlert(file.name + ' 업로드 실패: ' + e.message, 'error');
+    }
+  }
+
+  async function addLinkMaterial() {
+    var url = document.getElementById('linkUrl').value.trim();
+    var title = document.getElementById('linkTitle').value.trim();
+    if (!url || !title) { showAlert('URL과 제목을 입력하세요.', 'error'); return; }
+    try {
+      await apiPost('/courses/' + currentMatCourseId + '/materials', {
+        title: title,
+        material_type: document.getElementById('linkType').value,
+        file_url: url,
+        description: document.getElementById('linkDescription').value.trim(),
+        course_id: currentMatCourseId,
+      });
+      showAlert('링크가 추가되었습니다.', 'success');
+      document.getElementById('linkUrl').value = '';
+      document.getElementById('linkTitle').value = '';
+      document.getElementById('linkDescription').value = '';
+      loadMaterials(currentMatCourseId);
+    } catch (e) {
+      showAlert(e.message || '링크 추가 실패', 'error');
+    }
+  }
+
+  function playVideo(url, title) {
+    var player = document.getElementById('videoPlayer');
+    var el = document.getElementById('videoElement');
+    player.style.display = 'block';
+    document.getElementById('videoTitle').textContent = '▶ ' + title;
+    el.src = url;
+    el.load();
+    el.play().catch(function() { /* 자동재생 차단 무시 */ });
+  }
+
+  function stopVideo() {
+    var el = document.getElementById('videoElement');
+    el.pause();
+    el.src = '';
+    document.getElementById('videoPlayer').style.display = 'none';
+  }
+
+  async function deleteMaterial(id) {
+    if (!confirm('이 자료를 삭제하시겠습니까?')) return;
+    try {
+      await apiDelete('/courses/materials/' + id);
+      showAlert('자료가 삭제되었습니다.', 'success');
+      loadMaterials(currentMatCourseId);
+    } catch (e) {
+      showAlert(e.message || '자료 삭제 실패', 'error');
+    }
+  }
+  </script>
+     <script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+     </html>
+

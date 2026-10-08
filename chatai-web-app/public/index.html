@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUBIDA AI | 스마트 학교 채팅</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .chat-area { height: calc(100vh - 160px); }
+        .user-bubble { background-color: #004792; color: white; border-radius: 18px 18px 0 18px; }
+        .ai-bubble { background-color: #ffffff; color: #1e293b; border-radius: 18px 18px 18px 0; border: 1px solid #e2e8f0; }
+        /* 마크다운 스타일링 */
+        .ai-render p { margin-bottom: 10px; line-height: 1.6; }
+        .ai-render ul, .ai-render ol { margin-left: 20px; margin-bottom: 10px; list-style-position: outside; }
+        .ai-render li { margin-bottom: 5px; }
+        .ai-render strong { color: #004792; font-weight: 800; }
+        .ai-render code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-size: 0.9em; }
+    </style>
+    <style id="chatai-design">
+    /* ============================================================
+       NUBIDA AI (chatai) — 전문적 디자인 오버레이 (CSS-only)
+       · 브랜드 블루(#4F5EF8) 통일 (blue-700/#004792 → 브랜드)
+       · 작은 화면에서 입력필드/전송버튼 사라짐 수정 (flex + min-height:0 + dvh)
+       ============================================================ */
+    :root {
+      --brand: #4F5EF8;
+      --brand-dark: #4350E8;
+      --brand-soft: #EEF2FF;
+      --brand-line: #E0E7FF;
+      --ink: #0F172A;
+      --ink-2: #475569;
+      --line: #E8EAF2;
+      --canvas: #F7F8FC;
+    }
+
+    body { font-family: 'Inter', 'Noto Sans KR', -apple-system, sans-serif; }
+
+    /* ---------- 1) ★★ 작은 화면 입력필드/전송버튼 사라짐 수정 ---------- */
+    /* chat-box 를 flex column 으로 만들고, 메시지 영역에 min-height:0 을 주어
+       입력줄이 항상 뷰포트 안에 남도록 한다 (flex 자식 min-height:auto 함정).
+       ⚠️ #chat-box 는 .hidden 으로 시작해 JS 가 remove('hidden') 한다.
+          id 선택자로 display:flex 를 강제하면 .hidden(display:none)을 무력화해
+          로그인 화면에서도 채팅이 보이는 버그가 난다. 반드시 :not(.hidden) 으로 한정한다. */
+    #chat-box:not(.hidden) {
+      display: flex !important;
+      flex-direction: column;
+      height: 100dvh !important;
+      max-height: 100dvh;
+      overflow: hidden;
+    }
+    #chat-box > header { flex: 0 0 auto; }
+    .chat-area {
+      height: auto !important;          /* calc(100vh-160px) 고정 제거 */
+      flex: 1 1 auto;
+      min-height: 0 !important;         /* ★ 핵심: 오버플로 방지 */
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* 입력줄 (Tailwind 유틸리티를 이기기 위해 !important) */
+    #chat-box > div:last-child {
+      flex: 0 0 auto;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    /* ---------- 2) 로그인 카드 — 세련된 브랜드 ---------- */
+    #auth-box > div {
+      border-radius: 28px;
+      box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 24px 60px rgba(15,23,42,.10);
+      border: 1px solid var(--line);
+    }
+    #auth-title {
+      color: var(--brand) !important;
+      letter-spacing: -0.5px;
+    }
+    #uId, #uPw {
+      background: #F8FAFC !important;
+      border: 1.5px solid var(--line) !important;
+      border-radius: 14px !important;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    #uId:focus, #uPw:focus {
+      border-color: var(--brand) !important;
+      background: #fff !important;
+      box-shadow: 0 0 0 3px rgba(79,94,248,.14) !important;
+      outline: none;
+    }
+    #auth-btn {
+      background: linear-gradient(135deg, #4F5EF8, #5D6BFF) !important;
+      border-radius: 14px !important;
+      box-shadow: 0 4px 14px rgba(79,94,248,.28) !important;
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+    #auth-btn:hover {
+      background: linear-gradient(135deg, #4350E8, #4F5EF8) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(79,94,248,.34) !important;
+    }
+    #toggle-text:hover { color: var(--brand) !important; }
+
+    /* ---------- 3) 헤더 — 브랜드 ---------- */
+    #chat-box > header {
+      border-bottom: 1px solid var(--line) !important;
+      background: #ffffff;
+      padding: 15px 22px !important;
+    }
+    #chat-box > header .font-black { color: var(--brand) !important; letter-spacing: -0.4px; }
+
+    /* ---------- 4) 말풍선 — 세련된 브랜드 ---------- */
+    .user-bubble {
+      background: linear-gradient(135deg, #4F5EF8, #5D6BFF) !important;
+      color: #fff !important;
+      border-radius: 18px 18px 0 18px !important;
+      box-shadow: 0 2px 10px rgba(79,94,248,.22) !important;
+      line-height: 1.65;
+      letter-spacing: -0.2px;
+    }
+    .ai-bubble {
+      background: #ffffff !important;
+      color: var(--ink) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 18px 18px 18px 0 !important;
+      box-shadow: 0 1px 3px rgba(15,23,42,.05) !important;
+      line-height: 1.72;
+      letter-spacing: -0.2px;
+    }
+    .ai-render strong { color: var(--brand-dark) !important; }
+    .ai-render code {
+      background: #F1F3FA !important;
+      color: #3B4BD8 !important;
+      border: 1px solid #E3E7F5;
+      border-radius: 5px;
+    }
+    .ai-render pre {
+      background: #0F172A; color: #F8FAFC;
+      border-radius: 12px; padding: 14px 16px; overflow-x: auto;
+    }
+    .ai-render pre code { background: transparent !important; color: #F8FAFC !important; border: none; }
+
+    /* ---------- 5) 메시지 영역 배경 ---------- */
+    #msg-area {
+      background: var(--canvas) !important;
+      padding: 22px !important;
+      gap: 14px;
+    }
+
+    /* ---------- 6) 입력 영역 ---------- */
+    #msgInput {
+      background: #F8FAFC !important;
+      border: 1.5px solid var(--line) !important;
+      border-radius: 16px !important;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    #msgInput:focus {
+      border-color: var(--brand) !important;
+      background: #fff !important;
+      box-shadow: 0 0 0 3px rgba(79,94,248,.14) !important;
+      outline: none;
+    }
+    /* 전송 버튼 (마지막 컨테이너 안의 마지막 버튼) */
+    #chat-box > div:last-child > button:last-child {
+      background: linear-gradient(135deg, #4F5EF8, #5D6BFF) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 3px 12px rgba(79,94,248,.26) !important;
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      white-space: nowrap;
+    }
+    #chat-box > div:last-child > button:last-child:hover {
+      background: linear-gradient(135deg, #4350E8, #4F5EF8) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(79,94,248,.34) !important;
+    }
+    /* 대화 초기화 / 로그아웃 버튼 */
+    header button {
+      border-radius: 12px !important;
+      transition: background .15s ease, color .15s ease, transform .15s ease;
+    }
+
+    /* ---------- 7) 반응형 (핵심) ---------- */
+    @media (max-width: 640px) {
+      #chat-box > header { padding: 12px 15px !important; }
+      #chat-box > header .font-black { font-size: 17px; }
+      #msg-area { padding: 14px !important; gap: 11px; }
+      .ai-bubble, .user-bubble { max-width: 94% !important; }
+      #chat-box > div:last-child { padding: 10px 11px !important; gap: 8px !important; }
+      #msgInput { padding: 11px 13px !important; font-size: 14.5px; }
+      #chat-box > div:last-child > button:last-child {
+        padding: 12px 18px !important; font-size: 14.5px;
+      }
+    }
+    @media (max-width: 400px) {
+      #chat-box > div:last-child > button:last-child { padding: 12px 13px !important; }
+    }
+    </style>
+</head>
+<body class="bg-slate-50 h-screen overflow-hidden font-sans text-slate-900">
+
+    <!-- 로그인/회원가입 섹션 -->
+    <div id="auth-box" class="flex items-center justify-center h-full p-6">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-sm border border-slate-100">
+            <h1 id="auth-title" class="text-3xl font-black text-blue-900 mb-2 text-center">NUBIDA AI</h1>
+            <p class="text-slate-400 text-center mb-10 text-sm">학교 전용 스마트 AI 선생님</p>
+            <div class="space-y-4">
+                <input id="uId" type="text" placeholder="학번 또는 ID" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <input id="uPw" type="password" placeholder="비밀번호" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <button id="auth-btn" onclick="handleAuth()" class="w-full bg-blue-700 text-white p-5 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-800 active:scale-95 transition-all">로그인</button>
+                <p id="toggle-text" class="text-center text-sm text-slate-500 cursor-pointer pt-4 hover:text-blue-700" onclick="toggleAuth()">계정이 없으신가요? <span class="font-bold underline">회원가입하기</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 채팅 섹션 -->
+    <div id="chat-box" class="hidden flex flex-col h-full bg-white">
+        <header class="bg-white border-b px-6 py-4 flex justify-between items-center z-10 shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🤖</span>
+                <span class="font-black text-blue-900 text-xl tracking-tight">NUBIDA AI</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetChat()" class="text-xs font-bold text-red-500 bg-red-50 px-4 py-2 rounded-xl hover:bg-red-500 hover:text-white transition-all">대화 초기화</button>
+                <button onclick="location.reload()" class="text-xs font-bold text-slate-400 bg-slate-50 px-4 py-2 rounded-xl">로그아웃</button>
+            </div>
+        </header>
+        
+        <div id="msg-area" class="chat-area overflow-y-auto p-6 space-y-6 bg-slate-50/50">
+            <div class="flex justify-start">
+                <div class="ai-bubble p-5 max-w-[90%] shadow-sm text-sm">안녕하세요! 궁금한 내용을 물어보세요. 제가 깔끔하게 정리해 드릴게요.</div>
+            </div>
+        </div>
+
+        <div class="p-4 bg-white border-t flex gap-3 items-center shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+            <input id="msgInput" type="text" onkeypress="if(event.keyCode==13) sendMsg()" placeholder="질문을 입력하세요..." class="flex-grow p-4 bg-slate-100 border-none rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+            <button onclick="sendMsg()" class="bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold shadow-blue-200 shadow-lg hover:bg-blue-800 active:scale-95 transition-all">전송</button>
+        </div>
+    </div>
+
+    <script>
+        let isLoginMode = true;
+        function toggleAuth() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? '로그인' : '회원가입';
+            document.getElementById('auth-btn').innerText = isLoginMode ? '로그인' : '회원가입';
+            document.getElementById('toggle-text').innerHTML = isLoginMode ? '계정이 없으신가요? <span class="font-bold underline">회원가입하기</span>' : '이미 계정이 있나요? <span class="font-bold underline">로그인하기</span>';
+        }
+
+        async function handleAuth() {
+            const studentId = document.getElementById('uId').value;
+            const password = document.getElementById('uPw').value;
+            if(!studentId || !password) return alert("입력해주세요.");
+            const res = await fetch(isLoginMode ? '/api/login' : '/api/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ studentId, password })
+            });
+            if(res.ok) {
+                if(isLoginMode) {
+                    document.getElementById('auth-box').classList.add('hidden');
+                    document.getElementById('chat-box').classList.remove('hidden');
+                } else { alert("가입 완료! 로그인해주세요."); toggleAuth(); }
+            } else { const d = await res.json(); alert(d.message); }
+        }
+
+        async function resetChat() {
+            if(!confirm("대화 기록을 모두 지울까요?")) return;
+            const res = await fetch('/api/chat/reset', { method: 'POST' });
+            if(res.ok) {
+                document.getElementById('msg-area').innerHTML = `<div class="flex justify-start"><div class="ai-bubble p-5 max-w-[90%] shadow-sm text-sm">기록이 초기화되었습니다.</div></div>`;
+            }
+        }
+
+        async function sendMsg() {
+            const input = document.getElementById('msgInput');
+            const area = document.getElementById('msg-area');
+            if(!input.value) return;
+
+            const myMsg = input.value;
+            area.innerHTML += `<div class="flex justify-end"><div class="user-bubble p-4 max-w-[85%] shadow-md text-sm">${myMsg}</div></div>`;
+            input.value = '';
+            area.scrollTop = area.scrollHeight;
+
+            // 로딩 표시
+            const loadId = "ld-" + Date.now();
+            area.innerHTML += `<div id="${loadId}" class="flex justify-start"><div class="ai-bubble p-4 text-xs italic text-slate-400">AI 선생님이 정리하는 중...</div></div>`;
+            area.scrollTop = area.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: myMsg })
+                });
+                const data = await res.json();
+                document.getElementById(loadId).remove();
+
+                // [핵심] 마크다운 변환 적용
+                const renderedContent = marked.parse(data.reply);
+                area.innerHTML += `
+                    <div class="flex justify-start">
+                        <div class="ai-bubble p-5 max-w-[90%] shadow-sm text-sm ai-render">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                area.scrollTop = area.scrollHeight;
+            } catch(e) { document.getElementById(loadId).innerText = "오류 발생"; }
+        }
+    </script>
+</body>
+</html>

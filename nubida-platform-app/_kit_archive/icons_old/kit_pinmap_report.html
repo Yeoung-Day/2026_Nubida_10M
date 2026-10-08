@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>누비다머신 교구 핀맵 · 명령어 보고서</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard','Noto Sans KR',-apple-system,system-ui,sans-serif;
+    background:#f5f7fa;color:#1e293b;line-height:1.6;padding:32px 20px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;
+    border-radius:16px;padding:36px 32px;margin-bottom:28px}
+  header h1{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+  header p{color:#cbd5e1;font-size:14.5px}
+  header .date{margin-top:14px;font-size:13px;color:#94a3b8}
+  section{background:#fff;border-radius:14px;padding:28px 26px;margin-bottom:22px;
+    box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .kit h2{font-size:20px;font-weight:800;color:#0f172a;padding-bottom:10px;
+    border-bottom:2px solid #6366f1;margin-bottom:6px}
+  .desc{color:#64748b;font-size:14px;margin-bottom:14px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .meta span{background:#f1f5f9;border-radius:8px;padding:6px 12px;font-size:12.5px;color:#475569}
+  .meta b{color:#6366f1;margin-right:4px}
+  h3{font-size:15px;font-weight:700;color:#334155;margin:22px 0 10px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{background:#f8fafc;text-align:left;padding:10px 12px;font-weight:700;
+    color:#475569;border-bottom:2px solid #e2e8f0;font-size:12.5px}
+  td{padding:9px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+  tr:hover td{background:#fafbfc}
+  td:first-child{font-weight:600;color:#4f46e5;white-space:nowrap}
+  code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;
+    font-family:'SF Mono',Consolas,monospace;color:#db2777}
+  .md5{margin-top:16px;font-size:12px;color:#94a3b8}
+  .note{background:#fffbeb;border-left:4px solid #f59e0b;border-radius:8px;
+    padding:14px 18px;font-size:13.5px;color:#78350f;margin-top:16px}
+  .note b{color:#b45309}
+  footer{text-align:center;color:#94a3b8;font-size:12.5px;padding:24px 0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>누비다머신 교구 핀맵 · 명령어 보고서</h1>
+    <p>아두이노 나노(CH340) 기반 머신러닝 교구 5종 — 배선 핀맵과 블루투스 명령어 일람</p>
+    <div class="date">작성일 2026-09-21 · 누비다플랫폼</div>
+  </header>
+
+  <section>
+    <h2 style="font-size:19px;font-weight:800;color:#0f172a;padding-bottom:10px;
+      border-bottom:2px solid #6366f1;margin-bottom:14px">공통 사항</h2>
+    <table>
+      <thead><tr><th>항목</th><th>내용</th></tr></thead>
+      <tbody>
+        <tr><td>보드</td><td>아두이노 나노 CH340 클론 (Old Bootloader) + 나노 확장보드(센서실드)</td></tr>
+        <tr><td>통신</td><td>블루투스 BLE (HM-10 계열) — <b>2번 = RX</b> / <b>3번 = TX</b> (전 교구 고정 · 전용)</td></tr>
+        <tr><td>서보 배선</td><td>확장보드 3핀 한 줄 — 빨강=+5V · 주황=Signal · 갈색=GND</td></tr>
+        <tr><td>명령 전달</td><td>웹앱이 난독화(<code>x</code> + 열쇠 2글자 + 명령 2글자씩) 후 BLE 전송 → 펌웨어가 복호화</td></tr>
+        <tr><td>서보 떨림</td><td>여러 서보를 함께 쓸 때 — <code>detach()</code>(안 쓰는 서보 힘 해제) + 스텝 각도 증가로 해결</td></tr>
+      </tbody>
+    </table>
+    <h3>교구 공통 헤더 파일 3종 (모든 교구 동일)</h3>
+    <table>
+      <thead><tr><th>파일</th><th>크기(bytes)</th><th>md5</th><th>역할</th></tr></thead>
+      <tbody><tr><td>nubida_bt.h</td><td>7,203</td><td>0f3a0466ecc7ada3024ac4ecd85666b0</td><td>블루투스 수신 (프레임 조립 · 한 줄 잘라 전달)</td></tr>
+<tr><td>nubida_decode.h</td><td>2,641</td><td>632ee16df7bbdd76aeb0292e902aca3a</td><td>난독화 복호화 (x + 2글자 열쇠 + 2글자×명령)</td></tr>
+<tr><td>nubida_ai.h</td><td>14,711</td><td>018577aef176d8ec389ca92653d0bac9</td><td>AI 명령 13종 처리 (digitalWrite/tone/if 등)</td></tr>
+</tbody>
+    </table>
+  </section>
+
+  
+<section class="kit">
+  <h2>도리도리 로봇</h2>
+  <p class="desc">서보 2개 · 고개 흔들기 / 인사하는 로봇</p>
+  <div class="meta">
+    <span><b>배포 파일</b> doridori_v8_X.zip</span>
+    <span><b>메인 스케치</b> doridori_v7.ino</span>
+    <span><b>사용 부품</b> 서보 2개 (9번·7번), 부저 1개 (8번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>코드 상수</th><th>값</th></tr></thead>
+    <tbody><tr><td>9</td><td>서보 #1 (고개)</td><td>도리도리 · 삐졌어</td><td>NUBIDA_SERVO1_PIN</td><td>9</td></tr>
+<tr><td>7</td><td>서보 #2 (팔/인사)</td><td>안녕</td><td>NUBIDA_SERVO2_PIN</td><td>7</td></tr>
+<tr><td>8</td><td>부저</td><td>AI 부저 명령</td><td>NUBIDA_BUZZER_PIN</td><td>8</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1NubidaAi</td><td>도리도리</td><td>9번 서보</td><td>140 ↔ 40 좌우 흔들기 → 90 복귀</td></tr>
+<tr><td>2NubidaAi</td><td>삐졌어</td><td>9번 서보</td><td>90 → 25 (푹 숙임) → 90 복귀</td></tr>
+<tr><td>3NubidaAi</td><td>안녕</td><td>7번 서보</td><td>135 → 25 끄덕끄덕 → 90 복귀</td></tr>
+<tr><td>4~9NubidaAi</td><td>무시</td><td>—</td><td>정의되지 않은 번호 → 동작 안 함</td></tr>
+</tbody>
+  </table>
+
+  <h3>③ 각도 · 속도 설정값</h3>
+  <table>
+    <thead><tr><th>상수</th><th>값</th><th>의미</th></tr></thead>
+    <tbody><tr><td>PIN_HEAD</td><td>9</td><td>고개 서보 핀</td></tr>
+<tr><td>PIN_ARM</td><td>7</td><td>팔 서보 핀</td></tr>
+<tr><td>PIN_BUZZ</td><td>8</td><td>부저 핀</td></tr>
+<tr><td>DORI_LEFT</td><td>140</td><td>도리도리 왼쪽 각도</td></tr>
+<tr><td>DORI_RIGHT</td><td>40</td><td>도리도리 오른쪽 각도</td></tr>
+<tr><td>SAD_DOWN</td><td>25</td><td>삐졌어 숙임 각도</td></tr>
+<tr><td>HI_UP</td><td>135</td><td>인사 위 각도</td></tr>
+<tr><td>HI_DOWN</td><td>25</td><td>인사 아래 각도</td></tr>
+<tr><td>CENTER</td><td>90</td><td>중앙(정면) 각도</td></tr>
+<tr><td>MS_FAST / NORMAL / SLOW</td><td>300 / 500 / 800</td><td>이동 시간(ms)</td></tr>
+</tbody>
+  </table>
+
+  <p class="md5">메인 스케치 md5 : <code>d2d87958cc2d0e405bc7908fc0f6adf3</code></p>
+</section>
+
+<section class="kit">
+  <h2>강아지 로봇</h2>
+  <p class="desc">서보 2개 · 고개 + 앞발 (손 / 하이파이브)</p>
+  <div class="meta">
+    <span><b>배포 파일</b> puppy_v1.zip</span>
+    <span><b>메인 스케치</b> puppy_v1.ino</span>
+    <span><b>사용 부품</b> 서보 2개 (9번·7번), 부저 1개 (8번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>코드 상수</th><th>값</th></tr></thead>
+    <tbody><tr><td>9</td><td>서보 #1 (고개)</td><td>도리도리 · 삐졌어</td><td>NUBIDA_SERVO1_PIN</td><td>9</td></tr>
+<tr><td>7</td><td>서보 #2 (앞발)</td><td>손 · 하이파이브</td><td>NUBIDA_SERVO2_PIN</td><td>7</td></tr>
+<tr><td>8</td><td>부저</td><td>AI 부저 명령</td><td>NUBIDA_BUZZER_PIN</td><td>8</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1NubidaAi</td><td>도리도리</td><td>9번 서보</td><td>좌우 흔들기 ("아니야~")</td></tr>
+<tr><td>2NubidaAi</td><td>삐졌어</td><td>9번 서보</td><td>푹 숙이고 유지 ("흥!")</td></tr>
+<tr><td>3NubidaAi</td><td>손</td><td>7번 서보</td><td>앞발 내밀기 ("손!")</td></tr>
+<tr><td>4NubidaAi</td><td>하이파이브</td><td>7번 서보</td><td>앞발 위로 올려 짝짝</td></tr>
+<tr><td>5~9NubidaAi</td><td>무시</td><td>—</td><td>정의되지 않은 번호 → 동작 안 함</td></tr>
+</tbody>
+  </table>
+
+  <h3>③ 각도 · 속도 설정값</h3>
+  <table>
+    <thead><tr><th>상수</th><th>값</th><th>의미</th></tr></thead>
+    <tbody><tr><td>PIN_HEAD</td><td>9</td><td>고개 서보 핀</td></tr>
+<tr><td>PIN_ARM</td><td>7</td><td>앞발 서보 핀</td></tr>
+<tr><td>PIN_BUZZ</td><td>8</td><td>부저 핀</td></tr>
+<tr><td>DORI_LEFT / RIGHT</td><td>140 / 40</td><td>도리도리 좌우</td></tr>
+<tr><td>SAD_DOWN</td><td>25</td><td>삐졌어 숙임</td></tr>
+<tr><td>SAD_HOLD_MS</td><td>1200</td><td>삐졌어 유지 시간</td></tr>
+<tr><td>PAW_UP</td><td>120</td><td>앞발 올림 (하이파이브)</td></tr>
+<tr><td>PAW_DOWN</td><td>30</td><td>앞발 내림 (손)</td></tr>
+<tr><td>PAW_HOLD_MS</td><td>900</td><td>앞발 유지 시간</td></tr>
+<tr><td>HI5_HIGH / HIT</td><td>155 / 100</td><td>하이파이브 위/접촉</td></tr>
+<tr><td>CENTER</td><td>90</td><td>중앙 각도</td></tr>
+</tbody>
+  </table>
+
+  <p class="md5">메인 스케치 md5 : <code>9e1b91b933f6de688c56755d32a535d5</code></p>
+</section>
+
+<section class="kit">
+  <h2>스마트 휴지통</h2>
+  <p class="desc">서보 3개 · 독립 뚜껑 3개 (캔 / 플라스틱 / 일반)</p>
+  <div class="meta">
+    <span><b>배포 파일</b> trashbin_v8.zip</span>
+    <span><b>메인 스케치</b> trashbin_v8.ino</span>
+    <span><b>사용 부품</b> 서보 3개 (5번·7번·9번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>코드 상수</th><th>값</th></tr></thead>
+    <tbody><tr><td>5</td><td>서보 #1 (캔 뚜껑)</td><td>1번 명령</td><td>NUBIDA_SERVO1_PIN / PIN_CAN</td><td>5</td></tr>
+<tr><td>7</td><td>서보 #2 (플라스틱 뚜껑)</td><td>2번 명령</td><td>NUBIDA_SERVO2_PIN / PIN_PLASTIC</td><td>7</td></tr>
+<tr><td>9</td><td>서보 #3 (일반 뚜껑)</td><td>3번 명령</td><td>PIN_NORMAL</td><td>9</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1NubidaAi</td><td>캔 뚜껑 열기</td><td>5번 서보</td><td>95 → 180 열기 → 유지 → 닫기</td></tr>
+<tr><td>2NubidaAi</td><td>플라스틱 뚜껑 열기</td><td>7번 서보</td><td>95 → 180 열기 → 유지 → 닫기</td></tr>
+<tr><td>3NubidaAi</td><td>일반 뚜껑 열기</td><td>9번 서보</td><td>95 → 180 열기 → 유지 → 닫기</td></tr>
+<tr><td>4NubidaAi</td><td>전부 열기</td><td>5·7·9번</td><td>3개 뚜껑 순차 개방</td></tr>
+<tr><td>5NubidaAi</td><td>전부 닫기</td><td>5·7·9번</td><td>3개 뚜껑 순차 폐쇄</td></tr>
+<tr><td>6NubidaAi</td><td>처음 상태</td><td>5·7·9번</td><td>초기 위치로 복귀</td></tr>
+<tr><td>7~9NubidaAi</td><td>무시</td><td>—</td><td>정의되지 않은 번호 → 뚜껑 안 움직임</td></tr>
+</tbody>
+  </table>
+
+  <h3>③ 각도 · 속도 설정값</h3>
+  <table>
+    <thead><tr><th>상수</th><th>값</th><th>의미</th></tr></thead>
+    <tbody><tr><td>PIN_CAN</td><td>5</td><td>캔 뚜껑 서보 핀</td></tr>
+<tr><td>PIN_PLASTIC</td><td>7</td><td>플라스틱 뚜껑 서보 핀</td></tr>
+<tr><td>PIN_NORMAL</td><td>9</td><td>일반 뚜껑 서보 핀</td></tr>
+<tr><td>CAN_CLOSE / OPEN</td><td>95 / 180</td><td>캔 뚜껑 닫힘/열림</td></tr>
+<tr><td>PLASTIC_CLOSE / OPEN</td><td>95 / 180</td><td>플라스틱 닫힘/열림</td></tr>
+<tr><td>NORMAL_CLOSE / OPEN</td><td>95 / 180</td><td>일반 닫힘/열림</td></tr>
+<tr><td>MS_OPEN / MS_CLOSE</td><td>600 / 600</td><td>열기/닫기 이동 시간</td></tr>
+<tr><td>OPEN_HOLD_MS</td><td>2000</td><td>열린 상태 유지 시간</td></tr>
+<tr><td>REST_BETWEEN_MS</td><td>150</td><td>뚜껑 사이 대기</td></tr>
+<tr><td>SERVO_POWER</td><td>100</td><td>서보 힘 (%)</td></tr>
+<tr><td>HOLD_TORQUE</td><td>0</td><td>정지 시 힘 유지 (0=해제)</td></tr>
+</tbody>
+  </table>
+
+  <p class="md5">메인 스케치 md5 : <code>43207ab97438b9106f5155aac051681f</code></p>
+</section>
+
+<section class="kit">
+  <h2>블루투스카</h2>
+  <p class="desc">DC모터 2개 (4핀) · 차동 구동 자동차</p>
+  <div class="meta">
+    <span><b>배포 파일</b> btcar_v5.zip</span>
+    <span><b>메인 스케치</b> btcar_v5.ino</span>
+    <span><b>사용 부품</b> DC모터 2개 (L9110S 등, 4·5번 / 6·7번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>코드 상수</th><th>값</th></tr></thead>
+    <tbody><tr><td>4</td><td>좌측 모터 A (정)</td><td>LEFT_A</td><td>LEFT_A</td><td>4</td></tr>
+<tr><td>5</td><td>좌측 모터 B (역)</td><td>LEFT_B</td><td>LEFT_B</td><td>5</td></tr>
+<tr><td>6</td><td>우측 모터 A (정)</td><td>RIGHT_A</td><td>RIGHT_A</td><td>6</td></tr>
+<tr><td>7</td><td>우측 모터 B (역)</td><td>RIGHT_B</td><td>RIGHT_B</td><td>7</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1NubidaAi</td><td>전진</td><td>4·5·6·7</td><td>양쪽 모터 정방향</td></tr>
+<tr><td>2NubidaAi</td><td>후진</td><td>4·5·6·7</td><td>양쪽 모터 역방향</td></tr>
+<tr><td>3NubidaAi</td><td>좌회전</td><td>4·5·6·7</td><td>좌측 역 / 우측 정</td></tr>
+<tr><td>4NubidaAi</td><td>우회전</td><td>4·5·6·7</td><td>좌측 정 / 우측 역</td></tr>
+<tr><td>5NubidaAi</td><td>정지</td><td>4·5·6·7</td><td>모든 모터 즉시 정지</td></tr>
+<tr><td>전진/앞/go/f/F</td><td>전진</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>후진/뒤/back/b/B</td><td>후진</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>좌회전/좌/왼쪽/l/L/left</td><td>좌회전</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>우회전/우/오른쪽/r/R/right</td><td>우회전</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>정지/멈춤/스톱/s/S/stop</td><td>정지</td><td>모터</td><td>평문 명령</td></tr>
+</tbody>
+  </table>
+
+  <h3>③ 각도 · 속도 설정값</h3>
+  <table>
+    <thead><tr><th>상수</th><th>값</th><th>의미</th></tr></thead>
+    <tbody><tr><td>LEFT_A / LEFT_B</td><td>4 / 5</td><td>좌측 모터 핀</td></tr>
+<tr><td>RIGHT_A / RIGHT_B</td><td>6 / 7</td><td>우측 모터 핀</td></tr>
+<tr><td>SPEED_GO</td><td>70</td><td>직진 속도 (%)</td></tr>
+<tr><td>SPEED_TURN</td><td>60</td><td>회전 속도 (%)</td></tr>
+<tr><td>MOVE_MS</td><td>1500</td><td>1회 이동 시간 (ms)</td></tr>
+<tr><td>SOFT_START_MS</td><td>180</td><td>부드러운 출발 (전류 보호)</td></tr>
+</tbody>
+  </table>
+
+  <p class="md5">메인 스케치 md5 : <code>1175bd505ffaeb1a255ae672c9541ea7</code></p>
+</section>
+
+<section class="kit">
+  <h2>누비다머신 (통합본)</h2>
+  <p class="desc">통합 교구 · 서보 + 모터 + LED + 부저 + 초음파 전부</p>
+  <div class="meta">
+    <span><b>배포 파일</b> nubida_v26.zip</span>
+    <span><b>메인 스케치</b> nubida_v26.ino</span>
+    <span><b>사용 부품</b> 서보 2개 (9·7번), DC모터 (4·5번), LED (3번), 부저 (6번), 초음파 (10/11번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>코드 상수</th><th>값</th></tr></thead>
+    <tbody><tr><td>9</td><td>서보 #1</td><td>1NubidaAi (고개 끄덕)</td><td>srv[]</td><td>9</td></tr>
+<tr><td>7</td><td>서보 #2</td><td>2NubidaAi (인사)</td><td>srv[]</td><td>7</td></tr>
+<tr><td>5</td><td>모터 정방향</td><td>3·6·7NubidaAi</td><td>pinA</td><td>5</td></tr>
+<tr><td>4</td><td>모터 역방향</td><td>3·6·7NubidaAi</td><td>pinB</td><td>4</td></tr>
+<tr><td>3</td><td>LED</td><td>4NubidaAi (빨강→초록)</td><td>pin</td><td>3</td></tr>
+<tr><td>6</td><td>부저</td><td>5NubidaAi (삐삐)</td><td>pin</td><td>6</td></tr>
+<tr><td>10</td><td>초음파 TRIG</td><td>7NubidaAi</td><td>trigPin</td><td>10</td></tr>
+<tr><td>11</td><td>초음파 ECHO</td><td>7NubidaAi</td><td>echoPin</td><td>11</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>SoftwareSerial</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>⚠️ LED 3번과 겹침 주의</td><td>SoftwareSerial</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1NubidaAi</td><td>고개 끄덕</td><td>9번 서보</td><td>90 → 160 → 90</td></tr>
+<tr><td>2NubidaAi</td><td>인사</td><td>7번 서보</td><td>45 → 135 → 45</td></tr>
+<tr><td>3NubidaAi</td><td>전진</td><td>5·4번 모터</td><td>80% 속도로 1.2초 전진 후 정지</td></tr>
+<tr><td>4NubidaAi</td><td>LED 점등</td><td>3번 LED</td><td>빨강 켜기 → 초록 깜빡 → 끄기</td></tr>
+<tr><td>5NubidaAi</td><td>삐삐</td><td>6번 부저</td><td>880Hz 삐삐 소리</td></tr>
+<tr><td>6NubidaAi</td><td>융합 동작</td><td>서보+LED+부저+모터</td><td>여러 부품을 한 번에 동작</td></tr>
+<tr><td>7NubidaAi</td><td>센서 동작</td><td>모터+초음파(10/11)+부저</td><td>초음파로 거리 감지 후 동작</td></tr>
+<tr><td>8NubidaAi</td><td>무시</td><td>—</td><td>정의되지 않은 번호</td></tr>
+</tbody>
+  </table>
+
+  <h3>③ 각도 · 속도 설정값</h3>
+  <table>
+    <thead><tr><th>상수</th><th>값</th><th>의미</th></tr></thead>
+    <tbody><tr><td>서보 #1</td><td>핀 9</td><td>고개 끄덕 (90→160→90)</td></tr>
+<tr><td>서보 #2</td><td>핀 7</td><td>인사 (45→135→45)</td></tr>
+<tr><td>모터</td><td>핀 5(정)/4(역)</td><td>전진 80% 1.2초</td></tr>
+<tr><td>LED</td><td>핀 3</td><td>빨강 0xFF0000 / 초록 0x00FF00</td></tr>
+<tr><td>부저</td><td>핀 6</td><td>880Hz / 1046Hz</td></tr>
+<tr><td>초음파</td><td>TRIG 10 / ECHO 11</td><td>거리 측정</td></tr>
+</tbody>
+  </table>
+
+  <p class="md5">메인 스케치 md5 : <code>69bab2edb6fe6be2c307b9a05261fe7e</code></p>
+</section>
+
+
+  <section>
+    <h2 style="font-size:19px;font-weight:800;color:#0f172a;padding-bottom:10px;
+      border-bottom:2px solid #6366f1;margin-bottom:14px">AI 명령 13종 (공통 해석)</h2>
+    <p class="desc">웹앱의 AI가 만들어 준 코드를 펌웨어가 그대로 해석해 실행합니다.</p>
+    <table>
+      <thead><tr><th>명령 형식</th><th>의미</th></tr></thead>
+      <tbody><tr><td>digitalWrite(핀,H);</td><td>디지털 출력 HIGH</td></tr>
+<tr><td>digitalWrite(핀,L);</td><td>디지털 출력 LOW</td></tr>
+<tr><td>int 이름 = 값;</td><td>정수 변수 선언</td></tr>
+<tr><td>Serial.print(내용);</td><td>시리얼 출력</td></tr>
+<tr><td>if(cho < 값)</td><td>조건문 (초음파 거리)</td></tr>
+<tr><td>if(pos < 값)</td><td>조건문 (위치 소)</td></tr>
+<tr><td>if(pos > 값)</td><td>조건문 (위치 대)</td></tr>
+<tr><td>tone(핀,주파수);</td><td>부저 소리</td></tr>
+<tr><td>noTone(핀);</td><td>부저 정지</td></tr>
+<tr><td>BT.print(t값,e값);</td><td>블루투스 송신</td></tr>
+<tr><td>Piano.mode</td><td>피아노 모드 (레거시)</td></tr>
+<tr><td>Trash.mode</td><td>휴지통 모드 (레거시)</td></tr>
+<tr><td>stop</td><td>전체 정지</td></tr>
+</tbody>
+    </table>
+
+    <h3>숫자 자릿수 규칙 (중요)</h3>
+    <table>
+      <thead><tr><th>명령</th><th>판정</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>1NubidaAi ~ 9NubidaAi</td><td>정상 인식</td><td>앞 1자리가 동작 번호</td></tr>
+        <tr><td>11NubidaAi, 12NubidaAi</td><td>무시</td><td>"Nubida" 위치가 2번째 → 두 자리 번호 차단</td></tr>
+        <tr><td>"1" 만 단독 도착</td><td>무시 (교구별 상이)</td><td>BLE 조각 수신으로 인한 오동작 방지</td></tr>
+        <tr><td>정의되지 않은 번호</td><td>무시 + 안내 로그</td><td>엉뚱한 부품이 움직이지 않도록 차단</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <b>⚠️ 주의 — 2번·3번 핀은 블루투스 전용입니다.</b><br>
+      다른 부품(LED·서보 등)을 2번이나 3번에 꽂으면 블루투스 통신이 끊깁니다.<br>
+      특히 <b>누비다머신(통합본)</b>은 LED를 3번으로 쓰고 있어 BLE TX와 겹칩니다 — 업로드 시 주의하세요.
+    </div>
+  </section>
+
+  <footer>
+    누비다플랫폼 · 머신러닝 교구 펌웨어 문서 · 2026-09-21
+  </footer>
+</div>
+</body>
+</html>

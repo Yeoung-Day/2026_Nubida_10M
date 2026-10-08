@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>아이디 찾기 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/pages/login.css?v=20260919ios2">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        .find-tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:2px solid var(--border); }
+        .find-tab { flex:1; padding:10px; text-align:center; font-size:13px; font-weight:500; color:var(--text-tertiary); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .2s; }
+        .find-tab:hover { color:var(--text-primary); }
+        .find-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+        .find-panel { display:none; }
+        .find-panel.active { display:block; animation:fadeIn .3s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .result-box { display:none; margin-top:16px; padding:20px; background:#F0FDF4; border:2px solid #BBF7D0; border-radius:12px; text-align:center; }
+        .result-box.show { display:block; animation:fadeIn .3s ease; }
+        .result-box .icon { font-size:32px; margin-bottom:8px; }
+        .result-box h3 { font-size:16px; margin-bottom:4px; color:#166534; }
+        .result-box .found-id { font-size:24px; font-weight:700; font-family:monospace; color:#4F5EF8; letter-spacing:2px; padding:12px; background:#EEF2FF; border-radius:8px; margin:12px 0; }
+        .result-box .date { font-size:12px; color:#6B7280; margin-bottom:16px; }
+        .result-actions { display:flex; gap:8px; justify-content:center; }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-wrapper">
+            <div class="login-header">
+                <a href="/" class="login-logo" aria-label="누비다플랫폼 홈으로" style="margin-bottom:16px;display:block;"><img src="/common/assets/brand/nubida-logo-light.png" alt="누비다플랫폼" style="height:34px;width:auto;display:block;margin:0 auto;"></a>
+                <h1>누비다플랫폼</h1>
+                <p>아이디 찾기</p>
+            </div>
+            <div class="login-card">
+                <h2>아이디 찾기</h2>
+                <p class="subtitle">가입 시 등록한 정보로 아이디를 찾을 수 있습니다.</p>
+
+                <!-- 탭 -->
+                <div class="find-tabs">
+                    <div class="find-tab active" onclick="switchFindTab('email')" id="tabEmail">📧 이메일로 찾기</div>
+                    <div class="find-tab" onclick="switchFindTab('phone')" id="tabPhone">📱 휴대전화로 찾기</div>
+                </div>
+
+                <div class="login-error" id="findIdError" style="display:none"></div>
+
+                <!-- 이메일로 찾기 -->
+                <div class="find-panel active" id="panelEmail">
+                    <form id="findByEmailForm" onsubmit="return false;">
+                        <div class="form-group">
+                            <label>이름</label>
+                            <input type="text" class="form-input" id="emailName" placeholder="실명을 입력하세요" autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label>이메일</label>
+                            <input type="email" class="form-input" id="emailAddr" placeholder="가입 시 등록한 이메일" autocomplete="email">
+                        </div>
+                        <button type="submit" class="login-btn" id="findEmailBtn">
+                            <span class="spinner"></span>
+                            <span class="btn-text">아이디 찾기</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 휴대전화로 찾기 -->
+                <div class="find-panel" id="panelPhone">
+                    <form id="findByPhoneForm" onsubmit="return false;">
+                        <div class="form-group">
+                            <label>이름</label>
+                            <input type="text" class="form-input" id="phoneName" placeholder="실명을 입력하세요" autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label>휴대전화</label>
+                            <input type="tel" class="form-input" id="phoneNum" placeholder="- 없이 숫자만 입력 (예: 01012345678)" autocomplete="tel">
+                        </div>
+                        <button type="submit" class="login-btn" id="findPhoneBtn">
+                            <span class="spinner"></span>
+                            <span class="btn-text">아이디 찾기</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 결과 -->
+                <div class="result-box" id="resultBox">
+                    <div class="icon">✅</div>
+                    <h3>아이디를 찾았습니다!</h3>
+                    <div class="found-id" id="foundUsername"></div>
+                    <div class="date" id="foundDate"></div>
+                    <div class="result-actions">
+                        <a href="/pages/login.html" class="btn btn-primary" style="padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:600">로그인하러 가기</a>
+                        <a href="/pages/find-password.html" class="btn btn-outline" style="padding:10px 24px;border-radius:8px;text-decoration:none">비밀번호 찾기</a>
+                    </div>
+                </div>
+
+                <div style="text-align:center;margin-top:16px;font-size:13px;color:#64748B;">
+                    <a href="/pages/login.html" style="color:#4F5EF8;text-decoration:none;font-weight:500;">← 로그인 페이지로</a>
+                </div>
+            </div>
+            <div class="login-footer">&copy; 2026 누비다플랫폼. All rights reserved.</div>
+        </div>
+    </div>
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script>
+        let _activeTab = 'email';
+
+        function switchFindTab(tab) {
+            _activeTab = tab;
+            document.querySelectorAll('.find-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.find-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            document.getElementById('resultBox').classList.remove('show');
+            document.getElementById('findIdError').style.display = 'none';
+        }
+
+        async function findId(name, email, phone) {
+            const btn = _activeTab === 'email' ? document.getElementById('findEmailBtn') : document.getElementById('findPhoneBtn');
+            const err = document.getElementById('findIdError');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            err.style.display = 'none';
+
+            try {
+                const payload = { name, email, phone };
+                const res = await apiPost('/auth/find-id', payload);
+                if (res && res.status === 'success' && res.data) {
+                    document.querySelectorAll('.find-panel').forEach(p => p.classList.remove('active'));
+                    document.getElementById('resultBox').classList.add('show');
+                    document.getElementById('foundUsername').textContent = res.data.username;
+                    document.getElementById('foundDate').textContent =
+                        '가입일: ' + (res.data.created_at ? new Date(res.data.created_at).toLocaleDateString('ko-KR') : '-');
+                } else {
+                    err.textContent = '일치하는 계정을 찾을 수 없습니다.';
+                    err.style.display = 'block';
+                }
+            } catch(e) {
+                err.textContent = e.message || '일치하는 계정을 찾을 수 없습니다.';
+                err.style.display = 'block';
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('findByEmailForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('emailName').value.trim();
+            const email = document.getElementById('emailAddr').value.trim();
+            if (!name || !email) {
+                document.getElementById('findIdError').textContent = '이름과 이메일을 입력해주세요.';
+                document.getElementById('findIdError').style.display = 'block';
+                return;
+            }
+            findId(name, email, '');
+        });
+
+        document.getElementById('findByPhoneForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('phoneName').value.trim();
+            const phone = document.getElementById('phoneNum').value.trim();
+            if (!name || !phone) {
+                document.getElementById('findIdError').textContent = '이름과 휴대전화를 입력해주세요.';
+                document.getElementById('findIdError').style.display = 'block';
+                return;
+            }
+            findId(name, '', phone);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+/* ============================================================
+   누비다플랫폼 v6.0 — 오프라인 페이지 스타일
+   최종 수정: 2026-05-25
+   ============================================================ */
+
+/* ── 오프라인 페이지 전체 레이아웃 ── */
+.offline-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F0FDF4 100%);
+}
+
+/* ── 오프라인 카드 ── */
+.offline-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 48px 36px 36px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  text-align: center;
+}
+
+/* ── 오프라인 아이콘 ── */
+.offline-icon {
+  display: block;
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+/* ── 오프라인 타이틀 ── */
+.offline-card h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+/* ── 오프라인 설명 텍스트 ── */
+.offline-card p {
+  font-size: 14px;
+  color: #64748B;
+  margin: 0 0 28px 0;
+  line-height: 1.6;
+}
+
+/* ── 다시 시도 버튼 ── */
+.offline-retry {
+  width: 100%;
+  padding: 12px 24px;
+  background: #4B5E6B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.offline-retry:hover {
+  background: #066F8A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(8,145,178,0.3);
+}
+
+.offline-retry:active {
+  transform: translateY(0);
+}
+
+/* ── 오프라인 푸터 ── */
+.offline-footer {
+  font-size: 11px;
+  color: #94A3B8;
+  margin-top: 24px;
+  text-align: center;
+}

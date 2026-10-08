@@ -1,0 +1,98 @@
+/* ============================================================
+ * 누비다플랫폼 v2 Premium — Export/Print Stylesheet
+ * ============================================================ */
+
+/* ── Print visibility ── */
+@media print {
+    body * { visibility: hidden; }
+    #printArea,
+    #printArea *,
+    .print-area,
+    .print-area * { visibility: visible; }
+    #printArea,
+    .print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    .no-print { display: none !important; }
+}
+
+.print-only { display: none; }
+@media print {
+    .print-only { display: block !important; }
+}
+
+/* ── Print layout ── */
+.print-page {
+    padding: 40px;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    color: #222;
+    line-height: 1.7;
+}
+.print-page h1 {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #111;
+}
+.print-page .print-meta {
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 32px;
+}
+.print-entry {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+    background: #fff;
+}
+.print-entry h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    color: #111;
+}
+.print-entry .print-entry-meta {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 14px;
+}
+.print-entry .print-entry-meta span {
+    margin-right: 16px;
+}
+.print-entry .print-entry-content {
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    color: #333;
+}
+.print-entry .print-entry-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+.print-entry .print-entry-images img {
+    max-width: 180px;
+    max-height: 180px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* ── Status badges for print ── */
+.print-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.print-badge.draft { background: #fef3c7; color: #92400e; }
+.print-badge.published { background: #dbeafe; color: #1e40af; }
+.print-badge.approved { background: #d1fae5; color: #065f46; }

@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>교육 자료 관리 - 누비다 플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+<div class="app-layout">
+
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub active" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<main class="main-content">
+    <div class="top-nav">
+        <div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>교육 자료</h1></div>
+        <div class="top-nav-right">
+            <a class="btn btn-outline btn-sm" href="director-reports.html" style="text-decoration:none;">📋 보고서 관리</a>
+            <button class="btn btn-outline btn-sm" onclick="loadMaterials(currentPage)">🔄 새로고침</button>
+        </div>
+    </div>
+
+    <!-- 과목 탭 (과목 마스터 기반 — 한 줄 네비게이션) -->
+    <div class="subject-tabs-wrap">
+        <div class="subject-tabs" id="subjectTabs"><button type="button" class="subject-tab active" onclick="selectSubjectTab('')">전체</button></div>
+        <button type="button" class="btn btn-outline btn-sm subject-manage-btn" onclick="openSubjectManager()" title="과목(교육명) 추가/수정/삭제/순서">⚙️ 과목 관리</button>
+    </div>
+
+    <!-- 툴바 -->
+    <div class="edu-toolbar">
+        <div class="edu-toolbar-left">
+            <input type="text" class="form-input" id="searchInput" placeholder="제목·설명 검색..." oninput="debounceSearch()" style="width:200px;">
+            <select class="form-input" id="categoryFilter" onchange="onCategorySelectChange()" style="width:150px;">
+                <option value="">전체 교육명</option>
+            </select>
+            <select class="form-input" id="typeFilter" onchange="loadMaterials(1)" style="width:130px;">
+                <option value="">전체 유형</option>
+                <option value="document">📄 문서</option>
+                <option value="video">🎬 영상</option>
+                <option value="image">🖼️ 이미지</option>
+                <option value="link">🔗 링크</option>
+            </select>
+            <span class="small-text" id="materialCount">0개</span>
+        </div>
+        <div class="edu-toolbar-right">
+            <button class="btn btn-outline btn-sm" onclick="openLinkModal()">🔗 링크 등록</button>
+            <button class="btn btn-primary btn-sm" onclick="openUploadModal()">📤 파일 업로드</button>
+        </div>
+    </div>
+
+    <!-- 목록 -->
+    <div class="edu-card">
+        <table class="edu-table" data-card-view>
+            <thead>
+            <tr>
+                <th style="width:34%;">제목</th>
+                <th style="width:11%;">교육명</th>
+                <th style="width:9%;">유형</th>
+                <th style="width:13%;">첨부</th>
+                <th style="width:8%;">발행</th>
+                <th style="width:7%;">조회</th>
+                <th style="width:11%;">등록일</th>
+                <th style="width:14%;">관리</th>
+            </tr>
+            </thead>
+            <tbody id="materialTableBody">
+            <tr><td colspan="8" class="empty-cell">자료를 불러오는 중...</td></tr>
+            </tbody>
+        </table>
+        <div class="pagination-wrap" id="paginationWrap"></div>
+    </div>
+</main>
+</div>
+
+<!-- ============ 파일 업로드 모달 ============ -->
+<div class="modal-overlay" id="uploadModal">
+    <div class="modal" style="max-width:560px;">
+        <div class="modal-header">
+            <h3>📤 교육 자료 파일 업로드</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">파일 선택 <span class="req">*</span></label>
+                <input type="file" class="form-input" id="uploadFile" accept=".pdf,.ppt,.pptx,.mp4,.webm,.mov,.avi,.mkv,.jpg,.jpeg,.png,.gif,.webp,.svg,.doc,.docx,.hwp,.txt,.xlsx,.zip" onchange="autoFillTitle()">
+                <div class="small-text" style="margin-top:4px;color:var(--text-tertiary);">PDF·PPT는 업로드 즉시 슬라이드 뷰어 변환이 자동 시작됩니다.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">제목 <span class="req">*</span></label>
+                <input type="text" class="form-input" id="uploadTitle" placeholder="자료 제목">
+            </div>
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <textarea class="form-input" id="uploadDesc" rows="2" placeholder="간단한 설명 (선택)"></textarea>
+            </div>
+            <div class="form-row" style="display:flex;gap:12px;">
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">교육명(과목) <span class="req">*</span></label>
+                    <input type="text" class="form-input" id="uploadCategory" list="categoryList" placeholder="과목 선택/검색 (국어·수학·영어 등)">
+                </div>
+                <div class="form-group" style="flex:0 0 150px;">
+                    <label class="form-label">발행 상태</label>
+                    <select class="form-input" id="uploadPublished">
+                        <option value="true">발행</option>
+                        <option value="false" selected>임시저장</option>
+                    </select>
+                </div>
+            </div>
+            <datalist id="categoryList"></datalist>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline btn-sm" onclick="closeModal('uploadModal')">취소</button>
+            <button class="btn btn-primary btn-sm" id="btnUploadSubmit" onclick="submitUpload()">업로드</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 링크 등록 모달 ============ -->
+<div class="modal-overlay" id="linkModal">
+    <div class="modal" style="max-width:560px;">
+        <div class="modal-header">
+            <h3>🔗 링크 자료 등록</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">URL <span class="req">*</span></label>
+                <input type="url" class="form-input" id="linkUrl" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">제목 <span class="req">*</span></label>
+                <input type="text" class="form-input" id="linkTitle" placeholder="자료 제목">
+            </div>
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <textarea class="form-input" id="linkDesc" rows="2" placeholder="간단한 설명 (선택)"></textarea>
+            </div>
+            <div class="form-row" style="display:flex;gap:12px;">
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">교육명(과목) <span class="req">*</span></label>
+                    <input type="text" class="form-input" id="linkCategory" list="categoryList" placeholder="과목 선택/검색 (국어·수학·영어 등)">
+                </div>
+                <div class="form-group" style="flex:0 0 150px;">
+                    <label class="form-label">발행 상태</label>
+                    <select class="form-input" id="linkPublished">
+                        <option value="true">발행</option>
+                        <option value="false" selected>임시저장</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline btn-sm" onclick="closeModal('linkModal')">취소</button>
+            <button class="btn btn-primary btn-sm" onclick="submitLink()">등록</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 수정 모달 ============ -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal" style="max-width:560px;">
+        <div class="modal-header">
+            <h3>✏️ 자료 수정</h3>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editId">
+            <input type="hidden" id="editType">
+            <div class="form-group" id="editUrlGroup" style="display:none;">
+                <label class="form-label">URL</label>
+                <input type="url" class="form-input" id="editUrl" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">제목 <span class="req">*</span></label>
+                <input type="text" class="form-input" id="editTitle">
+            </div>
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <textarea class="form-input" id="editDesc" rows="2"></textarea>
+            </div>
+            <div class="form-row" style="display:flex;gap:12px;">
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">교육명(과목) <span class="req">*</span></label>
+                    <input type="text" class="form-input" id="editCategory" list="categoryList" placeholder="과목 선택/검색">
+                </div>
+                <div class="form-group" style="flex:0 0 150px;">
+                    <label class="form-label">발행 상태</label>
+                    <select class="form-input" id="editPublished">
+                        <option value="true">발행</option>
+                        <option value="false">임시저장</option>
+                    </select>
+                </div>
+            </div>
+            <div class="small-text" id="editFileInfo" style="color:var(--text-tertiary);"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline btn-sm" onclick="closeModal('editModal')">취소</button>
+            <button class="btn btn-primary btn-sm" onclick="submitEdit()">저장</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 과목(교육명) 마스터 관리 모달 ============ -->
+<div class="modal-overlay" id="subjectManagerModal">
+    <div class="modal" style="max-width:600px;">
+        <div class="modal-header">
+            <h3>📚 과목(교육명) 마스터 관리</h3>
+        </div>
+        <div class="modal-body">
+            <div class="small-text" style="color:var(--text-tertiary);margin-bottom:10px;">과목 추가·수정 후 [💾 적용] 시 화면 상단 과목 탭에 즉시 반영됩니다. 삭제 시 자료·강좌의 과목명은 유지됩니다(전체 탭에서 확인).</div>
+            <div style="overflow-x:auto;">
+                <table class="edu-table">
+                    <thead><tr><th style="width:90px;">순서</th><th>과목명</th><th style="width:76px;text-align:center;">삭제</th></tr></thead>
+                    <tbody id="subjectManageBody"></tbody>
+                </table>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="addSubjectRow()">➕ 과목 추가</button>
+                <div class="small-text" id="subjectManageHint" style="color:var(--text-tertiary);"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline btn-sm" onclick="closeModal('subjectManagerModal')">취소</button>
+            <button class="btn btn-primary btn-sm" onclick="saveSubjectManager()">💾 적용</button>
+        </div>
+    </div>
+</div>
+
+<!-- 공통 JS -->
+<script src="/common/js/api.js?v=20260911nav"></script>
+<script src="/common/js/auth.js?v=20260911nav"></script>
+<script src="/common/js/utils.js?v=20260911nav"></script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+<style>
+    /* ── 교육 자료 관리 전용 ── */
+    .edu-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+    .edu-toolbar-left, .edu-toolbar-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .edu-card { background:var(--card-bg,#fff); border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:6px 4px; box-shadow:var(--shadow-sm,0 1px 3px rgba(0,0,0,.05)); }
+    .edu-table { width:100%; border-collapse:collapse; }
+    .edu-table th { text-align:left; padding:10px 12px; font-size:12px; font-weight:600; color:var(--text-tertiary,#9ca3af); border-bottom:1px solid var(--border,#eee); white-space:nowrap; }
+    .edu-table td { padding:11px 12px; font-size:13px; border-bottom:1px solid #f3f4f6; vertical-align:middle; }
+    .edu-table tr:last-child td { border-bottom:none; }
+    .edu-table tr:hover td { background:#fafbff; }
+    .edu-title { font-weight:600; color:var(--text-primary,#111827); cursor:pointer; }
+    .edu-title:hover { color:var(--primary,#4F5EF8); }
+    .edu-desc { font-size:11px; color:var(--text-tertiary,#9ca3af); margin-top:2px; max-width:380px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .badge-type { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:500; }
+    .badge-type.document { background:#E3F2FD; color:#1565C0; }
+    .badge-type.video { background:#F3E5F5; color:#7B1FA2; }
+    .badge-type.image { background:#E8F5E9; color:#2E7D32; }
+    .badge-type.link { background:#FFF3E0; color:#E65100; }
+    .badge-status { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:500; cursor:pointer; border:none; }
+    .badge-status.published { background:#E8F5E9; color:#2E7D32; }
+    .badge-status.hidden { background:#F3F4F6; color:#6B7280; }
+    .file-cell { font-size:11px; color:var(--text-secondary,#4b5563); display:flex; align-items:center; gap:4px; }
+    .action-btn { border:1px solid var(--border,#e5e7eb); background:#fff; border-radius:6px; padding:3px 8px; font-size:11px; cursor:pointer; color:var(--text-secondary,#374151); }
+    .action-btn:hover { border-color:var(--primary,#4F5EF8); color:var(--primary,#4F5EF8); }
+    .action-btn.danger:hover { border-color:#DC2626; color:#DC2626; }
+    .empty-cell { text-align:center; color:var(--text-tertiary,#9ca3af); padding:32px 0 !important; font-size:13px; }
+    .pagination-wrap { display:flex; justify-content:center; gap:4px; padding:14px 0 8px; }
+    .pagination-wrap button { min-width:30px; height:30px; border:1px solid var(--border,#e5e7eb); background:#fff; border-radius:6px; cursor:pointer; font-size:12px; color:var(--text-secondary,#374151); }
+    .pagination-wrap button.active { background:var(--primary,#4F5EF8); border-color:var(--primary,#4F5EF8); color:#fff; }
+    .pagination-wrap button:disabled { opacity:.4; cursor:default; }
+    /* 교육명(과목) 컬러 칩 */
+    .subject-pill { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; line-height:1.5; white-space:nowrap; }
+    .subject-pill.sp-0 { background:#FCE7F3; color:#9D174D; } /* 국어 */
+    .subject-pill.sp-1 { background:#DBEAFE; color:#1D4ED8; } /* 수학 */
+    .subject-pill.sp-2 { background:#DCFCE7; color:#15803D; } /* 영어 */
+    .subject-pill.sp-3 { background:#CFFAFE; color:#0E7490; } /* 과학 */
+    .subject-pill.sp-4 { background:#FEF3C7; color:#B45309; } /* 사회 */
+    .subject-pill.sp-5 { background:#E0E7FF; color:#4338CA; } /* 코딩 */
+    .subject-pill.sp-6 { background:#FFEDD5; color:#C2410C; } /* 메이커 */
+    .subject-pill.sp-7 { background:#F3E8FF; color:#7E22CE; } /* AI */
+    .subject-pill.sp-8 { background:#F1F5F9; color:#475569; } /* 기타 */
+    .subject-pill.sp-9 { background:#F1F5F9; color:#6B7280; font-weight:500; } /* 기존(레거시) */
+    /* ── 과목 탭 한 줄 네비게이션 ── */
+    .subject-tabs-wrap { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin:0 0 12px; }
+    .subject-tabs { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .subject-tab { border:1px solid var(--border,#e5e7eb); background:#fff; border-radius:20px; padding:6px 14px; font-size:12px; font-weight:600; color:var(--text-secondary,#374151); cursor:pointer; transition:all .15s ease; white-space:nowrap; }
+    .subject-tab:hover { border-color:var(--primary,#4F5EF8); color:var(--primary,#4F5EF8); }
+    .subject-tab.active { background:var(--primary,#4F5EF8); border-color:var(--primary,#4F5EF8); color:#fff; }
+    .subject-manage-btn { flex-shrink:0; }
+
+</style>
+<script>
+    let allMaterials = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    const PER_PAGE = 20;
+    // ── 과목(교육명) 마스터 (본사 CRUD → 화면 탭/필터/입력 기준) ──
+    let subjectMaster = [];       // [{id,name,sort_order,is_active}]
+    let activeSubject = '';       // '' = 전체
+    let allCourses = [];
+    let courseTotal = 0;
+    let _legacyCategoryValues = []; // 마스터 외 기존 등록분(레거시) — 필터/수정 시 유지
+    const COURSES_API = '/headquarters/courses';
+    const SUBJECT_COLORS = [
+        ['#FCE7F3', '#9D174D'], ['#DBEAFE', '#1D4ED8'], ['#DCFCE7', '#15803D'],
+        ['#CFFAFE', '#0E7490'], ['#FEF3C7', '#B45309'], ['#E0E7FF', '#4338CA'],
+        ['#FFEDD5', '#C2410C'], ['#F3E8FF', '#7E22CE'], ['#F1F5F9', '#475569'],
+        ['#FFE4E6', '#BE123C'], ['#E0F2FE', '#0369A1'], ['#FEF9C3', '#A16207']
+    ];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof requireAuth === 'function') requireAuth();
+        if (typeof renderSidebarUser === 'function') renderSidebarUser();
+        loadSubjects();
+    });
+
+    // ══════════════════════════════════════════════
+    // 과목 마스터 — 탭/필터/입력 옵션의 단일 소스
+    // ══════════════════════════════════════════════
+    function isMasterName(name) {
+        return subjectMaster.some(s => s.name === name);
+    }
+
+    function subjectNames() {
+        return subjectMaster.slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id).map(s => s.name);
+    }
+
+    async function loadSubjects() {
+        try {
+            const res = await apiGet('/subjects');
+            subjectMaster = (res.data && res.data.items) ? res.data.items : [];
+        } catch (e) {
+            subjectMaster = [];
+        }
+        renderSubjectTabs();
+        renderCategoryFilter();
+        setCategoryDatalist();
+        loadMaterials(1);
+        loadCourses();
+    }
+
+    // ── 화면 상단 과목 탭 (한 줄 네비게이션) ──
+    function renderSubjectTabs() {
+        const wrap = document.getElementById('subjectTabs');
+        if (!wrap) return;
+        const subs = subjectMaster.filter(s => s.is_active !== false).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id);
+        let html = '<button type="button" class="subject-tab' + (activeSubject === '' ? ' active' : '') + '" onclick="selectSubjectTab(\'\')">전체</button>';
+        subs.forEach(s => {
+            html += '<button type="button" class="subject-tab' + (activeSubject === s.name ? ' active' : '') + '" data-sid="' + s.id + '" onclick="selectSubjectById(' + s.id + ')">' + escHtml(s.name) + '</button>';
+        });
+        wrap.innerHTML = html;
+    }
+
+    function selectSubjectById(id) {
+        const s = subjectMaster.find(x => x.id === id);
+        selectSubjectTab(s ? s.name : '');
+    }
+
+    function selectSubjectTab(name) {
+        activeSubject = name || '';
+        const sel = document.getElementById('categoryFilter');
+        if (sel && subjectNames().indexOf(activeSubject) >= 0) sel.value = activeSubject;
+        renderSubjectTabs();
+        loadMaterials(1);
+        loadCourses();
+    }
+
+    // ── [전체] 탭 버튼(카테고리 셀렉트 포함)과 동기화 ──
+    function onCategorySelectChange() {
+        const sel = document.getElementById('categoryFilter');
+        selectSubjectTab(sel ? sel.value : '');
+    }
+
+    // ── 과목 관리 모달 (본사) ──
+    function openSubjectManager() {
+        const tbody = document.getElementById('subjectManageBody');
+        if (!tbody) return;
+        tbody.innerHTML = subjectMaster.slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id)
+            .map(s => '<tr data-smid="' + s.id + '" data-orig-name="' + escHtml(s.name) + '" data-orig-order="' + (s.sort_order || 0) + '">' +
+                '<td><input type="number" class="form-input sm-order" value="' + (s.sort_order || 0) + '" min="0" style="width:70px;"></td>' +
+                '<td><input type="text" class="form-input sm-name" value="' + escHtml(s.name) + '" maxlength="50" style="width:100%;"></td>' +
+                '<td style="text-align:center;"><button type="button" class="action-btn danger" onclick="deleteSubjectById(' + s.id + ')">🗑️ 삭제</button></td>' +
+                '</tr>').join('');
+        document.getElementById('subjectManageHint').textContent = '과목명 변경 시 해당 과목의 교육자료·강좌 분류도 함께 변경됩니다.';
+        openModal('subjectManagerModal');
+    }
+
+    function addSubjectRow() {
+        const tbody = document.getElementById('subjectManageBody');
+        if (!tbody) return;
+        const tr = document.createElement('tr');
+        tr.dataset.smid = '';
+        tr.dataset.isNew = '1';
+        tr.innerHTML = '<td><input type="number" class="form-input sm-order" value="0" min="0" style="width:70px;"></td>' +
+            '<td><input type="text" class="form-input sm-name" value="" maxlength="50" placeholder="새 과목명 (예: 미술)" style="width:100%;"></td>' +
+            '<td style="text-align:center;"><button type="button" class="action-btn danger" onclick="this.closest(\'tr\').remove()">🗑️ 삭제</button></td>';
+        tbody.appendChild(tr);
+        const inp = tr.querySelector('.sm-name');
+        if (inp) inp.focus();
+    }
+
+    async function deleteSubjectById(id) {
+        const s = subjectMaster.find(x => x.id === id);
+        if (!confirm('과목 「' + (s ? s.name : id) + '」을(를) 삭제할까요?\n자료·강좌의 과목명은 유지되며(전체 탭에서 확인), 해당 과목 탭에서만 제외됩니다.')) return;
+        try {
+            await apiDelete('/subjects/' + id);
+            if (s && activeSubject === s.name) activeSubject = '';  // 활성 탭이 삭제되면 전체로 리셋
+            showAlert('✅ 과목이 삭제되었습니다.', 'success');
+            closeModal('subjectManagerModal');
+            await loadSubjects();
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '삭제 실패'), 'error');
+        }
+    }
+
+    async function saveSubjectManager() {
+        const rows = Array.prototype.slice.call(document.querySelectorAll('#subjectManageBody tr'));
+        const tasks = [];
+        const seen = {};
+        let firstErr = '';
+        for (const tr of rows) {
+            const name = (tr.querySelector('.sm-name').value || '').trim();
+            const order = parseInt(tr.querySelector('.sm-order').value || '0', 10) || 0;
+            if (!name) continue;
+            if (seen[name]) { firstErr = '과목명이 중복됩니다: ' + name; break; }
+            seen[name] = true;
+            if (tr.dataset.isNew === '1') {
+                tasks.push(apiPost('/subjects', { name: name, sort_order: order }));
+            } else {
+                const origName = tr.dataset.origName || '';
+                const origOrder = tr.dataset.origOrder || '';
+                if (name !== origName || String(order) !== String(origOrder)) {
+                    tasks.push(apiPut('/subjects/' + tr.dataset.smid, { name: name, sort_order: order }));
+                }
+            }
+        }
+        if (firstErr) { showAlert('⚠️ ' + firstErr, 'error'); return; }
+        if (!tasks.length) { showAlert('ℹ️ 변경된 내용이 없습니다.', 'success'); return; }
+        try {
+            await Promise.all(tasks);
+            showAlert('✅ 과목 마스터가 저장되었습니다.', 'success');
+            closeModal('subjectManagerModal');
+            await loadSubjects();
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '저장 실패'), 'error');
+        }
+    }
+
+    // ── 강좌(과정) 섹션 — 선택 과목의 과정을 함께 노출 ──
+    async function loadCourses() {
+        const box = document.getElementById('coursesList');
+        if (!box) return;
+        const cntEl = document.getElementById('coursesCount');
+        const head = document.getElementById('coursesSectionTitle');
+        box.innerHTML = '<div class="courses-empty">강좌를 불러오는 중...</div>';
+        allCourses = [];
+        courseTotal = 0;
+        if (cntEl) cntEl.textContent = '';
+        try {
+            const isMaster = isMasterName(activeSubject);
+            const q = (activeSubject && isMaster) ? '&subject=' + encodeURIComponent(activeSubject) : '';
+            const res = await apiGet(COURSES_API + '?per_page=100&status=active' + q);
+            const arr = Array.isArray(res.data) ? res.data : ((res.data && res.data.items) || []);
+            allCourses = arr.filter(c => c.status === 'active');
+            courseTotal = (typeof res.total === 'number') ? res.total : allCourses.length;
+            if (cntEl) cntEl.textContent = courseTotal + '건';
+            if (head) head.textContent = '🎓 과정(강좌)';
+            renderCourses();
+        } catch (e) {
+            box.innerHTML = '<div class="courses-empty">⚠️ ' + escHtml(e.message || '강좌 로드 실패') + '</div>';
+        }
+    }
+
+    function renderCourses() {
+        const box = document.getElementById('coursesList');
+        if (!box) return;
+        if (!allCourses.length) {
+            const subjTxt = (activeSubject && isMasterName(activeSubject)) ? '「' + activeSubject + '」' : '';
+            box.innerHTML = '<div class="courses-empty">' + (subjTxt ? subjTxt + ' 과목에' : '') + ' 등록된 과정(강좌)이 없습니다.</div>';
+            return;
+        }
+        box.innerHTML = allCourses.map(c => {
+            const subjTxt = (activeSubject && isMasterName(activeSubject)) ? '' : (c.subject ? subjectPillHtml(c.subject) : '');
+            const metaBits = [];
+            if (c.branch_name) metaBits.push('🏢 ' + escHtml(c.branch_name));
+            if (c.instructor) metaBits.push('👤 ' + escHtml(c.instructor));
+            if (c.price) metaBits.push('💰 ' + Number(c.price).toLocaleString() + '원');
+            if (c.material_count != null) metaBits.push('📚 자료 ' + c.material_count + '건');
+            return '<div class="course-card">' +
+                '<div class="course-card-icon">📖</div>' +
+                '<div class="course-card-body">' +
+                '<div class="course-card-name">' + escHtml(c.name) + (subjTxt ? ' ' + subjTxt : '') + '</div>' +
+                (metaBits.length ? '<div class="course-card-meta">' + metaBits.join(' · ') + '</div>' : '') +
+                '</div>' +
+                '<span class="course-card-branch"></span>' +
+                '</div>';
+        }).join('');
+    }
+
+    // ── 목록 조회 ──
+    async function loadMaterials(page) {
+        currentPage = page || 1;
+        const search = encodeURIComponent(document.getElementById('searchInput').value.trim());
+        const category = encodeURIComponent(document.getElementById('categoryFilter').value);
+        const mtype = encodeURIComponent(document.getElementById('typeFilter').value);
+        const tb = document.getElementById('materialTableBody');
+        tb.innerHTML = '<tr><td colspan="8" class="empty-cell">자료를 불러오는 중...</td></tr>';
+        try {
+            const res = await apiGet('/headquarters/edu-materials?search=' + search +
+                '&category=' + category + '&material_type=' + mtype +
+                '&page=' + currentPage + '&page_size=' + PER_PAGE);
+            const data = res.data || {};
+            allMaterials = data.items || [];
+            const total = data.total || 0;
+            totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+            document.getElementById('materialCount').textContent = total + '개';
+            renderMaterials();
+            renderPaginationUI();
+            refreshCategoryOptions();
+        } catch (e) {
+            tb.innerHTML = '<tr><td colspan="8" class="empty-cell">⚠️ ' + escHtml(e.message || '로드 실패') + '</td></tr>';
+        }
+    }
+
+    // ── 테이블 렌더링 ──
+    const TYPE_META = {
+        document: { icon: '📄', label: '문서', cls: 'document' },
+        video: { icon: '🎬', label: '영상', cls: 'video' },
+        image: { icon: '🖼️', label: '이미지', cls: 'image' },
+        link: { icon: '🔗', label: '링크', cls: 'link' }
+    };
+
+    function fmtSize(bytes) {
+        if (!bytes) return '';
+        if (bytes < 1024) return bytes + 'B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + 'KB';
+        return (bytes / 1024 / 1024).toFixed(1) + 'MB';
+    }
+
+    function extName(url) {
+        if (!url) return '';
+        const m = url.match(/\.([A-Za-z0-9]+)(\?.*)?$/);
+        return m ? m[1].toUpperCase() : '';
+    }
+
+    function renderMaterials() {
+        const tb = document.getElementById('materialTableBody');
+        if (!allMaterials.length) {
+            tb.innerHTML = '<tr><td colspan="8" class="empty-cell">📭 등록된 교육 자료가 없습니다. <br>우측 상단 [파일 업로드] 또는 [링크 등록]으로 첫 자료를 추가해보세요.</td></tr>';
+            return;
+        }
+        tb.innerHTML = allMaterials.map(m => {
+            const tm = TYPE_META[m.material_type] || TYPE_META.document;
+            const fileTxt = m.file_url ? (extName(m.file_url) + ' ' + fmtSize(m.file_size)) : '';
+            return '<tr>' +
+                '<td><div class="edu-title" onclick="viewMaterial(' + m.id + ')">' + escHtml(m.title) + '</div>' +
+                (m.description ? '<div class="edu-desc">' + escHtml(m.description) + '</div>' : '') + '</td>' +
+                '<td>' + subjectPillHtml(m.category) + '</td>' +
+                '<td><span class="badge-type ' + tm.cls + '">' + tm.icon + ' ' + tm.label + '</span></td>' +
+                '<td><span class="file-cell">' + (m.file_url ? (m.material_type === 'link' ? '🔗 ' + escHtml(m.file_url) : '📎 ' + fileTxt) : '<span style="color:#d1d5db;">-</span>') + '</span></td>' +
+                '<td><button class="badge-status ' + (m.is_published ? 'published' : 'hidden') + '" onclick="togglePublish(' + m.id + ')">' + (m.is_published ? '● 발행' : '○ 비발행') + '</button></td>' +
+                '<td>' + (m.view_count || 0) + '</td>' +
+                '<td>' + fmtDate(m.created_at) + '</td>' +
+                '<td><div style="display:flex;gap:4px;flex-wrap:wrap;">' +
+                (m.file_url ? '<button class="action-btn" onclick="viewMaterial(' + m.id + ')">👁 열기</button>' : '') +
+                '<button class="action-btn" onclick="openEditModal(' + m.id + ')">✏️ 수정</button>' +
+                '<button class="action-btn danger" onclick="deleteMaterial(' + m.id + ')">🗑️ 삭제</button>' +
+                '</div></td></tr>';
+        }).join('');
+    }
+
+    // ── 조회/열기 (링크는 새탭, 파일은 다운로드) ──
+    async function viewMaterial(id) {
+        const m = allMaterials.find(x => x.id === id);
+        if (!m) return;
+        if (m.material_type === 'link') {
+            window.open(m.file_url, '_blank');
+            return;
+        }
+        if (m.file_url) {
+            downloadMaterial(id);
+        } else {
+            openEditModal(id);
+        }
+    }
+
+    async function downloadMaterial(id) {
+        try {
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const res = await fetch('/api/v1/director/edu-materials/' + id + '/download', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            if (!res.ok) {
+                let msg = '다운로드 실패';
+                try { const j = await res.json(); msg = j.message || j.detail || msg; } catch (e) {}
+                throw new Error(msg);
+            }
+            const blob = await res.blob();
+            const cd = res.headers.get('Content-Disposition') || '';
+            let fname = 'download';
+            const um = cd.match(/filename\*=UTF-8''([^;]+)/i);
+            if (um) { try { fname = decodeURIComponent(um[1]); } catch (e) { fname = um[1]; } }
+            else { const fm = cd.match(/filename="?([^";]+)"?/i); if (fm) fname = fm[1]; }
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fname;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '다운로드 실패'), 'error');
+        }
+    }
+
+    // ── 발행 토글 ──
+    async function togglePublish(id) {
+        const m = allMaterials.find(x => x.id === id);
+        if (!m) return;
+        try {
+            await apiPut('/headquarters/edu-materials/' + id, { is_published: !m.is_published });
+            showAlert(m.is_published ? '비발행(임시저장)으로 전환되었습니다.' : '발행되었습니다. 원장 화면에 노출됩니다.', 'success');
+            loadMaterials(currentPage);
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '처리 실패'), 'error');
+        }
+    }
+
+    // ── 삭제 ──
+    async function deleteMaterial(id) {
+        const m = allMaterials.find(x => x.id === id);
+        if (!m) return;
+        if (!confirm('「' + m.title + '」 자료를 삭제할까요?\n업로드된 파일도 함께 삭제됩니다.')) return;
+        try {
+            await apiDelete('/headquarters/edu-materials/' + id);
+            showAlert('삭제되었습니다.', 'success');
+            loadMaterials(currentPage);
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '삭제 실패'), 'error');
+        }
+    }
+
+    // ── 업로드 모달 ──
+    function openUploadModal() {
+        document.getElementById('uploadFile').value = '';
+        document.getElementById('uploadTitle').value = '';
+        document.getElementById('uploadDesc').value = '';
+        document.getElementById('uploadCategory').value = '';
+        document.getElementById('uploadPublished').value = 'false';
+        setCategoryDatalist();
+        openModal('uploadModal');
+    }
+
+    function autoFillTitle() {
+        const f = document.getElementById('uploadFile');
+        const t = document.getElementById('uploadTitle');
+        if (f.files && f.files[0] && !t.value.trim()) {
+            t.value = f.files[0].name.replace(/\.[^.]+$/, '');
+        }
+    }
+
+    async function submitUpload() {
+        const f = document.getElementById('uploadFile');
+        if (!f.files || !f.files[0]) { showAlert('⚠️ 파일을 선택해주세요.', 'error'); return; }
+        const title = document.getElementById('uploadTitle').value.trim();
+        if (!title) { showAlert('⚠️ 제목을 입력해주세요.', 'error'); return; }
+        const upCat = document.getElementById('uploadCategory').value.trim();
+        if (!isValidSubject(upCat)) {
+            showAlert(upCat ? '⚠️ 교육명(과목)은 과목 마스터에 등록된 과목(국어·수학·영어·과학·사회·코딩·메이커·AI 등) 중에서 선택해주세요. [⚙️ 과목 관리]에서 추가할 수 있습니다.' : '⚠️ 교육명(과목)을 선택해주세요.', 'error');
+            return;
+        }
+        const btn = document.getElementById('btnUploadSubmit');
+        btn.disabled = true;
+        btn.textContent = '업로드 중...';
+        try {
+            const fd = new FormData();
+            fd.append('file', f.files[0]);
+            fd.append('title', title);
+            fd.append('description', document.getElementById('uploadDesc').value.trim());
+            fd.append('category', document.getElementById('uploadCategory').value.trim());
+            fd.append('is_published', document.getElementById('uploadPublished').value === 'true');
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const res = await fetch('/api/v1/headquarters/edu-materials/upload', {
+                method: 'POST',
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                body: fd
+            });
+            const text = await res.text();
+            let json;
+            try { json = JSON.parse(text); } catch (e) { throw new Error(text || '업로드 실패'); }
+            if (!res.ok) throw new Error(json.message || json.detail || '업로드 실패');
+            closeModal('uploadModal');
+            showAlert('✅ 파일이 업로드되었습니다.', 'success');
+            loadMaterials(1);
+            loadCourses();
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '업로드 실패'), 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '업로드';
+        }
+    }
+
+    // ── 링크 등록 ──
+    function openLinkModal() {
+        document.getElementById('linkUrl').value = '';
+        document.getElementById('linkTitle').value = '';
+        document.getElementById('linkDesc').value = '';
+        document.getElementById('linkCategory').value = '';
+        document.getElementById('linkPublished').value = 'false';
+        setCategoryDatalist();
+        openModal('linkModal');
+    }
+
+    async function submitLink() {
+        const url = document.getElementById('linkUrl').value.trim();
+        const title = document.getElementById('linkTitle').value.trim();
+        if (!url) { showAlert('⚠️ URL을 입력해주세요.', 'error'); return; }
+        if (!title) { showAlert('⚠️ 제목을 입력해주세요.', 'error'); return; }
+        const linkCat = document.getElementById('linkCategory').value.trim();
+        if (!isValidSubject(linkCat)) {
+            showAlert(linkCat ? '⚠️ 교육명(과목)은 과목 마스터에 등록된 과목 중에서 선택해주세요.' : '⚠️ 교육명(과목)을 선택해주세요.', 'error');
+            return;
+        }
+        try {
+            await apiPost('/headquarters/edu-materials', {
+                title: title,
+                description: document.getElementById('linkDesc').value.trim(),
+                category: document.getElementById('linkCategory').value.trim(),
+                material_type: 'link',
+                file_url: url,
+                is_published: document.getElementById('linkPublished').value === 'true'
+            });
+            closeModal('linkModal');
+            showAlert('✅ 링크 자료가 등록되었습니다.', 'success');
+            loadMaterials(1);
+            loadCourses();
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '등록 실패'), 'error');
+        }
+    }
+
+    // ── 수정 ──
+    function openEditModal(id) {
+        const m = allMaterials.find(x => x.id === id);
+        if (!m) return;
+        document.getElementById('editId').value = m.id;
+        document.getElementById('editType').value = m.material_type;
+        document.getElementById('editTitle').value = m.title;
+        document.getElementById('editDesc').value = m.description || '';
+        document.getElementById('editCategory').value = m.category || '';
+        setCategoryDatalist(m.category || '');
+        document.getElementById('editPublished').value = m.is_published ? 'true' : 'false';
+        const urlGroup = document.getElementById('editUrlGroup');
+        const fi = document.getElementById('editFileInfo');
+        if (m.material_type === 'link') {
+            urlGroup.style.display = '';
+            document.getElementById('editUrl').value = m.file_url || '';
+            fi.textContent = '';
+        } else {
+            urlGroup.style.display = 'none';
+            document.getElementById('editUrl').value = '';
+            fi.textContent = m.file_url ? '📎 첨부 파일: ' + m.file_url.replace('/uploads/edu/', '') + (m.file_size ? ' (' + fmtSize(m.file_size) + ')' : '') : '첨부 파일 없음';
+        }
+        openModal('editModal');
+    }
+
+    async function submitEdit() {
+        const id = document.getElementById('editId').value;
+        const mtype = document.getElementById('editType').value;
+        const title = document.getElementById('editTitle').value.trim();
+        if (!title) { showAlert('⚠️ 제목을 입력해주세요.', 'error'); return; }
+        const editCat = document.getElementById('editCategory').value.trim();
+        const origCat = (allMaterials.find(x => x.id === Number(id)) || {}).category || '';
+        if (!isValidSubject(editCat, origCat)) {
+            showAlert(editCat ? '⚠️ 교육명(과목)은 과목 마스터에 등록된 과목 중에서 선택하거나 기존 값을 유지해주세요.' : '⚠️ 교육명(과목)을 선택해주세요.', 'error');
+            return;
+        }
+        const payload = {
+            title: title,
+            description: document.getElementById('editDesc').value.trim(),
+            category: editCat,
+            is_published: document.getElementById('editPublished').value === 'true'
+        };
+        if (mtype === 'link') {
+            const url = document.getElementById('editUrl').value.trim();
+            if (!url) { showAlert('⚠️ URL을 입력해주세요.', 'error'); return; }
+            payload.file_url = url;
+        }
+        try {
+            await apiPut('/headquarters/edu-materials/' + id, payload);
+            closeModal('editModal');
+            showAlert('✅ 수정되었습니다.', 'success');
+            loadMaterials(currentPage);
+            loadCourses();
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '수정 실패'), 'error');
+        }
+    }
+
+    // ── 유틸 ──
+    function fmtDate(iso) {
+        if (!iso) return '-';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return '-';
+        const p = n => String(n).padStart(2, '0');
+        return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+    }
+
+    function escHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    let searchTimer = null;
+    function debounceSearch() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => loadMaterials(1), 350);
+    }
+
+    function refreshCategoryOptions() {
+        // 현재 페이지에서 보이는 레거시(마스터 외) 값도 필터/수정에 보존
+        (allMaterials || []).forEach(m => {
+            const c = (m.category || '').trim();
+            if (c && !isMasterName(c) && _legacyCategoryValues.indexOf(c) < 0) _legacyCategoryValues.push(c);
+        });
+        renderCategoryFilter();
+    }
+
+    // ── 교육명(과목) 옵션/칩/검증 헬퍼 ──
+    function subjectPillHtml(c) {
+        if (!c) return '<span style="color:#d1d5db;">-</span>';
+        const i = subjectMaster.findIndex(s => s.name === c);
+        if (i >= 0) {
+            const colors = SUBJECT_COLORS[i % SUBJECT_COLORS.length];
+            return '<span class="subject-pill" style="background:' + colors[0] + ';color:' + colors[1] + ';">' + escHtml(c) + '</span>';
+        }
+        return '<span class="subject-pill" style="background:#F1F5F9;color:#6B7280;font-weight:500;">' + escHtml(c) + '</span>';
+    }
+
+    function isValidSubject(c, extra) {
+        if (!c) return false;
+        return isMasterName(c) || (extra && c === extra);
+    }
+
+    function setCategoryDatalist(extra) {
+        const dl = document.getElementById('categoryList');
+        if (!dl) return;
+        const vals = subjectNames();
+        if (extra && vals.indexOf(extra) < 0) vals.unshift(extra);
+        dl.innerHTML = vals.map(v => '<option value="' + escHtml(v) + '">').join('');
+    }
+
+    function renderCategoryFilter() {
+        const sel = document.getElementById('categoryFilter');
+        if (!sel) return;
+        const cur = sel.value;
+        const masters = subjectNames();
+        let html = '<option value="">전체 교육명</option>';
+        if (masters.length) {
+            html += '<optgroup label="과목">' + masters.map(c => '<option value="' + escHtml(c) + '">' + escHtml(c) + '</option>').join('') + '</optgroup>';
+        }
+        if (_legacyCategoryValues.length) {
+            html += '<optgroup label="기존 등록분">' + _legacyCategoryValues.map(c => '<option value="' + escHtml(c) + '">' + escHtml(c) + '</option>').join('') + '</optgroup>';
+        }
+        sel.innerHTML = html;
+        if (cur) {
+            const ok = Array.prototype.some.call(sel.options, o => o.value === cur);
+            if (ok) sel.value = cur;
+        }
+    }
+
+    // 전체 자료(모든 페이지)를 훑어 레거시 교육명(과목) 값 수집 → 필터 옵션 유지
+    async function collectAllCategories() {
+        try {
+            const seen = [];
+            let page = 1, total = 1;
+            while (seen.length < total && page <= 20) {
+                const res = await apiGet('/headquarters/edu-materials?search=&category=&material_type=&page=' + page + '&page_size=200');
+                const d = res.data || {};
+                total = d.total || 0;
+                (d.items || []).forEach(m => {
+                    const c = (m.category || '').trim();
+                    if (c && !isMasterName(c) && seen.indexOf(c) < 0) seen.push(c);
+                });
+                if (!(d.items || []).length) break;
+                page += 1;
+            }
+            _legacyCategoryValues = seen.sort();
+            renderCategoryFilter();
+        } catch (e) { /* 필터 옵션은 현재 페이지 기준으로도 유지됨 */ }
+    }
+
+    async function syncCategoryOptions() {
+        await collectAllCategories();
+        renderCategoryFilter();
+    }
+
+    function renderPaginationUI() {
+        const wrap = document.getElementById('paginationWrap');
+        let html = '';
+        html += (currentPage > 1) ? '<button onclick="loadMaterials(1)">«</button><button onclick="loadMaterials(' + (currentPage - 1) + ')">‹</button>' : '<button disabled>«</button><button disabled>‹</button>';
+        const start = Math.max(1, currentPage - 2);
+        const end = Math.min(totalPages, currentPage + 2);
+        for (let i = start; i <= end; i++) {
+            html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="loadMaterials(' + i + ')">' + i + '</button>';
+        }
+        html += (currentPage < totalPages) ? '<button onclick="loadMaterials(' + (currentPage + 1) + ')">›</button><button onclick="loadMaterials(' + totalPages + ')">»</button>' : '<button disabled>›</button><button disabled>»</button>';
+        wrap.innerHTML = html;
+    }
+</script>
+</body>
+</html>

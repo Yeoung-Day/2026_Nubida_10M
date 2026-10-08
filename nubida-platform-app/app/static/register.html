@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 — 누비다플랫폼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260611f">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260611f">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260611f">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260611f">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260611f">
+    <link rel="stylesheet" href="/common/css/pages/login.css?v=20260611f">
+    <meta name="theme-color" content="#4F5EF8">
+    <style>
+        /* === 단계 프로그레스 === */
+        .step-progress { display:flex; align-items:center; justify-content:center; gap:0; margin:0 0 20px 0; }
+        .step-progress .sp-step { display:flex; align-items:center; gap:8px; }
+        .step-progress .sp-circle { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; border:2px solid #D1D5DB; color:#9CA3AF; background:#fff; transition:all 0.3s; }
+        .step-progress .sp-circle.active { border-color:#4F5EF8; background:#4F5EF8; color:#fff; }
+        .step-progress .sp-circle.done { border-color:#10B981; background:#10B981; color:#fff; }
+        .step-progress .sp-label { font-size:11px; color:#9CA3AF; font-weight:500; }
+        .step-progress .sp-label.active { color:#4F5EF8; font-weight:600; }
+        .step-progress .sp-line { width:40px; height:2px; background:#D1D5DB; margin:0 8px; }
+        .step-progress .sp-line.done { background:#10B981; }
+
+        /* === 역할 선택 카드 === */
+        .role-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .role-card { padding:18px 14px; border:2px solid #E5E7EB; border-radius:12px; text-align:center; cursor:pointer; transition:all 0.2s; background:#fff; }
+        .role-card:hover { border-color:#C7D2FE; background:#F5F7FF; transform:translateY(-1px); box-shadow:0 2px 8px rgba(79,94,248,0.08); }
+        .role-card.selected { border-color:#4F5EF8; background:#EEF2FF; }
+        .role-card .rc-icon { font-size:32px; margin-bottom:6px; }
+        .role-card .rc-label { font-size:13px; font-weight:600; color:#374151; }
+        .role-card .rc-desc { font-size:11px; color:#9CA3AF; margin-top:3px; }
+        .role-card.selected .rc-label { color:#4F5EF8; }
+
+        /* === 에듀케어 검색 === */
+        .branch-search-wrap { position:relative; }
+        .branch-dropdown { position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #E5E7EB; border-radius:8px; max-height:200px; overflow-y:auto; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.1); display:none; }
+        .branch-dropdown .bd-item { padding:10px 14px; font-size:13px; cursor:pointer; border-bottom:1px solid #F3F4F6; }
+        .branch-dropdown .bd-item:last-child { border-bottom:none; }
+        .branch-dropdown .bd-item:hover { background:#F0F4FF; color:#4F5EF8; }
+
+        /* === 인포 배너 === */
+        .info-banner { background:#F0F4FF; border:1px solid #C7D2FE; border-radius:8px; padding:12px 14px; font-size:12px; color:#4F5EF8; display:flex; align-items:flex-start; gap:8px; }
+        .info-banner .info-icon { font-size:16px; flex-shrink:0; }
+
+        /* === 섹션 카드 === */
+        .field-section { background:#FAFAFA; border:1px solid #E5E7EB; border-radius:10px; padding:16px; margin-bottom:14px; }
+        .field-section .fs-title { font-size:12px; font-weight:700; color:#6B7280; margin-bottom:10px; display:flex; align-items:center; gap:4px; }
+
+        /* === 약관 === */
+        .terms-box { border:1px solid #E5E7EB; border-radius:8px; padding:14px; background:#fff; margin-bottom:10px; }
+        .terms-box .tb-all { display:flex; align-items:center; gap:10px; padding-bottom:10px; border-bottom:1px solid #F3F4F6; margin-bottom:10px; cursor:pointer; }
+        .terms-box .tb-all .tb-check { width:20px; height:20px; border:2px solid #D1D5DB; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; transition:all 0.15s; flex-shrink:0; }
+        .terms-box .tb-all .tb-check.checked { background:#4F5EF8; border-color:#4F5EF8; }
+        .terms-box .tb-all .tb-label { font-size:13px; font-weight:600; color:#111827; }
+        .terms-box .tb-item { display:flex; align-items:center; gap:10px; padding:6px 0; cursor:pointer; }
+        .terms-box .tb-item .tb-check { width:18px; height:18px; border:2px solid #D1D5DB; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; transition:all 0.15s; flex-shrink:0; }
+        .terms-box .tb-item .tb-check.checked { background:#4F5EF8; border-color:#4F5EF8; }
+        .terms-box .tb-item .tb-label { font-size:12px; color:#374151; flex:1; }
+        .terms-box .tb-item .tb-required { font-size:10px; color:#EF4444; font-weight:600; }
+        .terms-box .tb-item .tb-optional { font-size:10px; color:#9CA3AF; }
+        .terms-box .tb-item .tb-view { font-size:11px; color:#4F5EF8; text-decoration:underline; cursor:pointer; }
+
+        /* === 애니메이션 === */
+        .step-content { animation:fadeIn 0.3s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* === 네비게이션 버튼 === */
+        .step-nav { display:flex; gap:10px; margin-top:16px; }
+        .step-nav .btn { flex:1; padding:12px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s; text-align:center; }
+        .step-nav .btn-prev { background:#fff; border:1px solid #D1D5DB; color:#374151; }
+        .step-nav .btn-prev:hover { background:#F3F4F6; }
+        .step-nav .btn-next { background:#4F5EF8; border:none; color:#fff; }
+        .step-nav .btn-next:hover { background:#3D4ED9; }
+        .step-nav .btn-next:disabled { opacity:0.5; cursor:default; }
+        .step-nav .btn-submit { background:#10B981; border:none; color:#fff; }
+        .step-nav .btn-submit:hover { background:#059669; }
+        .step-nav .btn-submit:disabled { opacity:0.5; cursor:default; }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-wrapper" style="max-width:520px">
+            <div class="login-header">
+                <div class="login-logo">📚</div>
+                <h1>회원가입</h1>
+                <p>누비다플랫폼에 오신 것을 환영합니다</p>
+            </div>
+            <div class="login-card">
+                <div class="login-error" id="registerError" style="display:none"></div>
+                <div class="login-success" id="registerSuccess" style="display:none"></div>
+                <form id="registerForm" onsubmit="return false;">
+
+                    <!-- ========== 프로그레스 ========== -->
+                    <div class="step-progress" id="stepProgress">
+                        <div class="sp-step"><div class="sp-circle active" id="sp1">1</div><span class="sp-label active" id="sl1">유형 선택</span></div>
+                        <div class="sp-line" id="spLine1"></div>
+                        <div class="sp-step"><div class="sp-circle" id="sp2">2</div><span class="sp-label" id="sl2">정보 입력</span></div>
+                        <div class="sp-line" id="spLine2"></div>
+                        <div class="sp-step"><div class="sp-circle" id="sp3">3</div><span class="sp-label" id="sl3">약관 동의</span></div>
+                    </div>
+
+                    <!-- ========== STEP 1: 유형 선택 ========== -->
+                    <div class="step-content" id="step1">
+                        <p style="font-size:13px;color:#6B7280;margin:0 0 16px 0;text-align:center;">
+                            회원 유형을 선택해주세요
+                        </p>
+                        <div class="role-cards" id="roleCards">
+                            <div class="role-card" data-role="student" onclick="selectRole('student')">
+                                <div class="rc-icon">🎒</div>
+                                <div class="rc-label">학생</div>
+                                <div class="rc-desc">수업을 듣는 학습자</div>
+                            </div>
+                            <div class="role-card" data-role="parent" onclick="selectRole('parent')">
+                                <div class="rc-icon">👪</div>
+                                <div class="rc-label">학부모</div>
+                                <div class="rc-desc">자녀의 학습 관리</div>
+                            </div>
+                            <div class="role-card" data-role="director" onclick="selectRole('director')">
+                                <div class="rc-icon">👨‍🏫</div>
+                                <div class="rc-label">원장</div>
+                                <div class="rc-desc">공부방/학원 운영자</div>
+                            </div>
+                            <div class="role-card" data-role="branch_admin" onclick="selectRole('branch_admin')">
+                                <div class="rc-icon">🏪</div>
+                                <div class="rc-label">에듀케어</div>
+                                <div class="rc-desc">에듀케어 관리자</div>
+                            </div>
+                        </div>
+                        <div class="step-nav">
+                            <div></div>
+                            <button type="button" class="btn btn-next" id="step1Next" onclick="goStep(2)" disabled>다음</button>
+                        </div>
+                    </div>
+
+                    <!-- ========== STEP 2: 정보 입력 ========== -->
+                    <div class="step-content" id="step2" style="display:none;">
+
+                        <!-- 2-A: 공통 기본 정보 -->
+                        <div class="field-section">
+                            <div class="fs-title">📋 기본 정보</div>
+                            <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                                <div class="form-group">
+                                    <label for="name">이름 *</label>
+                                    <input type="text" class="form-input" id="name" placeholder="이름" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">연락처</label>
+                                    <input type="text" class="form-input" id="phone" placeholder="연락처">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="username">아이디 *</label>
+                                <input type="text" class="form-input" id="username" placeholder="영문/숫자 4~20자" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">이메일 *</label>
+                                <input type="email" class="form-input" id="email" placeholder="이메일 주소" required>
+                            </div>
+                            <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                                <div class="form-group">
+                                    <label for="password">비밀번호 *</label>
+                                    <input type="password" class="form-input" id="password" placeholder="8자 이상" required minlength="8">
+                                </div>
+                                <div class="form-group">
+                                    <label for="passwordConfirm">비밀번호 확인 *</label>
+                                    <input type="password" class="form-input" id="passwordConfirm" placeholder="다시 입력" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2-B: 학생/학부모 전용 (등록코드) -->
+                        <div id="sectionStudentParent" style="display:none;">
+                            <div class="field-section">
+                                <div class="fs-title">🔑 등록코드 입력</div>
+                                <div class="form-group">
+                                    <label for="registration_code">📋 등록코드 *</label>
+                                    <div style="display:flex;gap:8px;align-items:center;">
+                                        <input type="text" class="form-input" id="registration_code" placeholder="예: #000001" style="font-family:monospace;flex:1;" oninput="checkDirectorCode()">
+                                        <span id="codeVerifyIcon" style="font-size:24px;min-width:28px;text-align:center;"></span>
+                                    </div>
+                                    <div id="codeVerifyResult" style="font-size:12px;margin-top:4px;padding:6px 10px;border-radius:6px;"></div>
+                                    <input type="hidden" id="verifiedDirectorId" value="">
+                                    <div style="font-size:11px;color:#9CA3AF;margin-top:4px;">원장님에게 안내받은 등록코드를 입력하세요</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2-C: 원장 전용 -->
+                        <div id="sectionDirectorBranch" style="display:none;">
+
+                            <!-- 원장: 소속 에듀케어(지사) 선택 -->
+                            <div class="field-section">
+                                <div class="fs-title">🏪 소속 에듀케어</div>
+                                <div class="form-group">
+                                    <label for="branchInput">소속 에듀케어 선택 *</label>
+                                    <div class="branch-search-wrap">
+                                        <input type="text" class="form-input" id="branchInput" placeholder="소속 에듀케어 이름을 입력하세요 autocomplete="off">
+                                        <div class="branch-dropdown" id="branchDropdown"></div>
+                                    </div>
+                                    <div style="font-size:11px;color:#9CA3AF;margin-top:4px;" id="branchInfo"></div>
+                                    <input type="hidden" id="branchId" value="">
+                                </div>
+                            </div>
+
+                            <!-- 사업자 정보 -->
+                            <div class="field-section">
+                                <div class="fs-title">📄 사업자 정보</div>
+                                <div class="form-group">
+                                    <label for="businessNumber">사업자등록번호</label>
+                                    <input type="text" class="form-input" id="businessNumber" placeholder="예: 000-00-00000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="directorName">학원명/공부방명 *</label>
+                                    <input type="text" class="form-input" id="directorName" placeholder="운영 중인 학원 또는 공부방 이름">
+                                </div>
+                            </div>
+
+                            <!-- 지역 -->
+                            <div class="field-section">
+                                <div class="fs-title">📍 지역 정보</div>
+                                <div class="form-group">
+                                    <label for="region">상세 지역 *</label>
+                                    <input type="text" class="form-input" id="region" placeholder="예: 부산 사상구 감전동">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">상세 주소</label>
+                                    <input type="text" class="form-input" id="address" placeholder="건물명/층/호실">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- 2-D: 에듀케어 전용 -->
+                        <div id="sectionBranchAdmin" style="display:none;">
+
+                            <!-- 사업자 정보 -->
+                            <div class="field-section">
+                                <div class="fs-title">📄 담당자 정보</div>
+                                <div class="form-group">
+                                    <label for="businessNumber">사업자등록번호</label>
+                                    <input type="text" class="form-input" id="businessNumber" placeholder="예: 000-00-00000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="managerName">담당자명 *</label>
+                                    <input type="text" class="form-input" id="managerName" placeholder="에듀케어 담당자 이름">
+                                </div>
+                            </div>
+
+                            <!-- 지역 -->
+                            <div class="field-section">
+                                <div class="fs-title">📍 지역 정보</div>
+                                <div class="form-group">
+                                    <label for="region_edu">상세 지역 *</label>
+                                    <input type="text" class="form-input" id="region_edu" placeholder="예: 부산 사상구 감전동">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">상세 주소</label>
+                                    <input type="text" class="form-input" id="address" placeholder="건물명/층/호실">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="step-nav">
+                            <button type="button" class="btn btn-prev" onclick="goStep(1)">이전</button>
+                            <button type="button" class="btn btn-next" id="step2Next" onclick="goStep(3)">다음</button>
+                        </div>
+                    </div>
+
+                    <!-- ========== STEP 3: 약관 동의 + 가입 ========== -->
+                    <div class="step-content" id="step3" style="display:none;">
+
+                        <!-- 인포 배너 -->
+                        <div id="roleInfoBanner" class="info-banner" style="margin-bottom:14px;">
+                            <span class="info-icon">ℹ️</span>
+                            <span id="roleInfoText">등록코드를 입력하면 원장님의 승인 후 이용 가능합니다.</span>
+                        </div>
+
+                        <!-- 약관 동의 -->
+                        <div class="terms-box">
+                            <div class="tb-all" onclick="toggleAllTerms()">
+                                <div class="tb-check" id="checkAll"></div>
+                                <span class="tb-label">전체 동의</span>
+                            </div>
+                            <div class="tb-item" onclick="toggleTerm('required')">
+                                <div class="tb-check" id="checkRequired"></div>
+                                <span class="tb-label">개인정보 수집 및 이용 동의</span>
+                                <span class="tb-required">(필수)</span>
+                                <span class="tb-view" onclick="event.stopPropagation();alertPrivacy()">내용보기</span>
+                            </div>
+                            <div class="tb-item" onclick="toggleTerm('marketing')">
+                                <div class="tb-check" id="checkMarketing"></div>
+                                <span class="tb-label">마케팅 정보 수신 동의</span>
+                                <span class="tb-optional">(선택)</span>
+                            </div>
+                            <div class="tb-item" onclick="toggleTerm('age')">
+                                <div class="tb-check" id="checkAge"></div>
+                                <span class="tb-label">만 14세 이상입니다</span>
+                                <span class="tb-required">(필수)</span>
+                            </div>
+                        </div>
+
+                        <div class="step-nav">
+                            <button type="button" class="btn btn-prev" onclick="goStep(2)">이전</button>
+                            <button type="submit" class="btn btn-submit" id="submitBtn" disabled onclick="document.getElementById('registerForm').requestSubmit()">가입하기</button>
+                        </div>
+                    </div>
+
+                    <div style="text-align:center;margin-top:16px;font-size:13px;color:#64748B;">
+                        이미 계정이 있으신가요?
+                        <a href="/pages/login.html" style="color:#4F5EF8;text-decoration:none;font-weight:500;">로그인</a>
+                    </div>
+                </form>
+            </div>
+            <div class="login-footer">&copy; 2026 누비다플랫폼. All rights reserved.</div>
+        </div>
+    </div>
+
+<script src="/common/js/api.js?v=20260611f"></script>
+    <script>
+        let currentStep = 1;
+        let selectedRole = null;
+        let branches = [];
+        let terms = { required: false, marketing: false, age: false };
+
+        // ============================
+        // STEP NAVIGATION
+        // ============================
+        function goStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+            document.getElementById('step' + step).style.display = 'block';
+            currentStep = step;
+
+            // Progress
+            for (let i = 1; i <= 3; i++) {
+                const circle = document.getElementById('sp' + i);
+                const label = document.getElementById('sl' + i);
+                circle.classList.toggle('active', i === step);
+                circle.classList.toggle('done', i < step);
+                label.classList.toggle('active', i === step);
+            }
+            for (let i = 1; i <= 2; i++) {
+                const line = document.getElementById('spLine' + i);
+                line.classList.toggle('done', i < step);
+            }
+
+            // Step 1 → validate role
+            if (step === 2) {
+                updateRoleFields();
+            }
+            if (step === 3) {
+                renderTerms();
+            }
+        }
+
+        // ============================
+        // STEP 1: ROLE SELECTION
+        // ============================
+        function selectRole(role) {
+            selectedRole = role;
+            document.querySelectorAll('.role-card').forEach(c => c.classList.toggle('selected', c.dataset.role === role));
+            document.getElementById('step1Next').disabled = false;
+        }
+
+        // ============================
+        // STEP 2: FIELD CONFIG BY ROLE
+        // ============================
+        function updateRoleFields() {
+            const secStudent = document.getElementById('sectionStudentParent');
+            const secDirector = document.getElementById('sectionDirectorBranch');
+            const secBranchAdmin = document.getElementById('sectionBranchAdmin');
+
+            // 모두 숨김
+            secStudent.style.display = 'none';
+            secDirector.style.display = 'none';
+            secBranchAdmin.style.display = 'none';
+
+            if (selectedRole === 'student' || selectedRole === 'parent') {
+                secStudent.style.display = 'block';
+            } else if (selectedRole === 'director') {
+                secDirector.style.display = 'block';
+            } else if (selectedRole === 'branch_admin') {
+                secBranchAdmin.style.display = 'block';
+            }
+        }
+
+        async function loadBranches() {
+            try {
+                const res = await apiGet('/headquarters/branches/list');
+                branches = (res && res.data) || [];
+            } catch(e) {
+                console.warn('에듀케어 로딩 실패:', e);
+            }
+        }
+
+        // ===== 에듀케어(지사) 검색 드롭다운 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBranches();  // 페이지 로드 시 에듀케어 목록 불러오기
+
+            // 입력 필터링: branchInput에 글자 입력 시 드롭다운 필터
+            const branchInput = document.getElementById('branchInput');
+            if (branchInput) {
+                branchInput.addEventListener('input', function() {
+                    const dropdown = document.getElementById('branchDropdown');
+                    const q = this.value.toLowerCase().trim();
+                    const info = document.getElementById('branchInfo');
+
+                    // 입력값이 바뀌면 선택 초기화
+                    document.getElementById('branchId').value = '';
+                    info.textContent = '';
+
+                    if (!q || !branches.length) {
+                        dropdown.style.display = 'none';
+                        return;
+                    }
+
+                    const filtered = branches.filter(function(b) {
+                        return b.name.toLowerCase().includes(q);
+                    });
+
+                    if (filtered.length === 0) {
+                        dropdown.innerHTML = '<div class="bd-item" style="color:#9CA3AF;cursor:default;">일치하는 에듀케어가 없습니다</div>';
+                        dropdown.style.display = 'block';
+                        return;
+                    }
+
+                    let html = '';
+                    filtered.forEach(function(b) {
+                        html += '<div class="bd-item" onclick="selectBranch(' + b.id + ',\'' + escAttr(b.name) + '\')">'
+                            + escHtml(b.name) + '</div>';
+                    });
+                    dropdown.innerHTML = html;
+                    dropdown.style.display = 'block';
+                });
+
+                // 포커스 잃으면 드롭다운 숨김 (잠시 지연)
+                branchInput.addEventListener('blur', function() {
+                    setTimeout(function() {
+                        document.getElementById('branchDropdown').style.display = 'none';
+                    }, 200);
+                });
+
+                // 포커스 받고 값 있으면 드롭다운 다시 보이기
+                branchInput.addEventListener('focus', function() {
+                    if (this.value.trim() && branches.length) {
+                        this.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+        });
+
+        function selectBranch(id, name) {
+            document.getElementById('branchInput').value = name;
+            document.getElementById('branchId').value = id;
+            document.getElementById('branchDropdown').style.display = 'none';
+            document.getElementById('branchInfo').textContent = '✅ 선택됨: ' + name;
+        }
+
+        // ============================
+        // STEP 3: TERMS & SUBMIT
+        // ============================
+        function toggleAllTerms() {
+            const allChecked = document.getElementById('checkAll').classList.contains('checked');
+            terms.required = !allChecked;
+            terms.marketing = !allChecked;
+            terms.age = !allChecked;
+            renderTerms();
+        }
+
+        function toggleTerm(key) {
+            terms[key] = !terms[key];
+            renderTerms();
+        }
+
+        function renderTerms() {
+            const setCheck = (id, state) => {
+                const el = document.getElementById(id);
+                el.classList.toggle('checked', state);
+                el.textContent = state ? '✓' : '';
+            };
+            setCheck('checkAll', terms.required && terms.marketing && terms.age);
+            setCheck('checkRequired', terms.required);
+            setCheck('checkMarketing', terms.marketing);
+            setCheck('checkAge', terms.age);
+            updateTermsButton();
+        }
+
+        function updateTermsButton() {
+            document.getElementById('submitBtn').disabled = !(terms.required && terms.age);
+        }
+
+        function alertPrivacy() {
+            alert('📋 개인정보 수집 및 이용 동의\n\n' +
+                  '1. 수집 항목: 이름, 아이디, 비밀번호, 이메일, 연락처\n' +
+                  '2. 수집 목적: 회원 관리, 학습 서비스 제공\n' +
+                  '3. 보유 기간: 회원 탈퇴 시까지\n' +
+                  '4. 동의 거부 시 회원가입이 불가능합니다.');
+        }
+
+        // ===== 등록코드 실시간 검증 =====
+        let verifiedCodeData = null;
+        let codeCheckTimeout = null;
+
+        async function checkDirectorCode() {
+            const input = document.getElementById('registration_code');
+            const resultEl = document.getElementById('codeVerifyResult');
+            const iconEl = document.getElementById('codeVerifyIcon');
+            const code = input.value.trim();
+
+            // 초기화
+            verifiedCodeData = null;
+            document.getElementById('verifiedDirectorId').value = '';
+            resultEl.style.display = 'none';
+            iconEl.textContent = '';
+
+            if (!code || code.length < 3) {
+                resultEl.style.display = 'none';
+                return;
+            }
+
+            // 디바운스
+            if (codeCheckTimeout) clearTimeout(codeCheckTimeout);
+            codeCheckTimeout = setTimeout(async () => {
+                iconEl.textContent = '⏳';
+                try {
+                    const res = await apiGet('/auth/verify-code?code=' + encodeURIComponent(code));
+                    const data = res.data;
+                    if (data && data.director_name) {
+                        const branchInfo = data.branch_name ? ' (' + data.branch_name + ')' : '';
+                        resultEl.style.display = 'block';
+                        resultEl.style.background = '#ECFDF5';
+                        resultEl.style.color = '#065F46';
+                        resultEl.innerHTML = '✅ <strong>' + escHtml(data.director_name) + '</strong> 원장님' + escHtml(branchInfo) + ' 확인됨';
+                        iconEl.textContent = '✅';
+                        verifiedCodeData = data;
+                        document.getElementById('verifiedDirectorId').value = data.director_id;
+                    }
+                } catch(e) {
+                    resultEl.style.display = 'block';
+                    resultEl.style.background = '#FEF2F2';
+                    resultEl.style.color = '#991B1B';
+                    resultEl.textContent = '❌ 유효하지 않은 등록코드입니다. 원장님에게 정확한 코드를 확인하세요.';
+                    iconEl.textContent = '❌';
+                }
+            }, 500);
+        }
+
+        function escHtml(s) {
+            if (!s) return '';
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        // ============================
+        // SUBMIT
+        // ============================
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!(terms.required && terms.age)) {
+                alert('필수 약관에 동의해주세요.');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const errEl = document.getElementById('registerError');
+            const successEl = document.getElementById('registerSuccess');
+            errEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            // === 공통 필드 ===
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim() || null;
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            // === 학생/학부모 전용 ===
+            const regCode = document.getElementById('registration_code').value.trim() || null;
+
+            // === 원장/에듀케어 전용 ===
+            const branchName = document.getElementById('branchInput').value.trim() || null;
+            const businessNumber = document.getElementById('businessNumber').value.trim() || null;
+            const directorName = document.getElementById('directorName').value.trim() || null;
+            const managerName = document.getElementById('managerName').value.trim() || null;
+            const region = selectedRole === 'branch_admin'
+                ? document.getElementById('region_edu').value.trim() || null
+                : document.getElementById('region').value.trim() || null;
+            const address = document.getElementById('address').value.trim() || null;
+
+            // ===== 검증 =====
+            if (!name || !username || !email || !password) {
+                showError('모든 필수 항목을 입력해주세요.'); return;
+            }
+            if (password !== passwordConfirm) {
+                showError('비밀번호가 일치하지 않습니다.'); return;
+            }
+            if (password.length < 8) {
+                showError('비밀번호는 8자 이상이어야 합니다.'); return;
+            }
+            if (!selectedRole) {
+                showError('회원 유형을 선택해주세요.'); return;
+            }
+
+            // 역할별 검증
+            if ((selectedRole === 'student' || selectedRole === 'parent') && !regCode) {
+                showError('등록코드를 입력해주세요. 원장님에게 문의하세요.'); return;
+            }
+            if ((selectedRole === 'student' || selectedRole === 'parent') && !verifiedCodeData) {
+                showError('등록코드가 유효한지 확인해주세요. 원장님에게 정확한 코드를 받았는지 확인하세요.');
+                btn.disabled = false;
+                btn.textContent = '가입하기';
+                return;
+            }
+            if (selectedRole === 'director') {
+                const branchId = document.getElementById('branchId').value;
+                if (!branchName) { showError('소속 에듀케어 이름을 입력해주세요.'); return; }
+                if (!branchId) { showError('검색 목록에서 소속 에듀케어를 선택해주세요. 등록된 에듀케어가 없다면 먼저 에듀케어 관리자에게 문의하세요.'); return; }
+                if (!region) { showError('상세 지역을 입력해주세요.'); return; }
+                if (!directorName) { showError('학원명/공부방명을 입력해주세요.'); return; }
+            }
+            if (selectedRole === 'branch_admin') {
+                if (!region) { showError('상세 지역을 입력해주세요.'); return; }
+                if (!managerName) { showError('담당자명을 입력해주세요.'); return; }
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ 가입 중...';
+
+            try {
+                const payload = {
+                    username, password, name, email,
+                    role: selectedRole,
+                    phone,
+                    registration_code: regCode || '',
+                    branch_name: branchName,
+                    branch_id: document.getElementById('branchId').value ? parseInt(document.getElementById('branchId').value) : null,
+                };
+
+                const res = await apiPost('/auth/register', payload);
+                btn.disabled = false;
+
+                const code = res.data?.registration_code || '자동 발급됨';
+                let approveMsg = '';
+                if (selectedRole === 'student' || selectedRole === 'parent') {
+                    approveMsg = '원장님의 승인 후 로그인 가능합니다.';
+                } else if (selectedRole === 'branch_admin' || selectedRole === 'director') {
+                    approveMsg = '본사 관리자의 승인 후 로그인 가능합니다.';
+                } else {
+                    approveMsg = '바로 로그인하여 이용 가능합니다.';
+                }
+
+                // 가입 완료 화면
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('stepProgress').style.display = 'none';
+                successEl.innerHTML = `
+                    <div style="background:#ECFDF5;color:#065F46;padding:24px;border-radius:12px;text-align:center;">
+                        <div style="font-size:32px;margin-bottom:10px">🎉</div>
+                        <div style="font-size:18px;font-weight:700;margin-bottom:6px">회원가입 완료!</div>
+                        <p style="font-size:13px;margin:4px 0;">${res.message || ''}</p>
+                        <p style="font-size:13px;color:#047857;margin-top:8px;font-weight:500;">${approveMsg}</p>
+                        <div style="margin-top:14px;padding:10px 14px;background:white;border-radius:8px;font-size:14px;display:inline-block;">
+                            <strong>내 코드:</strong>
+                            <span style="font-family:monospace;font-size:18px;color:#4F5EF8;font-weight:700;">${code}</span>
+                        </div>
+                        <div style="margin-top:16px;">
+                            <a href="/pages/login.html" style="display:inline-block;padding:12px 28px;background:#4F5EF8;color:white;text-decoration:none;border-radius:8px;font-weight:600;">로그인 하기</a>
+                        </div>
+                    </div>
+                `;
+                successEl.style.display = 'block';
+            } catch(e) {
+                btn.disabled = false;
+                btn.textContent = '가입하기';
+                showError(e.message || '회원가입 중 오류가 발생했습니다.');
+            }
+        });
+
+        function showError(msg) {
+            const el = document.getElementById('registerError');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function escHtml(s) {
+            if (!s) return '';
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+        function escAttr(s) {
+            return (s || '').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

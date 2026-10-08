@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>노래 AI 이용 관리 — 누비다플랫폼</title>
+    <link rel="stylesheet" href="/common/css/common.css">
+    <link rel="stylesheet" href="/common/css/pages-headquarters.css">
+    <style>
+        .ac-wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 80px; }
+        .ac-card { background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:26px; margin-bottom:20px; }
+        .ac-card h2 { margin:0 0 6px; font-size:18px; color:#0F172A; }
+        .ac-card .sub { margin:0 0 20px; font-size:13.5px; color:#64748B; line-height:1.6; }
+        .state-badge { display:inline-flex; align-items:center; gap:7px; padding:7px 14px; border-radius:999px; font-size:13px; font-weight:600; }
+        .state-on { background:#FEF2F2; color:#B91C1C; }
+        .state-off { background:#ECFDF5; color:#047857; }
+        .state-na { background:#F1F5F9; color:#64748B; }
+        .btn-primary { background:#4F5EF8; color:#fff; border:none; border-radius:10px; padding:12px 22px; font-size:14.5px; font-weight:600; cursor:pointer; }
+        .btn-primary:disabled { opacity:.55; cursor:not-allowed; }
+        .btn-ghost { background:#fff; color:#475569; border:1.5px solid #CBD5E1; border-radius:10px; padding:11px 20px; font-size:14px; font-weight:600; cursor:pointer; }
+        .btn-danger { background:#fff; color:#DC2626; border:1.5px solid #FCA5A5; border-radius:10px; padding:11px 20px; font-size:14px; font-weight:600; cursor:pointer; }
+        .btn-sm { padding:7px 14px; font-size:13px; border-radius:8px; }
+        .field { margin-bottom:16px; }
+        .field label { display:block; font-size:13px; font-weight:600; color:#475569; margin-bottom:7px; }
+        .field input, .field select { width:100%; box-sizing:border-box; padding:11px 13px; border:1.5px solid #CBD5E1; border-radius:10px; font-size:14.5px; font-family:inherit; }
+        .field input:focus, .field select:focus { outline:none; border-color:#4F5EF8; }
+        .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .code-display { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:30px; font-weight:800; letter-spacing:6px; color:#4F5EF8; text-align:center; padding:20px; background:#F8FAFC; border:2px dashed #CBD5E1; border-radius:12px; margin:14px 0; }
+        .msg { padding:12px 15px; border-radius:10px; font-size:13.5px; margin-bottom:16px; display:none; }
+        .msg.ok { background:#ECFDF5; color:#047857; border:1px solid #A7F3D0; }
+        .msg.err { background:#FEF2F2; color:#B91C1C; border:1px solid #FECACA; }
+        .msg.warn { background:#FFFBEB; color:#B45309; border:1px solid #FDE68A; }
+        table { width:100%; border-collapse:collapse; font-size:13.5px; }
+        th { text-align:left; padding:11px 10px; background:#F8FAFC; color:#475569; font-weight:600; font-size:12.5px; border-bottom:1px solid #E2E8F0; white-space:nowrap; }
+        td { padding:11px 10px; border-bottom:1px solid #F1F5F9; color:#334155; }
+        tr.inactive td { color:#94A3B8; }
+        .mono { font-family:ui-monospace,Menlo,monospace; font-weight:700; letter-spacing:1.5px; }
+        .pill { display:inline-block; padding:3px 9px; border-radius:999px; font-size:11.5px; font-weight:600; }
+        .pill-live { background:#ECFDF5; color:#047857; }
+        .pill-wait { background:#FFFBEB; color:#B45309; }
+        .pill-end  { background:#F1F5F9; color:#64748B; }
+        .pill-off  { background:#FEF2F2; color:#B91C1C; }
+        .hidden { display:none !important; }
+        .toggle-row { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+        .hint { font-size:12.5px; color:#94A3B8; margin-top:8px; line-height:1.6; }
+        .copy-row { display:flex; gap:8px; align-items:center; }
+        @media (max-width:640px){ .row2{grid-template-columns:1fr;} .code-display{font-size:24px;letter-spacing:4px;} }
+    </style>
+</head>
+<body>
+<div id="nav-container"></div>
+<div class="ac-wrap">
+    <h1 style="font-size:24px;margin:0 0 6px;color:#0F172A;">🎵 노래 AI 이용 관리</h1>
+    <p style="margin:0 0 26px;color:#64748B;font-size:14px;">수업 시간에만 노래 AI를 쓸 수 있도록 이용 코드를 발급하고 관리합니다.</p>
+
+    <div id="msgBox" class="msg"></div>
+
+    <!-- ══ 잠금 상태 ══ -->
+    <div class="ac-card">
+        <h2>이용 잠금 상태</h2>
+        <p class="sub">잠금을 켜면 <b>ai.nubidaplet.kr</b> 접속 시 코드를 요구합니다.<br>수업이 끝나면 코드가 자동 만료되어 접속이 차단됩니다.</p>
+        <div class="toggle-row">
+            <span id="stateBadge" class="state-badge state-na">확인 중…</span>
+            <div id="lockActions"></div>
+        </div>
+        <p class="hint" id="lockMeta"></p>
+    </div>
+
+    <!-- ══ 코드 발급 ══ -->
+    <div class="ac-card">
+        <h2>이용 코드 발급</h2>
+        <p class="sub">수업 시간을 정하면 그 시간에만 쓸 수 있는 코드가 만들어집니다.</p>
+
+        <div class="field">
+            <label for="codeLabel">수업 이름 (선택)</label>
+            <input type="text" id="codeLabel" placeholder="예: 3학년 음악수업" maxlength="100">
+        </div>
+
+        <div class="row2">
+            <div class="field">
+                <label for="startAt">시작 시간</label>
+                <input type="datetime-local" id="startAt">
+            </div>
+            <div class="field">
+                <label for="endAt">종료 시간</label>
+                <input type="datetime-local" id="endAt">
+            </div>
+        </div>
+
+        <div class="row2">
+            <div class="field">
+                <label for="customCode">코드 직접 입력 (선택)</label>
+                <input type="text" id="customCode" placeholder="비우면 자동 생성" maxlength="12"
+                       style="text-transform:uppercase;letter-spacing:2px;font-family:ui-monospace,Menlo,monospace;">
+            </div>
+            <div class="field">
+                <label for="maxUses">허용 인원 (선택)</label>
+                <input type="number" id="maxUses" placeholder="비우면 무제한" min="1">
+                <p class="hint">이 코드로 들어올 수 있는 사람 수입니다. 같은 사람이 다시 들어와도 늘지 않습니다.</p>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="durationSec">노래 길이</label>
+            <select id="durationSec">
+                <option value="">길이 지정 안 함 (자유)</option>
+                <option value="20">20초</option>
+                <option value="30">30초</option>
+                <option value="40">40초</option>
+            </select>
+            <p class="hint">이 코드로 들어온 사람이 만들 노래의 길이가 이 값으로 <b>고정</b>됩니다. "길이 지정 안 함"이면 학생이 직접 선택할 수 있습니다.</p>
+        </div>
+
+        <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px;">
+            <button class="btn-ghost btn-sm" data-quick="1">1시간</button>
+            <button class="btn-ghost btn-sm" data-quick="2">2시간</button>
+            <button class="btn-ghost btn-sm" data-quick="3">3시간</button>
+            <button class="btn-ghost btn-sm" data-quick="6">6시간</button>
+            <button class="btn-ghost btn-sm" data-quick="24">하루</button>
+        </div>
+
+        <button class="btn-primary" id="btnCreate">코드 발급</button>
+
+        <!-- 발급 결과 -->
+        <div id="resultArea" class="hidden" style="margin-top:20px;padding-top:20px;border-top:1px solid #F1F5F9;">
+            <p style="margin:0 0 4px;font-size:13.5px;color:#475569;font-weight:600;">발급된 코드</p>
+            <div class="code-display" id="newCode">------</div>
+            <div class="copy-row" style="justify-content:center;">
+                <button class="btn-ghost btn-sm" id="btnCopy">📋 복사</button>
+                <span id="newCodeMeta" style="font-size:13px;color:#64748B;"></span>
+            </div>
+            <p class="hint" style="text-align:center;">이 코드를 선생님께 전달해 주세요.</p>
+        </div>
+    </div>
+
+    <!-- ══ 코드 목록 ══ -->
+    <div class="ac-card">
+        <h2>발급된 코드 목록</h2>
+        <p class="sub">사용 중인 코드를 중지하면 즉시 접속이 차단됩니다.</p>
+        <div id="codeListArea">불러오는 중…</div>
+    </div>
+
+    <!-- ══ 권한별 설정 ══ -->
+    <div class="ac-card">
+        <h2>권한별 노래 설정</h2>
+        <p class="sub">역할에 따라 노래 길이와 사용 가능한 기능을 다르게 설정합니다.</p>
+        <div id="roleSettingsArea">불러오는 중…</div>
+        <div style="margin-top:16px;">
+            <button class="btn-primary" id="btnSaveRoles">설정 저장</button>
+        </div>
+    </div>
+</div>
+
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/nav.js"></script>
+<script>
+(function () {
+    function el(id) { return document.getElementById(id); }
+    function showMsg(text, kind) {
+        var box = el('msgBox');
+        box.textContent = text;
+        box.className = 'msg ' + (kind || 'ok');
+        box.style.display = 'block';
+        setTimeout(function(){ box.style.display = 'none'; }, 5000);
+    }
+    function hideMsg(){ el('msgBox').style.display = 'none'; }
+
+    var ROLE_LABELS = {
+        student: '학생', director: '원장', branch_admin: '지사',
+        guest: '체험/비회원', super_admin: '최고관리자', admin: '관리자'
+    };
+
+    // ═══ 잠금 상태 ═══
+    var lockEnabled = false;
+
+    async function loadLock() {
+        try {
+            var res = await apiGet('/music-ai/lock');
+            var d = res.data || {};
+            lockEnabled = !!d.lock_enabled;
+            applyLockUI(lockEnabled, d.updated_by);
+            renderCodes(d.codes || []);
+        } catch (e) {
+            el('stateBadge').className = 'state-badge state-na';
+            el('stateBadge').textContent = '상태를 불러오지 못했습니다';
+            el('codeListArea').textContent = '코드 목록을 불러오지 못했습니다: ' + (e.message || '');
+        }
+    }
+
+    function applyLockUI(on, by) {
+        var badge = el('stateBadge');
+        var actions = el('lockActions');
+        if (on) {
+            badge.className = 'state-badge state-on';
+            badge.textContent = '🔒 잠금 켜짐 — 코드 필요';
+            actions.innerHTML = '<button class="btn-ghost" id="btnLockToggle">잠금 해제</button>';
+        } else {
+            badge.className = 'state-badge state-off';
+            badge.textContent = '🔓 잠금 꺼짐 — 누구나 이용';
+            actions.innerHTML = '<button class="btn-primary" id="btnLockToggle">잠금 켜기</button>';
+        }
+        el('btnLockToggle').addEventListener('click', toggleLock);
+        el('lockMeta').textContent = by ? ('마지막 변경: ' + by) : '';
+    }
+
+    async function toggleLock() {
+        var next = !lockEnabled;
+        if (next && !confirm('잠금을 켜시겠습니까?\n코드가 없는 사람은 ai.nubidaplet.kr 에 접속할 수 없게 됩니다.')) return;
+        var btn = el('btnLockToggle');
+        btn.disabled = true; btn.textContent = '처리 중…';
+        try {
+            await apiPost('/music-ai/lock', { lock_enabled: next });
+            showMsg(next ? '잠금을 켰습니다.' : '잠금을 해제했습니다.', next ? 'warn' : 'ok');
+            await loadLock();
+        } catch (e) {
+            showMsg('변경하지 못했습니다: ' + (e.message || ''), 'err');
+            btn.disabled = false; btn.textContent = next ? '잠금 켜기' : '잠금 해제';
+        }
+    }
+
+    // ═══ 코드 목록 ═══
+    function fmtRange(c) {
+        return (c.starts_at || '') + ' ~ ' + (c.ends_at || '');
+    }
+    function codeStatus(c) {
+        if (!c.is_active) return ['중지됨', 'pill-off'];
+        var now = new Date();
+        var s = new Date((c.starts_at || '').replace(' ', 'T'));
+        var e = new Date((c.ends_at || '').replace(' ', 'T'));
+        if (now < s) return ['대기중', 'pill-wait'];
+        if (now > e) return ['만료됨', 'pill-end'];
+        return ['사용중', 'pill-live'];
+    }
+
+    function renderCodes(codes) {
+        var area = el('codeListArea');
+        if (!codes.length) {
+            area.innerHTML = '<p style="color:#94A3B8;font-size:13.5px;margin:0;">아직 발급된 코드가 없습니다.</p>';
+            return;
+        }
+        var html = '<div style="overflow-x:auto;"><table><thead><tr>' +
+            '<th>코드</th><th>수업</th><th>사용 기간</th><th>노래</th><th>인원</th><th>상태</th><th></th>' +
+            '</tr></thead><tbody>';
+        codes.forEach(function (c) {
+            var st = codeStatus(c);
+            var uses = (c.used_count || 0) + (c.max_uses ? ' / ' + c.max_uses + '명' : '명');
+            var dur = c.duration_sec ? c.duration_sec + '초' : '자유';
+            html += '<tr class="' + (c.is_active ? '' : 'inactive') + '">' +
+                '<td class="mono">' + (c.code || '') + '</td>' +
+                '<td>' + (c.label || '-') + '</td>' +
+                '<td style="font-size:12.5px;white-space:nowrap;">' + fmtRange(c) + '</td>' +
+                '<td>' + dur + '</td>' +
+                '<td>' + uses + '</td>' +
+                '<td><span class="pill ' + st[1] + '">' + st[0] + '</span></td>' +
+                '<td>' + (c.is_active
+                    ? '<button class="btn-danger btn-sm" data-stop="' + c.id + '">중지</button>'
+                    : '') + '</td>' +
+                '</tr>';
+        });
+        html += '</tbody></table></div>';
+        area.innerHTML = html;
+
+        area.querySelectorAll('[data-stop]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                var id = b.getAttribute('data-stop');
+                if (!confirm('이 코드를 중지하시겠습니까? 즉시 사용할 수 없게 됩니다.')) return;
+                b.disabled = true; b.textContent = '중지 중…';
+                apiPost('/music-ai/codes/' + id + '/deactivate', {})
+                    .then(function () { showMsg('코드를 중지했습니다.', 'warn'); loadLock(); })
+                    .catch(function (e) {
+                        showMsg('중지하지 못했습니다: ' + (e.message || ''), 'err');
+                        b.disabled = false; b.textContent = '중지';
+                    });
+            });
+        });
+    }
+
+    // ═══ 코드 생성 ═══
+    function pad(n){ return n < 10 ? '0' + n : '' + n; }
+    function toLocalInput(d) {
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+               'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+    function initTimes() {
+        var now = new Date();
+        var end = new Date(now.getTime() + 60 * 60 * 1000);
+        el('startAt').value = toLocalInput(now);
+        el('endAt').value = toLocalInput(end);
+    }
+    initTimes();
+
+    document.querySelectorAll('[data-quick]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            var hours = parseFloat(b.getAttribute('data-quick'));
+            var now = new Date();
+            var end = new Date(now.getTime() + hours * 60 * 60 * 1000);
+            el('startAt').value = toLocalInput(now);
+            el('endAt').value = toLocalInput(end);
+        });
+    });
+
+    el('btnCreate').addEventListener('click', async function () {
+        var s = el('startAt').value, e = el('endAt').value;
+        if (!s || !e) { showMsg('시작/종료 시간을 입력해 주세요.', 'err'); return; }
+        if (new Date(s) >= new Date(e)) { showMsg('종료 시간이 시작 시간보다 늦어야 합니다.', 'err'); return; }
+
+        var btn = el('btnCreate');
+        btn.disabled = true; btn.textContent = '발급 중…';
+        try {
+            var res = await apiPost('/music-ai/codes', {
+                starts_at: s.replace('T', ' ') + ':00',
+                ends_at: e.replace('T', ' ') + ':00',
+                label: el('codeLabel').value.trim(),
+                code: el('customCode').value.trim().toUpperCase(),
+                max_uses: el('maxUses').value || null,
+                duration_sec: el('durationSec').value || null
+            });
+            var code = (res.data || {}).code || '';
+            el('newCode').textContent = code;
+            el('newCodeMeta').textContent = s.replace('T', ' ') + ' ~ ' + e.replace('T', ' ');
+            el('resultArea').classList.remove('hidden');
+            showMsg('코드가 발급되었습니다. 선생님께 전달해 주세요.', 'ok');
+            loadLock();
+        } catch (err) {
+            showMsg('발급하지 못했습니다: ' + (err.message || ''), 'err');
+        } finally {
+            btn.disabled = false; btn.textContent = '코드 발급';
+        }
+    });
+
+    el('btnCopy').addEventListener('click', function () {
+        var text = el('newCode').textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+                showMsg('코드를 복사했습니다: ' + text, 'ok');
+            }).catch(function () { showMsg('복사 실패 — 직접 선택해 주세요.', 'warn'); });
+        } else {
+            showMsg('이 브라우저는 자동 복사를 지원하지 않습니다.', 'warn');
+        }
+    });
+
+    // ═══ 권한별 설정 ═══
+    function renderRoles(roles) {
+        var area = el('roleSettingsArea');
+        if (!roles || !roles.length) {
+            area.innerHTML = '<p style="color:#94A3B8;font-size:13.5px;margin:0;">설정을 불러오지 못했습니다.</p>';
+            return;
+        }
+        var html = '<div style="overflow-x:auto;"><table><thead><tr>' +
+            '<th>역할</th><th>곡 길이</th><th>생성 단계</th><th>하루 제한</th><th>AI채팅</th><th>게시판</th>' +
+            '</tr></thead><tbody>';
+        roles.forEach(function (r) {
+            var lbl = ROLE_LABELS[r.role] || r.role;
+            html += '<tr data-role="' + r.role + '">' +
+                '<td><b>' + lbl + '</b></td>' +
+                '<td><select data-f="duration_sec">' +
+                    [20,30,40,60,90].map(function(v){
+                        return '<option value="' + v + '"' + (r.duration_sec == v ? ' selected' : '') + '>' + v + '초</option>';
+                    }).join('') +
+                '</select></td>' +
+                '<td><select data-f="inference_steps">' +
+                    [6,8,10,12].map(function(v){
+                        return '<option value="' + v + '"' + (r.inference_steps == v ? ' selected' : '') + '>' + v + '</option>';
+                    }).join('') +
+                '</select></td>' +
+                '<td><input type="number" data-f="max_songs_per_day" min="1" style="width:80px;" ' +
+                    'value="' + (r.max_songs_per_day || '') + '" placeholder="무제한"></td>' +
+                '<td><input type="checkbox" data-f="allow_ai_chat"' + (r.allow_ai_chat ? ' checked' : '') + '></td>' +
+                '<td><input type="checkbox" data-f="allow_board"' + (r.allow_board ? ' checked' : '') + '></td>' +
+                '</tr>';
+        });
+        html += '</tbody></table></div>';
+        area.innerHTML = html;
+    }
+
+    el('btnSaveRoles').addEventListener('click', async function () {
+        var rows = document.querySelectorAll('#roleSettingsArea tr[data-role]');
+        var roles = [];
+        rows.forEach(function (tr) {
+            var o = { role: tr.getAttribute('data-role') };
+            tr.querySelectorAll('[data-f]').forEach(function (f) {
+                var k = f.getAttribute('data-f');
+                if (f.type === 'checkbox') o[k] = f.checked ? 1 : 0;
+                else o[k] = f.value;
+            });
+            roles.push(o);
+        });
+        var btn = el('btnSaveRoles');
+        btn.disabled = true; btn.textContent = '저장 중…';
+        try {
+            var res = await apiPost('/music-ai/role-settings', { roles: roles });
+            renderRoles((res.data || {}).roles || []);
+            showMsg('권한별 설정을 저장했습니다.', 'ok');
+        } catch (e) {
+            showMsg('저장하지 못했습니다: ' + (e.message || ''), 'err');
+        } finally {
+            btn.disabled = false; btn.textContent = '설정 저장';
+        }
+    });
+
+    async function loadRoles() {
+        try {
+            var res = await apiGet('/music-ai/role-settings');
+            renderRoles((res.data || {}).roles || []);
+        } catch (e) {
+            el('roleSettingsArea').textContent = '설정을 불러오지 못했습니다: ' + (e.message || '');
+        }
+    }
+
+    // ═══ 시작 ═══
+    loadLock();
+    loadRoles();
+})();
+</script>
+</body>
+</html>

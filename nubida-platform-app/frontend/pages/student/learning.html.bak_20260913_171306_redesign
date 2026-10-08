@@ -1,0 +1,1990 @@
+     <!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>학습 콘텐츠 — 누비다플랫폼</title>
+    <link rel="stylesheet" href="/common/css/nubida-bundle.css?v=20260804b">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
+    <!-- ===== 학습 콘텐츠 전용 CSS (정돈 박스) ===== -->
+    <style>
+    /* ===== 코드 하이라이팅 토큰 (VS Code 스타일 — lecture-editor와 동일) ===== */
+    .tok-keyword { color:#C678DD; font-weight:600 }
+    .tok-string  { color:#98C379 }
+    .tok-number  { color:#D19A66 }
+    .tok-comment { color:#7F848E; font-style:italic }
+    .tok-type    { color:#E5C07B }
+    .tok-builtin { color:#56B6C2 }
+
+    /* ===== 학습 헤더 (컴팩트 카드) ===== */
+    .learning-header {
+        background: #FFFFFF; border-radius: 14px;
+        border: 1px solid #E5E7EB; padding: 14px 18px;
+        margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+
+
+    .learning-header .course-title {
+        font-size: 17px; font-weight: 700; margin: 0 0 10px;
+        color: #111827; line-height: 1.3; letter-spacing: -0.01em;
+    }
+    .course-progress-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .course-progress-bar { flex: 1; height: 5px; background: #E5E7EB; border-radius: 50px; overflow: hidden; }
+    .course-progress-fill { height: 100%; background: var(--accent); border-radius: 50px; transition: width 0.5s ease; }
+    .course-progress-text { font-size: 11px; font-weight: 600; color: #9CA3AF; min-width: 28px; text-align: right; }
+    .learning-stats {
+        display: flex; gap: 0; padding: 8px 0 0;
+        border-top: 1px solid #F3F4F6;
+    }
+    .learning-stat {
+        flex: 1; text-align: center;
+        border-right: 1px solid #F3F4F6; padding: 2px 0;
+    }
+    .learning-stat:last-child { border-right: none; }
+    .learning-stat .stat-num { display: block; font-size: 15px; font-weight: 700; color: #111827; line-height: 1.3; }
+    .learning-stat .stat-num.accent { color: var(--accent); }
+    .learning-stat .stat-num.success { color: #10B981; }
+    .learning-stat span:last-child { font-size: 10px; color: #9CA3AF; display: block; margin-top: 1px; }
+
+    /* ===== 2단 레이아웃 (사이드바 동적폭) ===== */
+    .learning-layout { display: grid; grid-template-columns: auto 1fr; gap: 16px; min-height: 50vh; }
+    @media (max-width: 768px) { .learning-layout { grid-template-columns: 1fr; } }
+
+    /* 공용 번들(.material-sidebar width:320px)보다 좁은 사이드바로 뷰어 폭 확보 */
+    .material-sidebar { width: 260px !important; min-width: 260px !important; }
+
+    /* ===== 사이드바 (고정폭 박스) ===== */
+    .material-sidebar {
+        background: #FFFFFF; border-radius: 14px;
+        border: 1px solid #E5E7EB; overflow: hidden;
+        display: flex; flex-direction: column;
+        max-height: calc(100vh - 160px);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .material-sidebar-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 16px; border-bottom: 1px solid #E5E7EB;
+    }
+    .material-sidebar-header h3 { font-size: 13px; font-weight: 600; color: #111827; margin: 0; }
+    .material-count { font-size: 11px; color: #9CA3AF; background: #F3F4F6; padding: 2px 8px; border-radius: 50px; }
+    .material-list { flex: 1; overflow-y: auto; padding: 6px; }
+
+    /* ===== 자료 아이템 (고정 자리) ===== */
+    .material-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 10px; border-radius: 10px;
+        cursor: pointer; transition: all 0.12s ease;
+        margin-bottom: 1px; line-height: 1.5;
+    }
+    .material-item:hover { background: #F9FAFB; }
+    .material-item.active { background: #EEF2FF; box-shadow: inset 0 0 0 1px #C7D2FE; }
+    .material-item.coding-launch {
+        background: linear-gradient(135deg, #EEF2FF, transparent);
+        border: 1px dashed #C7D2FE; margin-bottom: 8px; border-radius: 10px;
+    }
+    .material-item.coding-launch:hover { background: linear-gradient(135deg, #E0E7FF, transparent); }
+    .material-divider { height: 1px; background: #E5E7EB; margin: 8px 12px; }
+    .material-icon {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; flex-shrink: 0; background: #F3F4F6;
+    }
+    .material-info { flex: 1; min-width: 0; }
+    .material-title {
+        font-size: 13px; font-weight: 500; color: #111827;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;
+    }
+    .material-type-label { font-size: 10px; color: #9CA3AF; margin-top: 1px; line-height: 1.3; }
+    .material-status { width: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .material-status .check-icon { color: #10B981; font-weight: 700; font-size: 12px; }
+    .material-status .pending-dot { width: 5px; height: 5px; border-radius: 50%; background: #9CA3AF; opacity: 0.35; }
+    .material-status .coding-icon { color: var(--accent); font-size: 13px; }
+
+    /* ===== 진행률 링 ===== */
+    .progress-ring .bg-circle { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+    .progress-ring .fg-circle {
+        fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round;
+        transform: rotate(-90deg); transform-origin: 10px 10px;
+        transition: stroke-dashoffset 0.3s ease;
+    }
+
+    /* ===== 챕터 ===== */
+    .chapter-group { margin-bottom: 8px; }
+    .chapter-header {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 16px; font-size: 11px; font-weight: 600;
+        color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.05em;
+        border-bottom: 1px solid #E5E7EB; margin: 12px 0 4px 0;
+    }
+    .chapter-header:first-child { margin-top: 0; }
+    .chapter-header .chapter-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.4; }
+
+    /* ===== 자료 뱃지 ===== */
+    .material-item .material-badge {
+        font-size: 8px; padding: 1px 5px; border-radius: 50px;
+        background: #F3F4F6; color: #9CA3AF; font-weight: 500; margin-left: 2px;
+    }
+    .material-item .material-badge.type-ppt { background: #FEF3C7; color: #B45309; }
+    .material-item .material-badge.type-pdf { background: #FEE2E2; color: #B91C1C; }
+    .material-item .material-badge.type-video { background: #DBEAFE; color: #1E40AF; }
+    .material-item .material-badge.type-embed { background: #F3E8FF; color: #6B21A8; }
+
+    /* ===== 자료 컨텐츠 영역 (오른쪽 뷰어) ===== */
+    .material-content-area {
+        background: #FFFFFF; border-radius: 14px;
+        border: 1px solid #E5E7EB; overflow: hidden;
+        display: flex; flex-direction: column;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        min-width: 0;
+    }
+    .material-viewer { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+    .material-empty {
+        padding: 64px 24px; text-align: center; color: #9CA3AF;
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+    }
+    .material-empty .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.25; }
+    .material-empty h3 { font-size: 15px; font-weight: 600; color: #6B7280; margin: 0 0 4px 0; }
+    .material-empty p { font-size: 13px; color: #9CA3AF; max-width: 280px; margin: 0; }
+
+    /* 뷰어 헤더 (고정) */
+    .material-viewer-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid #E5E7EB;
+        display: flex; align-items: center; justify-content: space-between;
+        background: #FFFFFF;
+    }
+    .material-viewer-title { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; flex: 1; }
+    .material-viewer-title h2 {
+        font-size: 13px; font-weight: 600; color: #111827;
+        margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .material-viewer-type {
+        font-size: 10px; color: #9CA3AF; background: #F3F4F6;
+        padding: 2px 7px; border-radius: 50px; flex-shrink: 0;
+    }
+    /* 뷰어 바디 (유동, flex) */
+    .material-viewer-body {
+        flex: 1; display: flex; flex-direction: column; min-height: 0;
+        min-width: 0; max-width: 100%;
+        overflow-x: hidden; overflow-y: auto;
+    }
+    /* 콘텐츠 블록 뷰어 — 코드는 페이지 폭에 맞게 줄바꿈 (가로 스크롤 없이 전체 표시) */
+    .material-viewer-body .content-blocks-viewer .block-code pre,
+    #materialViewerBody .content-blocks-viewer .block-code pre {
+        width: 100%; max-width: 100%; box-sizing: border-box; white-space: pre-wrap; word-break: break-word; overflow-wrap: break-word;
+    }
+
+    /* 뷰어 내부 컨텐츠 — 패딩 없이 꽉 채움 */
+    .material-viewer-body .slide-viewer,
+    .material-viewer-body .image-viewer,
+    .material-viewer-body .ppt-viewer,
+    .material-viewer-body .embed-viewer,
+    .material-viewer-body .video-viewer {
+        flex: 1; display: flex; flex-direction: column;
+        margin: 0; max-width: 100%; border-radius: 0; border: none;
+        min-width: 0;
+    }
+    .material-viewer-body .slide-viewer .slide-display {
+        flex: 1; aspect-ratio: auto; min-height: 300px; max-height: none;
+    }
+    .material-viewer-body .image-viewer {
+        padding: 16px; background: #F9FAFB;
+        align-items: center; justify-content: center;
+        min-height: 300px; flex: 1;
+    }
+    .material-viewer-body .image-viewer img {
+        max-height: none; max-width: 100%; object-fit: contain; border-radius: 8px;
+    }
+    .material-viewer-body .video-player { padding: 16px; max-width: none; margin: 0; }
+    .material-viewer-body .material-description {
+        margin: 0 auto; padding: 16px 20px 0; max-width: none;
+    }
+    .material-viewer-body .ppt-embed-wrapper,
+    .material-viewer-body .embed-iframe-wrapper {
+        border-radius: 0; border: none; flex: 1;
+    }
+
+    /* 뷰어 푸터 (고정) */
+    .material-viewer-footer {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 16px; border-top: 1px solid #E5E7EB;
+        background: #FFFFFF;
+    }
+    .completion-status { font-size: 13px; color: #9CA3AF; display: flex; align-items: center; gap: 4px; }
+    .completion-status span { font-size: 10px; }
+    .completion-status.completed { color: #10B981; font-weight: 500; }
+
+    /* ===== 뷰어 타입별 ===== */
+    .document-viewer { width: 100%; }
+    .ppt-viewer { width: 100%; max-width: 100%; margin: 0; }
+    .ppt-embed-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background: #F9FAFB; border: 1px solid #E5E7EB; }
+    .ppt-embed-wrapper iframe, .ppt-embed-wrapper embed, .ppt-embed-wrapper object { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    .video-viewer { width: 100%; }
+    .video-viewer .video-embed-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid #E5E7EB; background: #000; }
+    .video-viewer .video-embed-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    .video-player { width: 100%; max-width: 800px; margin: 0 auto; }
+    .video-player video { width: 100%; border-radius: 12px; background: #000; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+    .video-player-tag { width: 100%; border-radius: 12px; }
+    .video-meta { text-align: left; margin-bottom: 12px; font-size: 12px; color: #9CA3AF; }
+    .image-viewer { display: flex; align-items: center; justify-content: center; padding: 20px; background: #F9FAFB; border-radius: 12px; }
+    .image-viewer img { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+    .link-preview-card { max-width: 600px; margin: 0 auto; background: #F9FAFB; border-radius: 12px; border: 1px solid #E5E7EB; padding: 20px; }
+    .link-header { display: flex; align-items: flex-start; gap: 12px; }
+    .link-icon { font-size: 24px; flex-shrink: 0; }
+    .link-info { flex: 1; min-width: 0; }
+    .link-title { font-size: 13px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+    .link-url { font-size: 12px; color: var(--accent); word-break: break-all; margin-bottom: 4px; }
+    .link-description { font-size: 12px; color: #9CA3AF; margin-top: 4px; }
+    .embed-viewer { width: 100%; max-width: 100%; margin: 0; }
+    .embed-iframe-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid #E5E7EB; background: #fff; }
+    .embed-iframe-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    .embed-viewer.full-height .embed-iframe-wrapper { padding-bottom: 75vh; }
+    .link-iframe-wrapper { padding-bottom: 75vh !important; }
+    .material-description { width: 100%; max-width: 800px; margin: 0 auto 20px auto; font-size: 13px; color: #6B7280; line-height: 1.7; text-align: left; padding: 0 16px; }
+    .material-description p { margin-bottom: 8px; }
+
+    /* ===== 슬라이드 뷰어 (다크) ===== */
+    .slide-viewer { width: 100%; max-width: 100%; margin: 0; background: #1a1a2e; border-radius: 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); position: relative; }
+    .slide-viewer .slide-display { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #16213e; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .slide-viewer .slide-display img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; transition: opacity 0.25s ease; }
+    .slide-viewer .slide-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 50%; background: rgba(156,163,175,0.55); border: 1px solid rgba(156,163,175,0.3); color: #374151; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease; z-index: 10; backdrop-filter: blur(4px); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .slide-viewer .slide-nav:hover { background: rgba(156,163,175,0.75); border-color: rgba(156,163,175,0.5); }
+    .slide-viewer .slide-nav.prev { left: 10px; }
+    .slide-viewer .slide-nav.next { right: 10px; }
+    .slide-viewer .slide-nav:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+    .slide-viewer .slide-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: rgba(15,52,96,0.9); color: #fff; border-top: 1px solid rgba(255,255,255,0.06); }
+    .slide-viewer .slide-counter { font-size: 12px; font-weight: 500; opacity: 0.7; }
+    .slide-viewer .slide-fullscreen { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 3px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; transition: all 0.15s ease; }
+    .slide-viewer .slide-fullscreen:hover { background: rgba(255,255,255,0.14); }
+    .slide-viewer .slide-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.35); font-size: 13px; background: #16213e; }
+    .slide-viewer.fullscreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 10000; border: none; background: #0a0a1a; }
+    .slide-viewer.fullscreen .slide-display { aspect-ratio: auto; flex: 1; height: calc(100vh - 46px); }
+    .slide-viewer.fullscreen .slide-footer { background: rgba(0,0,0,0.6); }
+
+    /* ===== 완료 버튼 ===== */
+    .btn-complete { min-width: 100px; font-size: 12px; padding: 6px 16px; border-radius: 8px; transition: all 0.15s ease; }
+    .btn-complete.completed { background: #10B981; color: #fff; border-color: #10B981; opacity: 0.65; cursor: default; }
+    .btn-complete.completed:hover { opacity: 0.65; transform: none; }
+
+    /* ===== 반응형 ===== */
+    @media (max-width: 768px) {
+        .material-description { padding: 0 8px; }
+        .material-viewer-body .slide-viewer .slide-display { max-height: 40vh; min-height: 200px; }
+        .learning-stats { gap: 12px; }
+        .material-sidebar { max-height: 35vh; }
+        .material-viewer-body .image-viewer { min-height: 200px; padding: 8px; }
+        .learning-header .course-title { font-size: 18px; }
+    }
+    </style>
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">🏠 학습</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon">🏠</span><span class="nav-label">내 대시보드</span></a>
+                <a class="nav-item active" href="courses.html"><span class="icon">📖</span><span class="nav-label">수강 강좌</span></a>
+                <a class="nav-item" href="ai-assistant.html"><span class="icon">🤖</span><span class="nav-label">누비다 AI</span></a>
+                <a class="nav-item" href="ml-studio.html"><span class="icon">🧠</span><span class="nav-label">누비다머신</span></a>
+                <div class="nav-section">📁 자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section">🔔 알림</div>
+                <a class="nav-item" href="notifications.html"><span class="icon">🔔</span><span class="nav-label">알림</span></a>
+                <a class="nav-item" href="inquiries.html"><span class="icon">❓</span><span class="nav-label">Q&A</span></a>
+                <div class="nav-section">⚙️ 설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">학생</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <!-- Sidebar -->
+        
+    
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Top Navigation -->
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>학습 콘텐츠</h1></div>
+                <div class="top-nav-right">
+                    <button class="btn btn-ghost btn-sm" onclick="window.location.href='courses.html'" id="backToCoursesBtn">
+                        ← 강좌 목록
+                    </button>
+                </div>
+            </div>
+
+            <!-- Learning Header -->
+            <div class="learning-header" id="learningHeader">
+
+                <!-- Course Title -->
+                <h1 class="course-title" id="courseTitle">강좌 로딩 중...</h1>
+
+                <!-- Progress Bar -->
+                <div class="course-progress-wrapper">
+                    <div class="course-progress-bar">
+                        <div class="course-progress-fill" id="courseProgressFill" style="width:0%"></div>
+                    </div>
+                    <span class="course-progress-text" id="courseProgressText">0%</span>
+                </div>
+
+                <!-- Stats -->
+                <div class="learning-stats">
+                    <div class="learning-stat">
+                        <span class="stat-num accent" id="statTotal">-</span>
+                        <span>총 자료수</span>
+                    </div>
+                    <div class="learning-stat">
+                        <span class="stat-num success" id="statCompleted">-</span>
+                        <span>완료</span>
+                    </div>
+                    <div class="learning-stat">
+                        <span class="stat-num" id="statInProgress" style="color:var(--warning)">-</span>
+                        <span>진행중</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Two-Column Layout -->
+            <div class="learning-layout">
+                <!-- Left: Material Sidebar -->
+                <aside class="material-sidebar" id="materialSidebar">
+                    <div class="material-sidebar-header">
+                        <h3>📚 자료 목록</h3>
+                        <span class="material-count" id="materialCount">0개</span>
+                    </div>
+                    <div class="material-list" id="materialList">
+                        <!-- Material items rendered by JS -->
+                        <div class="material-loading">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">자료를 불러오는 중...</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Right: Content Viewer -->
+                <div class="material-content-area" id="materialContentArea">
+                    <div class="material-viewer" id="materialViewer">
+                        <!-- Empty state shown by default -->
+                        <div class="material-empty" id="materialEmpty">
+                            <div class="empty-icon">📖</div>
+                            <h3>자료를 선택해주세요</h3>
+                            <p>왼쪽 목록에서 학습할 자료를 선택하면 여기에 내용이 표시됩니다.</p>
+                        </div>
+
+                        <!-- Viewer content injected here by JS -->
+                        <div id="materialViewerBody" style="display:none;">
+                            <div class="material-viewer-header" id="viewerHeader">
+                                <div class="material-viewer-title">
+                                    <h2 id="viewerTitle">자료 제목</h2>
+                                    <span class="material-viewer-type" id="viewerType">문서</span>
+                                </div>
+                            </div>
+                            <div class="material-viewer-body" id="viewerBody">
+                                <!-- Type-specific content rendered here -->
+                            </div>
+                            <div class="material-viewer-footer" id="viewerFooter">
+                                <div class="completion-status" id="completionStatus">
+                                    <span>●</span> 미완료
+                                </div>
+                                <button class="btn btn-primary btn-complete" id="completeBtn" onclick="markComplete()">
+                                    ✓ 학습 완료
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/nubida-bundle.js?v=20260804b"></script>
+    <script>
+    /**
+     * 누비다플랫폼 — 학습 콘텐츠 페이지 v2
+     * - 강좌별 자료 목록 (챕터형 그룹핑)
+     * - 인라인 자료 뷰어 (문서/PPT/영상/이미지/링크/임베드)
+     * - PPT 뷰어 (Google Slides, PDF iframe, Google Docs Viewer)
+     * - 비디오 플레이어 (iframe embed + HTML5 <video>)
+     * - 자료 다운로드
+     * - 학습 완료 / 진행률 추적
+     */
+
+    // ===== State =====
+    let currentCourseId = null;
+    let materials = [];
+    let currentMaterial = null;
+    let currentStats = null;
+    let chapters = [];  // [{label, materials: [...]}]
+    let contentBlocks = null;   // 강좌 콘텐츠 블록 (코드/이미지/영상 등)
+    let blockProgressMap = null; // 블록별 진행 상태 {index: {is_completed, progress_percent}}
+    let currentBlockIndex = null; // 현재 선택된 블록 인덱스
+    let allItems = [];          // 통합 자료 목록: {kind:'material'|'block', id, sort, material|block}
+    let currentItemId = null;   // 현재 선택된 통합 항목 id
+
+    // ===== Material type config =====
+    const TYPE_CONFIG = {
+        document: { icon: '📄', label: '문서', bgClass: 'type-document' },
+        video:    { icon: '🎬', label: '영상',  bgClass: 'type-video' },
+        image:    { icon: '🖼️', label: '이미지', bgClass: 'type-image' },
+        link:     { icon: '🔗', label: '링크',  bgClass: 'type-link' },
+        embed:    { icon: '🔄', label: '임베드', bgClass: 'type-embed' },
+    };
+
+    // 콘텐츠 블록 타입 설정 (자료 목록 + 뷰어 라벨)
+    const BLOCK_VIEW_CONFIG = {
+        code:    { icon: '💻', label: '코드' },
+        image:   { icon: '🖼️', label: '이미지' },
+        video:   { icon: '🎬', label: '영상' },
+        text:    { icon: '📝', label: '텍스트' },
+        heading: { icon: '📌', label: '제목' },
+        embed:   { icon: '🔗', label: '임베드' },
+        divider: { icon: '➖', label: '구분선' },
+    };
+
+    const TYPE_ICON_MAP = {
+        document: '📄',
+        video:    '🎬',
+        image:    '🖼️',
+        link:     '🔗',
+        embed:    '🔄'
+    };
+
+    const TYPE_LABEL_MAP = {
+        document: '문서',
+        video:    '영상',
+        image:    '이미지',
+        link:     '링크',
+        embed:    '임베드'
+    };
+
+    // ===== Initialization =====
+    document.addEventListener('DOMContentLoaded', async function() {
+        requireAuth();
+        renderSidebarUser();
+
+        // Get course_id from URL
+        const params = new URLSearchParams(window.location.search);
+        courseId = params.get('course_id');
+
+        if (!courseId) {
+            showCourseSelectUI();
+            return;
+        }
+
+        currentCourseId = courseId;
+        await loadCourseData();
+    });
+
+    // ===== Course Selection UI (when no course_id) =====
+    function showCourseSelectUI() {
+        document.getElementById('courseTitle').textContent = '강좌를 선택해주세요';
+        document.getElementById('materialList').innerHTML = `
+            <div class="material-empty">
+                <div class="empty-icon">📖</div>
+                <p>URL에 강좌 ID가 필요합니다.<br>수강 강좌 페이지에서 강좌를 선택해주세요.</p>
+                <button class="btn btn-primary btn-sm mt-16" onclick="window.location.href='courses.html'">강좌 목록으로 이동</button>
+            </div>
+        `;
+        document.getElementById('materialEmpty').style.display = 'block';
+        document.getElementById('materialViewerBody').style.display = 'none';
+    }
+
+    // ===== Load Course Data =====
+    async function loadCourseData() {
+        try {
+            // Load materials, stats, and content blocks in parallel
+            const [materialsRes, statsRes, blocksRes] = await Promise.all([
+                apiGet(`/courses/${currentCourseId}/materials`),
+                apiGet(`/courses/${currentCourseId}/progress/stats`),
+                apiGet(`/headquarters/courses/${currentCourseId}/blocks`).catch((e) => {
+                    // 블록 로드 실패를 조용히 삼키지 않고 콘솔에 기록 (디버깅 가능하게)
+                    console.error('[learning] blocks 로드 실패:', e && e.message ? e.message : e);
+                    return null;
+                })
+            ]);
+
+            materials = materialsRes.data || materialsRes || [];
+            currentStats = statsRes.data || statsRes || {};
+            const blocksData = blocksRes?.data || blocksRes || null;
+            contentBlocks = blocksData?.content_blocks || null;
+            blockProgressMap = blocksData?.block_progress || null;
+
+            // materials + content_blocks 통합 목록 구성 (총 자료수/자료 목록에 전 유형 포함)
+            buildAllItems();
+
+            // If content_blocks exist, render them as main content first
+            if (contentBlocks && contentBlocks.length > 0) {
+                renderContentBlocks(contentBlocks);
+            }
+
+            // Build chapters from unified items
+            buildChapters();
+
+            renderHeader();
+            renderMaterialList();
+            renderStats();
+
+            // Auto-select first material (only if no blocks are shown as main content)
+            if (!contentBlocks || contentBlocks.length === 0) {
+                if (materials.length > 0) {
+                    selectMaterial(materials[0].id);
+                } else {
+                    showEmptyMaterials();
+                }
+            }
+
+        } catch (err) {
+            console.error('Failed to load course data:', err);
+            showError('자료를 불러오는데 실패했습니다. 다시 시도해주세요.');
+        }
+    }
+
+    // ===== Build Unified Items (materials + content blocks) =====
+    function buildAllItems() {
+        allItems = [];
+        // 첨부 파일 자료 (sort_order 기준, 없으면 인덱스)
+        (materials || []).forEach(function(m, i) {
+            allItems.push({
+                kind: 'material',
+                id: 'm' + m.id,
+                sort: (m.sort_order != null ? m.sort_order : i * 10),
+                material: m
+            });
+        });
+        // 콘텐츠 블록 (코드/이미지/영상 등 — _morder 기준, 없으면 뒤에 배치)
+        // divider(구분선)는 자료 항목이 아니므로 목록/통계에서 제외
+        if (contentBlocks && contentBlocks.length) {
+            contentBlocks.forEach(function(b, i) {
+                if (b && b.type === 'divider') return;  // 구분선 제외
+                var bp = (blockProgressMap && blockProgressMap[i]) || {};
+                allItems.push({
+                    kind: 'block',
+                    id: 'b' + i,
+                    sort: (b._morder != null ? b._morder : 1000 + i),
+                    block: b,
+                    blockIndex: i,
+                    progress: {
+                        is_completed: bp.is_completed === true,
+                        progress_percent: bp.progress_percent || 0
+                    }
+                });
+            });
+        }
+        // sort 오름차순 정렬
+        allItems.sort(function(a, b) { return (a.sort || 0) - (b.sort || 0); });
+    }
+
+    // ===== Build Chapters =====
+    function buildChapters() {
+        // 챕터별 그룹핑: item.block.chapter / item.material.chapter 필드 기준으로 분류.
+        // 챕터가 없는 항목은 미분류로, 항상 마지막에 배치한다.
+        chapters = [];
+        if (!allItems || allItems.length === 0) return;
+
+        var groups = {};
+        var order = [];
+        allItems.forEach(function(item) {
+            var chName = (item.block && item.block.chapter) || (item.material && item.material.chapter) || '';
+            if (chName && !groups.hasOwnProperty(chName)) {
+                groups[chName] = { label: chName, materials: [] };
+                order.push(chName);
+            }
+            if (!chName && !groups.hasOwnProperty('__unclassified__')) {
+                groups['__unclassified__'] = { label: '미분류', materials: [] };
+                order.push('__unclassified__');
+            }
+            var key = chName || '__unclassified__';
+            groups[key].materials.push(item);
+        });
+
+        // 정의된 챕터 먼저, 미분류는 마지막
+        order.forEach(function(key) {
+            chapters.push(groups[key]);
+        });
+    }
+
+    // ===== Render Header =====
+    function renderHeader() {
+        // Try to get course name from stats or first material
+        const courseName = currentStats?.course_name || materials[0]?.course_name || '학습 콘텐츠';
+        document.getElementById('courseTitle').textContent = courseName;
+
+        // Update progress bar — API returns 'completion_rate'
+        const pct = currentStats?.completion_rate || 0;
+        document.getElementById('courseProgressFill').style.width = pct + '%';
+        document.getElementById('courseProgressText').textContent = pct + '%';
+    }
+
+    // ===== Render Stats =====
+    function renderStats() {
+        // 실시간 집계: 화면의 자료 목록(allItems)과 항상 일치하도록 프론트에서 직접 계산
+        // (백엔드 stats는 삭제된 자료의 잔여 progress 레코드 때문에 실제 목록과 어긋날 수 있어
+        //  표시 목록 기준으로 계산한다 — 새로고침/학습 진행 시 즉시 반영)
+        const total = allItems.length || 0;
+        let completed = 0;
+        let inProgress = 0;
+        allItems.forEach(function(item) {
+            let p = null;
+            if (item.kind === 'material') {
+                const m = item.material || {};
+                p = m.progress || null;
+                // 로컬에서 progress_percent로 직접 갱신한 경우도 반영
+                if (!p && (m.progress_percent || 0) > 0) {
+                    p = { is_completed: false, progress_percent: m.progress_percent };
+                }
+            } else if (item.kind === 'block') {
+                p = item.progress || null;
+            }
+            if (p) {
+                if (p.is_completed === true) completed++;
+                else if ((p.progress_percent || 0) > 0) inProgress++;
+            }
+        });
+        const pct = total ? Math.round(completed / total * 100) : 0;
+
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statCompleted').textContent = completed;
+        document.getElementById('statInProgress').textContent = inProgress;
+        document.getElementById('materialCount').textContent = total + '개';
+
+        // 진행률 바도 동일 기준으로 실시간 갱신
+        const fill = document.getElementById('courseProgressFill');
+        if (fill) fill.style.width = pct + '%';
+        const txt = document.getElementById('courseProgressText');
+        if (txt) txt.textContent = pct + '%';
+    }
+
+    // ===== Render Material List (with chapters) =====
+    function renderMaterialList() {
+        const container = document.getElementById('materialList');
+
+        // Coding practice entry (always show at top)
+        const codingEntry = `
+            <div class="material-item coding-launch" onclick="openArduinoCoding()">
+                <div class="material-icon type-coding">🔌</div>
+                <div class="material-info">
+                    <div class="material-title">🤖 코딩 실습</div>
+                    <div class="material-type-label">아두이노 코딩 시작하기 →</div>
+                </div>
+                <div class="material-status"><span class="coding-icon">⌨️</span></div>
+            </div>
+            <div class="material-divider"></div>
+        `;
+
+        // materials + blocks 통합(allItems) 모두 없을 때만 빈 상태
+        if (!allItems || allItems.length === 0) {
+            container.innerHTML = codingEntry + `
+                <div class="material-empty">
+                    <p>등록된 자료가 없습니다.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = codingEntry;
+
+        chapters.forEach((chapter) => {
+            // Chapter header
+            html += `
+                <div class="chapter-group">
+                    <div class="chapter-header">
+                        <span class="chapter-dot"></span>
+                        ${esc(chapter.label)} (${chapter.materials.length})
+                    </div>
+            `;
+
+            chapter.materials.forEach((m) => {
+                html += renderMaterialItem(m);
+            });
+
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // ===== Render Single Material Item (unified: material | block) =====
+    function renderMaterialItem(item) {
+        // 콘텐츠 블록(코드/이미지/영상) 항목
+        if (item.kind === 'block') return renderBlockItem(item);
+
+        const m = item.material;
+        const type = (m.material_type || 'document').toLowerCase();
+        const config = TYPE_CONFIG[type] || TYPE_CONFIG.document;
+        const isActive = currentItemId === item.id || (currentMaterial && currentMaterial.id === m.id);
+        const isCompleted = m.progress?.is_completed === true;
+        const progress = m.progress?.progress_percent || 0;
+        const isInProgress = !isCompleted && progress > 0;
+
+        // Determine sub-badge for documents (PPT/PDF)
+        let badgeHtml = '';
+        if (type === 'document') {
+            const fileName = (m.file_url || m.file_name || '').toLowerCase();
+            if (fileName.includes('.ppt') || fileName.includes('.pptx')) {
+                badgeHtml = `<span class="material-badge type-ppt">PPT</span>`;
+            } else if (fileName.includes('.pdf')) {
+                badgeHtml = `<span class="material-badge type-pdf">PDF</span>`;
+            }
+        } else if (type === 'video') {
+            badgeHtml = `<span class="material-badge type-video">HD</span>`;
+        } else if (type === 'embed') {
+            badgeHtml = `<span class="material-badge type-embed">EMB</span>`;
+        }
+
+        // Status indicator
+        let statusHtml = '';
+        if (isCompleted) {
+            statusHtml = `<div class="material-status"><span class="check-icon">✓</span></div>`;
+        } else if (isInProgress) {
+            const r = 8;
+            const circumference = 2 * Math.PI * r;
+            const offset = circumference - (progress / 100) * circumference;
+            statusHtml = `
+                <div class="material-status">
+                    <div class="progress-ring">
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                            <circle class="bg-circle" cx="10" cy="10" r="${r}" />
+                            <circle class="fg-circle" cx="10" cy="10" r="${r}"
+                                stroke-dasharray="${circumference}"
+                                stroke-dashoffset="${offset}" />
+                        </svg>
+                    </div>
+                </div>
+            `;
+        } else {
+            statusHtml = `<div class="material-status"><div class="pending-dot"></div></div>`;
+        }
+
+        return `
+            <div class="material-item ${isActive ? 'active' : ''}" data-id="${item.id}" onclick="selectMaterial('${item.id}')">
+                <div class="material-icon ${config.bgClass}">${config.icon}</div>
+                <div class="material-info">
+                    <div class="material-title">${esc(m.title || '제목 없음')} ${badgeHtml}</div>
+                    <div class="material-type-label">${config.label}</div>
+                </div>
+                ${statusHtml}
+            </div>
+        `;
+    }
+
+    // ===== Render Block Item (코드/이미지/영상 등 콘텐츠 블록) =====
+    function renderBlockItem(item) {
+        const b = item.block || {};
+        // 구분선(divider)은 학습 자료가 아니므로 목록/진행링/카운트에서 완전 제외 (안전장치)
+        if (b.type === 'divider') return '';
+        const cfg = BLOCK_VIEW_CONFIG[b.type] || { icon: '📦', label: b.type || '블록' };
+        const isActive = currentItemId === item.id;
+
+        // 블록별 표시 타이틀
+        let title = cfg.label;
+        if (b.type === 'code') {
+            title = '코드' + (b.language ? ' (' + b.language + ')' : '');
+        } else if (b.type === 'image') {
+            title = b.caption || '이미지';
+        } else if (b.type === 'video') {
+            title = b.caption || '영상';
+        } else if (b.type === 'text') {
+            title = String(b.content || '텍스트').slice(0, 25);
+        } else if (b.type === 'heading') {
+            title = String(b.content || '제목').slice(0, 25);
+        }
+
+        // 진행 상태 표시 (파일 자료와 동일: ✓ 완료 / 진행 링 / 대기)
+        const isCompleted = item.progress?.is_completed === true;
+        const progress = item.progress?.progress_percent || 0;
+        const isInProgress = !isCompleted && progress > 0;
+
+        let statusHtml = '';
+        if (isCompleted) {
+            statusHtml = `<div class="material-status"><span class="check-icon">✓</span></div>`;
+        } else if (isInProgress) {
+            const r = 8;
+            const circumference = 2 * Math.PI * r;
+            const offset = circumference - (progress / 100) * circumference;
+            statusHtml = `
+                <div class="material-status">
+                    <div class="progress-ring">
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                            <circle class="bg-circle" cx="10" cy="10" r="${r}" />
+                            <circle class="fg-circle" cx="10" cy="10" r="${r}"
+                                stroke-dasharray="${circumference}"
+                                stroke-dashoffset="${offset}" />
+                        </svg>
+                    </div>
+                </div>
+            `;
+        } else {
+            statusHtml = `<div class="material-status"><div class="pending-dot"></div></div>`;
+        }
+
+        return `
+            <div class="material-item ${isActive ? 'active' : ''}" data-id="${item.id}" onclick="selectMaterial('${item.id}')">
+                <div class="material-icon type-block">${cfg.icon}</div>
+                <div class="material-info">
+                    <div class="material-title">${esc(title)}</div>
+                    <div class="material-type-label">${cfg.label}</div>
+                </div>
+                ${statusHtml}
+            </div>
+        `;
+    }
+
+    // ===== 아두이노 코딩 시작 =====
+    function openArduinoCoding() {
+        const courseId = currentCourseId;
+        let url = 'arduino-editor.html';
+        if (courseId) {
+            url += '?course_id=' + encodeURIComponent(courseId);
+        }
+        window.location.href = url;
+    }
+
+    // ===== Select Material / Block (unified) =====
+    function selectMaterial(itemId) {
+        const item = allItems.find(x => x.id === itemId);
+        if (!item) return;
+
+        // 콘텐츠 블록(코드/이미지/영상) 선택
+        if (item.kind === 'block') {
+            selectBlock(item);
+            return;
+        }
+
+        const material = item.material;
+
+        currentMaterial = material;
+        currentBlockIndex = null;  // 블록 선택 상태 해제
+        currentItemId = item.id;
+
+        // Update active state in list
+        document.querySelectorAll('.material-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.id === itemId);
+        });
+
+        // Show viewer, hide empty state
+        document.getElementById('materialEmpty').style.display = 'none';
+        document.getElementById('materialViewerBody').style.display = 'flex';
+        document.getElementById('materialViewerBody').style.flexDirection = 'column';
+        document.getElementById('materialViewerBody').style.width = '100%';
+
+        // 파일 자료는 완료 버튼(footer) 표시
+        var footer = document.getElementById('viewerFooter');
+        if (footer) footer.style.display = '';
+
+        // Update header
+        const type = (material.material_type || 'document').toLowerCase();
+        const config = TYPE_CONFIG[type] || TYPE_CONFIG.document;
+        var vt = document.getElementById('viewerTitle');
+        if (vt) vt.textContent = material.title || '제목 없음';
+        var vty = document.getElementById('viewerType');
+        if (vty) vty.textContent = config.label;
+
+        // Update toolbar
+        updateToolbar(material);
+
+        // Render type-specific content
+        renderViewerContent(material);
+
+        // Update completion status
+        updateCompletionUI(material);
+
+        // Auto-update progress on view
+        updateProgressOnView(material);
+    }
+
+    // ===== Select Content Block (코드/이미지/영상 등) =====
+    function selectBlock(item) {
+        const b = item.block || {};
+        const cfg = BLOCK_VIEW_CONFIG[b.type] || { icon: '📦', label: b.type || '블록' };
+
+        currentMaterial = null;
+        currentBlockIndex = item.blockIndex != null ? item.blockIndex : null;
+        currentItemId = item.id;
+
+        // Update active state in list
+        document.querySelectorAll('.material-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.id === item.id);
+        });
+
+        // Show viewer, hide empty state
+        document.getElementById('materialEmpty').style.display = 'none';
+        document.getElementById('materialViewerBody').style.display = 'flex';
+        document.getElementById('materialViewerBody').style.flexDirection = 'column';
+        document.getElementById('materialViewerBody').style.width = '100%';
+
+        // 콘텐츠 블록도 완료 버튼 표시 (학습 완료 추적 대상)
+        var footer = document.getElementById('viewerFooter');
+        if (footer) footer.style.display = '';
+
+        // Update header
+        let title = cfg.label;
+        if (b.type === 'code') {
+            title = '💻 코드' + (b.language ? ' (' + b.language + ')' : '');
+        } else if (b.type === 'image') {
+            title = '🖼️ ' + (b.caption || '이미지');
+        } else if (b.type === 'video') {
+            title = '🎬 ' + (b.caption || '영상');
+        } else if (b.type === 'text') {
+            title = cfg.icon + ' ' + String(b.content || '텍스트').slice(0, 30);
+        } else {
+            title = cfg.icon + ' ' + cfg.label;
+        }
+        var vt = document.getElementById('viewerTitle');
+        if (vt) vt.textContent = title;
+        var vty = document.getElementById('viewerType');
+        if (vty) vty.textContent = cfg.label;
+
+        // Render block content in viewer body
+        var body = document.getElementById('viewerBody');
+        if (body) {
+            body.innerHTML = '<div class="content-blocks-viewer" style="padding:24px;max-width:100%;width:100%;min-width:0;margin:0 auto;box-sizing:border-box;">' + blockToHtml(b) + '</div>';
+        }
+
+        // Update completion status (블록도 완료 버튼 동작)
+        updateBlockCompletionUI(item);
+
+        // Auto-update progress on view (첫 조회 시 50% 진행)
+        updateProgressOnBlock(item);
+    }
+
+    // ===== 블록 완료 UI 업데이트 =====
+    function updateBlockCompletionUI(item) {
+        const statusEl = document.getElementById('completionStatus');
+        const btn = document.getElementById('completeBtn');
+        const isCompleted = item.progress?.is_completed === true;
+
+        if (isCompleted) {
+            statusEl.innerHTML = '<span>✓</span> 학습 완료';
+            statusEl.className = 'completion-status completed';
+            btn.textContent = '✓ 이미 완료됨';
+            btn.disabled = true;
+            btn.className = 'btn btn-complete completed';
+        } else {
+            statusEl.innerHTML = '<span>●</span> 미완료';
+            statusEl.className = 'completion-status';
+            btn.textContent = '✓ 학습 완료';
+            btn.disabled = false;
+            btn.className = 'btn btn-primary btn-complete';
+        }
+    }
+
+    // ===== 블록 첫 조회 시 진행률 50% 기록 =====
+    async function updateProgressOnBlock(item) {
+        if (item.progress?.is_completed) return;
+        if (item.progress?.progress_percent && item.progress.progress_percent > 0) return;
+
+        try {
+            await apiPost(`/courses/${currentCourseId}/progress`, {
+                block_index: item.blockIndex,
+                is_completed: false,
+                progress_percent: 50
+            });
+            item.progress = { is_completed: false, progress_percent: 50 };
+
+            // Refresh stats
+            await refreshStats();
+
+            // Re-render material list to show progress ring
+            renderMaterialList();
+        } catch (err) {
+            console.error('Failed to update block progress:', err);
+            // Non-critical — don't block user
+        }
+    }
+
+    // ===== Update Toolbar (download, external link) =====
+    function updateToolbar(material) {
+        // 다운로드/외부열기 버튼 제거 — 뷰어 전용
+        // toolbar DOM 자체가 제거되었으므로 아무 동작 안 함
+    }
+
+    // ===== Check if a file URL can be embedded =====
+    function isEmbeddableFile(url) {
+        const ext = url.split('.').pop().toLowerCase().split('?')[0];
+        // PDF can be embedded via browser's native viewer
+        // Images and videos are handled separately
+        return ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'mp4', 'webm'].includes(ext);
+    }
+
+    // ===== Download File =====
+    function downloadFile(url, filename) {
+        if (!url || url === '#') {
+            showAlert('다운로드할 파일이 없습니다.', 'warning');
+            return;
+        }
+        // If it's a same-origin URL, trigger download
+        if (url.startsWith('/')) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename || 'download';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } else {
+            // External URL — open in new tab
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+    }
+
+    // ===== Download Current Material =====
+    function downloadCurrentMaterial() {
+        if (!currentMaterial) return;
+        const fileUrl = currentMaterial.file_url || '';
+        downloadFile(fileUrl, currentMaterial.title || 'download');
+    }
+
+    // ===== Render Viewer Content =====
+    function renderViewerContent(material) {
+        const body = document.getElementById('viewerBody');
+        const type = (material.material_type || 'document').toLowerCase();
+
+        let html = '';
+
+        // Show description if present
+        if (material.description) {
+            html += `<div class="material-description"><p>${esc(material.description)}</p></div>`;
+        }
+
+        switch (type) {
+            case 'document':
+                html += renderDocumentViewer(material);
+                break;
+            case 'video':
+                html += renderVideoViewer(material);
+                break;
+            case 'image':
+                html += renderImageViewer(material);
+                break;
+            case 'link':
+                html += renderLinkViewer(material);
+                break;
+            case 'embed':
+                html += renderEmbedViewer(material);
+                break;
+            default:
+                html += renderDocumentViewer(material);
+        }
+
+        body.innerHTML = html;
+
+        // 슬라이드 뷰어 자동 초기화 (DOM에 추가된 후)
+        var slideViewers = document.querySelectorAll('.slide-viewer[data-fileurl]');
+        slideViewers.forEach(function(el) {
+            var mid = el.getAttribute('data-material-id');
+            var fu = el.getAttribute('data-fileurl');
+            if (mid && fu) {
+                // 전역 함수 등록
+                window['initSlideViewer_' + mid] = function(f) { createSlideViewer(mid, f); };
+                window['navigateSlide_' + mid] = function(d) { navigateSlideFn(mid, d); };
+                window['toggleFullscreen_' + mid] = function() { toggleFullscreenFn(mid); };
+                window['handleSlideError_' + mid] = function() {
+                    var l = document.getElementById('slideLoading_' + mid);
+                    if (l) { l.innerHTML = '<span>⚠️ 슬라이드를 불러올 수 없습니다</span>'; l.style.display = 'flex'; }
+                };
+                // 초기화
+                createSlideViewer(mid, fu);
+            }
+        });
+    }
+
+    // ===== Document Viewer (PDF/PPT → 통합 슬라이드쇼 뷰어) =====
+    function renderDocumentViewer(material) {
+        const fileUrl = material.file_url || '';
+        const embedUrl = material.embed_url || '';
+        const fileName = material.file_name || material.title || '문서';
+        const fileSize = material.file_size ? formatFileSize(material.file_size) : '';
+        const materialId = material.id;
+
+        // Determine file type from URL or file_name
+        const ext = (fileUrl || fileName).toLowerCase();
+        const isPdf = ext.includes('.pdf');
+        const isPpt = ext.includes('.ppt');
+
+        // Description
+        let html = '';
+        // description은 이미 renderViewerContent에서 별도 처리
+
+        // === Case 1: Has embed_url (Google Slides 전용) ===
+        if (embedUrl && embedUrl.includes('docs.google.com/presentation')) {
+            // 진짜 Google Slides embed만 여기서 처리
+            html += `
+                <div class="ppt-viewer">
+                    <div class="ppt-embed-wrapper">
+                        <iframe src="${esc(embedUrl)}"
+                            title="${esc(material.title || 'PPT')}"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            `;
+        }
+        // === Case 2: PPT/PDF → 우리 자체 슬라이드쇼 뷰어 (embed_url 무시) ===
+        else if ((isPpt || isPdf) && fileUrl) {
+            html += `
+                <div class="slide-viewer" id="slideViewer_${materialId}" data-material-id="${materialId}" data-fileurl="${esc(fileUrl)}">
+                    <div class="slide-display" id="slideDisplay_${materialId}">
+                        <div class="slide-loading" id="slideLoading_${materialId}">
+                            <span>🔄 슬라이드를 불러오는 중...</span>
+                        </div>
+                        <img id="slideImage_${materialId}" src="" alt="슬라이드"
+                            style="opacity:0;" />
+                    <button class="slide-nav prev" id="slidePrev_${materialId}"
+                        onclick="navigateSlide_${materialId}(-1)" disabled>◀</button>
+                    <button class="slide-nav next" id="slideNext_${materialId}"
+                        onclick="navigateSlide_${materialId}(1)" disabled>▶</button>
+                    </div>
+                    <div class="slide-footer">
+                        <span class="slide-counter" id="slideCounter_${materialId}">0 / 0</span>
+                        <button class="slide-fullscreen" id="slideFsBtn_${materialId}"
+                            onclick="toggleFullscreen_${materialId}()">⛶ 전체화면</button>
+                    </div>
+                </div>
+            `;
+        }
+        // === Case 3: 그 외 embed_url 있음 ===
+        else if (embedUrl) {
+            html += `
+                <div class="embed-viewer">
+                    <div class="embed-iframe-wrapper">
+                        <iframe src="${esc(embedUrl)}"
+                            title="${esc(material.title || '임베드 문서')}"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            `;
+        }
+        // === Case 4: 뷰어 불가 ===
+        else {
+            html += `
+                <div class="document-viewer">
+                    <div class="material-empty">
+                        <div class="empty-icon">📄</div>
+                        <h3>뷰어에서 볼 수 없는 파일입니다</h3>
+                        <p>이 자료는 뷰어에서 직접 볼 수 없습니다. 본사에 문의해주세요.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        return html;
+    }
+
+    // ===== Video Viewer (iframe embed + HTML5 video fallback) =====
+    function renderVideoViewer(material) {
+        const embedUrl = material.embed_url || '';
+        const fileUrl = material.file_url || '';
+        const fileSize = material.file_size ? formatFileSize(material.file_size) : '';
+        const duration = material.duration_minutes ? `${material.duration_minutes}분` : '';
+
+        // Case 1: Embed URL (YouTube, Vimeo, etc.)
+        if (embedUrl) {
+            return `
+                    <div class="video-viewer">
+                        ${duration ? `<div class="video-meta">⏱ ${duration}</div>` : ''}
+                        <div class="video-embed-wrapper">
+                            <iframe src="${esc(embedUrl)}"
+                                title="${esc(material.title || '영상')}"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Case 2: File URL with video extension → HTML5 <video> player
+            const ext = fileUrl.toLowerCase();
+            const isVideoFile = ext.includes('.mp4') || ext.includes('.webm') || ext.includes('.mov') || ext.includes('.ogg');
+
+            if (fileUrl && isVideoFile) {
+                const mimeType = ext.includes('.webm') ? 'video/webm' : ext.includes('.ogg') ? 'video/ogg' : 'video/mp4';
+                return `
+                    <div class="video-player">
+                        ${duration ? `<div class="video-meta">⏱ ${duration}</div>` : ''}
+                    <video controls preload="metadata" class="video-player-tag">
+                        <source src="${esc(fileUrl)}" type="${mimeType}">
+                        브라우저가 동영상 재생을 지원하지 않습니다.
+                    </video>
+                </div>
+            `;
+        }
+
+        // Case 3: File URL (non-video extension) — 뷰어 불가
+        if (fileUrl) {
+            return `
+                <div class="video-viewer">
+                    <div class="material-empty">
+                        <div class="empty-icon">🎬</div>
+                        <h3>뷰어에서 볼 수 없는 영상 파일입니다</h3>
+                        <p>이 영상은 뷰어에서 재생할 수 없습니다. 본사에 문의해주세요.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Case 4: No URL
+        return `
+            <div class="video-viewer">
+                <div class="material-empty">
+                    <div class="empty-icon">🎬</div>
+                    <h3>영상 URL이 없습니다</h3>
+                    <p>이 영상 자료에 연결된 URL이 없습니다.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // ===== Image Viewer =====
+    function renderImageViewer(material) {
+        const imageUrl = material.file_url || material.embed_url || '';
+        const fileSize = material.file_size ? formatFileSize(material.file_size) : '';
+
+        if (!imageUrl) {
+            return `
+                <div class="image-viewer">
+                    <div class="material-empty">
+                        <div class="empty-icon">🖼️</div>
+                        <h3>이미지 URL이 없습니다</h3>
+                        <p>이 이미지 자료에 연결된 URL이 없습니다.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="image-viewer">
+                <img src="${esc(imageUrl)}" alt="${esc(material.title || '이미지')}" loading="lazy" />
+            </div>
+        `;
+    }
+
+    // ===== Link Viewer (inline iframe for embeddable links) =====
+    function renderLinkViewer(material) {
+        const url = material.url || material.embed_url || '';
+        const description = material.description || '';
+
+        if (!url) {
+            return `
+                <div class="link-viewer">
+                    <div class="material-empty">
+                        <div class="empty-icon">🔗</div>
+                        <h3>링크 URL이 없습니다</h3>
+                        <p>이 링크 자료에 연결된 URL이 없습니다.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Check if URL is embeddable in an iframe
+        const isEmbeddable = isEmbeddableLink(url);
+
+        if (isEmbeddable) {
+            return `
+                <div class="embed-viewer">
+                    <div class="embed-iframe-wrapper link-iframe-wrapper">
+                        <iframe src="${esc(url)}"
+                            title="${esc(material.title || '외부 링크')}"
+                            allowfullscreen
+                            sandbox="allow-scripts allow-same-origin allow-forms allow-popups">
+                        </iframe>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Non-embeddable: show info card
+        return `
+            <div class="link-viewer">
+                <div class="link-preview-card">
+                    <div class="link-header">
+                        <div class="link-icon">🔗</div>
+                        <div class="link-info">
+                            <div class="link-title">${esc(material.title || '외부 링크')}</div>
+                            <div class="link-url">${esc(url)}</div>
+                            ${description ? `<div class="link-description">${esc(description)}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ===== Embed Viewer (interactive content, iframe) =====
+    function renderEmbedViewer(material) {
+        const embedUrl = material.embed_url || material.file_url || '';
+        const fullHeight = material.duration_minutes > 10 || false;
+
+        if (!embedUrl) {
+            return `
+                <div class="embed-viewer">
+                    <div class="material-empty">
+                        <div class="empty-icon">🔄</div>
+                        <h3>임베드 URL이 없습니다</h3>
+                        <p>이 임베드 자료에 연결된 URL이 없습니다.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="embed-viewer ${fullHeight ? 'full-height' : ''}">
+                <div class="embed-iframe-wrapper">
+                    <iframe src="${esc(embedUrl)}"
+                        title="${esc(material.title || '임베드 콘텐츠')}"
+                        allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                </div>
+            </div>
+        `;
+    }
+
+    // ===== Check if a URL can be embedded in an iframe =====
+    function isEmbeddableLink(url) {
+        try {
+            const u = new URL(url);
+            const host = u.hostname.toLowerCase();
+            // Embeddable domains
+            const embeddableDomains = [
+                'docs.google.com', 'slides.google.com',
+                'youtube.com', 'www.youtube.com', 'youtu.be',
+                'player.vimeo.com', 'vimeo.com',
+                'codepen.io', 'codesandbox.io',
+                'jsfiddle.net', 'canva.com',
+                'google.com', 'drive.google.com',
+                'onedrive.live.com',
+                'notion.so', 'www.notion.so',
+                'figma.com', 'www.figma.com',
+                'miro.com', 'app.miro.com',
+                'padlet.com', 'padlet.org',
+            ];
+            // Allow same-origin and common embedding services
+            if (host.includes('localhost') || host === '127.0.0.1' || !host.includes('.')) {
+                return true;
+            }
+            return embeddableDomains.some(d => host === d || host.endsWith('.' + d));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // ===== Update Completion UI =====
+    function updateCompletionUI(material) {
+        const statusEl = document.getElementById('completionStatus');
+        const btn = document.getElementById('completeBtn');
+        const isCompleted = material.progress?.is_completed === true;
+
+        if (isCompleted) {
+            statusEl.innerHTML = '<span>✓</span> 학습 완료';
+            statusEl.className = 'completion-status completed';
+            btn.textContent = '✓ 이미 완료됨';
+            btn.disabled = true;
+            btn.className = 'btn btn-complete completed';
+        } else {
+            statusEl.innerHTML = '<span>●</span> 미완료';
+            statusEl.className = 'completion-status';
+            btn.textContent = '✓ 학습 완료';
+            btn.disabled = false;
+            btn.className = 'btn btn-primary btn-complete';
+        }
+    }
+
+    // ===== Update Progress on View =====
+    async function updateProgressOnView(material) {
+        // Only update if not completed and progress is 0 (first view)
+        if (material.progress?.is_completed) return;
+        if (material.progress?.progress_percent && material.progress.progress_percent > 0) return;
+
+        try {
+            const res = await apiPost(`/courses/${currentCourseId}/progress`, {
+                material_id: material.id,
+                is_completed: false,
+                progress_percent: 50
+            });
+
+            // Update local state
+            material.progress_percent = 50;
+
+            // Refresh stats
+            await refreshStats();
+
+            // Re-render material list to show progress
+            renderMaterialList();
+
+        } catch (err) {
+            console.error('Failed to update progress:', err);
+            // Non-critical — don't block user
+        }
+    }
+
+    // ===== Mark Complete (파일 자료 + 콘텐츠 블록 공용) =====
+    async function markComplete() {
+        // ── 콘텐츠 블록(코드/이미지/영상) 완료 처리 ──
+        if (currentBlockIndex != null) {
+            const item = allItems.find(x => x.id === currentItemId);
+            if (!item || item.progress?.is_completed) return;
+
+            const btn = document.getElementById('completeBtn');
+            btn.textContent = '처리 중...';
+            btn.disabled = true;
+
+            try {
+                await apiPost(`/courses/${currentCourseId}/progress`, {
+                    block_index: currentBlockIndex,
+                    is_completed: true,
+                    progress_percent: 100
+                });
+
+                // Update local state
+                item.progress = { is_completed: true, progress_percent: 100 };
+
+                // Update UI
+                updateBlockCompletionUI(item);
+
+                // Refresh stats
+                await refreshStats();
+
+                // Re-render material list (블록 ✓ 체크 반영)
+                renderMaterialList();
+
+                showAlert('학습 완료 처리되었습니다!', 'success');
+            } catch (err) {
+                console.error('Failed to mark block complete:', err);
+                showAlert('완료 처리 중 오류가 발생했습니다.', 'danger');
+                btn.textContent = '✓ 학습 완료';
+                btn.disabled = false;
+            }
+            return;
+        }
+
+        // ── 첨부 파일 자료 완료 처리 (기존) ──
+        if (!currentMaterial || currentMaterial.progress?.is_completed) return;
+
+        const btn = document.getElementById('completeBtn');
+        btn.textContent = '처리 중...';
+        btn.disabled = true;
+
+        try {
+            const res = await apiPost(`/courses/${currentCourseId}/progress`, {
+                material_id: currentMaterial.id,
+                is_completed: true,
+                progress_percent: 100
+            });
+
+            // Update local state (progress object)
+            currentMaterial.progress = currentMaterial.progress || {};
+            currentMaterial.progress.is_completed = true;
+            currentMaterial.progress.progress_percent = 100;
+
+            // Update UI
+            updateCompletionUI(currentMaterial);
+
+            // Refresh stats
+            await refreshStats();
+
+            // Re-render material list
+            renderMaterialList();
+
+            // Show success feedback
+            showAlert('학습 완료 처리되었습니다!', 'success');
+
+        } catch (err) {
+            console.error('Failed to mark complete:', err);
+            showAlert('완료 처리 중 오류가 발생했습니다.', 'danger');
+            btn.textContent = '✓ 학습 완료';
+            btn.disabled = false;
+        }
+    }
+
+    // ===== Refresh Stats =====
+    async function refreshStats() {
+        try {
+            const res = await apiGet(`/courses/${currentCourseId}/progress/stats`);
+            currentStats = res.data || res || {};
+
+            // Update progress bar — API returns 'completion_rate'
+            const pct = currentStats.completion_rate || 0;
+            document.getElementById('courseProgressFill').style.width = pct + '%';
+            document.getElementById('courseProgressText').textContent = pct + '%';
+
+            // Update stats
+            renderStats();
+
+        } catch (err) {
+            console.error('Failed to refresh stats:', err);
+        }
+    }
+
+    // ===== Show Empty Materials =====
+    function showEmptyMaterials() {
+        document.getElementById('materialEmpty').style.display = 'block';
+        document.getElementById('materialViewerBody').style.display = 'none';
+    }
+
+    // ===== Render Content Blocks =====
+    function renderContentBlocks(blocks) {
+        var container = document.getElementById('materialViewerBody');
+        if (!blocks || blocks.length === 0) return false;
+
+        // Show viewer, hide empty state
+        document.getElementById('materialEmpty').style.display = 'none';
+        document.getElementById('materialViewerBody').style.display = 'flex';
+        document.getElementById('materialViewerBody').style.flexDirection = 'column';
+        document.getElementById('materialViewerBody').style.width = '100%';
+
+        var contentHtml = '<div class="content-blocks-viewer" style="padding:24px;max-width:100%;width:100%;min-width:0;margin:0 auto;box-sizing:border-box;">';
+        blocks.forEach(function(block) {
+            contentHtml += blockToHtml(block);
+        });
+        contentHtml += '</div>';
+
+        // Rebuild materialViewerBody with header + viewerBody so that
+        // later material selection has the required element IDs present.
+        container.innerHTML =
+            '<div class="material-viewer-header" id="viewerHeader">' +
+            '<div class="material-viewer-title">' +
+            '<h2 id="viewerTitle">📖 강좌 콘텐츠</h2>' +
+            '<span class="material-viewer-type" id="viewerType">콘텐츠 블록</span>' +
+            '</div></div>' +
+            '<div class="material-viewer-body" id="viewerBody">' + contentHtml + '</div>' +
+            // 첫 로드 미리보기에서는 완료 버튼 숨김 (자료 목록에서 블록 선택 시 표시)
+            '<div class="material-viewer-footer" id="viewerFooter" style="display:none;">' +
+            '<div class="completion-status" id="completionStatus"><span>●</span> 미완료</div>' +
+            '<button class="btn btn-primary btn-complete" id="completeBtn" onclick="markComplete()">✓ 학습 완료</button>' +
+            '</div>';
+        return true;
+    }
+
+    // ===== 코드 하이라이터 (경량 토큰 컬러링 — lecture-editor와 동일 로직) =====
+    var CODE_KEYWORDS = {
+        arduino: ['if','else','for','while','return','switch','case','default','break','continue','true','false','const','static','volatile','class','new','delete','this','sizeof','enum','struct','union','goto','do'],
+        python: ['def','class','if','elif','else','for','while','return','import','from','try','except','finally','with','as','lambda','pass','break','continue','global','nonlocal','yield','and','or','not','in','is','assert','raise','del','async','await','None','True','False'],
+        javascript: ['function','var','let','const','if','else','for','while','do','return','class','extends','new','this','typeof','instanceof','try','catch','finally','throw','switch','case','default','break','continue','async','await','export','import','from','null','undefined','true','false','in','of'],
+        sql: ['select','from','where','insert','into','values','update','set','delete','create','table','drop','alter','add','column','primary','key','foreign','references','join','inner','left','right','outer','on','group','by','order','having','limit','offset','and','or','not','null','is','in','exists','between','like','as','distinct','count','sum','avg','min','max'],
+        cpp: ['if','else','for','while','do','return','switch','case','default','break','continue','class','struct','union','enum','namespace','using','template','typename','public','private','protected','virtual','override','const','static','new','delete','this','true','false','nullptr','int','char','float','double','bool','void','long','short','unsigned','signed'],
+        java: ['public','private','protected','class','interface','extends','implements','void','static','final','if','else','for','while','do','return','new','this','super','try','catch','finally','throw','throws','switch','case','default','break','continue','import','package','abstract','synchronized','boolean','int','long','float','double','char','byte','short','true','false','null'],
+        c: ['if','else','for','while','do','return','switch','case','default','break','continue','goto','sizeof','typedef','struct','union','enum','const','static','extern','register','volatile','signed','unsigned','void','int','char','float','double','long','short','true','false'],
+        php: ['function','class','if','else','elseif','for','foreach','while','do','return','echo','print','require','require_once','include','include_once','namespace','use','new','public','private','protected','static','final','try','catch','finally','throw','switch','case','default','break','continue','true','false','null','array','isset','empty','global']
+    };
+    var CODE_TYPES = {
+        arduino: ['void','int','float','boolean','char','byte','unsigned','long','double'],
+        python: ['str','int','float','bool','list','dict','set','tuple','bytes','object','type','None'],
+        javascript: ['Number','String','Boolean','Array','Object','Function','Promise','Map','Set','Date','RegExp','Error'],
+        java: ['int','long','float','double','char','byte','short','boolean','String','Integer','Long','Double','Float','Boolean','Character','Object','List','Map','Set','ArrayList','HashMap'],
+        c: ['int','char','float','double','long','short','void','unsigned','signed','FILE','size_t'],
+        cpp: ['int','char','float','double','bool','void','long','short','unsigned','signed','string','vector','map','set','list','auto','size_t'],
+        php: ['int','float','string','bool','array','object','callable','iterable','mixed','void']
+    };
+    var CODE_BUILTINS = {
+        arduino: ['Serial','setup','loop','pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','A0','A1','A2','A3','A4','A5','LED_BUILTIN','tone','noTone','map','constrain','min','max','pow','sqrt','abs','random','randomSeed'],
+        python: ['print','len','range','type','int','str','float','list','dict','set','tuple','sum','min','max','abs','sorted','enumerate','zip','map','filter','open','input','isinstance','hasattr','getattr','setattr','super','self','__init__','append','extend','split','join','format','strip','replace','find','count'],
+        javascript: ['console','log','document','window','alert','prompt','confirm','Math','JSON','Object','Array','String','Number','Boolean','Date','setTimeout','setInterval','parseInt','parseFloat','isNaN','querySelector','getElementById','addEventListener','fetch','Promise','map','filter','reduce','forEach','push','pop','splice','join','split'],
+        java: ['System','out','println','print','printf','String','Integer','Long','Math','Arrays','List','ArrayList','HashMap','Map','Set','HashSet','Exception','Thread','Object','equals','toString','hashCode','length','size','get','put','add','remove'],
+        c: ['printf','scanf','fopen','fclose','fread','fwrite','fgets','fputs','malloc','calloc','free','memcpy','memset','strlen','strcpy','strcat','strcmp','atoi','exit','NULL','FILE','size_t'],
+        cpp: ['cout','cin','endl','string','vector','map','set','list','cout','cerr','clog','new','delete','std','NULL','nullptr','push_back','size','begin','end','find','insert','erase','sort','reverse'],
+        php: ['echo','print','var_dump','print_r','count','array','isset','empty','unset','implode','explode','strlen','str_replace','substr','trim','json_encode','json_decode','date','time','require','include','self','parent','$this']
+    };
+
+    function highlightCode(code, lang) {
+        if (!code) return '';
+        var out = esc(code);
+        var kw = CODE_KEYWORDS[lang] || CODE_KEYWORDS.python;
+        var ty = CODE_TYPES[lang] || [];
+        var bi = CODE_BUILTINS[lang] || [];
+        // ── 주석/문자열/숫자를 임시 홀더로 보호 (span 태그 속성이 이후 정규식에 재매칭되는 것 방지) ──
+        var commentHolders = [];
+        var strHolders = [];
+        var numHolders = [];
+        var commentRe;
+        if (lang === 'python') commentRe = /#[^\n]*/g;
+        else if (lang === 'sql') commentRe = /--[^\n]*/g;
+        else commentRe = /\/\/[^\n]*/g;
+        out = out.replace(commentRe, function(m) {
+            commentHolders.push(m);
+            return '\u0002C' + (commentHolders.length - 1) + '\u0002';
+        });
+        out = out.replace(/("[^"\n]*"|'[^'\n]*')/g, function(m) {
+            strHolders.push(m);
+            return '\u0001S' + (strHolders.length - 1) + '\u0001';
+        });
+        out = out.replace(/(\b\d+(\.\d+)?\b)/g, function(m) {
+            numHolders.push(m);
+            return '\u0003N' + (numHolders.length - 1) + '\u0003';
+        });
+        // 키워드
+        var kwRe = new RegExp('\\b(' + kw.join('|') + ')\\b', 'g');
+        out = out.replace(kwRe, '<span class="tok-keyword">$1</span>');
+        // 타입
+        if (ty.length) {
+            var tyRe = new RegExp('\\b(' + ty.join('|') + ')\\b', 'g');
+            out = out.replace(tyRe, '<span class="tok-type">$1</span>');
+        }
+        // 내장 함수/상수
+        if (bi.length) {
+            var biRe = new RegExp('\\b(' + bi.join('|') + ')\\b', 'g');
+            out = out.replace(biRe, '<span class="tok-builtin">$1</span>');
+        }
+        // 숫자 홀더 복원
+        out = out.replace(/\u0003N(\d+)\u0003/g, function(m, idx) {
+            return '<span class="tok-number">' + numHolders[parseInt(idx, 10)] + '</span>';
+        });
+        // 문자열 홀더 복원
+        out = out.replace(/\u0001S(\d+)\u0001/g, function(m, idx) {
+            return '<span class="tok-string">' + strHolders[parseInt(idx, 10)] + '</span>';
+        });
+        // 주석 홀더 복원
+        out = out.replace(/\u0002C(\d+)\u0002/g, function(m, idx) {
+            return '<span class="tok-comment">' + commentHolders[parseInt(idx, 10)] + '</span>';
+        });
+        return out;
+    }
+
+    // ===== Block → HTML (단일 블록 렌더링, 뷰어/목록 공용) =====
+    // ===== 콘텐츠 블록 url 유효성 검사 (쓰레기 값/상대경로 404 방지) =====
+    // 허용: /uploads/, /files/ 경로, http(s)://, data: / 빈 값(빈 값은 materials fallback)
+    function isValidMediaUrl(url) {
+        if (!url || typeof url !== 'string') return false;
+        var u = url.trim();
+        if (!u) return false;
+        if (/^(https?:\/\/|data:|blob:)/i.test(u)) return true;
+        if (u.charAt(0) === '/' && !/^\/pages\//i.test(u)) return true;  // /uploads, /files 등 서버 경로 (단 /pages/ 이동 링크는 제외)
+        return false;
+    }
+
+    function blockToHtml(block) {
+        var h = '';
+        if (block.type === 'text') {
+            h += '<div class="block-text" style="font-size:15px;line-height:1.8;color:#374151;margin-bottom:16px;">' + (block.content || '') + '</div>';
+        } else if (block.type === 'heading') {
+            var level = block.level || 3;
+            var size = level === 1 ? '24px' : (level === 2 ? '20px' : '17px');
+            h += '<h' + level + ' style="font-size:' + size + ';font-weight:700;color:#111827;margin:24px 0 12px 0;letter-spacing:-0.01em;">' + (block.content || '') + '</h' + level + '>';
+        } else if (block.type === 'image') {
+            // url이 비어 있으면 해당 강좌 materials의 이미지 파일로 fallback (PDF/이미지 자료와 중복되지 않도록 이미지 타입만)
+            var imgUrl = block.url || '';
+            if (!imgUrl && materials && materials.length) {
+                for (var _mi = 0; _mi < materials.length; _mi++) {
+                    if (materials[_mi].material_type === 'image' && materials[_mi].file_url) {
+                        imgUrl = materials[_mi].file_url;
+                        break;
+                    }
+                }
+            }
+            h += '<div class="block-image" style="margin:16px 0;text-align:center;">';
+            if (imgUrl && isValidMediaUrl(imgUrl)) {
+                h += '<img src="' + esc(imgUrl) + '" alt="' + esc(block.caption || '') + '" style="max-width:100%;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">';
+            }
+            if (block.caption) h += '<p style="font-size:12px;color:#9CA3AF;margin-top:6px;">' + esc(block.caption) + '</p>';
+            h += '</div>';
+        } else if (block.type === 'video') {
+            // url이 비어 있으면 materials의 video 파일로 fallback
+            var vidUrl = block.url || '';
+            if (!vidUrl && materials && materials.length) {
+                for (var _vi = 0; _vi < materials.length; _vi++) {
+                    if (materials[_vi].material_type === 'video' && materials[_vi].file_url) {
+                        vidUrl = materials[_vi].file_url;
+                        break;
+                    }
+                }
+            }
+            h += '<div class="block-video" style="margin:16px 0;">';
+            if (vidUrl && isValidMediaUrl(vidUrl)) {
+                h += '<video controls style="width:100%;border-radius:12px;" src="' + esc(vidUrl) + '"></video>';
+            } else if (vidUrl) {
+                // 무효 url(숫자값 등) → 404 유발 방지: "영상 없음" 표시
+                h += '<div style="padding:28px 16px;text-align:center;background:#F9FAFB;border:1px dashed #E5E7EB;border-radius:12px;color:#9CA3AF;font-size:13px;">🎬 영상 없음 (주소 오류 — 본사에서 영상 주소를 확인해 주세요)</div>';
+            } else {
+                // url이 비어 있고 materials fallback도 없으면 안내 표시
+                h += '<div style="padding:28px 16px;text-align:center;background:#F9FAFB;border:1px dashed #E5E7EB;border-radius:12px;color:#9CA3AF;font-size:13px;">🎬 영상 없음 (영상이 등록되지 않았습니다)</div>';
+            }
+            if (block.caption) h += '<p style="font-size:12px;color:#9CA3AF;margin-top:6px;">' + esc(block.caption) + '</p>';
+            h += '</div>';
+        } else if (block.type === 'embed') {
+            h += '<div class="block-embed" style="margin:16px 0;position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;">';
+            if (block.url && isValidMediaUrl(block.url)) {
+                h += '<iframe src="' + esc(block.url) + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe>';
+            } else {
+                // 무효/빈 embed url → 빈 화면 대신 안내 표시 (404 iframe 방지)
+                h += '<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F9FAFB;color:#9CA3AF;font-size:13px;">🔗 영상 없음 (주소 오류)</div>';
+            }
+            h += '</div>';
+        } else if (block.type === 'divider') {
+            h += '<hr style="margin:24px 0;border:none;border-top:1px solid #E5E7EB;">';
+        } else if (block.type === 'code') {
+            var codeLang = block.language || 'cpp';
+            h += '<div class="block-code" style="margin:16px 0;max-width:100%;min-width:0;width:100%;box-sizing:border-box;">';
+            h += '<div style="font-size:11px;color:#9CA3AF;margin-bottom:4px;text-transform:uppercase;">' + esc(codeLang) + '</div>';
+            h += '<pre style="background:#1e1e2e;color:#e0e0e0;border-radius:8px;padding:12px 14px;overflow-x:auto;font-family:monospace;font-size:11px;line-height:1.6;margin:0;width:100%;max-width:100%;box-sizing:border-box;white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word;"><code>' + highlightCode(block.code || '', codeLang) + '</code></pre>';
+            h += '</div>';
+        }
+        return h;
+    }
+
+    // ===== Show Error =====
+    function showError(message) {
+        document.getElementById('materialList').innerHTML = `
+            <div class="material-error">
+                <p>${esc(message)}</p>
+                <button class="btn btn-secondary btn-sm mt-16" onclick="loadCourseData()">다시 시도</button>
+            </div>
+        `;
+        document.getElementById('materialViewerBody').style.display = 'none';
+    }
+
+    // ===== Utility: Format File Size =====
+    function formatFileSize(bytes) {
+        if (!bytes) return '';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let i = 0;
+        let size = bytes;
+        while (size >= 1024 && i < units.length - 1) {
+            size /= 1024;
+            i++;
+        }
+        return size.toFixed(i > 0 ? 1 : 0) + ' ' + units[i];
+    }
+
+    // ===== Nubida Slide Viewer Engine (자체 슬라이드쇼, 비동기 변환) =====
+    const slideViewerState = {};
+
+    function createSlideViewer(materialId, fileUrl) {
+        slideViewerState[materialId] = {
+            slides: [],
+            currentSlide: 0,
+            loading: true,
+            fileUrl: fileUrl,
+            pollTimer: null,
+        };
+
+        const img = document.getElementById('slideImage_' + materialId);
+        const prevBtn = document.getElementById('slidePrev_' + materialId);
+        const nextBtn = document.getElementById('slideNext_' + materialId);
+        const counter = document.getElementById('slideCounter_' + materialId);
+        const loading = document.getElementById('slideLoading_' + materialId);
+        if (!img) return;
+
+        const state = slideViewerState[materialId];
+        loading.innerHTML = '<span>🔄 변환 준비 중...</span>';
+        loading.style.display = 'flex';
+
+        // 1단계: 캐시 확인 (빠름)
+        var baseUrl = '/api/v1/viewer/check?file_path=' + encodeURIComponent(fileUrl);
+
+        apiGet('/viewer/check?file_path=' + encodeURIComponent(fileUrl))
+        .then(function(r) { return r; })
+        .then(function(data) {
+            if (data.status === 'ready') {
+                // 캐시됨! 즉시 표시
+                showSlides(materialId, data.slides, data.pages);
+            } else if (data.status === 'processing') {
+                // 변환 중 → 폴링
+                loading.innerHTML = '<span>🔄 변환 중입니다... 잠시만 기다려주세요</span>';
+                startPolling(materialId, fileUrl);
+            } else {
+                // 변환 필요 → 변환 요청
+                loading.innerHTML = '<span>🔄 변환을 시작합니다...</span>';
+                startConversion(materialId, fileUrl);
+            }
+        })
+        .catch(function(err) {
+            loading.innerHTML = '<span>⚠️ 오류: ' + (err.message || '알 수 없음') + '</span>';
+        });
+    }
+
+    function startPolling(materialId, fileUrl) {
+        var state = slideViewerState[materialId];
+        if (!state) return;
+
+        state.pollTimer = setInterval(function() {
+            var checkUrl = '/api/v1/viewer/check?file_path=' + encodeURIComponent(fileUrl);
+            apiGet('/viewer/check?file_path=' + encodeURIComponent(fileUrl))
+            .then(function(r) { return r; })
+            .then(function(data) {
+                if (data.status === 'ready') {
+                    clearInterval(state.pollTimer);
+                    state.pollTimer = null;
+                    showSlides(materialId, data.slides, data.pages);
+                }
+            })
+            .catch(function() { /* 재시도 */ });
+        }, 2000);  // 2초마다 폴링
+    }
+
+    function startConversion(materialId, fileUrl) {
+        var convertUrl = '/api/v1/viewer/convert?file_path=' + encodeURIComponent(fileUrl) + '&dpi=150';
+        var loading = document.getElementById('slideLoading_' + materialId);
+
+        apiPost('/viewer/convert?file_path=' + encodeURIComponent(fileUrl) + '&dpi=150')
+        .then(function(r) { return r; })
+        .then(function(data) {
+            if (data.status === 'ready') {
+                showSlides(materialId, data.slides, data.pages);
+            } else if (data.status === 'processing') {
+                loading.innerHTML = '<span>🔄 변환 중입니다... 잠시만 기다려주세요</span>';
+                startPolling(materialId, fileUrl);
+            } else {
+                loading.innerHTML = '<span>⚠️ 변환 실패</span>';
+            }
+        })
+        .catch(function(err) {
+            loading.innerHTML = '<span>⚠️ 변환 오류: ' + (err.message || '알 수 없음') + '</span>';
+        });
+    }
+
+    function showSlides(materialId, slides, totalPages) {
+        var state = slideViewerState[materialId];
+        if (!state) return;
+
+        state.slides = slides || [];
+        state.currentSlide = 0;
+        state.loading = false;
+
+        var loading = document.getElementById('slideLoading_' + materialId);
+        var img = document.getElementById('slideImage_' + materialId);
+        var prevBtn = document.getElementById('slidePrev_' + materialId);
+        var nextBtn = document.getElementById('slideNext_' + materialId);
+        var counter = document.getElementById('slideCounter_' + materialId);
+
+        if (!img || slides.length === 0) {
+            if (loading) loading.innerHTML = '<span>⚠️ 슬라이드가 없습니다</span>';
+            return;
+        }
+
+        loading.style.display = 'none';
+        img.src = getSlideUrlWithToken(slides[0]);
+        img.style.opacity = '1';
+        counter.textContent = '1 / ' + slides.length;
+        prevBtn.disabled = true;
+        nextBtn.disabled = slides.length <= 1;
+    }
+
+    function navigateSlideFn(materialId, direction) {
+        var state = slideViewerState[materialId];
+        if (!state || state.slides.length === 0) return;
+
+        var newIdx = state.currentSlide + direction;
+        if (newIdx < 0 || newIdx >= state.slides.length) return;
+
+        state.currentSlide = newIdx;
+
+        var img = document.getElementById('slideImage_' + materialId);
+        var prevBtn = document.getElementById('slidePrev_' + materialId);
+        var nextBtn = document.getElementById('slideNext_' + materialId);
+        var counter = document.getElementById('slideCounter_' + materialId);
+        if (!img) return;
+
+        img.style.opacity = '0';
+        setTimeout(function() {
+            img.src = getSlideUrlWithToken(state.slides[newIdx]);
+            img.style.opacity = '1';
+        }, 150);
+
+        counter.textContent = (newIdx + 1) + ' / ' + state.slides.length;
+        prevBtn.disabled = newIdx === 0;
+        nextBtn.disabled = newIdx === state.slides.length - 1;
+    }
+
+    function toggleFullscreenFn(materialId) {
+        var viewer = document.getElementById('slideViewer_' + materialId);
+        if (!viewer) return;
+        var btn = document.getElementById('slideFsBtn_' + materialId);
+
+        // 이미 fullscreen CSS 클래스가 적용되어 있으면 → 닫기
+        if (viewer.classList.contains('fullscreen')) {
+            // 브라우저 전체화면 종료
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            }
+            viewer.classList.remove('fullscreen');
+            if (btn) btn.textContent = '⛶ 전체화면';
+            setTimeout(function() { viewer.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
+            return;
+        }
+
+        // 브라우저 Fullscreen API 사용 (우선)
+        var el = viewer;
+        viewer.classList.add('fullscreen');
+        if (btn) btn.textContent = '✕ 닫기';
+
+        if (el.requestFullscreen) {
+            el.requestFullscreen().catch(function() {});
+        } else if (el.webkitRequestFullscreen) {
+            el.webkitRequestFullscreen();
+        }
+    }
+
+    // 브라우저 전체화면 종료 시 CSS 클래스 정리
+    document.addEventListener('fullscreenchange', function() {
+        if (!document.fullscreenElement) {
+            document.querySelectorAll('.slide-viewer.fullscreen').forEach(function(el) {
+                el.classList.remove('fullscreen');
+                var bid = el.id;
+                var btn = bid ? document.getElementById('slideFsBtn_' + bid.replace('slideViewer_', '')) : null;
+                if (btn) btn.textContent = '⛶ 전체화면';
+            });
+        }
+    });
+    document.addEventListener('webkitfullscreenchange', function() {
+        if (!document.webkitFullscreenElement) {
+            document.querySelectorAll('.slide-viewer.fullscreen').forEach(function(el) {
+                el.classList.remove('fullscreen');
+                var bid = el.id;
+                var btn = bid ? document.getElementById('slideFsBtn_' + bid.replace('slideViewer_', '')) : null;
+                if (btn) btn.textContent = '⛶ 전체화면';
+            });
+        }
+    });
+
+    // 각 materialId별 전역 함수 등록 (onclick에서 호출)
+    function getSlideUrlWithToken(url) {
+        if (!url) return url;
+        var token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        if (!token) return url;
+        var sep = url.indexOf('?') >= 0 ? '&' : '?';
+        return url + sep + 'token=' + encodeURIComponent(token);
+    }
+
+    function initSlideViewer(materialId, fileUrl) {
+        // 함수 등록
+        window['initSlideViewer_' + materialId] = function(fu) {
+            createSlideViewer(materialId, fu);
+        };
+        window['navigateSlide_' + materialId] = function(dir) {
+            navigateSlideFn(materialId, dir);
+        };
+        window['toggleFullscreen_' + materialId] = function() {
+            toggleFullscreenFn(materialId);
+        };
+        window['handleSlideError_' + materialId] = function() {
+            var loading = document.getElementById('slideLoading_' + materialId);
+            if (loading) { loading.innerHTML = '<span>⚠️ 슬라이드를 불러올 수 없습니다</span>'; loading.style.display = 'flex'; }
+        };
+        // 실행
+        createSlideViewer(materialId, fileUrl);
+    }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260807e"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+    <script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

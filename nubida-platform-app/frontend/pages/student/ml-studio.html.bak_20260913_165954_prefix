@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>누비다머신 — 이미지 학습 스튜디오</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260910nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260805c">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/pages/student/style.css?v=20260804c">
+    <link rel="stylesheet" href="/common/css/features/ml-studio.css?v=20260901a">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <script src="/common/js/popup.js?v=20260805a"></script>
+    <style id="ml-studio-design">
+/* ══════════════════════════════════════════════════════════════════════
+   누비다머신 학습 스튜디오 — 전문 리디자인 (2026-09-13, 윤비스 지시)
+   · 페이지 전용 오버레이. ID/클래스/구조/스크립트는 일절 변경하지 않는다.
+   · 디자인 토큰: --point #4F5EF8 / border #E8ECF5 / text #1F2437
+   · 이모지 아이콘 → 인라인 SVG 배지(CSS 마스크) 로 대체, 컬러박스·신호등점 제거
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 페이지 배경/간격 ─────────────────────────────────────────────── */
+.main-content {
+    background: linear-gradient(180deg, #FBFCFE 0%, #F6F8FC 320px, #F6F8FC 100%);
+}
+.main-content > .top-nav {
+    padding-bottom: 14px;
+    border-bottom: 1px solid #E8ECF5;
+    margin-bottom: 20px;
+}
+.top-nav-left h1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: #1F2437;
+}
+/* 헤더 앞에 SVG 배지 삽입 */
+.top-nav-left h1::before {
+    content: '';
+    width: 30px; height: 30px;
+    flex: 0 0 30px;
+    border-radius: 9px;
+    background-color: #4F5EF8;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3'/%3E%3Crect x='6' y='6' width='12' height='12' rx='2.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 17px 17px;
+    box-shadow: 0 2px 6px rgba(79, 94, 248, .28);
+}
+
+/* ── 모드 라벨 필(pill) ──────────────────────────────────────────── */
+.ml-mode-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #4F5EF8 !important;
+    background: #EEF2FF;
+    border: 1px solid #DCE3FF;
+    border-radius: 999px;
+    padding: 3px 11px;
+    margin-left: 4px;
+    letter-spacing: -0.2px;
+}
+
+/* ── 프로젝트 선택 / 상단 버튼 ────────────────────────────────────── */
+.ml-project-select {
+    max-width: 230px;
+    height: 38px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 34px 0 13px;
+    border: 1px solid #E8ECF5;
+    border-radius: 11px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2398A1B2' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center / 15px 15px;
+    color: #1F2437;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+.ml-project-select:hover { border-color: #D5DCEA; }
+.ml-project-select:focus {
+    outline: none;
+    border-color: #4F5EF8;
+    box-shadow: 0 0 0 3px rgba(79, 94, 248, .13);
+}
+.top-nav-right .small-text {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #98A1B2;
+    letter-spacing: -0.2px;
+}
+
+/* ── 카드(패널) 공통 — 유리질 제거, 정돈된 화이트 카드 ─────────────── */
+.ml-panel {
+    background: #fff !important;
+    border: 1px solid #E8ECF5 !important;
+    border-radius: 16px !important;
+    padding: 18px !important;
+    box-shadow: 0 1px 2px rgba(31, 36, 55, .04), 0 1px 3px rgba(31, 36, 55, .03) !important;
+    backdrop-filter: none !important;
+    display: flex;
+    flex-direction: column;
+}
+.ml-panel + .ml-panel { border-top: 0; }
+
+/* 패널 타이틀 — 이모지 대신 SVG 배지 + 상단 구분선 */
+.ml-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    color: #1F2437 !important;
+    letter-spacing: -0.35px;
+    padding-bottom: 12px;
+    margin-bottom: 15px !important;
+    border-bottom: 1px solid #F1F4FA;
+    position: relative;
+    text-indent: 0;
+}
+.ml-panel-title::before {
+    content: '';
+    width: 26px; height: 26px;
+    flex: 0 0 26px;
+    border-radius: 8px;
+    background-color: #EEF2FF;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 15px 15px;
+    /* 기본(샘플 수집) 아이콘 — 카메라 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/%3E%3Ccircle cx='12' cy='13' r='4'/%3E%3C/svg%3E");
+}
+
+/* ── 모드 스위치(이미지/음성) — 세그먼티드 ─────────────────────────── */
+.ml-mode-switch {
+    display: flex;
+    gap: 3px;
+    background: #F4F6FB;
+    border: 1px solid #E8ECF5;
+    border-radius: 12px;
+    padding: 3px;
+    margin-bottom: 14px;
+}
+.ml-mode-btn {
+    flex: 1;
+    padding: 9px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #98A1B2;
+    background: transparent;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all .18s ease;
+    white-space: nowrap;
+    letter-spacing: -0.2px;
+}
+.ml-mode-btn:hover { color: #5A6478; }
+.ml-mode-btn.active {
+    background: #fff;
+    color: #4F5EF8;
+    box-shadow: 0 1px 3px rgba(31, 36, 55, .10), 0 0 0 1px rgba(79, 94, 248, .10);
+}
+
+/* ── 카메라/오디오 뷰포트 ────────────────────────────────────────── */
+.ml-camera-wrap {
+    position: relative;
+    background: #0E1120;
+    border-radius: 14px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    min-height: 190px;
+    border: 1px solid #E1E7F2;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .03);
+}
+.ml-camera-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ml-camera-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #131829 0%, #0E1120 100%);
+    color: #8B93A7; font-size: 12.5px; font-weight: 600; text-align: center;
+    padding: 20px; line-height: 1.55; letter-spacing: -0.2px;
+}
+.ml-camera-overlay.hidden { display: none; }
+.ml-camera-overlay::before {
+    content: '';
+    position: absolute;
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    opacity: .5;
+    background-color: rgba(79, 94, 248, .16);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C86F8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/%3E%3Ccircle cx='12' cy='13' r='4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 26px 26px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, calc(-50% - 32px));
+}
+.ml-camera-badge {
+    position: absolute; top: 11px; left: 11px;
+    background: rgba(239, 68, 68, .94);
+    color: #fff;
+    font-size: 9.5px; font-weight: 800; letter-spacing: .7px;
+    padding: 4px 9px; border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, .35);
+}
+.ml-camera-actions {
+    display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px;
+}
+.ml-file-btn { cursor: pointer; margin: 0; }
+.ml-capture-hold { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.ml-hold-btn {
+    flex: 1; padding: 13px; font-size: 13.5px; font-weight: 800;
+    border-radius: 12px; user-select: none; touch-action: none;
+    letter-spacing: -0.3px;
+}
+.ml-hold-btn:active { transform: scale(.975); }
+.ml-hold-count {
+    font-size: 13px; font-weight: 800; color: #4F5EF8;
+    min-width: 52px; text-align: center;
+    background: #EEF2FF; border-radius: 9px; padding: 7px 0;
+}
+.ml-help {
+    font-size: 12px; color: #98A1B2; margin-top: 12px; line-height: 1.6;
+    padding-top: 11px; border-top: 1px dashed #EDF1F8; letter-spacing: -0.2px;
+}
+
+/* ── 오디오 캔버스 ───────────────────────────────────────────────── */
+#audioWaveCanvas {
+    width: 100%; height: 62px; border-radius: 11px; background: #0B0E1A;
+    margin-bottom: 9px; display: block;
+}
+#audioSpecCanvas {
+    width: 100%; aspect-ratio: 1/1; border-radius: 12px;
+    background: #0B0E1A; display: block;
+}
+.ml-audio-wrap {
+    position: relative; border-radius: 14px; overflow: hidden;
+    border: 1px solid #E1E7F2;
+}
+.ml-audio-wrap .ml-camera-overlay { border-radius: 0; }
+
+/* ── 클래스(라벨) 패널 ───────────────────────────────────────────── */
+.ml-classes-head {
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 12px; flex-wrap: wrap;
+}
+.ml-class-total {
+    margin-left: auto;
+    font-size: 11.5px; font-weight: 700; color: #4F5EF8;
+    background: #EEF2FF; border-radius: 999px; padding: 5px 12px;
+    font-variant-numeric: tabular-nums;
+}
+.ml-class-list {
+    display: flex; flex-direction: column; gap: 9px;
+    max-height: 430px; overflow-y: auto; padding-right: 3px;
+}
+.ml-class-card {
+    border: 1px solid #E8ECF5;
+    border-radius: 13px;
+    padding: 11px 12px;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    background: #fff;
+    position: relative;
+}
+.ml-class-card:hover { border-color: #D5DCEA; background: #FCFDFF; }
+.ml-class-card.selected {
+    border-color: #4F5EF8;
+    background: #FBFBFF;
+    box-shadow: 0 0 0 3px rgba(79, 94, 248, .10);
+}
+.ml-class-card.selected::after {
+    content: '';
+    position: absolute; left: -1px; top: 12px; bottom: 12px;
+    width: 3px; border-radius: 0 3px 3px 0; background: #4F5EF8;
+}
+.ml-class-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+.ml-class-num {
+    min-width: 21px; height: 21px; padding: 0 6px; border-radius: 7px;
+    background: #EEF2FF; color: #4F5EF8;
+    font-size: 11px; font-weight: 800;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-variant-numeric: tabular-nums;
+}
+.ml-class-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.ml-class-name {
+    flex: 1; font-size: 13.5px; font-weight: 700; color: #1F2437;
+    letter-spacing: -0.25px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ml-class-count {
+    font-size: 11px; font-weight: 700; color: #98A1B2;
+    font-variant-numeric: tabular-nums;
+}
+.ml-class-del {
+    background: none; border: none; color: #B9C0CE; font-size: 14px;
+    cursor: pointer; padding: 3px 7px; border-radius: 8px;
+    transition: background .15s, color .15s; line-height: 1;
+}
+.ml-class-del:hover { background: #FEF2F2; color: #DC2626; }
+.ml-thumbs { display: flex; flex-wrap: wrap; gap: 4px; }
+.ml-thumb {
+    width: 42px; height: 42px; border-radius: 8px; object-fit: cover;
+    border: 1px solid #EDF1F8; background: #F7F9FC;
+}
+.ml-thumb-more {
+    width: 42px; height: 42px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: #F4F6FB; color: #98A1B2; font-size: 10.5px; font-weight: 800;
+}
+.ml-class-empty {
+    font-size: 12px; color: #98A1B2; text-align: center;
+    padding: 22px 0; line-height: 1.6;
+    border: 1.5px dashed #E8ECF5; border-radius: 13px;
+}
+
+/* ── 학습 패널 ───────────────────────────────────────────────────── */
+.ml-train-info {
+    font-size: 12.5px; color: #5A6478; margin-bottom: 13px;
+    line-height: 1.65; word-break: keep-all; letter-spacing: -0.2px;
+}
+.ml-train-info.ml-train-warn {
+    color: #B45309; background: #FFFBEB; border: 1px solid #FDE68A;
+    border-radius: 11px; padding: 11px 13px; font-weight: 700; font-size: 12.5px;
+}
+.btn-block { width: 100%; padding: 13px; font-size: 14.5px; font-weight: 800; border-radius: 12px; letter-spacing: -0.3px; }
+.ml-progress { margin-top: 15px; }
+.ml-progress-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; font-weight: 700; color: #5A6478; margin-bottom: 7px;
+}
+.ml-progress-bar { height: 8px; background: #EEF1F8; border-radius: 20px; overflow: hidden; }
+.ml-progress-fill {
+    height: 100%; background: linear-gradient(90deg, #4F5EF8, #7C6CF8);
+    border-radius: 20px; transition: width .3s ease;
+}
+.ml-train-done { margin-top: 15px; text-align: center; }
+.ml-train-done p {
+    font-size: 13.5px; font-weight: 700; color: #16A34A; margin-bottom: 12px;
+    background: #F0FDF4; border: 1px solid #BBF7D0;
+    border-radius: 11px; padding: 11px 13px; line-height: 1.5; letter-spacing: -0.2px;
+}
+.ml-train-done .btn { margin: 3px; }
+
+/* ── 실시간 분류 패널 ────────────────────────────────────────────── */
+.ml-result { min-height: 190px; display: flex; flex-direction: column; gap: 9px; margin-top: 13px; }
+.ml-result-empty {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    color: #98A1B2; font-size: 12.5px; font-weight: 600;
+    text-align: center; line-height: 1.7;
+    border: 1.5px dashed #E8ECF5; border-radius: 14px; padding: 24px;
+    letter-spacing: -0.2px;
+}
+.ml-result-bar-row { display: flex; align-items: center; gap: 9px; }
+.ml-result-bar-label {
+    width: 84px; font-size: 12px; font-weight: 700; color: #5A6478;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ml-result-bar-track { flex: 1; height: 15px; background: #EEF1F8; border-radius: 20px; overflow: hidden; }
+.ml-result-bar-fill { height: 100%; border-radius: 20px; transition: width .15s; }
+.ml-result-bar-pct {
+    width: 46px; font-size: 12px; font-weight: 800; color: #4F5EF8;
+    text-align: right; font-variant-numeric: tabular-nums;
+}
+.ml-result-top {
+    margin-top: 13px; padding: 18px 16px; border-radius: 14px; text-align: center;
+    background: linear-gradient(135deg, #4F5EF8, #7C6CF8);
+    color: #fff; box-shadow: 0 6px 18px rgba(79, 94, 248, .26);
+}
+.ml-result-label { font-size: 21px; font-weight: 800; letter-spacing: -0.5px; }
+.ml-result-pct { font-size: 13px; font-weight: 600; opacity: .92; margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+/* ── BLE(아두이노) 연결 박스 ─────────────────────────────────────── */
+.ml-serial-box {
+    border: 1px solid #E8ECF5; border-radius: 14px;
+    padding: 14px; background: #FAFBFE; margin-top: 14px;
+}
+.ml-serial-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    flex-wrap: wrap;
+}
+.ml-serial-status {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 13px; border-radius: 11px;
+    font-size: 12.5px; font-weight: 700; letter-spacing: -0.2px;
+    background: #F4F6FB; color: #98A1B2; margin-bottom: 0;
+}
+.ml-serial-status::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: #C3CAD8; flex: 0 0 7px;
+}
+.ml-serial-status.connected { background: #F0FDF4; color: #16A34A; }
+.ml-serial-status.connected::before { background: #22C55E; box-shadow: 0 0 0 3px rgba(34, 197, 94, .18); }
+.ml-serial-prefix {
+    margin-top: 11px; padding: 10px 13px; border-radius: 11px;
+    font-size: 11.5px; font-weight: 600; color: #5A6478;
+    background: #F6F8FD; border: 1px solid #EDF1F8;
+    line-height: 1.55; letter-spacing: -0.2px;
+}
+.ml-serial-prefix strong { color: #4F5EF8; font-weight: 800; }
+/* 260913: 로그 박스(.ml-serial-log) 제거 — 화면에서 삭제. JS logStudio()는
+   quiet 처리되어 콘솔 전용으로만 남는다 (동작/전송 로직은 그대로 유지). */
+
+.ml-tx-status {
+    margin-top: 12px; padding: 11px 14px; border-radius: 11px;
+    background: #F4F6FB; color: #98A1B2; font-size: 12.5px; font-weight: 700;
+    text-align: center; min-height: 22px; line-height: 1.55;
+    transition: background .2s, color .2s; letter-spacing: -0.2px;
+}
+.ml-tx-status.ok { background: #F0FDF4; color: #15803D; }
+.ml-tx-status.err { background: #FEF2F2; color: #B91C1C; }
+
+/* ── 음성 명령 상태 ──────────────────────────────────────────────── */
+.ml-voice-status {
+    margin-top: 11px; padding: 11px 14px; border-radius: 11px;
+    background: #EEF2FF; color: #4F5EF8;
+    font-size: 12.5px; font-weight: 700; line-height: 1.55;
+    letter-spacing: -0.2px;
+}
+
+/* ── 빈 상태(프로젝트 없음) ──────────────────────────────────────── */
+.ml-empty {
+    text-align: center; padding: 64px 28px;
+    background: #fff; border: 1px solid #E8ECF5;
+    border-radius: 18px; box-shadow: 0 1px 3px rgba(31, 36, 55, .04);
+}
+.ml-empty-icon {
+    width: 62px; height: 62px; margin: 0 auto 18px;
+    border-radius: 18px; font-size: 0;
+    background-color: #EEF2FF;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3'/%3E%3Crect x='6' y='6' width='12' height='12' rx='2.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: center; background-size: 30px 30px;
+}
+.ml-empty h2 {
+    font-size: 20px; font-weight: 800; color: #1F2437;
+    margin-bottom: 9px; letter-spacing: -0.5px;
+}
+.ml-empty p {
+    color: #5A6478; font-size: 13.5px; max-width: 470px;
+    margin: 0 auto 22px; line-height: 1.7; letter-spacing: -0.2px;
+    word-break: keep-all;
+}
+
+/* ── 버튼 정돈 (이모지 텍스트는 그대로 두되 형태만 정리) ─────────── */
+.ml-panel .btn {
+    border-radius: 10px; font-weight: 700; letter-spacing: -0.25px;
+    transition: transform .12s ease, box-shadow .12s ease, background .15s;
+}
+.ml-panel .btn-sm { padding: 8px 13px; font-size: 12.5px; }
+.ml-panel .btn-primary { box-shadow: 0 1px 2px rgba(79, 94, 248, .22); }
+.ml-panel .btn-primary:hover:not(:disabled) { box-shadow: 0 3px 10px rgba(79, 94, 248, .28); }
+.ml-panel .btn:active:not(:disabled) { transform: translateY(1px); }
+.ml-panel .btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+
+/* ── 모달 정돈 ───────────────────────────────────────────────────── */
+.modal {
+    border-radius: 16px;
+    border: 1px solid #E8ECF5;
+    box-shadow: 0 18px 48px rgba(31, 36, 55, .16);
+    overflow: hidden;
+}
+.modal-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid #F1F4FA;
+}
+.modal-header h3 {
+    font-size: 16px; font-weight: 800; color: #1F2437;
+    letter-spacing: -0.4px;
+}
+.modal-body { padding: 18px 22px; }
+.modal-footer {
+    padding: 14px 22px 18px;
+    border-top: 1px solid #F1F4FA;
+    display: flex; justify-content: flex-end; gap: 8px;
+}
+.modal .form-input {
+    height: 42px; border-radius: 11px; border: 1px solid #E8ECF5;
+    font-size: 13.5px; padding: 0 14px;
+    transition: border-color .15s, box-shadow .15s;
+}
+.modal .form-input:focus {
+    outline: none; border-color: #4F5EF8;
+    box-shadow: 0 0 0 3px rgba(79, 94, 248, .12);
+}
+.modal .form-label {
+    font-size: 12px; font-weight: 700; color: #5A6478;
+    margin-bottom: 6px; display: block; letter-spacing: -0.2px;
+}
+
+/* ── 사전학습 세트 모달 내부 ─────────────────────────────────────── */
+#presetSetList { display: flex; flex-direction: column; gap: 8px; }
+#presetChips { gap: 6px !important; }
+#presetDesc { font-size: 12.5px !important; color: #5A6478 !important; line-height: 1.6; }
+
+/* ── 반응형 ──────────────────────────────────────────────────────── */
+/* 기본: 4열 (카메라 320 · 클래스 · 학습 · 분류 300) — 넓은 화면 */
+.ml-studio-grid {
+    grid-template-columns: 320px minmax(200px, 1fr) minmax(200px, 1fr) 300px !important;
+    gap: 16px !important;
+}
+/* 1500px 이하: 2×2 배치 (각 패널 최소 300px 확보 — 실사용 최적) */
+@media (max-width: 1500px) {
+    .ml-studio-grid {
+        grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr) !important;
+        gap: 16px !important;
+    }
+}
+/* 1180px 이하: 1열 */
+@media (max-width: 1180px) {
+    .ml-studio-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 900px) {
+    .ml-class-list { max-height: 340px; }
+    .main-content > .top-nav { padding-bottom: 12px; margin-bottom: 16px; }
+    .top-nav-right { flex-wrap: wrap; gap: 8px; }
+    .ml-project-select { max-width: 100%; flex: 1 1 160px; }
+    .ml-result { min-height: 160px; }
+}
+@media (max-width: 600px) {
+    .ml-panel { padding: 14px !important; border-radius: 14px !important; }
+    .ml-camera-actions .btn { flex: 1 1 44%; }
+    .ml-classes-head .btn { flex: 1 1 auto; }
+    .ml-class-total { margin-left: 0 !important; }
+    .ml-train-done .btn { display: block; width: 100%; margin: 6px 0; }
+    .ml-serial-head { flex-direction: column; align-items: stretch; }
+    .ml-serial-head .btn { width: 100%; }
+}
+/* ══════════════════════════════════════════════════════════════════════
+   [2차 정밀 정돈] 색상 통일 · 이모지 제거 · 정렬 보정
+   · 공용 buttons.css 의 회색(#64748B)/노랑(#EFEFEF)/청록(#0891B2) 버튼이
+     페이지의 블루·화이트 팔레트와 충돌 → 페이지 범위에서만 재정의한다.
+   · 패널 타이틀/버튼의 이모지는 텍스트 노드를 건드리지 않고
+     폰트 크기 0 + ::before SVG 배지로 치환한다(구조/ID 불변).
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 버튼 색상 통일 ─────────────────────────────────────────────── */
+.ml-panel .btn-secondary,
+.ml-empty .btn-secondary {
+    background: #fff !important;
+    color: #3C4560 !important;
+    border: 1px solid #E3E8F3 !important;
+    box-shadow: 0 1px 2px rgba(31, 36, 55, .04) !important;
+}
+.ml-panel .btn-secondary:hover:not(:disabled) {
+    background: #F7F9FD !important;
+    border-color: #CFD8EA !important;
+    color: #1F2437 !important;
+}
+.ml-panel .btn-accent,
+.ml-empty .btn-accent {
+    background: #EEF2FF !important;
+    color: #4F5EF8 !important;
+    border: 1px solid #DCE3FF !important;
+    box-shadow: none !important;
+}
+.ml-panel .btn-accent:hover:not(:disabled) {
+    background: #E3E9FF !important;
+    border-color: #C7D2FE !important;
+}
+.ml-panel .btn-primary:disabled,
+.ml-panel .btn-secondary:disabled,
+.ml-panel .btn-accent:disabled {
+    background: #F4F6FB !important;
+    color: #B9C0CE !important;
+    border: 1px solid #EDF1F8 !important;
+    opacity: 1 !important;
+    box-shadow: none !important;
+}
+/* '꾹 눌러 다중 수집' — 강조 버튼이므로 프라이머리 계열로 승격 */
+.ml-hold-btn:not(:disabled) {
+    background: #4F5EF8 !important;
+    color: #fff !important;
+    border: 1px solid #4F5EF8 !important;
+    box-shadow: 0 2px 8px rgba(79, 94, 248, .24) !important;
+}
+.ml-hold-btn:not(:disabled):hover { background: #4553E8 !important; }
+
+/* ── 경고 안내문 — 노랑 제거, 뉴트럴 블루 ───────────────────────── */
+.ml-train-info.ml-train-warn {
+    background: #F7F9FD !important;
+    border: 1px solid #E3E8F3 !important;
+    color: #5A6478 !important;
+    font-weight: 600 !important;
+    font-size: 12.5px !important;
+    position: relative;
+    padding: 11px 13px 11px 38px !important;
+}
+.ml-train-info.ml-train-warn::before {
+    content: '';
+    position: absolute; left: 13px; top: 12px;
+    width: 15px; height: 15px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 8h.01M11 12h1v4h1'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: center; background-size: 15px 15px;
+}
+
+/* ── 클래스 헤드 정렬 ('샘플 0장' 배지가 어중간하게 뜨는 문제) ───── */
+.ml-classes-head {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px 8px;
+}
+.ml-class-total {
+    margin-left: auto !important;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+/* 좁은 패널(2열 배치 시)에서는 버튼이 줄바꿈되며 배지가 다음 줄 우측에 붙는다 */
+@media (max-width: 1400px) {
+    .ml-classes-head .btn { flex: 0 1 auto; }
+}
+
+/* ── 패널 타이틀 이모지 → SVG 배지 (패널별 아이콘 지정) ─────────── */
+
+/* 타이틀 4종 아이콘은 ::before 배경이미지로 지정 (순서 기반) */
+.ml-panel:nth-of-type(1) .ml-panel-title::before { /* 샘플 수집 — 카메라 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/%3E%3Ccircle cx='12' cy='13' r='4'/%3E%3C/svg%3E");
+}
+.ml-panel:nth-of-type(2) .ml-panel-title::before { /* 클래스 — 태그 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.6 13.4 12 22l-9-9V4h9z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E");
+}
+.ml-panel:nth-of-type(3) .ml-panel-title::before { /* 학습 — 슬라이더 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3'/%3E%3Cpath d='M1 14h6M9 8h6M17 16h6'/%3E%3C/svg%3E");
+}
+.ml-panel:nth-of-type(4) .ml-panel-title::before { /* 실시간 분류 — 타깃 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='4.5'/%3E%3Ccircle cx='12' cy='12' r='1'/%3E%3C/svg%3E");
+}
+
+/* ── 상단 헤더 이모지 정돈 ──────────────────────────────────────── */
+.top-nav-left h1 { font-size: 18.5px !important; }
+
+/* ── 프로젝트 선택 옵션(✓ 표시) 정돈 ────────────────────────────── */
+.ml-project-select option { font-size: 13px; color: #1F2437; }
+
+/* ── btn-primary 색상 통일 (공용 buttons.css 의 청록 #0891B2 → 브랜드 블루) ── */
+.ml-panel .btn-primary:not(:disabled),
+.ml-empty .btn-primary:not(:disabled),
+.modal-footer .btn-primary:not(:disabled),
+.top-nav-right .btn-primary:not(:disabled) {
+    background: #4F5EF8 !important;
+    border: 1px solid #4F5EF8 !important;
+    color: #fff !important;
+    box-shadow: 0 1px 3px rgba(79, 94, 248, .28) !important;
+}
+.ml-panel .btn-primary:not(:disabled):hover,
+.ml-empty .btn-primary:not(:disabled):hover,
+.modal-footer .btn-primary:not(:disabled):hover,
+.top-nav-right .btn-primary:not(:disabled):hover {
+    background: #4553E8 !important;
+    border-color: #4553E8 !important;
+    box-shadow: 0 4px 12px rgba(79, 94, 248, .30) !important;
+}
+/* btn-danger 도 팔레트에 맞게 정돈 */
+.modal-footer .btn-danger {
+    background: #DC2626 !important; border: 1px solid #DC2626 !important;
+    color: #fff !important; border-radius: 10px; font-weight: 700;
+}
+.modal-footer .btn-danger:hover { background: #B91C1C !important; border-color: #B91C1C !important; }
+
+    
+/* ── [3차 마감] 배지 우측 정렬 + 패널 높이 균형 ─────────────────── */
+/* '샘플 0장' 배지를 헤더 맨 우측으로 밀착 */
+.ml-classes-head .ml-class-total { margin-left: auto !important; }
+
+/* 같은 행 패널 높이를 맞춰 빈 공백이 생기지 않게 한다 */
+.ml-studio-grid { align-items: stretch !important; }
+.ml-panel { min-height: 100%; }
+/* 카메라 패널은 내용이 길어 기준이 되고, 다른 패널은 늘어난다.
+   빈 공백이 남는 패널은 남은 높이를 결과/목록 영역이 채우도록 한다. */
+.ml-class-list { flex: 1 1 auto; max-height: none !important; }
+.ml-result { flex: 1 1 auto; }
+.ml-result-empty { min-height: 190px; }
+
+/* 실시간 분류 빈 상태 — 아이콘 추가로 의도적인 느낌 강화 */
+.ml-result-empty {
+    flex-direction: column;
+    gap: 12px;
+    font-size: 13px;
+}
+.ml-result-empty::before {
+    content: '';
+    width: 44px; height: 44px;
+    border-radius: 13px;
+    background-color: #F4F6FB;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B9C0CE' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='4.5'/%3E%3Ccircle cx='12' cy='12' r='1'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: center; background-size: 22px 22px;
+}
+/* 클래스가 없을 때 빈 상태도 의도적으로 */
+.ml-class-empty { padding: 26px 0; }
+
+    </style>
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+            <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+            <a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+            <a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+            <a class="nav-item active" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+            <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+            <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+            <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+            <a class="nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+            <a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+            <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+            <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-name" id="sidebarUserName">사용자</div>
+            <div class="user-role" id="sidebarUserRole">학생</div>
+            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+        </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main-content">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+                <h1>누비다머신 <span id="modeLabel" class="ml-mode-label">이미지 분류</span></h1>
+            </div>
+            <div class="top-nav-right">
+                <select id="projectSelect" class="ml-project-select" title="프로젝트 선택">
+                    <option value="">— 프로젝트 선택 —</option>
+                </select>
+                <button class="btn btn-primary btn-sm" onclick="openCreateProject()">＋ 새 프로젝트</button>
+                <span class="small-text" id="todayDate"></span>
+            </div>
+        </div>
+
+        <!-- 프로젝트 없음 안내 -->
+        <div id="noProjectBox" class="card card-premium ml-empty" style="display:none;">
+            <div class="ml-empty-icon"></div>
+            <h2>나만의 이미지 인식 AI를 만들어 보세요!</h2>
+            <p>카메라나 사진으로 직접 학습시켜, 손·주먹·페이퍼 같은 사물을 구분하는 머신러닝 모델을 만들 수 있어요.</p>
+            <button class="btn btn-primary" onclick="openCreateProject()">＋ 첫 프로젝트 만들기</button>
+        </div>
+
+        <!-- 스튜디오 3열 레이아웃 -->
+        <div id="studioBox" style="display:none;">
+            <div class="ml-studio-grid">
+
+                <!-- 좌: 카메라/수집 -->
+                <div class="card card-premium ml-panel">
+                    <div class="ml-panel-title" id="panelTitle">샘플 수집</div>
+                    <!-- 입력 모드 전환 (이미지/음성) -->
+                    <div class="ml-mode-switch">
+                        <button class="ml-mode-btn active" id="modeBtnImage" onclick="initStudio('image')">이미지</button>
+                        <button class="ml-mode-btn" id="modeBtnAudio" onclick="initStudio('audio')">음성</button>
+                    </div>
+                    <!-- 성능: 저사양 고정 (선택 UI 제거 — 260913 윤비스 지시) -->
+                    <!-- 이미지 패널 -->
+                    <div id="cameraPanel">
+                        <div class="ml-camera-wrap">
+                            <video id="cameraVideo" autoplay playsinline muted></video>
+                            <canvas id="captureCanvas" width="224" height="224" style="display:none;"></canvas>
+                            <div class="ml-camera-overlay" id="cameraOverlay">
+                                <div class="ml-camera-hint" id="cameraHint">카메라를 켜려면 [카메라 켜기]를 누르세요</div>
+                            </div>
+                            <div class="ml-camera-badge" id="cameraBadge" style="display:none;">● LIVE</div>
+                        </div>
+                        <div class="ml-camera-actions">
+                            <button class="btn btn-secondary btn-sm" id="btnCameraToggle" onclick="toggleCamera()">📷 카메라 켜기</button>
+                            <button class="btn btn-secondary btn-sm" id="btnCameraFlip" onclick="flipCamera()" style="display:none;">🔄 전환</button>
+                            <button class="btn btn-primary btn-sm" id="btnCapture" onclick="captureSample()" disabled>📸 촬영</button>
+                            <label class="btn btn-secondary btn-sm ml-file-btn">📁 파일<input type="file" id="fileInput" accept="image/*" multiple style="display:none;" onchange="handleFiles(this.files)"></label>
+                        </div>
+                        <div class="ml-capture-hold" id="holdCapture" style="display:none;">
+                            <button class="btn btn-accent ml-hold-btn" id="btnHold"
+                                onmousedown="startHoldCapture()" onmouseup="stopHoldCapture()" onmouseleave="stopHoldCapture()"
+                                ontouchstart="startHoldCapture()" ontouchend="stopHoldCapture()" ontouchcancel="stopHoldCapture()">🎯 꾹 눌러 다중 수집</button>
+                            <span class="ml-hold-count" id="holdCount">0장</span>
+                        </div>
+                        <!-- BLE 연결 — 카메라 모드에서도 이 화면에서 바로 연결+분류 (260913 윤비스 지시) -->
+                        <div class="ml-serial-box" id="serialBoxStudioCam" style="margin-top:12px;">
+                            <div class="ml-serial-head">
+                                <span class="ml-serial-status" id="serialStatusStudioCam" style="margin-bottom:0;">📡 블루투스 미연결</span>
+                                <button class="btn btn-primary btn-sm" id="btnSerialStudioCam" onclick="toggleSerialStudio()">🔗 아두이노 연결 (연결 후 카메라 분류)</button>
+                            </div>
+                            <div class="ml-serial-prefix" id="serialPrefixStudioCam">🔒 명령 암호화 전송 — 카메라가 인식하면 <strong>클래스 번호</strong>가 난독화되어 아두이노로 1회 전송됩니다</div>
+                        </div>
+                    </div>
+                    <!-- 음성 패널 (마이크 입력 — 스펙트로그램 기반) -->
+                    <div id="audioPanel" style="display:none;">
+                        <div class="ml-audio-wrap">
+                            <canvas id="audioWaveCanvas" width="448" height="64"></canvas>
+                            <canvas id="audioSpecCanvas" width="224" height="224"></canvas>
+                            <div class="ml-camera-overlay" id="audioOverlay">
+                                <div class="ml-camera-hint" id="audioHint">마이크가 꺼져 있어요. [🎙️ 마이크 시작]을 누르면 소리를 녹음할 수 있어요.</div>
+                            </div>
+                            <div class="ml-camera-badge" id="audioBadge" style="display:none;">● MIC</div>
+                        </div>
+                        <!-- 특징 방식: MFCC 고정 (스펙트로그램 토글 제거 — 260913 윤비스 지시) -->
+                        <div class="ml-camera-actions">
+                            <button class="btn btn-secondary btn-sm" id="btnMicToggle" onclick="toggleMic()">🎙️ 마이크 시작</button>
+                            <button class="btn btn-primary btn-sm" id="btnAudioCapture" onclick="captureSample()" disabled>🔴 3초 녹음</button>
+                            <button class="btn btn-secondary btn-sm" id="btnAudioPlay" onclick="playLastRecording()" disabled>▶️ 재생</button>
+                        </div>
+                        <!-- BLE 연결 — 음성 모드에서도 이 화면에서 바로 연결+분류 (260913 윤비스 지시) -->
+                        <div class="ml-serial-box" id="serialBoxStudioAudio" style="margin-top:12px;">
+                            <div class="ml-serial-head">
+                                <span class="ml-serial-status" id="serialStatusStudioAudio" style="margin-bottom:0;">📡 블루투스 미연결</span>
+                                <button class="btn btn-primary btn-sm" id="btnSerialStudioAudio" onclick="toggleSerialStudio()">🔗 아두이노 연결 (연결 후 바로 분류)</button>
+                            </div>
+                            <div class="ml-serial-prefix" id="serialPrefixStudioAudio">🔒 명령 암호화 전송 — 발화 확정 시 <strong>클래스 번호</strong>가 난독화되어 아두이노로 1회 전송됩니다</div>
+                        </div>
+                    </div>
+                    <p class="ml-help" id="panelHelp">클래스를 선택한 뒤 촬영/녹음하면 샘플이 쌓여요. 클래스당 20장 이상 권장!</p>
+                </div>
+
+                <!-- 좌하/중앙: 클래스 목록 -->
+                <div class="card card-premium ml-panel">
+                    <div class="ml-panel-title">클래스 (라벨)</div>
+                    <div class="ml-classes-head">
+                        <button class="btn btn-secondary btn-sm" onclick="addClass()">＋ 클래스 추가</button>
+                        <button class="btn btn-accent btn-sm" id="btnPreset" onclick="openPresetModal()" title="수업 시작 전 바로 학습할 수 있는 기본 샘플 세트를 불러와요">사전학습 세트</button>
+                        <span class="ml-class-total" id="classTotal">샘플 0장</span>
+                    </div>
+                    <div class="ml-class-list" id="classList"></div>
+                </div>
+
+                <!-- 중앙: 학습 -->
+                <div class="card card-premium ml-panel">
+                    <div class="ml-panel-title">학습</div>
+                    <div class="ml-train-info" id="trainInfo">클래스를 2개 이상 만들고, 각각 5장 이상 수집하면 학습할 수 있어요.</div>
+                    <button class="btn btn-primary btn-block" id="btnTrain" onclick="trainModel()" disabled>⚙️ 모델 학습 시작</button>
+                    <div class="ml-progress" id="trainProgress" style="display:none;">
+                        <div class="ml-progress-label"><span id="trainStatus">준비 중...</span><span id="trainPct">0%</span></div>
+                        <div class="ml-progress-bar"><div class="ml-progress-fill" id="trainFill" style="width:0%"></div></div>
+                        <canvas id="lossCanvas" width="260" height="80" style="width:100%;height:80px;margin-top:8px;"></canvas>
+                    </div>
+                    <div id="trainDone" class="ml-train-done" style="display:none;">
+                        <p>🎉 학습 완료! 실시간 분류를 테스트해 보세요.</p>
+                        <!-- ★ 10차: 학습 완료 시 모델이 서버에 자동 저장되므로
+                             [💾 모델 저장] 버튼은 기본적으로 숨긴다. 서버 저장에 실패한
+                             경우에만 JS(saveModelToServerCore 실패 경로)가 이 버튼을 노출한다. -->
+                        <button id="btnSaveModelManual" class="btn btn-secondary btn-sm" style="display:none;" onclick="saveModelToServer()">💾 모델 저장 (재시도)</button>
+                    </div>
+                </div>
+
+                <!-- 우: 실시간 분류 -->
+                <div class="card card-premium ml-panel">
+                    <div class="ml-panel-title">실시간 분류</div>
+                    <button class="btn btn-primary btn-block" id="btnClassify" onclick="toggleClassify()" disabled>🎯 분류 시작</button>
+                    <div class="ml-result" id="resultBox">
+                        <div class="ml-result-empty">학습 완료 후 분류를 시작하면<br>여기에 결과가 표시돼요.</div>
+                    </div>
+                    <div class="ml-result-top" id="resultTop" style="display:none;">
+                        <div class="ml-result-label" id="resultLabel">—</div>
+                        <div class="ml-result-pct" id="resultPct">0%</div>
+                    </div>
+                    <!-- BLE 연결 — 이 버튼 하나로 연결 + 분류 시작까지 (하단 공용 박스) -->
+                    <div class="ml-serial-box" id="serialBoxStudio" style="margin-top:12px;">
+                        <div class="ml-serial-head">
+                            <span class="ml-serial-status" id="serialStatusStudio" style="margin-bottom:0;">📡 블루투스 미연결</span>
+                            <button class="btn btn-primary btn-sm" id="btnSerialStudio" onclick="toggleSerialStudio()">🔗 아두이노 연결 (연결 후 바로 분류)</button>
+                        </div>
+                        <div class="ml-serial-prefix" id="serialPrefixStudio">🔒 명령 암호화 전송 — 발화 확정 시 <strong>클래스 번호</strong>가 난독화되어 아두이노로 1회 전송됩니다</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 프로젝트 생성 모달 -->
+<div class="modal-overlay" id="createProjectModal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header"><h3>새 프로젝트</h3></div>
+        <div class="modal-body">
+            <label class="form-label">프로젝트 이름</label>
+            <input type="text" id="newProjectTitle" class="form-input" maxlength="60" placeholder="예: 가위바위보 인식기">
+            <label class="form-label">설명 (선택)</label>
+            <input type="text" id="newProjectDesc" class="form-input" maxlength="200" placeholder="어떤 것을 학습하나요?">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeCreateProject()">취소</button>
+            <button class="btn btn-primary" onclick="createProject()">만들기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 클래스 추가 모달 (네이티브 prompt 대체 — 헤드리스/모바일 호환) -->
+<div class="modal-overlay" id="classModal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header"><h3>새 클래스 추가</h3></div>
+        <div class="modal-body">
+            <label class="form-label">클래스(라벨) 이름</label>
+            <input type="text" id="classModalInput" class="form-input" maxlength="50" placeholder="예: 440Hz, 880Hz, 손, 주먹">
+            <p class="form-help" style="margin-top:6px;font-size:12px;color:#8a8f98;">같은 이름의 클래스는 중복 생성할 수 없어요.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeClassModal()">취소</button>
+            <button class="btn btn-primary" onclick="confirmAddClass()">추가</button>
+        </div>
+    </div>
+</div>
+
+<!-- 사전학습(기본) 세트 불러오기 모달 -->
+<div class="modal-overlay" id="presetModal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header"><h3>사전학습 세트</h3></div>
+        <div class="modal-body">
+            <div id="presetChips" style="display:none;flex-wrap:wrap;gap:6px;margin:0 0 10px;"></div>
+            <p id="presetDesc" style="margin:0 0 10px;font-size:13px;color:#555;"></p>
+            <div id="presetSetList"></div>
+            <div id="presetProgress" style="display:none;margin-top:12px;">
+                <div class="ml-progress-label"><span id="presetStatus">준비 중...</span><span id="presetPct">0%</span></div>
+                <div class="ml-progress-bar"><div class="ml-progress-fill" id="presetFill" style="width:0%"></div></div>
+            </div>
+            <p class="form-help" style="margin:10px 0 0;">이미 같은 이름의 클래스가 있으면 건너뛰고, 새 클래스만 추가돼요. 추가된 샘플은 직접 수집한 샘플과 동일하게 학습에 사용됩니다.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="presetBtnCancel" onclick="closePresetModal()">취소</button>
+            <button class="btn btn-primary" id="presetBtnLoad" onclick="confirmLoadPreset()">불러오기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 삭제 확인 모달 (네이티브 confirm 대체) -->
+<div class="modal-overlay" id="confirmModal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header"><h3>삭제 확인</h3></div>
+        <div class="modal-body">
+            <p id="confirmModalMsg" style="margin:0;">삭제할까요?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeConfirmModal()">취소</button>
+            <button class="btn btn-danger" onclick="confirmRemoveClass()">삭제</button>
+        </div>
+    </div>
+</div>
+
+<script src="/common/js/vendor/tf.min.js?v=20260825a"></script>
+<script src="/common/js/api.js?v=20260910login"></script>
+<script src="/common/js/auth.js?v=20260908a"></script>
+<script src="/common/js/utils.js?v=20260804b"></script>
+<script src="/common/js/pages-student.js?v=20260804b"></script>
+<script src="/common/js/mobile-config.js?v=20260910a"></script>
+<!-- 🔒 보안(260913 윤비스 지시): nubida-bt.js 로드 제거.
+     브라우저에서 난독화하지 않는다 — 서버(POST /ml/bt-command)가 접두어 결합+난독화를
+     수행하고, 브라우저는 완성된 프레임만 받아 전송한다.
+     (기존에는 KEY 상수와 decode() 가 전역 노출되어 통신값을 복원할 수 있었다) -->
+<script src="/common/js/vendor/bluetooth-le-plugin.js?v=20260910a"></script>
+<script src="/common/js/nubida-ble.js?v=20260913y"></script>
+<script src="/common/js/ml-studio.js?v=20260913u"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const now = new Date();
+        const el = document.getElementById('todayDate');
+        if (el) el.textContent = now.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+        try { setupSidebar(); } catch(e) {}
+        try { renderSidebarUser(); } catch(e) {}
+    });
+</script>
+<script src="/common/js/nav.js?v=20260807e"></script>
+<script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS 자연스러움 비교 테스트</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, 'Apple SD Gothic Neo', sans-serif; background:#0f172a; color:#f8fafc;
+         margin:0; padding:14px; font-size:15px; }
+  h1 { font-size:18px; margin:0 0 4px; }
+  .sub { color:#94a3b8; font-size:13px; margin-bottom:14px; }
+  .card { background:#1e293b; border-radius:12px; padding:14px; margin-bottom:11px; }
+  .card h2 { font-size:14px; margin:0 0 10px; color:#38bdf8; }
+  button { width:100%; padding:14px; font-size:16px; font-weight:700; border:none; border-radius:10px;
+           background:#0ea5e9; color:#fff; margin-bottom:8px; font-family:inherit; }
+  button:active { background:#0284c7; }
+  button:disabled { background:#475569; }
+  .row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #334155; }
+  .row:last-child { border:none; }
+  .k { color:#94a3b8; font-size:13px; }
+  .v { font-weight:700; font-variant-numeric:tabular-nums; }
+  #status { text-align:center; padding:10px; font-weight:700; min-height:22px; }
+  .preset { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+  .preset button { flex:1; min-width:70px; margin:0; padding:10px 4px; font-size:13px; background:#334155; }
+  .preset button.on { background:#0ea5e9; }
+  audio { width:100%; margin:6px 0; }
+  .good { color:#4ade80; } .warn { color:#fbbf24; }
+</style>
+</head>
+<body>
+<h1>🎤 TTS 자연스러움 비교</h1>
+<div class="sub">noiseScale / noiseScaleW 를 바꿔가며 음성을 비교합니다.</div>
+
+<div id="status">엔진 로딩 중...</div>
+<div id="out"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const S = (t) => { $('status').textContent = t; };
+
+// 다양한 noiseScale 조합
+const CONFIGS = [
+  { label: 'A. 현재 (0.6/0.7)',     noiseScale: 0.6,  noiseScaleW: 0.7,  desc: '지금 설정 — 안정적이나 단조로움' },
+  { label: 'B. 기본값 (0.667/0.8)', noiseScale: 0.667, noiseScaleW: 0.8, desc: 'sherpa 기본값 — 약간 더 자연스러움' },
+  { label: 'C. 자연스러움 (0.8/0.9)', noiseScale: 0.8, noiseScaleW: 0.9, desc: '억양 변화 증가' },
+  { label: 'D. 표현력 (0.95/1.0)',  noiseScale: 0.95, noiseScaleW: 1.0, desc: '감정 풍부, 약간 불안정 가능' },
+];
+
+const TEXT = '오늘 하루도 정말 수고했어요 내일은 더 좋은 일이 있을 거예요';
+
+async function waitEngine() {
+  while (!(typeof ttsEngine !== 'undefined' && ttsEngine) && performance.now() < 60000) {
+    await new Promise(r => setTimeout(r, 300));
+  }
+  return typeof ttsEngine !== 'undefined' && ttsEngine;
+}
+
+(async () => {
+  const ok = await waitEngine();
+  if (!ok) { S('❌ 엔진 로딩 실패'); return; }
+  S('✅ 엔진 준비됨 — 아래 버튼을 눌러 각 설정을 생성하세요');
+
+  const box = document.createElement('div');
+  box.className = 'card';
+  box.innerHTML = '<h2>설정별 음성 생성</h2>';
+  CONFIGS.forEach((c, i) => {
+    const b = document.createElement('button');
+    b.textContent = c.label;
+    b.onclick = async () => {
+      b.disabled = true; S(c.label + ' 생성 중...');
+      try {
+        // 엔진을 재생성해서 noiseScale 적용
+        const eng = createOfflineTts(Module, {
+          offlineTtsModelConfig: {
+            offlineTtsVitsModelConfig: {
+              model: '/vfs/model/m.onnx', tokens: '/vfs/model/t.txt',
+              dataDir: '/vfs/espeak', noiseScale: c.noiseScale,
+              noiseScaleW: c.noiseScaleW, lengthScale: 1.0
+            },
+            numThreads: 1, debug: 0, provider: 'cpu', modelType: 'vits'
+          },
+          maxNumSentences: 1
+        });
+        const t0 = performance.now();
+        const a = eng.generate({ text: TEXT, sid: 0, speed: 1.0 });
+        const ms = Math.round(performance.now() - t0);
+
+        // WAV 변환
+        const wav = toWav(a.samples, a.sampleRate);
+        const blob = new Blob([wav], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = '<h2>' + c.label + '</h2>' +
+          '<div class="row"><span class="k">설명</span><span class="v">' + c.desc + '</span></div>' +
+          '<div class="row"><span class="k">noiseScale</span><span class="v">' + c.noiseScale + '</span></div>' +
+          '<div class="row"><span class="k">noiseScaleW</span><span class="v">' + c.noiseScaleW + '</span></div>' +
+          '<div class="row"><span class="k">길이</span><span class="v">' + (a.samples.length/a.sampleRate).toFixed(2) + '초</span></div>' +
+          '<div class="row"><span class="k">생성시간</span><span class="v">' + ms + 'ms</span></div>';
+        const au = document.createElement('audio');
+        au.controls = true; au.src = url;
+        card.appendChild(au);
+        const dl = document.createElement('button');
+        dl.textContent = '⬇ 이 음성 다운로드';
+        dl.onclick = () => { const a2 = document.createElement('a'); a2.href = url; a2.download = c.label.replace(/[^A-Z]/g,'') + '.wav'; a2.click(); };
+        card.appendChild(dl);
+        $('out').appendChild(card);
+        S('✅ 생성 완료');
+      } catch (e) { S('❌ 오류: ' + e.message); console.error(e); }
+      b.disabled = false;
+    };
+    box.appendChild(b);
+  });
+  $('out').appendChild(box);
+
+  // WAV 인코더
+  function toWav(samples, sampleRate) {
+    const n = samples.length;
+    const buf = new ArrayBuffer(44 + n * 2);
+    const v = new DataView(buf);
+    const w = (o, s) => { for (let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+    w(0,'RIFF'); v.setUint32(4, 36+n*2, true); w(8,'WAVE'); w(12,'fmt ');
+    v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sampleRate,true); v.setUint32(28,sampleRate*2,true);
+    v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40, n*2, true);
+    for (let i=0;i<n;i++) { let s=Math.max(-1,Math.min(1,samples[i])); v.setInt16(44+i*2, s<0?s*0x8000:s*0x7FFF, true); }
+    return buf;
+  }
+})();
+</script>
+</body>
+</html>

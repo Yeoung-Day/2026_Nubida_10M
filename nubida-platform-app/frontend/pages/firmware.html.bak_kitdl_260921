@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>누비다머신 펌웨어 다운로드</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    background: linear-gradient(160deg, #0F172A 0%, #1E293B 100%);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; color: #E2E8F0;
+  }
+  .card {
+    background: rgba(30,41,59,.85);
+    border: 1px solid rgba(148,163,184,.18);
+    border-radius: 20px;
+    padding: 44px 40px;
+    max-width: 520px; width: 100%;
+    box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    text-align: center;
+  }
+  .badge {
+    display:inline-block; font-size:12px; font-weight:700; letter-spacing:.08em;
+    color:#38BDF8; background:rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.3);
+    padding:6px 14px; border-radius:999px; margin-bottom:22px;
+  }
+  h1 { font-size:23px; font-weight:700; margin-bottom:10px; letter-spacing:-.02em; }
+  .sub { font-size:14px; color:#94A3B8; line-height:1.65; margin-bottom:30px; }
+  .meta {
+    display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+    margin-bottom:28px;
+  }
+  .meta div {
+    background:rgba(15,23,42,.7); border:1px solid rgba(148,163,184,.14);
+    border-radius:10px; padding:10px 16px; font-size:12px; color:#94A3B8;
+  }
+  .meta b { color:#F1F5F9; font-size:14px; display:block; margin-top:3px; }
+  a.btn {
+    display:block; width:100%; padding:17px;
+    background:linear-gradient(135deg,#0EA5E9,#0284C7);
+    color:#fff; text-decoration:none; font-weight:700; font-size:16px;
+    border-radius:12px; transition:.2s; margin-bottom:12px;
+    box-shadow:0 8px 24px rgba(14,165,233,.3);
+  }
+  a.btn:hover { transform:translateY(-2px); box-shadow:0 12px 30px rgba(14,165,233,.42); }
+  a.btn.alt {
+    background:rgba(148,163,184,.1); color:#CBD5E1;
+    border:1px solid rgba(148,163,184,.24); box-shadow:none;
+    font-size:14px; padding:14px;
+  }
+  a.btn.alt:hover { background:rgba(148,163,184,.18); transform:none; box-shadow:none; }
+  .tip {
+    margin-top:26px; padding-top:22px;
+    border-top:1px solid rgba(148,163,184,.14);
+    font-size:12.5px; color:#64748B; line-height:1.8; text-align:left;
+  }
+  .tip b { color:#94A3B8; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">NUBIDA MACHINE · FIRMWARE</span>
+    <h1>누비다머신 펌웨어</h1>
+    <p class="sub">2서보 안정판 · <b style="color:#38BDF8">버퍼오버플로 수정판 v8</b><br>아래 버튼을 누르면 파일이 저장됩니다.</p>
+
+    <div class="meta">
+      <div>버전<b>v8</b></div>
+      <div>크기<b>8.8 KB</b></div>
+      <div>형식<b>.ino</b></div>
+    </div>
+
+    <a class="btn" href="/icons/nubida_servo_v8.ino.txt" download="nubida_two_servo_v6.ino">📥 펌웨어 다운로드 (.ino)</a>
+    <a class="btn alt" href="/icons/nubida_servo_v8.ino" target="_blank">📄 브라우저에서 내용 보기</a>
+
+    <div class="tip">
+      <b>⚠️ 업로드 전 확인</b><br>
+      1. 시리얼 모니터를 <b>반드시 닫기</b> (COM 포트 점유 시 업로드 조용히 실패)<br>
+      2. 보드: Arduino Nano · 프로세서: <b>ATmega328P (Old Bootloader)</b><br>
+      3. 업로드 후 시리얼 맨 윗줄이 <b>v8</b> 인지 확인
+    </div>
+  </div>
+</body>
+</html>

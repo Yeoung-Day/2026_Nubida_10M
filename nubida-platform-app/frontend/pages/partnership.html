@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>파트너십 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <meta name="description" content="누비다 교육센터 직영·프랜차이즈 개원, 에듀케어 제휴, 지사 파트너십 안내.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/pages/public-page.css?v=20260918dd2">
+    <link rel="stylesheet" href="/common/css/pages/site-blocks.css?v=20260908e">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body data-site-page="partnership">
+    <!-- ===== Navigation ===== -->
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="/" class="nav-logo-text"><img src="/common/assets/brand/nubida-logo-light.png" alt="누비다플랫폼" style="height:16px;width:auto;display:block;"></a>
+        </div>
+        <div class="nav-center" id="navCenter">
+            <a href="/pages/company.html" class="nav-link">회사소개</a>
+            <a href="/pages/find-academy.html" class="nav-link">교육기관 찾기</a>
+            <a href="/pages/guide-videos.html" class="nav-link">가이드 영상</a>
+            <a href="/pages/partnership.html" class="nav-link active">파트너십</a>
+            <a href="/pages/contact.html" class="nav-link">문의하기</a>
+        </div>
+        <div class="nav-links">
+            <a href="/pages/login.html" class="nav-btn nav-start">시작하기</a>
+                    <button class="nav-burger" id="navBurger" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+</div>
+    </nav>
+
+    <!-- ===== Hero ===== -->
+    <header class="page-hero">
+        <span class="eyebrow" data-page-eyebrow>파트너십</span>
+        <h1 data-page-title>함께 만들면, 더 큰 교육</h1>
+        <img class="hero-shot" src="/common/assets/design-images/future_campus_collaboration_1779005540029.jpg" alt="협업하는 교육 캠퍼스" referrerpolicy="no-referrer">
+    </header>
+
+    <!-- ===== 본문 ===== -->
+    <main class="site-body">
+        <div id="pageSections">
+            <article class="site-sec fig-top">
+                <img class="site-fig" src="/common/assets/design-images/arduino_coding_education_1779007970947.jpg" alt="아두이노 코딩 교육 현장" referrerpolicy="no-referrer">
+                <div class="fig-body">
+                    <h2>누비다 교육센터</h2>
+                    <p>메이커 코딩 · AI 교육 커리큘럼과 올인원 운영 시스템이 패키지로 제공되는 직영/프랜차이즈 모델입니다.<br>개원 준비부터 원생 모집, 수업 운영까지 본사가 함께합니다.</p>
+                </div>
+            </article>
+            <article class="site-sec fig-top">
+                <img class="site-fig" src="/common/assets/design-images/interactive_digital_textbook_science_1779005523044.jpg" alt="인터랙티브 디지털 학습" referrerpolicy="no-referrer">
+                <div class="fig-body">
+                    <h2>에듀케어 제휴</h2>
+                    <p>기존 공부방 · 교습소에 누비다 커리큘럼과 플랫폼을 도입하는 제휴 모델입니다.<br>학습 관리 자동화로 선생님의 행정 부담을 줄이고, 학부모 신뢰를 높입니다.</p>
+                </div>
+            </article>
+            <article class="site-sec">
+                <h2>지사 파트너</h2>
+                <p>지역별 교육 콘텐츠 · 하드웨어 공급망을 함께하는 B2B 파트너를 모집합니다.<br>개방형 지역 관리(Region) 체계로 지사 고유의 사업 영역을 보장합니다.</p>
+            </article>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-box">
+            <div>
+                <h3>개원 · 제휴 상담을 시작해 보세요</h3>
+                <p>본사 담당자가 맞춤형 사업 계획을 안내해 드립니다.</p>
+            </div>
+            <button class="btn-white" onclick="openContactModal()">상담 신청하기</button>
+        </div>
+    </main>
+
+    <!-- ===== 상담 모달 ===== -->
+    <div class="modal-overlay" id="contactModal" onclick="if(event.target===this)closeContactModal()">
+        <div class="modal">
+            <h3 data-c-modal-title>파트너십 상담 안내</h3>
+            <p class="m-sub" data-c-modal-sub>교육센터 개원 · 에듀케어 제휴에 관한 문의는 아래 경로로 접수해 주세요. 본사 담당자가 1:1로 상담해 드립니다.</p>
+            <div class="contact-row">
+                <div class="c-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <div>
+                    <div class="c-label">상담 전화</div>
+                    <div class="c-value"><a href="tel:1661-0000" data-c-phone>1661-0000</a></div>
+                </div>
+            </div>
+            <div class="contact-row">
+                <div class="c-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div>
+                    <div class="c-label">이메일</div>
+                    <div class="c-value"><a href="mailto:adj29089@naver.com" data-c-email>adj29089@naver.com</a></div>
+                </div>
+            </div>
+            <div class="note" data-c-modal-note>💡 가입 후 <b>본사 1:1 문의</b>를 이용하시면 지사 정보와 상담 내역을 온라인으로 편리하게 관리할 수 있어요.</div>
+            <div class="modal-actions">
+                <button class="btn btn-close" onclick="closeContactModal()">닫기</button>
+                <a href="/pages/register.html" class="btn btn-primary" style="text-decoration:none;">회원가입 하러가기</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">NUBIDA<span>.</span></div>
+            <div class="footer-links" id="footerLinks">
+                <a href="/pages/company.html">회사소개</a>
+                <a href="/pages/policy.html?tab=terms">이용약관</a>
+                <a href="/pages/policy.html?tab=privacy">개인정보처리방침</a>
+                <a href="/pages/partnership.html">파트너십</a>
+                <a href="/pages/contact.html">문의하기</a>
+            </div>
+        </div>
+        <div class="footer-btm">© 2026 누비다플랫폼. All rights reserved.</div>
+    </footer>
+
+    <script>
+    function openContactModal() { document.getElementById('contactModal').classList.add('open'); }
+    function closeContactModal() { document.getElementById('contactModal').classList.remove('open'); }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeContactModal(); });
+    </script>
+    <script src="/common/js/site-blocks.js?v=20260918nl"></script>
+    <script src="/common/js/public-site.js?v=20260914nav"></script>
+</body>
+</html>

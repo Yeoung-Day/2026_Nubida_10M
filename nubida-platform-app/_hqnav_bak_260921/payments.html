@@ -1,0 +1,630 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>결제 관리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+            /* ── 결제 내역 빈 상태 — 가운데 정렬 ── */
+            #paymentTableBody tr.empty td { text-align:center; padding:56px 16px; color:#9CA3AF; }
+            #paymentTableBody tr.empty .empty-icon { font-size:44px; line-height:1; margin-bottom:12px; opacity:.6; }
+            #paymentTableBody tr.empty h3 { font-size:15px; font-weight:600; color:#6B7280; margin:0 0 6px; }
+            #paymentTableBody tr.empty p { font-size:13px; color:#9CA3AF; margin:0; }
+
+            /* ══════════════════════════════════════════════════════
+               HQ 정산 통합 현황 (hq-*) — 세련된·미니멀, 이모지 배제
+               ══════════════════════════════════════════════════════ */
+
+            /* ── 정산 요약 (최상단) ── */
+            .hq-summary { margin-bottom:20px; }
+            .hq-sum-head { display:flex; align-items:baseline; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+            .hq-sum-head h2 { font-size:16px; font-weight:700; color:#111827; margin:0; letter-spacing:-.2px; }
+            .hq-sum-head .hq-period { font-size:12px; color:#9CA3AF; font-variant-numeric:tabular-nums; }
+            .hq-sum-head .hq-ym-input { margin-left:auto; }
+            .hq-ym-input input {
+              border:1px solid #E5E7EB; border-radius:8px; padding:6px 10px;
+              font-size:12.5px; color:#374151; background:#fff; font-variant-numeric:tabular-nums;
+            }
+            .hq-ym-input input:focus { outline:none; border-color:#4F5EF8; box-shadow:0 0 0 3px rgba(79,94,248,.10); }
+
+            /* ── KPI 카드 4종 ── */
+            .hq-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+            @media (max-width:900px){ .hq-kpis{ grid-template-columns:repeat(2,1fr);} }
+            .hq-kpi {
+              position:relative; background:#fff; border:1px solid #EEF0F4; border-radius:14px;
+              padding:16px 18px; overflow:hidden;
+            }
+            .hq-kpi::before {
+              content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:#E5E7EB;
+            }
+            .hq-kpi.is-brand::before { background:#4F5EF8; }
+            .hq-kpi.is-green::before { background:#10B981; }
+            .hq-kpi.is-amber::before { background:#F59E0B; }
+            .hq-kpi.is-amber .hq-kpi-value { color:#DC2626; }
+            .hq-kpi.is-slate::before { background:#64748B; }
+            .hq-kpi-label { font-size:11.5px; font-weight:600; color:#8A93A6; letter-spacing:.02em; margin-bottom:8px; }
+            .hq-kpi-value { font-size:22px; font-weight:700; color:#111827; letter-spacing:-.5px; font-variant-numeric:tabular-nums; line-height:1.15; }
+            .hq-kpi-value small { font-size:13px; font-weight:600; color:#6B7280; margin-left:2px; }
+            .hq-kpi-sub { font-size:11.5px; color:#9CA3AF; margin-top:6px; font-variant-numeric:tabular-nums; }
+            .hq-kpi-sub b { color:#6B7280; font-weight:600; }
+
+            /* ── 교육과정별 인원 칩 ── */
+            .hq-cat-chips { display:flex; flex-wrap:wrap; gap:8px; }
+            .hq-chip {
+              display:inline-flex; align-items:center; gap:7px;
+              background:#F8FAFC; border:1px solid #EDF0F5; border-radius:999px;
+              padding:6px 13px 6px 11px; font-size:12.5px; color:#374151;
+            }
+            .hq-chip .hq-chip-dot { width:6px; height:6px; border-radius:50%; background:#4F5EF8; flex:0 0 auto; }
+            .hq-chip .hq-chip-name { font-weight:500; }
+            .hq-chip .hq-chip-num { font-weight:700; color:#111827; font-variant-numeric:tabular-nums; }
+            .hq-chip .hq-chip-unit { font-size:11px; color:#9CA3AF; }
+            .hq-chip-empty { font-size:12.5px; color:#9CA3AF; }
+
+            /* ── 에듀케어별 정산 카드 ── */
+            .hq-branch-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(390px,1fr)); gap:16px; margin-bottom:24px; }
+            @media (max-width:860px){ .hq-branch-grid{ grid-template-columns:1fr;} }
+            .hq-bcard {
+              background:#fff; border:1px solid #EEF0F4; border-radius:16px; overflow:hidden;
+              display:flex; flex-direction:column;
+            }
+            .hq-bcard-head {
+              display:flex; align-items:center; gap:10px;
+              padding:15px 18px; border-bottom:1px solid #F1F3F7; background:#FCFDFE;
+            }
+            .hq-bcard-head .hq-bname { font-size:14.5px; font-weight:700; color:#111827; letter-spacing:-.2px; }
+            .hq-bcard-head .hq-bcode { font-size:11px; color:#9CA3AF; font-variant-numeric:tabular-nums; }
+            .hq-bcard-head .hq-bstudents {
+              margin-left:auto; font-size:11.5px; color:#6B7280;
+              background:#F1F4F9; border-radius:999px; padding:4px 11px; font-weight:600;
+            }
+            .hq-bcard-head .hq-bstudents b { color:#111827; font-weight:700; font-variant-numeric:tabular-nums; }
+
+            .hq-bcard-body { padding:16px 18px; }
+
+            /* 정산 2열 (순수익 입금 / 로열티) */
+            .hq-settle-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+            .hq-settle-box { border:1px solid #F1F3F7; border-radius:12px; padding:13px 14px; background:#FCFDFE; }
+            .hq-settle-box .hq-sb-label { font-size:11px; font-weight:600; color:#8A93A6; margin-bottom:7px; letter-spacing:.02em; }
+            .hq-settle-box .hq-sb-value { font-size:17px; font-weight:700; color:#111827; letter-spacing:-.3px; font-variant-numeric:tabular-nums; }
+            .hq-settle-box .hq-sb-value.is-brand { color:#4F5EF8; }
+            .hq-settle-box .hq-sb-note { font-size:11.5px; color:#8A93A6; margin-top:6px; font-variant-numeric:tabular-nums; }
+
+            /* 로열티 세부 (입금완료/미수금) */
+            .hq-royalty-rows { border:1px solid #F1F3F7; border-radius:12px; overflow:hidden; margin-bottom:14px; }
+            .hq-rrow { display:flex; align-items:center; padding:9px 14px; font-size:12.5px; }
+            .hq-rrow + .hq-rrow { border-top:1px solid #F6F8FB; }
+            .hq-rrow .hq-rlabel { color:#6B7280; }
+            .hq-rrow .hq-rval { margin-left:auto; font-weight:700; color:#111827; font-variant-numeric:tabular-nums; }
+            .hq-rrow.is-paid .hq-rval { color:#10B981; }
+            .hq-rrow.is-unpaid .hq-rval { color:#EF4444; }
+            .hq-rrow.is-unpaid.is-zero .hq-rval { color:#9CA3AF; }
+
+            /* 강좌별 인원 (에듀케어 카드 내부) */
+            .hq-sub-label { font-size:11px; font-weight:600; color:#8A93A6; margin:18px 0 8px; letter-spacing:.02em; }
+            .hq-cat-list { display:flex; flex-wrap:wrap; gap:7px; }
+            .hq-cat-item {
+              display:inline-flex; align-items:center; gap:7px; background:#F8FAFC;
+              border:1px solid #EDF0F5; border-radius:9px; padding:6px 11px; font-size:12.5px;
+            }
+            .hq-cat-item .hq-ci-name { color:#4B5563; font-weight:500; }
+            .hq-cat-item .hq-ci-num { font-weight:700; color:#111827; font-variant-numeric:tabular-nums; }
+            .hq-cat-item .hq-ci-unit { font-size:11px; color:#9CA3AF; }
+            .hq-cat-empty { font-size:12px; color:#B0B7C3; }
+
+            /* 로딩 스켈레톤 */
+            .hq-loading { display:grid; grid-template-columns:repeat(auto-fill,minmax(390px,1fr)); gap:16px; }
+            .hq-sk { height:210px; border-radius:16px; background:linear-gradient(90deg,#F4F6F9 25%,#EDF0F5 50%,#F4F6F9 75%); background-size:200% 100%; animation:hqShimmer 1.4s infinite; }
+            @keyframes hqShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        </style>
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub active" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="security.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="nav-label">보안 설정</span></a>
+        <a class="nav-item sub" href="access-control.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="nav-label">노래 AI 이용 관리</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>결제 관리</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span><button class="btn btn-ghost btn-xs" onclick="exportExcel('payments')" style="margin-left:8px">📥 엑셀</button>
+   </div>
+   </div>
+
+   <!-- ════ 본사 정산 통합 현황 (에듀케어 순수익·로열티·미수금·강좌별 인원) ════ -->
+   <section class="hq-summary" id="hqSummary">
+   <div class="hq-sum-head">
+   <h2>정산 통합 현황</h2>
+   <span class="hq-period" id="hqPeriod">-</span>
+   <span class="hq-ym-input"><input type="month" id="hqYm" onchange="loadHqOverview()"></span>
+   </div>
+
+   <!-- KPI 4종 -->
+   <div class="hq-kpis" id="hqKpis">
+   <div class="hq-kpi is-slate"><div class="hq-kpi-label">총 소속 학생</div><div class="hq-kpi-value" id="hqTotalStudents">-<small>명</small></div><div class="hq-kpi-sub" id="hqBranchCount">에듀케어 -곳</div></div>
+   <div class="hq-kpi is-brand"><div class="hq-kpi-label">본사 입금액 (순수익)</div><div class="hq-kpi-value" id="hqNetDeposit">-<small>원</small></div><div class="hq-kpi-sub">본사 → 에듀케어 지급</div></div>
+   <div class="hq-kpi is-green"><div class="hq-kpi-label">로열티 입금완료</div><div class="hq-kpi-value" id="hqRoyaltyPaid">-<small>원</small></div><div class="hq-kpi-sub" id="hqRoyaltyDueSub">청구 -원</div></div>
+   <div class="hq-kpi is-amber"><div class="hq-kpi-label">로열티 미수금</div><div class="hq-kpi-value" id="hqRoyaltyUnpaid">-<small>원</small></div><div class="hq-kpi-sub">수익금 승인 시 차감</div></div>
+   </div>
+
+   <!-- 교육과정별 전체 인원 -->
+   <div class="card" style="margin-bottom:20px">
+   <div class="card-header"><h2 style="font-size:14px">교육과정별 전체 인원</h2></div>
+   <div class="card-body">
+   <div class="hq-cat-chips" id="hqGlobalCats"><span class="hq-chip-empty">로딩 중...</span></div>
+   </div>
+   </div>
+
+   <!-- 에듀케어별 정산 카드 -->
+   <div class="hq-sum-head" style="margin-bottom:12px"><h2>에듀케어별 정산</h2><span class="hq-period">소속 원장 매출 기준 · 로열티 45% / 순수익 7%</span></div>
+   <div class="hq-branch-grid" id="hqBranchGrid">
+   <div class="hq-loading"><div class="hq-sk"></div><div class="hq-sk"></div></div>
+   </div>
+   </section>
+
+   <!-- ════ 결제 내역 (기존 유지) ════ -->
+   <div class="hq-sum-head" style="margin-bottom:12px"><h2>결제 내역</h2></div>
+   <div class="stats-row" id="statsRow">
+   <div class="stat-card"><div class="stat-icon">&#x1F4B0;</div><div class="stat-value" id="statTotal">-</div><div class="stat-label">총 결제</div></div>
+   <div class="stat-card"><div class="stat-icon">&#x2705;</div><div class="stat-value" id="statCompleted">-</div><div class="stat-label">완료</div></div>
+   <div class="stat-card"><div class="stat-icon">&#x1F504;</div><div class="stat-value" id="statRefunded">-</div><div class="stat-label">대기</div></div>
+   <div class="stat-card"><div class="stat-icon">&#x1F4B5;</div><div class="stat-value" id="statAmount">-</div><div class="stat-label">총 금액</div></div>
+   </div>
+
+   <!-- Toolbar -->
+   <div class="mgmt-toolbar">
+   <div class="mgmt-toolbar-left">
+   <div class="nav-search">
+   <span class="search-icon">&#x1F50D;</span>
+   <input class="form-input" type="text" placeholder="검색..." id="searchInput" oninput="debounceSearch()">
+   </div>
+   <select class="form-select" style="width:auto;min-width:110px" id="statusFilter" onchange="loadPayments()">
+   <option value="">전체 상태</option>
+   <option value="completed">완료</option>
+   <option value="pending">대기</option>
+   <option value="refunded">환불</option>
+   <option value="cancelled">취소</option>
+   </select>
+   <select class="form-select" style="width:auto;min-width:110px" id="methodFilter" onchange="loadPayments()">
+   <option value="">전체 수단</option>
+   <option value="card">카드</option>
+   <option value="kakao">카카오페이</option>
+   <option value="toss">토스페이</option>
+   <option value="naver">네이버페이</option>
+   <option value="virtual_account">가상계좌</option>
+   <option value="transfer">계좌이체</option>
+   </select>
+   </div>
+   <div class="mgmt-toolbar-right">
+   <button class="btn btn-filled" onclick="openCreateModal()">+ 결제 등록</button>
+   </div>
+   </div>
+
+   <!-- Filter Bar -->
+   <div class="mgmt-filter-bar">
+   <span class="small-text" id="paymentCount">로딩 중...</span>
+   </div>
+
+   <!-- Table -->
+   <div class="table-wrapper">
+   <table class="data-table" data-card-view>
+   <thead>
+   <tr><th>ID</th><th>학생명</th><th>금액</th><th>결제수단</th><th>상태</th><th>결제일</th><th>영수증번호</th><th>관리</th></tr>
+   </thead>
+   <tbody id="paymentTableBody">
+   <tr class="empty"><td colspan="8"><div class="empty-icon">&#x23F3;</div><h3>로딩 중...</h3></td></tr>
+   </tbody>
+   </table>
+   </div>
+
+   <!-- Pagination -->
+   <div class="pagination" id="pagination"></div>
+
+   </main>
+   </div>
+
+   <!-- Create Modal -->
+   <div class="modal-overlay" id="createModal" style="display:none">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header"><h2>결제 등록</h2></div>
+   <div class="modal-body">
+   <div class="form-grid">
+   <div class="form-group"><label>학생 ID</label><input class="form-input" id="createStudentId" placeholder="학생 ID 입력" value="7"></div>
+   <div class="form-group"><label>강좌 ID</label><input class="form-input" id="createCourseId" placeholder="강좌 ID 입력" value="2"></div>
+   <div class="form-group"><label>에듀케어 ID</label><input class="form-input" id="createBranchId" placeholder="에듀케어 ID 입력" value="1"></div>
+   <div class="form-group"><label>결제 금액</label><input class="form-input" id="createAmount" type="number" placeholder="금액 입력" value="150000"></div>
+   <div class="form-group full-width"><label>결제 수단</label>
+   <select class="form-select" id="createMethod">
+   <option value="card">카드 결제</option>
+   <option value="kakao">카카오페이</option>
+   <option value="toss">토스페이</option>
+   <option value="naver">네이버페이</option>
+   <option value="virtual_account">가상계좌</option>
+   <option value="transfer">계좌이체</option>
+   </select>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('createModal')">취소</button>
+   <button class="btn btn-filled" onclick="createPayment()">등록</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260918abort"></script>
+   <script src="/common/js/auth.js?v=20260911nav"></script>
+   <script src="/common/js/utils.js?v=20260911nav"></script>
+   <script>
+   let currentPage = 1;
+   let totalPages = 1;
+   let searchTimer = null;
+   const METHOD_LABELS = {card:'카드',kakao:'카카오페이',toss:'토스페이',naver:'네이버페이',virtual_account:'가상계좌',transfer:'계좌이체'};
+   const METHOD_ICONS = {card:'&#x1F4B3;',kakao:'&#x1F49B;',toss:'&#x1F4B3;',naver:'&#x1F49A;',virtual_account:'&#x1F3E6;',transfer:'&#x1F4B3;'};
+   const STATUS_LABELS = {completed:'완료',pending:'대기',refunded:'환불',cancelled:'취소'};
+
+   document.addEventListener('DOMContentLoaded', function() {
+   loadPayments();
+   loadHqOverview();
+   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+   const u = getCurrentUser();
+   if(u && u.name) document.getElementById('sidebarUserName').textContent = u.name;
+   if(u && u.role) document.getElementById('sidebarUserRole').textContent = u.role;
+   });
+
+   function showToast(msg, type) {
+   const t = document.createElement('div');
+   t.className = 'toast ' + type;
+   t.textContent = msg;
+   document.body.appendChild(t);
+   setTimeout(() => { if(t.parentNode) t.parentNode.removeChild(t); }, 3000);
+   }
+
+   function debounceSearch() {
+   clearTimeout(searchTimer);
+   searchTimer = setTimeout(() => { currentPage = 1; loadPayments(); }, 400);
+   }
+
+   async function loadPayments() {
+   const tbody = document.getElementById('paymentTableBody');
+   tbody.innerHTML = '<tr class="empty"><td colspan="8"><div class="empty-icon">&#x23F3;</div><h3>로딩 중...</h3></td></tr>';
+   try {
+   const params = {page: currentPage, per_page: 20};
+   const status = document.getElementById('statusFilter').value;
+   const method = document.getElementById('methodFilter').value;
+   const search = document.getElementById('searchInput').value.trim();
+   if(status) params.status = status;
+   if(method) params.method = method;
+   if(search) params.search = search;
+
+   const res = await apiGet('/payments?' + new URLSearchParams(params));
+   const data = res.data || [];
+   const total = res.total || 0;
+   totalPages = Math.max(1, Math.ceil(total / 20));
+
+   // Stats
+   const totalAmt = data.reduce((s,i) => s + (i.amount||0), 0);
+   const completed = data.filter(i => i.status === 'completed').length;
+   const refunded = data.filter(i => i.status === 'refunded'||i.status === 'cancelled').length;
+   document.getElementById('statTotal').textContent = total;
+   document.getElementById('statCompleted').textContent = completed;
+   document.getElementById('statRefunded').textContent = refunded;
+   document.getElementById('statAmount').textContent = totalAmt.toLocaleString()+'원';
+   document.getElementById('paymentCount').textContent = '총 ' + total + '건';
+
+   if(!data || data.length === 0) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="8"><div class="empty-icon">&#x1F4B0;</div><h3>등록된 결제 내역이 없습니다</h3><p>새 결제를 등록해주세요</p></td></tr>';
+   renderPagination();
+   return;
+   }
+
+   tbody.innerHTML = data.map(p => {
+   const methodIcon = METHOD_ICONS[p.method] || '&#x1F4B3;';
+   const methodLabel = METHOD_LABELS[p.method] || p.method;
+   const statusBadge = '<span class="badge badge-'+p.status+'">'+(STATUS_LABELS[p.status]||p.status)+'</span>';
+   const paidAt = p.paid_at ? new Date(p.paid_at).toLocaleDateString('ko-KR') : '-';
+   return '<tr><td>'+p.id+'</td><td>'+(p.student_name||'['+p.student_id+']')+'</td><td style="font-weight:600">'+Number(p.amount).toLocaleString()+'원</td>'
+   +'<td>'+methodIcon+' '+methodLabel+'</td><td>'+statusBadge+'</td><td>'+paidAt+'</td>'
+   +'<td style="font-size:11px;color:var(--text-tertiary)">'+(p.receipt_number||'-')+'</td>'
+   +'<td><button class="btn btn-outline" style="padding:4px 10px;font-size:11px" onclick="viewReceipt('+p.id+')">보기</button></td></tr>';
+   }).join('');
+   renderPagination();
+   } catch(e) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="8"><div class="empty-icon">&#x26A0;</div><h3>불러오기 실패</h3><p>'+(e.message||'')+'</p></td></tr>';
+   showToast('데이터를 불러올 수 없습니다', 'error');
+   }
+   }
+
+   function renderPagination() {
+   const el = document.getElementById('pagination');
+   if(totalPages <= 1) { el.innerHTML = ''; return; }
+   let html = '<button class="page-btn" onclick="goPage(1)" '+(currentPage<=1?'disabled':'')+'>&#xAB;</button>';
+   html += '<button class="page-btn" onclick="goPage('+(currentPage-1)+')" '+(currentPage<=1?'disabled':'')+'>&#x2039;</button>';
+   const start = Math.max(1, currentPage-2);
+   const end = Math.min(totalPages, currentPage+2);
+   for(let i=start; i<=end; i++) {
+   html += '<button class="page-btn'+(i===currentPage?' active':'')+'" onclick="goPage('+i+')">'+i+'</button>';
+   }
+   html += '<button class="page-btn" onclick="goPage('+(currentPage+1)+')" '+(currentPage>=totalPages?'disabled':'')+'>&#x203A;</button>';
+   html += '<button class="page-btn" onclick="goPage('+totalPages+')" '+(currentPage>=totalPages?'disabled':'')+'>&#xBB;</button>';
+   el.innerHTML = html;
+   }
+
+   function goPage(page) {
+   if(page < 1 || page > totalPages) return;
+   currentPage = page;
+   loadPayments();
+   }
+
+   function openCreateModal() {
+   document.getElementById('createModal').style.display = 'flex';
+   }
+
+   function closeModal(id) {
+   document.getElementById(id).style.display = 'none';
+   }
+
+   async function createPayment() {
+   const data = {
+   student_id: parseInt(document.getElementById('createStudentId').value),
+   course_id: parseInt(document.getElementById('createCourseId').value),
+   branch_id: parseInt(document.getElementById('createBranchId').value),
+   amount: parseInt(document.getElementById('createAmount').value),
+   method: document.getElementById('createMethod').value,
+   };
+   try {
+   const res = await apiPost('/payments/process', data);
+   showToast('결제가 등록되었습니다', 'success');
+   closeModal('createModal');
+   loadPayments();
+   } catch(e) {
+   showToast('결제 등록 실패: '+(e.message||''), 'error');
+   }
+   }
+
+   async function viewReceipt(id) {
+   try {
+   const res = await apiGet('/payments/receipt/'+id);
+   const d = res.data;
+   alert('[영수증]\n영수증번호: '+d.receipt_number+'\n금액: '+Number(d.amount).toLocaleString()+'원\n'
+   +'결제수단: '+(METHOD_LABELS[d.method]||d.method)+'\n상태: '+(STATUS_LABELS[d.status]||d.status));
+   } catch(e) {
+   showToast('영수증 조회 실패', 'error');
+   }
+   }
+
+   async function loadHqOverview() {
+   const grid = document.getElementById('hqBranchGrid');
+   const chipsEl = document.getElementById('hqGlobalCats');
+   if (!grid) return;
+   const ymEl = document.getElementById('hqYm');
+   const ym = ymEl && ymEl.value ? ymEl.value : '';
+   try {
+   const res = await apiGet('/headquarters/payments/hq-overview' + (ym ? ('?period_ym=' + ym) : ''));
+   const d = res.data || {};
+   const s = d.summary || {};
+   const branches = d.branches || [];
+
+   // 기간 표시
+   const per = document.getElementById('hqPeriod');
+   if (per) per.textContent = (d.period_ym || '') + ' 기준';
+   if (ymEl && d.period_ym && !ymEl.value) ymEl.value = d.period_ym;
+
+   const won = v => Number(v || 0).toLocaleString();
+
+   // KPI
+   const ts = document.getElementById('hqTotalStudents');
+   if (ts) ts.innerHTML = won(s.total_students) + '<small>명</small>';
+   const bc = document.getElementById('hqBranchCount');
+   if (bc) bc.textContent = '에듀케어 ' + (s.branch_count || 0) + '곳';
+   const nd = document.getElementById('hqNetDeposit');
+   if (nd) nd.innerHTML = won(s.total_net_deposit) + '<small>원</small>';
+   const rp = document.getElementById('hqRoyaltyPaid');
+   if (rp) rp.innerHTML = won(s.total_royalty_paid) + '<small>원</small>';
+   const rd = document.getElementById('hqRoyaltyDueSub');
+   if (rd) rd.textContent = '청구 ' + won(s.total_royalty_due) + '원';
+   const ru = document.getElementById('hqRoyaltyUnpaid');
+   if (ru) ru.innerHTML = won(s.total_royalty_unpaid) + '<small>원</small>';
+
+   // 교육과정별 전체 인원 (칩)
+   const cats = s.categories || [];
+   if (chipsEl) {
+   chipsEl.innerHTML = cats.length
+   ? cats.map(c => '<span class="hq-chip"><span class="hq-chip-dot"></span>'
+   + '<span class="hq-chip-name">' + escHtml(c.label) + '</span>'
+   + '<span class="hq-chip-num">' + c.count + '</span>'
+   + '<span class="hq-chip-unit">명</span></span>').join('')
+   : '<span class="hq-chip-empty">수강 중인 학생이 없습니다</span>';
+   }
+
+   // 에듀케어별 정산 카드
+   if (!branches.length) {
+   grid.innerHTML = '<div class="card"><div class="card-body" style="text-align:center;color:#9CA3AF;padding:40px">활성 에듀케어가 없습니다</div></div>';
+   return;
+   }
+   grid.innerHTML = branches.map(b => {
+   const catHtml = (b.categories && b.categories.length)
+   ? b.categories.map(c => '<span class="hq-cat-item"><span class="hq-ci-name">' + escHtml(c.label) + '</span>'
+   + '<span class="hq-ci-num">' + c.count + '</span><span class="hq-ci-unit">명</span></span>').join('')
+   : '<span class="hq-cat-empty">수강 중인 학생이 없습니다</span>';
+   const unpaidZero = (b.royalty_unpaid || 0) === 0 ? ' is-zero' : '';
+   return ''
+   + '<div class="hq-bcard">'
+   +   '<div class="hq-bcard-head">'
+   +     '<span class="hq-bname">' + escHtml(b.branch_name) + '</span>'
+   +     '<span class="hq-bcode">' + escHtml(b.branch_code || '') + '</span>'
+   +     '<span class="hq-bstudents">학생 <b>' + (b.student_count || 0) + '</b>명 · 원장 <b>' + (b.director_count || 0) + '</b>명</span>'
+   +   '</div>'
+   +   '<div class="hq-bcard-body">'
+   +     '<div class="hq-settle-2">'
+   +       '<div class="hq-settle-box">'
+   +         '<div class="hq-sb-label">본사 입금액 (순수익)</div>'
+   +         '<div class="hq-sb-value is-brand">' + won(b.net_deposit) + '원</div>'
+   +         '<div class="hq-sb-note">순수익 ' + won(b.edu_profit) + ' − 공제 ' + won(b.income_tax) + ' (' + (b.income_tax_rate) + '%)</div>'
+   +       '</div>'
+   +       '<div class="hq-settle-box">'
+   +         '<div class="hq-sb-label">원장 전체 매출</div>'
+   +         '<div class="hq-sb-value">' + won(b.director_revenue) + '원</div>'
+   +         '<div class="hq-sb-note">과세표준 ' + won(b.tax_base) + '원</div>'
+   +       '</div>'
+   +     '</div>'
+   +     '<div class="hq-royalty-rows">'
+   +       '<div class="hq-rrow"><span class="hq-rlabel">본사 로열티 (청구)</span><span class="hq-rval">' + won(b.royalty_due) + '원</span></div>'
+   +       '<div class="hq-rrow is-paid"><span class="hq-rlabel">입금 완료 (승인)</span><span class="hq-rval">' + won(b.royalty_paid) + '원</span></div>'
+   +       '<div class="hq-rrow is-unpaid' + unpaidZero + '"><span class="hq-rlabel">미수금</span><span class="hq-rval">' + won(b.royalty_unpaid) + '원</span></div>'
+   +     '</div>'
+   +     '<div class="hq-sub-label">강좌별 수강 인원</div>'
+   +     '<div class="hq-cat-list">' + catHtml + '</div>'
+   +   '</div>'
+   + '</div>';
+   }).join('');
+
+   } catch(e) {
+   grid.innerHTML = '<div class="card"><div class="card-body" style="text-align:center;color:#EF4444;padding:40px">불러오기 실패: ' + escHtml(e.message || '') + '</div></div>';
+   showToast('정산 현황을 불러올 수 없습니다', 'error');
+   }
+   }
+
+   function escHtml(s) {
+   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+   }
+   </script>
+
+   <script src="/common/js/nav.js?v=20260913nav"></script>
+   <script>
+   // 누비다플랫폼 — Service Worker 강제 갱신
+   </script>
+
+   </body>
+   </html>

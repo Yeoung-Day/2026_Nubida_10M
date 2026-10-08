@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>전체 강좌 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/nubida-bundle.css?v=20260910nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260805c">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    
+    <style>
+        /* ===== 누비다플랫폼 · 학생 강좌 목록 — 디자인 시스템 ===== */
+        :root {
+            --page-accent: #4F5EF8;
+            --point: #4F5EF8;
+            --point-soft: #EEF2FF;
+            --bg: #FBFCFE;
+            --bg-2: #F6F8FC;
+            --border: #E8ECF5;
+            --label: #98A1B2;
+            --text: #1F2437;
+            --text-2: #5A6478;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow-soft: 0 1px 2px rgba(31,36,55,.04), 0 1px 3px rgba(31,36,55,.03);
+            --shadow-raise: 0 4px 16px rgba(79,94,248,.10), 0 1px 2px rgba(31,36,55,.04);
+        }
+
+        /* ---- 페이지 배경 ---- */
+        body {
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+            background-attachment: fixed;
+            color: var(--text);
+        }
+
+        /* ---- 페이지 헤더 (개수 + 필터) ---- */
+        .courses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .courses-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.01em;
+            color: var(--text);
+        }
+
+        /* 개수 표시 (#courseCount) — 카드형 pill */
+        .courses-header #courseCount {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px !important;
+            font-weight: 600;
+            color: var(--text-2) !important;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 6px 14px;
+            box-shadow: var(--shadow-soft);
+        }
+        .courses-header #courseCount::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--point);
+            box-shadow: 0 0 0 3px var(--point-soft);
+        }
+
+        /* ---- 필터 바 (카드형 컨테이너) ---- */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 8px;
+            box-shadow: var(--shadow-soft);
+        }
+        .filter-bar select,
+        .filter-bar input[type="text"] {
+            height: 40px;
+            padding: 0 38px 0 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            background: #fff;
+            color: var(--text);
+            min-width: 150px;
+            transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .filter-bar select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2398A1B2' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            cursor: pointer;
+        }
+        .filter-bar input[type="text"] {
+            min-width: 210px;
+            padding: 0 14px 0 38px;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2398A1B2' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.2-3.2'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 13px center;
+        }
+        .filter-bar select:hover,
+        .filter-bar input[type="text"]:hover {
+            border-color: #D6DCF0;
+        }
+        .filter-bar select:focus,
+        .filter-bar input[type="text"]:focus {
+            border-color: var(--point);
+            box-shadow: 0 0 0 3px var(--point-soft);
+        }
+        .filter-bar input[type="text"]::placeholder { color: var(--label); }
+
+        /* ---- 강좌 그리드 ---- */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        /* ---- 강좌 카드 (JS가 innerHTML로 생성) ---- */
+        .course-card {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .course-card:hover {
+            border-color: var(--point);
+            box-shadow: var(--shadow-raise);
+            transform: translateY(-2px);
+        }
+
+        .course-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 18px 20px 12px;
+            gap: 12px;
+        }
+        .cc-title-area { flex: 1; min-width: 0; }
+        .cc-title {
+            font-weight: 650;
+            font-size: 16px;
+            line-height: 1.4;
+            color: var(--text);
+            margin-bottom: 5px;
+            letter-spacing: -0.005em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cc-meta {
+            font-size: 12.5px;
+            color: var(--label);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 상태 배지 — pill + 파스텔 배경 + 컬러 점 */
+        .cc-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 11px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 650;
+            letter-spacing: 0.005em;
+            white-space: nowrap;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .cc-badge::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+            flex-shrink: 0;
+        }
+        .cc-badge.done  { background: #F0FDF4; color: #16A34A; }
+        .cc-badge.ing   { background: #EEF2FF; color: #4F5EF8; }
+        .cc-badge.new   { background: #FFF7ED; color: #D97706; }
+        .cc-badge.empty { background: #F1F5F9; color: #64748B; }
+
+        /* 본문 설명 */
+        .cc-body {
+            padding: 0 20px 14px;
+            font-size: 13.5px;
+            color: var(--text-2);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: auto;
+        }
+
+        /* 푸터 (진행률 + 버튼) */
+        .cc-footer {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            gap: 14px;
+            background: #FCFDFF;
+        }
+        .cc-progress { flex: 1; min-width: 0; }
+
+        /* 진행률 바 — JS가 style="width:N%" 삽입 */
+        .progress-bar {
+            height: 7px;
+            background: var(--point-soft);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6B78FF 0%, #4F5EF8 100%);
+            border-radius: 999px;
+            transition: width .4s cubic-bezier(.4,0,.2,1);
+        }
+        /* 완료(100%) 시 초록색 */
+        .cc-percent.done ~ .cc-progress .progress-fill,
+        .progress-fill.done {
+            background: linear-gradient(90deg, #34D399 0%, #16A34A 100%);
+        }
+        .cc-percent {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--label);
+            min-width: 38px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            flex-shrink: 0;
+        }
+        .cc-percent.done { color: #16A34A; }
+
+        .cc-btn {
+            padding: 8px 16px;
+            background: var(--point);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 650;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            box-shadow: 0 1px 2px rgba(79,94,248,.25);
+            transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+        .cc-btn:hover {
+            background: #4351E8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79,94,248,.28);
+        }
+        .cc-btn:active { transform: translateY(0); }
+
+        /* ---- 빈 상태 ---- */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 64px 24px;
+            color: var(--label);
+            background: #fff;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+        }
+        .empty-state .empty-icon {
+            display: none;
+        }
+        .empty-state::before {
+            content: "";
+            display: block;
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            background: var(--point-soft)
+                url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%2398A1B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z'/%3E%3Cpath d='M4 20.5V5.5'/%3E%3C/svg%3E")
+                no-repeat center;
+        }
+        .empty-state p {
+            font-size: 15px;
+            font-weight: 500;
+            margin: 0;
+            color: var(--text-2);
+        }
+
+        /* ---- 반응형 ---- */
+        @media (max-width: 1100px) {
+            .courses-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        }
+        @media (max-width: 820px) {
+            .courses-header { flex-direction: column; align-items: stretch; }
+            .filter-bar { width: 100%; }
+            .filter-bar select,
+            .filter-bar input[type="text"] { flex: 1 1 150px; min-width: 0; }
+            .filter-bar input[type="text"] { flex-basis: 100%; }
+        }
+        @media (max-width: 560px) {
+            .courses-grid { grid-template-columns: 1fr; gap: 14px; }
+            .course-card-header { padding: 16px 16px 10px; }
+            .cc-body { padding: 0 16px 12px; }
+            .cc-footer { padding: 12px 16px; gap: 10px; }
+            .cc-title { font-size: 15px; }
+        }
+    </style>
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+                <a class="nav-item active" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+                <a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+                <a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+                <a class="nav-item" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+                <a class="nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+                <a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">학생</div>
+                <div class="user-role" id="sidebarUserRole">학생</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav">
+                <div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>전체 강좌</h1></div>
+                <div class="top-nav-right">
+</div>
+            </div>
+
+            <div class="courses-header">
+                <div>
+                    <div id="courseCount">0개 강좌</div>
+                </div>
+                <div class="filter-bar">
+                    <select id="filterCategory" onchange="applyFilters()">
+                        <option value="">전체 카테고리</option>
+                    </select>
+                    <select id="filterStatus" onchange="applyFilters()">
+                        <option value="">전체 상태</option>
+                        <option value="in_progress">수강 중</option>
+                        <option value="completed">완료</option>
+                        <option value="not_started">수강 전</option>
+                    </select>
+                    <input type="text" id="searchInput" placeholder="강좌 검색..." oninput="applyFilters()">
+                </div>
+            </div>
+
+            <div id="coursesGrid" class="courses-grid"></div>
+        </main>
+    </div>
+
+    <script src="/common/js/nubida-bundle.js?v=20260910login"></script>
+    <script src="/common/js/pages-student.js?v=20260804b"></script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    document.addEventListener('DOMContentLoaded', () => {
+        requireAuth();
+        renderSidebarUser();
+        loadCourses();
+        setupCourseRealtime();
+    });
+
+    // 강좌 자료 변경 실시간 반영 — nav.js SSE 커스텀 이벤트 수신 (권한 있는 강좌만 알림)
+    function setupCourseRealtime() {
+        window.addEventListener('app:notification', function(e) {
+            const detail = e.detail || {};
+            if (detail.type !== 'course_updated') return;
+            refreshCourseList(detail.title);
+        });
+        // nav.js가 SSE를 연결하지 않는 페이지(header-right 없음) 대비 자체 SSE 연결
+        if (!window.__courseSSE__ && window.EventSource) {
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            if (token) {
+                try {
+                    window.__courseSSE__ = new EventSource('/api/v1/sse/stream?token=' + encodeURIComponent(token));
+                    window.__courseSSE__.addEventListener('message', function(e) {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data.type === 'notification' && data.data && data.data.type === 'course_updated') {
+                                refreshCourseList(data.data.title);
+                            }
+                        } catch (err) { /* 무시 */ }
+                    });
+                } catch (err) { /* SSE 실패 시 수동 새로고침으로 대체 */ }
+            }
+        }
+    }
+
+    function refreshCourseList(notifTitle) {
+        loadCourses();
+        try {
+            if (window.showToast) showToast('📚 ' + (notifTitle || '강좌 자료가 변경되었습니다'));
+        } catch (err) { /* 무시 */ }
+    }
+
+    window.allCourses = [];
+
+    async function loadCourses() {
+        try {
+            const res = await apiGet('/student/courses');
+            allCourses = (res?.data || res || []);
+            renderCourses(allCourses);
+        } catch(e) {
+            console.error('Failed to load courses:', e);
+            document.getElementById('coursesGrid').innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><p>강좌를 불러오지 못했습니다.</p></div>';
+        }
+    }
+
+    function renderCourses(courses) {
+        const grid = document.getElementById('coursesGrid');
+        const count = document.getElementById('courseCount');
+        
+        if (!courses || courses.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div><p>수강 중인 강좌가 없습니다.</p></div>';
+            count.textContent = '0개 강좌';
+            return;
+        }
+
+        let html = '';
+        const catLabels = { coding: '코딩', maker: '메이커', ai: 'AI', design: '디자인', etc: '기타' };
+
+        courses.forEach(c => {
+            const title = c.name || c.title || '(제목 없음)';
+            const cat = c.category || c.type || '';
+            const catLabel = catLabels[cat] || cat;
+            // progress
+            const total = c.total_lessons || c.total_chapters || c.total_modules || 0;
+            const completed = c.completed_lessons || c.completed_chapters || 0;
+            const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            let statusLabel, statusClass;
+            if (total === 0) {
+                statusLabel = '자료 없음';
+                statusClass = 'empty';
+            } else if (pct >= 100) {
+                statusLabel = '완료';
+                statusClass = 'done';
+            } else if (completed > 0 || pct > 0) {
+                statusLabel = pct + '%';
+                statusClass = 'ing';
+            } else {
+                statusLabel = '수강 전';
+                statusClass = 'new';
+            }
+            html += '<div class="course-card" onclick="location.href=\'learning.html?course_id=' + c.id + '\'">';
+            html += '<div class="course-card-header">';
+            html += '<div class="cc-title-area">';
+            html += '<div class="cc-title">' + esc(title) + '</div>';
+            html += '<div class="cc-meta">' + (c.instructor ? esc(c.instructor) : '') + (catLabel ? ' · ' + esc(catLabel) : '') + '</div>';
+            html += '</div>';
+            html += '<span class="cc-badge ' + statusClass + '">' + statusLabel + '</span>';
+            html += '</div>';
+            html += c.description ? '<div class="cc-body">' + esc(c.description) + '</div>' : '';
+            html += '<div class="cc-footer">';
+            html += '<div class="cc-progress"><div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div></div>';
+            html += '<span class="cc-percent' + (pct >= 100 ? ' done' : '') + '">' + pct + '%</span>';
+            html += '<button class="cc-btn" onclick="event.stopPropagation();location.href=\'learning.html?course_id=' + c.id + '\'">학습하기</button>';
+            html += '</div>';
+            html += '</div>';
+        });
+
+        grid.innerHTML = html;
+        count.textContent = courses.length + '개 강좌';
+    }
+
+    function applyFilters() {
+        const catFilter = document.getElementById('filterCategory').value;
+        const statusFilter = document.getElementById('filterStatus').value;
+        const search = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        let filtered = allCourses;
+
+        if (catFilter) {
+            filtered = filtered.filter(c => (c.category || c.type || '') === catFilter);
+        }
+        if (statusFilter) {
+            filtered = filtered.filter(c => {
+                const total = c.total_lessons || c.total_chapters || c.total_modules || 0;
+                const completed = c.completed_lessons || c.completed_chapters || 0;
+                const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+                if (statusFilter === 'completed') return pct >= 100;
+                if (statusFilter === 'in_progress') return completed > 0 && pct < 100;
+                if (statusFilter === 'not_started') return completed === 0;
+                return true;
+            });
+        }
+        if (search) {
+            filtered = filtered.filter(c => (c.name || c.title || '').toLowerCase().includes(search));
+        }
+
+        renderCourses(filtered);
+    }
+    </script>
+    <script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

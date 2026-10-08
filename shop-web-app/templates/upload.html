@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-box" style="max-width: 600px;">
+    <div style="text-align: center; margin-bottom: 50px;">
+        <p class="shop-tag">REGISTRY</p>
+        <h2 style="font-size: 2.2rem; font-weight: 200;">새로운 컬렉션 등록</h2>
+    </div>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <div class="input-group">
+            <label>상품 이름</label>
+            <input type="text" name="name" class="input-style" placeholder="작품명을 입력하세요" required>
+        </div>
+        <div class="input-group">
+            <label>판매 가격 (KRW)</label>
+            <input type="number" name="price" class="input-style" placeholder="₩" required>
+        </div>
+        <div class="input-group">
+            <label>초기 재고 수량</label>
+            <input type="number" name="stock" value="1" min="1" class="input-style" required>
+        </div>
+        <div class="input-group">
+            <label>대표 이미지 (정사각형 권장)</label>
+            <input type="file" name="img_file" class="input-style" accept="image/*" required>
+        </div>
+        <div class="input-group">
+            <label>상세 설명 이미지 (선택 사항)</label>
+            <input type="file" name="detail_img_file" class="input-style" accept="image/*">
+        </div>
+        <div class="input-group">
+            <label>상품 스토리 및 설명</label>
+            <textarea name="desc" class="input-style" rows="5" style="border: 1px solid #eee; padding: 15px; border-radius: 10px;"></textarea>
+        </div>
+        <div style="display: flex; gap: 15px; margin-top: 40px;">
+            <a href="/" class="btn btn-outline" style="flex: 1;">취소</a>
+            <button type="submit" class="btn btn-black" style="flex: 2;">등록 완료</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

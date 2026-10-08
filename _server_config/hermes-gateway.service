@@ -1,0 +1,21 @@
+[Unit]
+Description=Hermes Agent Gateway (Discord bot) - Yoonbis
+After=network-online.target docker.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=nubidaplet
+Group=nubidaplet
+WorkingDirectory=/home/nubidaplet
+ExecStart=/bin/bash /home/nubidaplet/scripts/hermes-gateway-launch.sh
+Restart=always
+RestartSec=10
+TimeoutStopSec=30
+KillMode=control-group
+StandardOutput=append:/home/nubidaplet/.hermes/logs/gateway_systemd.log
+StandardError=append:/home/nubidaplet/.hermes/logs/gateway_systemd.log
+
+[Install]
+WantedBy=multi-user.target

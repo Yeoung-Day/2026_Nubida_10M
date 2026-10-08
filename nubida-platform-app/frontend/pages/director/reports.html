@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>보고서 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="active nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>보고서</h1></div>
+                <div class="top-nav-right">
+                    <button class="btn btn-outline btn-sm" onclick="loadDirectorReports()">🔄 새로고침</button>
+                </div>
+            </div>
+
+            <!-- Tab: 보고서 유형 선택 -->
+            <div class="tab-bar" style="display:flex;flex-wrap:nowrap;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;">
+                <div class="tab-item active" data-tab="monthly" onclick="switchTab('monthly')" style="padding:10px 20px;cursor:pointer;border-bottom:2px solid var(--primary);margin-bottom:-2px;font-weight:600;white-space:nowrap;color:var(--primary);">📋 월간 보고서</div>
+                <div class="tab-item" data-tab="generated" onclick="switchTab('generated')" style="padding:10px 20px;cursor:pointer;color:#888;white-space:nowrap;">📄 생성된 보고서</div>
+            </div>
+
+            <!-- ====== 월간 보고서 탭 ====== -->
+            <div id="tabMonthly">
+                <!-- 상태 흐름 표시 (draft → submitted → confirmed_by_branch) -->
+                <div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 0 6px;font-size:12px;color:var(--text-tertiary);">
+                    <span class="badge badge-warning" style="padding:4px 12px;border-radius:20px;">📝 임시 저장</span>
+                    <span style="font-size:16px;color:var(--text-tertiary);">→</span>
+                    <span class="badge badge-success" style="padding:4px 12px;border-radius:20px;">✅ 제출 완료</span>
+                    <span style="font-size:16px;color:var(--text-tertiary);">→</span>
+                    <span class="badge badge-primary" style="background:#EEF2FF;color:#4F5EF8;border:1px solid #C7D2FE;padding:4px 12px;border-radius:20px;">🏢 에듀케어 확인</span>
+                </div>
+                <!-- 필터 -->
+                <div class="filter-bar" style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:8px 0;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <label style="font-size:13px;font-weight:600;color:var(--text-tertiary);white-space:nowrap;">연도</label>
+                        <select class="form-input" id="filterYear" onchange="loadDirectorReports()" style="width:100px;">
+                            <option value="">전체</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <label style="font-size:13px;font-weight:600;color:var(--text-tertiary);white-space:nowrap;">월</label>
+                        <select class="form-input" id="filterMonth" onchange="loadDirectorReports()" style="width:80px;">
+                            <option value="">전체</option>
+                            <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
+                            <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
+                            <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
+                            <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <label style="font-size:13px;font-weight:600;color:var(--text-tertiary);white-space:nowrap;">상태</label>
+                        <select class="form-input" id="filterStatus" onchange="loadDirectorReports()" style="width:140px;">
+                            <option value="">전체</option>
+                            <option value="draft">📝 임시 저장</option>
+                            <option value="submitted">✅ 제출 완료</option>
+                            <option value="confirmed_by_branch">🏢 에듀케어 확인</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <button class="btn btn-primary btn-sm" onclick="loadDirectorReports()">🔍 조회</button>
+                        <button class="btn btn-ghost btn-sm" onclick="resetFilters()">초기화</button>
+                    </div>
+                    <div style="margin-left:auto;">
+                        <a class="btn btn-primary btn-sm" href="monthly-report.html">✏️ 새 보고서 작성</a>
+                    </div>
+                </div>
+
+                <!-- 보고서 목록 -->
+                <div class="card">
+                    <div class="card-header"><h2>📋 내 월간 보고서 <span id="reportCount" style="font-weight:400;font-size:13px;color:var(--text-tertiary)"></span></h2></div>
+                    <div class="card-body" id="reportListContainer">
+                        <div class="empty-state"><div class="icon">📋</div><p>조회 버튼을 눌러 보고서 목록을 불러오세요.</p></div>
+                    </div>
+                    <div class="card-footer" id="paginationArea" style="display:none">
+                        <div class="flex gap-8" style="justify-content:center;align-items:center">
+                            <button class="btn btn-outline btn-sm" id="prevPage" onclick="changePage(-1)">◀ 이전</button>
+                            <span id="pageInfo" style="font-size:13px;color:var(--text-tertiary)"></span>
+                            <button class="btn btn-outline btn-sm" id="nextPage" onclick="changePage(1)">다음 ▶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== 생성된 보고서 탭 ====== -->
+            <div id="tabGenerated" style="display:none;">
+                <div class="card mb-24">
+                    <div class="card-header"><h2>📄 보고서 생성</h2></div>
+                    <div class="card-body">
+                        <form id="reportForm" class="form-inline" onsubmit="return false;">
+                            <div class="form-row" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+                                <div class="form-group">
+                                    <label class="form-label" for="reportType">보고서 유형</label>
+                                    <select class="form-select" id="reportType" style="width:200px;">
+                                        <option value="학생 성적 보고서">📊 학생 성적 보고서</option>
+                                        <option value="출결 현황 보고서">✅ 출결 현황 보고서</option>
+                                        <option value="수업 통계 보고서">📈 수업 통계 보고서</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="dateStart">시작일</label>
+                                    <input class="form-input" type="date" id="dateStart" style="width:180px;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="dateEnd">종료일</label>
+                                    <input class="form-input" type="date" id="dateEnd" style="width:180px;">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" id="generateBtn" onclick="generateReport()">
+                                        📄 보고서 생성
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="generateStatus" style="margin-top:8px;font-size:13px;color:var(--text-tertiary);"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h2>📋 생성된 보고서</h2></div>
+                    <div class="card-body" style="padding:0;">
+                        <div class="table-wrapper">
+                            <table class="data-table" data-card-view>
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px">No</th>
+                                        <th>제목</th>
+                                        <th style="width:130px">유형</th>
+                                        <th style="width:200px">기간</th>
+                                        <th style="width:140px">생성일</th>
+                                        <th style="width:90px">크기</th>
+                                        <th style="width:120px">관리</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportListBody">
+                                    <tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:32px">
+                                        <div class="loading-spinner" style="margin:10px auto"></div>
+                                        로딩 중...
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="reportPagination" class="pagination" style="padding:12px;display:flex;justify-content:center;gap:4px;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal" style="max-width:700px">
+            <div class="modal-header"><h3 id="detailTitle">보고서 상세</h3></div>
+            <div class="modal-body" id="detailBody"></div>
+            <div class="modal-footer" id="detailFooter">
+                <button class="btn btn-ghost" onclick="closeModal('detailModal')">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+// ============================================================
+// 보고서 페이지 전용 스크립트
+// ============================================================
+
+let activeTab = 'monthly';
+let _currentPage = 1;
+const _perPage = 15;
+let allReports = [];
+let currentPage = 1;
+let totalPages = 1;
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof requireAuth === 'function') requireAuth();
+    if (typeof renderSidebarUser === 'function') renderSidebarUser();
+    
+    const now = new Date();
+    const yearSelect = document.getElementById('filterYear');
+    for (let y = now.getFullYear(); y >= 2024; y--) {
+        const opt = document.createElement('option');
+        opt.value = y; opt.textContent = y + '년';
+        yearSelect.appendChild(opt);
+    }
+    document.getElementById('filterYear').value = now.getFullYear();
+    document.getElementById('filterMonth').value = now.getMonth() + 1;
+    
+    loadDirectorReports();
+    
+    // Generated report defaults
+    const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    document.getElementById('dateStart').value = formatDateInput(firstOfMonth);
+    document.getElementById('dateEnd').value = formatDateInput(now);
+});
+
+function switchTab(tab) {
+    if (tab === activeTab) return;
+    activeTab = tab;
+    document.querySelectorAll('.tab-item').forEach(el => {
+        el.classList.remove('active');
+        el.style.color = '#888';
+        el.style.borderBottom = '2px solid transparent';
+    });
+    const active = document.querySelector('.tab-item[data-tab="' + tab + '"]');
+    if (active) {
+        active.classList.add('active');
+        active.style.color = 'var(--primary)';
+        active.style.borderBottom = '2px solid var(--primary)';
+    }
+    document.getElementById('tabMonthly').style.display = tab === 'monthly' ? 'block' : 'none';
+    document.getElementById('tabGenerated').style.display = tab === 'generated' ? 'block' : 'none';
+    if (tab === 'monthly') loadDirectorReports();
+    if (tab === 'generated') loadReportHistory();
+}
+
+function formatDateInput(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
+
+function formatFileSize(bytes) {
+    if (!bytes || bytes === 0) return '-';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function formatDateTime(str) {
+    if (!str) return '-';
+    try {
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str.slice(0, 16).replace('T', ' ');
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const h = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${y}-${m}-${day} ${h}:${min}`;
+    } catch(e) { return str; }
+}
+
+function nl2br(s) { return (s || '').replace(/\n/g, '<br>').replace(/\r/g, ''); }
+    function getStatusBadge(status) {
+    if (status === 'draft') return '<span class="badge badge-warning">📝 임시 저장</span>';
+    if (status === 'submitted') return '<span class="badge badge-success">✅ 제출 완료</span>';
+    if (status === 'confirmed_by_branch') return '<span class="badge badge-primary" style="background:#EEF2FF;color:#4F5EF8;border:1px solid #C7D2FE;">🏢 에듀케어 확인</span>';
+    return '<span class="badge">' + (status || '-') + '</span>';
+}
+
+function getPeriodStr(item) {
+    const start = item.date_range_start || '';
+    const end = item.date_range_end || '';
+    if (start && end) return `${start} ~ ${end}`;
+    if (start) return `${start} ~`;
+    if (end) return `~ ${end}`;
+    return '-';
+}
+
+function getReportTypeLabel(type) {
+    const labels = {
+        '학생 성적 보고서': '📊 성적',
+        '출결 현황 보고서': '✅ 출결',
+        '수업 통계 보고서': '📈 통계',
+    };
+    return labels[type] || type || '-';
+}
+
+// ============================================================
+// 월간 보고서 (DirectorReport) 목록
+// ============================================================
+async function loadDirectorReports(page) {
+    if (page !== undefined) currentPage = page;
+    else currentPage = 1;
+    
+    const container = document.getElementById('reportListContainer');
+    const countEl = document.getElementById('reportCount');
+    const pagination = document.getElementById('paginationArea');
+    
+    container.innerHTML = '<div style="text-align:center;padding:32px"><div class="loading-spinner" style="margin:10px auto"></div>로딩 중...</div>';
+    pagination.style.display = 'none';
+    if (countEl) countEl.textContent = '';
+    
+    const year = document.getElementById('filterYear').value;
+    const month = document.getElementById('filterMonth').value;
+    const status = document.getElementById('filterStatus').value;
+    
+    let url = '/director/director-reports?per_page=50&page=' + currentPage;
+    if (year) url += '&year=' + year;
+    if (month) url += '&month=' + month;
+    if (status) url += '&status=' + status;
+    
+    try {
+        const res = await apiGet(url);
+        allReports = res?.data || [];
+        totalPages = res?.total_pages || 1;
+        currentPage = res?.page || 1;
+        renderDirectorReports();
+        renderPagination();
+    } catch (e) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>불러오기 실패: ' + e.message + '</p></div>';
+    }
+}
+
+function renderDirectorReports() {
+    const container = document.getElementById('reportListContainer');
+    const countEl = document.getElementById('reportCount');
+    
+    if (!allReports.length) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>작성된 보고서가 없습니다. "새 보고서 작성" 버튼을 눌러 작성해보세요.</p></div>';
+        if (countEl) countEl.textContent = '';
+        return;
+    }
+    
+    if (countEl) countEl.textContent = '(총 ' + allReports.length + '건)';
+    
+    container.innerHTML = allReports.map(r => {
+        return '<div class="report-card" onclick="openDirectorDetail(' + r.id + ')">' +
+            '<div class="rc-header">' +
+            '<div class="rc-title">📋 ' + r.year + '년 ' + r.month + '월 보고서</div>' +
+            '<div>' + getStatusBadge(r.status) + '</div>' +
+            '</div>' +
+            '<div class="rc-meta">' +
+            '<span>📅 ' + r.year + '년 ' + r.month + '월</span>' +
+            '<span>🏫 ' + esc(r.branch_name || '-') + '</span>' +
+            '<span>👤 ' + esc(r.director_name || '-') + '</span>' +
+            (r.is_agreed ? '<span>✅ 서명 완료</span>' : '') +
+            '</div>' +
+            '<div class="rc-stats">' +
+            '<div class="rc-stat"><div class="val">' + (r.total_students || 0) + '</div><div class="lbl">수강생</div></div>' +
+            '<div class="rc-stat"><div class="val">+' + (r.new_registrations || 0) + '</div><div class="lbl">신규</div></div>' +
+            '<div class="rc-stat"><div class="val">' + (r.retention_rate || 0) + '%</div><div class="lbl">유지율</div></div>' +
+            '</div>' +
+            '</div>';
+    }).join('');
+}
+
+function renderPagination() {
+    const area = document.getElementById('paginationArea');
+    if (totalPages <= 1) { area.style.display = 'none'; return; }
+    area.style.display = 'block';
+    document.getElementById('pageInfo').textContent = currentPage + ' / ' + totalPages + '페이지';
+    document.getElementById('prevPage').disabled = currentPage <= 1;
+    document.getElementById('nextPage').disabled = currentPage >= totalPages;
+}
+
+function changePage(delta) {
+    const newPage = currentPage + delta;
+    if (newPage < 1 || newPage > totalPages) return;
+    currentPage = newPage;
+    loadDirectorReports();
+}
+
+function resetFilters() {
+    const now = new Date();
+    document.getElementById('filterYear').value = now.getFullYear();
+    document.getElementById('filterMonth').value = now.getMonth() + 1;
+    document.getElementById('filterStatus').value = '';
+    currentPage = 1;
+    loadDirectorReports();
+}
+
+async function openDirectorDetail(reportId) {
+    try {
+        const res = await apiGet('/director/director-reports/' + reportId);
+        if (!res || res.status !== 'success' || !res.data) {
+            showAlert('보고서를 불러올 수 없습니다.', 'error');
+            return;
+        }
+        const r = res.data;
+        document.getElementById('detailTitle').textContent = r.year + '년 ' + r.month + '월 보고서 — ' + esc(r.branch_name || '');
+        
+        let html = '<div style="margin-bottom:16px;font-size:13px;color:var(--text-secondary);display:flex;gap:12px;align-items:center">' +
+            '👤 ' + esc(r.director_name || '원장') + ' ' + getStatusBadge(r.status) + 
+            (r.status === 'confirmed_by_branch' ? ' <span style="color:#4F5EF8">🏢 에듀케어에서 확인함</span>' : '') +
+            '</div>';
+        
+        html += '<div class="section-block"><h4>📋 기본 정보</h4><table class="detail-table">' +
+            '<tr><td>공부방명</td><td>' + esc(r.branch_name || '-') + '</td></tr>' +
+            '<tr><td>원장명</td><td>' + esc(r.director_name || '-') + '</td></tr>' +
+            '<tr><td>연락처</td><td>' + esc(r.contact || '-') + '</td></tr>' +
+            '<tr><td>보고월</td><td>' + r.year + '년 ' + r.month + '월</td></tr>' +
+            '<tr><td>상태</td><td>' + getStatusBadge(r.status) + '</td></tr>' +
+            '</table></div>';
+        
+        html += '<div class="section-block"><h4>👥 수강생 현황</h4><table class="detail-table">' +
+            '<tr><td>총 수강생</td><td>' + (r.total_students || 0) + '명</td></tr>' +
+            '<tr><td>신규 등록</td><td>' + (r.new_registrations || 0) + '명</td></tr>' +
+            '<tr><td>퇴원</td><td>' + (r.withdrawals || 0) + '명</td></tr>' +
+            '<tr><td>유지율</td><td>' + (r.retention_rate || 0) + '%</td></tr>' +
+            '</table></div>';
+        
+        html += '<div class="section-block"><h4>🎯 이번 달 목표</h4><table class="detail-table">' +
+            '<tr><td>신규 목표</td><td>' + (r.target_new_students || 0) + '명</td></tr>' +
+            '<tr><td>월 매출 목표</td><td>₩' + ((r.target_monthly_revenue || 0)).toLocaleString() + '</td></tr>' +
+            '<tr><td>기타 목표</td><td>' + esc(r.target_other || '-') + '</td></tr>' +
+            '</table></div>';
+        
+        if (r.issue_facility_content || r.issue_education_content || r.issue_admin_content || r.issue_other_content) {
+            html += '<div class="section-block"><h4>📌 이슈 및 건의사항</h4><table class="detail-table">';
+            ['facility','education','admin','other'].forEach(k => {
+                const content = r['issue_' + k + '_content'];
+                const request = r['issue_' + k + '_request'];
+                if (content || request) {
+                    const label = {facility:'🏛️ 시설', education:'📚 교육', admin:'📋 행정', other:'🔧 기타'}[k];
+                    html += '<tr><td>' + label + '</td><td>' + esc(nl2br(content) || '-') + (request ? '<br><span style="font-size:11px;color:var(--text-tertiary)">요청: ' + esc(nl2br(request)) + '</span>' : '') + '</td></tr>';
+                }
+            });
+            html += '</table></div>';
+        }
+        
+        html += '<div class="section-block"><h4>📊 전월 실적</h4><table class="detail-table">' +
+            '<tr><td>신규 실적</td><td>' + (r.result_new_students || 0) + '명 (달성률 ' + (r.result_new_students_rate || 0) + '%)</td></tr>' +
+            '<tr><td>매출 실적</td><td>₩' + ((r.result_monthly_revenue || 0)).toLocaleString() + ' (달성률 ' + (r.result_monthly_revenue_rate || 0) + '%)</td></tr>' +
+            '<tr><td>유지율 실적</td><td>' + (r.result_retention_rate || 0) + '% (달성률 ' + (r.result_retention_rate_achieved || 0) + '%)</td></tr>' +
+            '</table></div>';
+        
+        if (r.notes) {
+            html += '<div class="section-block"><h4>📝 특이사항</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6">' + esc(nl2br(r.notes)) + '</p></div>';
+        }
+        
+        document.getElementById('detailBody').innerHTML = html;
+        const footer = document.getElementById('detailFooter');
+        footer.innerHTML = '<button class="btn btn-ghost" onclick="closeModal(\'detailModal\')">닫기</button>';
+        openModal('detailModal');
+    } catch (e) {
+        showAlert('보고서 상세를 불러올 수 없습니다.', 'error');
+    }
+}
+
+// ============================================================
+// 생성된 보고서 (ReportHistory) - 기존 기능 유지
+// ============================================================
+async function loadReportHistory(page) {
+    if (page !== undefined) _currentPage = page;
+    const tbody = document.getElementById('reportListBody');
+    const pagination = document.getElementById('reportPagination');
+
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px"><div class="loading-spinner" style="margin:10px auto"></div>로딩 중...</td></tr>';
+    pagination.innerHTML = '';
+
+    try {
+        const res = await apiGet(`/director/reports?page=${_currentPage}&per_page=${_perPage}`);
+        const reports = res.data || [];
+        const total = res.total || 0;
+        const totalPages = res.total_pages || 1;
+
+        if (!reports || reports.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:32px">📭 생성된 보고서가 없습니다. 위 폼에서 보고서를 생성해보세요.</td></tr>';
+            return;
+        }
+
+        let html = '';
+        reports.forEach((item, idx) => {
+            const no = (res.page - 1) * _perPage + idx + 1;
+            html += `<tr>
+                <td style="text-align:center;color:var(--text-tertiary)">${no}</td>
+                <td><strong>${esc(item.title) || '-'}</strong></td>
+                <td><span class="badge badge-info">${getReportTypeLabel(item.report_type)}</span></td>
+                <td style="font-size:12px;color:var(--text-secondary)">${getPeriodStr(item)}</td>
+                <td style="font-size:12px">${formatDateTime(item.created_at)}</td>
+                <td style="text-align:right;font-size:12px">${formatFileSize(item.file_size)}</td>
+                <td>
+                    <div class="action-btns" style="gap:4px">
+                        <button class="btn btn-primary btn-xs" onclick="downloadReport(${item.id}, '${esc(item.title)}')" title="다운로드">⬇️</button>
+                        <button class="btn btn-danger btn-xs" onclick="deleteReport(${item.id})" title="삭제">🗑️</button>
+                    </div>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+
+        if (totalPages > 1) {
+            let phtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                phtml += `<button class="btn btn-${i === _currentPage ? 'primary' : 'ghost'} btn-xs" onclick="loadReportHistory(${i})" style="min-width:32px">${i}</button>`;
+            }
+            pagination.innerHTML = phtml;
+        }
+    } catch (e) {
+        console.error('loadReportHistory error:', e);
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:32px">❌ 보고서 목록을 불러오지 못했습니다: ${e.message}</td></tr>`;
+    }
+}
+
+async function generateReport() {
+    const btn = document.getElementById('generateBtn');
+    const status = document.getElementById('generateStatus');
+
+    const reportType = document.getElementById('reportType').value;
+    const dateStart = document.getElementById('dateStart').value || null;
+    const dateEnd = document.getElementById('dateEnd').value || null;
+
+    if (!reportType) {
+        status.textContent = '❌ 보고서 유형을 선택해주세요.';
+        status.style.color = 'var(--danger)';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ 생성 중...';
+    status.textContent = '⏳ 보고서를 생성하고 있습니다. 잠시만 기다려주세요...';
+    status.style.color = 'var(--text-tertiary)';
+
+    try {
+        const res = await apiPost('/director/reports', {
+            report_type: reportType,
+            date_range_start: dateStart,
+            date_range_end: dateEnd,
+        });
+        status.textContent = '✅ ' + (res.message || '보고서가 생성되었습니다.');
+        status.style.color = 'var(--success)';
+        loadReportHistory(1);
+    } catch (e) {
+        status.textContent = '❌ ' + e.message;
+        status.style.color = 'var(--danger)';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '📄 보고서 생성';
+        setTimeout(() => {
+            status.textContent = '';
+        }, 5000);
+    }
+}
+
+function downloadReport(id, title) {
+    const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+    const url = `/api/v1/director/reports/${id}/download`;
+    
+    fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('다운로드 실패');
+        return res.blob();
+    })
+    .then(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${title || 'report'}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        if (typeof showAlert === 'function') showAlert('📥 다운로드가 시작되었습니다.', 'success');
+    })
+    .catch(e => {
+        console.error('download error:', e);
+        if (typeof showAlert === 'function') showAlert('다운로드에 실패했습니다.', 'danger');
+    });
+}
+
+async function deleteReport(id) {
+    if (!confirm('정말 이 보고서를 삭제하시겠습니까?')) return;
+    try {
+        const res = await apiDelete(`/director/reports/${id}`);
+        if (typeof showAlert === 'function') showAlert(res.message || '🗑️ 보고서가 삭제되었습니다.', 'success');
+        loadReportHistory();
+    } catch (e) {
+        if (typeof showAlert === 'function') showAlert('삭제 실패: ' + e.message, 'danger');
+    }
+}
+
+function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+function showAlert(msg, type) {
+    const existing = document.getElementById('pageAlert');
+    if (existing) existing.remove();
+    const colors = { success:'#10B981', error:'#EF4444', warning:'#F59E0B', info:'#4F5EF8' };
+    const bgColors = { success:'#F0FDF4', error:'#FEF2F2', warning:'#FFFBEB', info:'#EFF6FF' };
+    const el = document.createElement('div');
+    el.id = 'pageAlert';
+    el.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1);background:' + (bgColors[type] || '#F0FDF4') + ';color:' + (colors[type] || '#10B981') + ';border:1px solid ' + (colors[type] || '#10B981') + ';max-width:400px;';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+}
+
+function esc(s) {
+    if (s == null) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+    </script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

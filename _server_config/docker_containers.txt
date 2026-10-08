@@ -1,0 +1,8 @@
+ollama	alpine/socat:latest	Up 45 hours
+nubida-platform-app	nubida-platform-app:nubida-platform-app-live-llmsplit	Up 46 hours
+music-db	mariadb:latest	Up 2 weeks
+music-ai-app	docker-music-ai	Up 6 days
+shop-web-app	docker-shop-app	Up 2 weeks
+chatai-web-app	docker-chatai-app	Up 18 hours
+redis-server	redis:alpine	Up 59 minutes
+nvidia-dcgm-exporter	nvcr.io/nvidia/k8s/dcgm-exporter:3.3.5-3.4.1-ubuntu22.04	Up 2 weeks

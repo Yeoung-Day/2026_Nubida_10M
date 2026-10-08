@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>누비다머신 교구 핀맵 · 명령어 보고서</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard','Noto Sans KR',-apple-system,system-ui,sans-serif;
+    background:#f5f7fa;color:#1e293b;line-height:1.6;padding:32px 20px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;
+    border-radius:16px;padding:36px 32px;margin-bottom:28px}
+  header h1{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+  header p{color:#cbd5e1;font-size:14.5px}
+  header .date{margin-top:14px;font-size:13px;color:#94a3b8}
+  section{background:#fff;border-radius:14px;padding:28px 26px;margin-bottom:22px;
+    box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .kit h2{font-size:20px;font-weight:800;color:#0f172a;padding-bottom:10px;
+    border-bottom:2px solid #6366f1;margin-bottom:6px}
+  .desc{color:#64748b;font-size:14px;margin-bottom:14px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .meta span{background:#f1f5f9;border-radius:8px;padding:6px 12px;font-size:12.5px;color:#475569}
+  .meta b{color:#6366f1;margin-right:4px}
+  h3{font-size:15px;font-weight:700;color:#334155;margin:22px 0 10px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{background:#f8fafc;text-align:left;padding:10px 12px;font-weight:700;
+    color:#475569;border-bottom:2px solid #e2e8f0;font-size:12.5px}
+  td{padding:9px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+  tr:hover td{background:#fafbfc}
+  td:first-child{font-weight:600;color:#4f46e5;white-space:nowrap}
+  code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;
+    font-family:'SF Mono',Consolas,monospace;color:#db2777}
+  .md5{margin-top:16px;font-size:12px;color:#94a3b8}
+  .note{background:#fffbeb;border-left:4px solid #f59e0b;border-radius:8px;
+    padding:14px 18px;font-size:13.5px;color:#78350f;margin-top:16px}
+  .note b{color:#b45309}
+  footer{text-align:center;color:#94a3b8;font-size:12.5px;padding:24px 0 8px}
+
+  /* ── 인쇄 / PDF: 한 페이지에 교구 하나씩 ── */
+  @media print {
+    @page { size: A4; margin: 12mm 10mm; }
+    body { background:#fff; padding:0; }
+    .wrap { max-width:100%; }
+
+    /* ── 한 페이지에 교구 하나가 들어가도록 타이트닝 ── */
+    header { padding:20px 22px; margin-bottom:0; }
+    header h1 { font-size:22px; margin-bottom:6px; }
+    header p  { font-size:13px; }
+    header .date { margin-top:10px; font-size:12px; }
+
+    section { padding:18px 18px; margin-bottom:0; }
+    .kit h2 { font-size:17px; padding-bottom:7px; margin-bottom:5px; }
+    .desc { font-size:12.5px; margin-bottom:10px; }
+    .meta { gap:6px; margin-bottom:12px; }
+    .meta span { padding:4px 9px; font-size:11.5px; }
+    h3 { font-size:13.5px; margin:12px 0 7px; }
+    table { font-size:12px; }
+    th { padding:6px 9px; font-size:11.5px; }
+    td { padding:5px 9px; }
+    .note { padding:10px 14px; font-size:12px; margin-top:10px; }
+
+
+    /* 표지(head) 는 첫 페이지에만 */
+    header { border-radius:0; margin-bottom:0; padding:26px 24px;
+             break-after:page; page-break-after:always; }
+
+    /* 공통 사항 섹션도 자기 페이지 */
+    section:not(.kit) { break-after:page; page-break-after:always;
+             box-shadow:none; border:1px solid #e2e8f0; }
+
+    /* 교구 섹션 = 각각 새 페이지에서 시작, 페이지 경계 넘지 않음 */
+    section.kit { break-before:page; page-break-before:always;
+             break-inside:avoid; page-break-inside:avoid;
+             box-shadow:none; border:1px solid #e2e8f0;
+             border-radius:0; margin-bottom:0; padding:0 6px 6px; }
+
+    /* 마지막 페이지 뒤 빈 페이지 방지 */
+    section.kit:last-of-type { break-after:auto; page-break-after:auto; }
+
+    footer { break-before:avoid; page-break-before:avoid; }
+
+    /* 표가 페이지 중간에서 잘리지 않도록 (표 단위) */
+    table { break-inside:avoid; page-break-inside:avoid; }
+    h2, h3 { break-after:avoid; page-break-after:avoid; }
+    tr { break-inside:avoid; page-break-inside:avoid; }
+  }
+
+  /* ── 표지 목차 ── */
+  .toc{margin-top:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;padding:16px 20px}
+  .toc-t{font-size:12px;font-weight:700;letter-spacing:.14em;color:#38BDF8;margin-bottom:10px}
+  .toc ol{list-style:none;counter-reset:c}
+  .toc li{counter-increment:c;display:flex;align-items:baseline;gap:10px;
+    font-size:13.5px;color:#e2e8f0;padding:5px 0}
+  .toc li::before{content:counter(c);flex-shrink:0;width:20px;height:20px;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:rgba(56,189,248,.18);color:#7DD3FC;border-radius:6px;
+    font-size:11px;font-weight:700}
+  .toc li .pg{margin-left:auto;color:#94A3B8;font-size:12.5px;font-variant-numeric:tabular-nums}
+  @media print{ .toc{margin-top:16px;padding:14px 18px} .toc li{padding:4px 0;font-size:12.5px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>누비다머신 교구 핀맵 · 명령어 보고서</h1>
+    <p>아두이노 나노(CH340) 기반 머신러닝 교구 5종 — 배선 핀맵과 블루투스 명령어 일람</p>
+    <div class="date">작성일 2026-09-21 · 누비다플랫폼</div>
+
+    <div class="toc">
+      <div class="toc-t">목차</div>
+      <ol>
+        <li><span>공통 사항</span><span class="pg">2</span></li>
+        <li><span>도리도리 로봇</span><span class="pg">3</span></li>
+        <li><span>강아지 로봇</span><span class="pg">4</span></li>
+        <li><span>스마트 휴지통</span><span class="pg">5</span></li>
+        <li><span>블루투스카</span><span class="pg">6</span></li>
+        <li><span>누비다머신 (통합본)</span><span class="pg">7</span></li>
+      </ol>
+    </div>
+  </header>
+
+  <section>
+    <h2 style="font-size:19px;font-weight:800;color:#0f172a;padding-bottom:10px;
+      border-bottom:2px solid #6366f1;margin-bottom:14px">공통 사항</h2>
+    <table>
+      <thead><tr><th>항목</th><th>내용</th></tr></thead>
+      <tbody>
+        <tr><td>보드</td><td>아두이노 나노 CH340 클론 (Old Bootloader) + 나노 확장보드(센서실드)</td></tr>
+        <tr><td>통신</td><td>블루투스 BLE (HM-10 계열) — <b>2번 = RX</b> / <b>3번 = TX</b> (전 교구 고정 · 전용)</td></tr>
+        <tr><td>서보 배선</td><td>확장보드 3핀 한 줄 — 빨강=+5V · 주황=Signal · 갈색=GND</td></tr>
+        
+        <tr><td>서보 떨림</td><td>여러 서보를 함께 쓸 때 — 사용하지 않는 서보 힘 해제(안 쓰는 서보 힘 해제) + 스텝 각도 증가로 해결</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  
+<section class="kit">
+  <h2>도리도리 로봇</h2>
+  <p class="desc">서보 2개 · 고개 흔들기 / 인사하는 로봇</p>
+  <div class="meta">
+    <span><b>배포 파일</b> doridori_v8_X.zip</span>
+    <span><b>메인 스케치</b> doridori_v7.ino</span>
+    <span><b>사용 부품</b> 서보 2개 (9번·7번), 부저 1개 (8번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>값</th></tr></thead>
+    <tbody><tr><td>9</td><td>서보 #1 (고개)</td><td>도리도리 · 삐졌어</td><td>9</td></tr>
+<tr><td>7</td><td>서보 #2 (팔/인사)</td><td>안녕</td><td>7</td></tr>
+<tr><td>8</td><td>부저</td><td>AI 부저 명령</td><td>8</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1번</td><td>도리도리</td><td>9번 서보</td><td>140 ↔ 40 좌우 흔들기 → 90 복귀</td></tr>
+<tr><td>2번</td><td>삐졌어</td><td>9번 서보</td><td>90 → 25 (푹 숙임) → 90 복귀</td></tr>
+<tr><td>3번</td><td>안녕</td><td>7번 서보</td><td>135 → 25 끄덕끄덕 → 90 복귀</td></tr>
+<tr><td>4~9번</td><td>무시</td><td>—</td><td>정의되지 않은 번호 → 동작 안 함</td></tr>
+</tbody>
+  </table>
+  </section>
+
+
+<section class="kit">
+  <h2>강아지 로봇</h2>
+  <p class="desc">서보 2개 · 고개 + 앞발 (손 / 하이파이브)</p>
+  <div class="meta">
+    <span><b>배포 파일</b> puppy_v1.zip</span>
+    <span><b>메인 스케치</b> puppy_v1.ino</span>
+    <span><b>사용 부품</b> 서보 2개 (9번·7번), 부저 1개 (8번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>값</th></tr></thead>
+    <tbody><tr><td>9</td><td>서보 #1 (고개)</td><td>도리도리 · 삐졌어</td><td>9</td></tr>
+<tr><td>7</td><td>서보 #2 (앞발)</td><td>손 · 하이파이브</td><td>7</td></tr>
+<tr><td>8</td><td>부저</td><td>AI 부저 명령</td><td>8</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1번</td><td>도리도리</td><td>9번 서보</td><td>좌우 흔들기 ("아니야~")</td></tr>
+<tr><td>2번</td><td>삐졌어</td><td>9번 서보</td><td>푹 숙이고 유지 ("흥!")</td></tr>
+<tr><td>3번</td><td>손</td><td>7번 서보</td><td>앞발 내밀기 ("손!")</td></tr>
+<tr><td>4번</td><td>하이파이브</td><td>7번 서보</td><td>앞발 위로 올려 짝짝</td></tr>
+<tr><td>5~9번</td><td>무시</td><td>—</td><td>정의되지 않은 번호 → 동작 안 함</td></tr>
+</tbody>
+  </table>
+  </section>
+
+
+<section class="kit">
+  <h2>스마트 휴지통</h2>
+  <p class="desc">서보 3개 · 독립 뚜껑 3개 (캔 / 플라스틱 / 일반)</p>
+  <div class="meta">
+    <span><b>배포 파일</b> trashbin_v8.zip</span>
+    <span><b>메인 스케치</b> trashbin_v8.ino</span>
+    <span><b>사용 부품</b> 서보 3개 (5번·7번·9번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>값</th></tr></thead>
+    <tbody><tr><td>5</td><td>서보 #1 (캔 뚜껑)</td><td>1번</td><td>5</td></tr>
+<tr><td>7</td><td>서보 #2 (플라스틱 뚜껑)</td><td>2번 명령</td><td>7</td></tr>
+<tr><td>9</td><td>서보 #3 (일반 뚜껑)</td><td>3번 명령</td><td>9</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1번</td><td>캔 뚜껑 열기</td><td>5번 서보</td><td>95 → 180 열기 → 유지 → 닫기</td></tr>
+<tr><td>2번</td><td>플라스틱 뚜껑 열기</td><td>7번 서보</td><td>95 → 180 열기 → 유지 → 닫기</td></tr>
+<tr><td>3번</td><td>일반 뚜껑 열기</td><td>9번 서보</td><td>95 → 180 열기 → 유지 → 닫기</td></tr>
+<tr><td>4번</td><td>전부 열기</td><td>5·7·9번</td><td>3개 뚜껑 순차 개방</td></tr>
+<tr><td>5번</td><td>전부 닫기</td><td>5·7·9번</td><td>3개 뚜껑 순차 폐쇄</td></tr>
+<tr><td>6번</td><td>처음 상태</td><td>5·7·9번</td><td>초기 위치로 복귀</td></tr>
+<tr><td>7~9번</td><td>무시</td><td>—</td><td>정의되지 않은 번호 → 뚜껑 안 움직임</td></tr>
+</tbody>
+  </table>
+  </section>
+
+
+<section class="kit">
+  <h2>블루투스카</h2>
+  <p class="desc">DC모터 2개 (4핀) · 차동 구동 자동차</p>
+  <div class="meta">
+    <span><b>배포 파일</b> btcar_v5.zip</span>
+    <span><b>메인 스케치</b> btcar_v5.ino</span>
+    <span><b>사용 부품</b> DC모터 2개 (L9110S 등, 4·5번 / 6·7번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>값</th></tr></thead>
+    <tbody><tr><td>4</td><td>좌측 모터 A (정)</td><td>LEFT_A</td><td>LEFT_A</td><td>4</td></tr>
+<tr><td>5</td><td>좌측 모터 B (역)</td><td>LEFT_B</td><td>LEFT_B</td><td>5</td></tr>
+<tr><td>6</td><td>우측 모터 A (정)</td><td>RIGHT_A</td><td>RIGHT_A</td><td>6</td></tr>
+<tr><td>7</td><td>우측 모터 B (역)</td><td>RIGHT_B</td><td>RIGHT_B</td><td>7</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>블루투스 송신 (전용)</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1번</td><td>전진</td><td>4·5·6·7</td><td>양쪽 모터 정방향</td></tr>
+<tr><td>2번</td><td>후진</td><td>4·5·6·7</td><td>양쪽 모터 역방향</td></tr>
+<tr><td>3번</td><td>좌회전</td><td>4·5·6·7</td><td>좌측 역 / 우측 정</td></tr>
+<tr><td>4번</td><td>우회전</td><td>4·5·6·7</td><td>좌측 정 / 우측 역</td></tr>
+<tr><td>5번</td><td>정지</td><td>4·5·6·7</td><td>모든 모터 즉시 정지</td></tr>
+<tr><td>전진/앞/go/f/F</td><td>전진</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>후진/뒤/back/b/B</td><td>후진</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>좌회전/좌/왼쪽/l/L/left</td><td>좌회전</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>우회전/우/오른쪽/r/R/right</td><td>우회전</td><td>모터</td><td>평문 명령</td></tr>
+<tr><td>정지/멈춤/스톱/s/S/stop</td><td>정지</td><td>모터</td><td>평문 명령</td></tr>
+</tbody>
+  </table>
+  </section>
+
+
+<section class="kit">
+  <h2>누비다머신 (통합본)</h2>
+  <p class="desc">통합 교구 · 서보 + 모터 + LED + 부저 + 초음파 전부</p>
+  <div class="meta">
+    <span><b>배포 파일</b> nubida_v26.zip</span>
+    <span><b>메인 스케치</b> nubida_v26.ino</span>
+    <span><b>사용 부품</b> 서보 2개 (9·7번), DC모터 (4·5번), LED (3번), 부저 (6번), 초음파 (10/11번)</span>
+  </div>
+
+  <h3>① 핀맵</h3>
+  <table>
+    <thead><tr><th>핀</th><th>부품</th><th>연결 동작</th><th>값</th></tr></thead>
+    <tbody><tr><td>9</td><td>서보 #1</td><td>1번 (고개 끄덕)</td><td>9</td></tr>
+<tr><td>7</td><td>서보 #2</td><td>2번 (인사)</td><td>7</td></tr>
+<tr><td>5</td><td>모터 정방향</td><td>3·6·7번</td><td>5</td></tr>
+<tr><td>4</td><td>모터 역방향</td><td>3·6·7번</td><td>4</td></tr>
+<tr><td>3</td><td>LED</td><td>4번 (빨강→초록)</td><td>3</td></tr>
+<tr><td>6</td><td>부저</td><td>5번 (삐삐)</td><td>6</td></tr>
+<tr><td>10</td><td>초음파 TRIG</td><td>7번</td><td>10</td></tr>
+<tr><td>11</td><td>초음파 ECHO</td><td>7번</td><td>11</td></tr>
+<tr><td>2</td><td>BLE RX</td><td>블루투스 수신 (전용)</td><td>고정</td></tr>
+<tr><td>3</td><td>BLE TX</td><td>⚠️ LED 3번과 겹침 주의</td><td>고정</td></tr>
+</tbody>
+  </table>
+
+  <h3>② 명령어 (블루투스로 보내는 값)</h3>
+  <table>
+    <thead><tr><th>명령</th><th>동작</th><th>구동 부품</th><th>동작 내용</th></tr></thead>
+    <tbody><tr><td>1번</td><td>고개 끄덕</td><td>9번 서보</td><td>90 → 160 → 90</td></tr>
+<tr><td>2번</td><td>인사</td><td>7번 서보</td><td>45 → 135 → 45</td></tr>
+<tr><td>3번</td><td>전진</td><td>5·4번 모터</td><td>80% 속도로 1.2초 전진 후 정지</td></tr>
+<tr><td>4번</td><td>LED 점등</td><td>3번 LED</td><td>빨강 켜기 → 초록 깜빡 → 끄기</td></tr>
+<tr><td>5번</td><td>삐삐</td><td>6번 부저</td><td>880Hz 삐삐 소리</td></tr>
+<tr><td>6번</td><td>융합 동작</td><td>서보+LED+부저+모터</td><td>여러 부품을 한 번에 동작</td></tr>
+<tr><td>7번</td><td>센서 동작</td><td>모터+초음파(10/11)+부저</td><td>초음파로 거리 감지 후 동작</td></tr>
+<tr><td>8번</td><td>무시</td><td>—</td><td>정의되지 않은 번호</td></tr>
+</tbody>
+  </table>
+  </section>
+</div>
+
+</body>
+</html>

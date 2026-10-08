@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>채팅 — 누비다플랫폼</title>
+<link rel="icon" type="image/png" href="/favicon.ico">
+
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260910nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/features/chat.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/pages/student/style.css?v=20260804c">
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+<div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+                <a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+                <a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+                <a class="nav-item" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+                <a class="nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+                <a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">학생</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+        <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>💬 채팅</h1></div>
+            <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+            </div>
+        <div class="section-divider"></div>
+
+        <div class="chat-layout">
+            <!-- Sidebar: Room List -->
+            <div class="chat-sidebar" id="chatSidebar">
+                <div class="chat-sidebar-header">
+                    <h2>💬 채팅</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openNewChatModal()">+ 새 채팅</button>
+                </div>
+                <div class="chat-sidebar-search">
+                    <input type="text" id="roomSearch" placeholder="채팅방 검색..." oninput="filterRooms()">
+                </div>
+                <div class="chat-room-list" id="roomList">
+                    <div class="chat-empty" style="padding:40px 0"><p>로딩 중...</p></div>
+                </div>
+            </div>
+
+            <!-- Main: Messages -->
+            <div class="chat-main hidden" id="chatMain">
+                <div class="chat-main-header">
+                    <div>
+                        <div class="chat-mobile-back" onclick="showRoomList()">← 목록</div>
+                        <h3 id="currentRoomName">채팅방을 선택하세요</h3>
+                        <div class="cmh-meta" id="currentRoomMeta"></div>
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:center">
+                        <button class="btn btn-ghost btn-sm" onclick="renameRoom()" id="renameBtn" style="display:none" title="방 이름 변경">✏️</button>
+                        <button class="btn btn-ghost btn-sm" onclick="deleteRoom()" id="deleteBtn" style="display:none" title="방 삭제">🗑️</button>
+                        <button class="btn btn-ghost btn-sm" onclick="toggleParticipants()" id="participantsBtn" style="display:none">👥 <span id="participantCount">0</span></button>
+                    </div>
+                </div>
+                <div class="chat-messages" id="messageContainer">
+                    <div class="chat-empty" id="emptyChat">
+                        <div class="icon">💬</div>
+                        <p>대화를 시작해보세요</p>
+                    </div>
+                </div>
+                <div id="typingIndicator" class="typing-indicator" style="padding:0 20px;display:none"></div>
+                <div class="chat-input-area">
+                    <button class="file-btn" onclick="document.getElementById('fileInput').click()" title="파일 첨부">📎</button>
+                    <input type="file" id="fileInput" onchange="onFileSelected(event)" style="display:none">
+                    <textarea id="msgInput" placeholder="메시지를 입력하세요..." rows="1" oninput="onInputChange()" onkeydown="onInputKeydown(event)"></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+                </div>
+                <div class="file-preview" id="filePreview">
+                    <span class="fp-icon">📄</span>
+                    <span class="fp-name" id="fpName"></span>
+                    <span class="fp-cancel" onclick="cancelFileUpload()">✕</span>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- New Chat Modal -->
+<div class="modal-overlay" id="newChatModal">
+    <div class="modal" style="max-width:500px">
+        <div class="modal-header"><h3>💬 새 채팅</h3></div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>채팅 유형</label>
+                <select class="form-input" id="chatTypeSelect" onchange="onChatTypeChange()">
+                    <option value="direct">1:1 채팅</option>
+                    <option value="group">그룹 채팅</option>
+                </select>
+            </div>
+            <div class="form-group form-group-hidden" id="groupNameField">
+                <label>방 이름</label>
+                <input type="text" class="form-input" id="groupNameInput" placeholder="그룹방 이름">
+            </div>
+            <div class="form-group">
+                <label>참여자</label>
+                <input type="text" class="form-input" id="userSearch" placeholder="사용자 검색..." oninput="filterAvailableUsers()">
+                <div class="selected-tags" id="selectedUserTags"></div>
+                <div class="user-select-list" id="availableUserList"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="createChatRoom()">채팅방 만들기</button>
+            <button class="btn btn-ghost" onclick="closeModal('newChatModal')">취소</button>
+        </div>
+    </div>
+</div>
+
+<!-- Participants Modal -->
+<div class="modal-overlay" id="participantsModal" onclick="if(event.target===this) closeModal('participantsModal')">
+    <div class="modal" style="max-width:400px">
+        <div class="modal-header"><h3>👥 참여자</h3></div>
+        <div class="modal-body" id="participantsBody">
+            <div class="chat-empty"><p>로딩 중...</p></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closeModal('participantsModal')">닫기</button>
+        </div>
+    </div>
+</div>
+
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/auth.js?v=20260908a"></script>
+<script src="/common/js/utils.js?v=20260804b"></script>
+<script>
+// 모달 닫기 통일: .active 클래스 제거 + 인라인 none (둘 다 처리)
+function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.classList.remove('active');
+        el.style.display = 'none';
+    }
+}
+let currentUser = null;
+let chatRooms = [];
+let currentRoomId = null;
+let currentWs = null;
+let msgOffset = 0;
+let isLoadingMessages = false;
+let hasMoreMessages = true;
+let selectedUsers = new Set();
+let availableUsers = [];
+let typingTimeout = null;
+let isTyping = false;
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        requireAuth();
+        renderSidebarUser();
+        const now = new Date();
+        document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+
+        // Get current user info from localStorage
+        const stored = localStorage.getItem('user');
+        if (stored) {
+            currentUser = JSON.parse(stored);
+        }
+
+        await loadRooms();
+        setupInfiniteScroll();
+    } catch (e) {
+        console.error('Init error:', e);
+    }
+});
+
+async function loadRooms() {
+    try {
+        const res = await apiGet('/chat/rooms');
+        chatRooms = res?.data || [];
+        renderRoomList();
+    } catch (e) {
+        console.error('Load rooms error:', e);
+    }
+}
+
+function renderRoomList() {
+    const container = document.getElementById('roomList');
+    const searchVal = (document.getElementById('roomSearch').value || '').toLowerCase();
+
+    let filtered = chatRooms;
+    if (searchVal) {
+        filtered = chatRooms.filter(r => r.name.toLowerCase().includes(searchVal));
+    }
+
+    if (!filtered.length) {
+        container.innerHTML = '<div class="chat-empty" style="padding:40px 0"><p>채팅방이 없습니다.</p></div>';
+        return;
+    }
+
+    container.innerHTML = filtered.map(r => {
+        const isActive = r.id === currentRoomId;
+        const time = r.last_message?.created_at ? formatChatTime(r.last_message.created_at) : '';
+        const preview = r.last_message?.content || '';
+        const badge = r.unread_count > 0 ? `<div class="cri-badge">${r.unread_count > 99 ? '99+' : r.unread_count}</div>` : '';
+        return `<div class="chat-room-item ${isActive ? 'active' : ''}" onclick="selectRoom(${r.id})">
+            <div class="cri-header">
+                <div class="cri-name">${esc(r.name)}</div>
+                <div class="cri-time">${time}</div>
+            </div>
+            <div class="cri-preview">${esc(preview)}</div>
+            ${badge}
+        </div>`;
+    }).join('');
+}
+
+function selectRoom(roomId) {
+    if (currentRoomId === roomId) return;
+    
+    // Disconnect old WS
+    if (currentWs) {
+        currentWs.close();
+        currentWs = null;
+    }
+    
+    currentRoomId = roomId;
+    msgOffset = 0;
+    hasMoreMessages = true;
+    
+    // Update UI
+    renderRoomList();
+    
+    // Find room
+    const room = chatRooms.find(r => r.id === roomId);
+    document.getElementById('currentRoomName').textContent = room ? room.name : '채팅방';
+    document.getElementById('currentRoomMeta').textContent = room ? `${room.room_type === 'direct' ? '1:1' : room.room_type === 'group' ? '그룹' : '공지'} · ${room.participant_count}명` : '';
+    const participantsBtn = document.getElementById('participantsBtn');
+    if (participantsBtn) participantsBtn.style.display = 'inline-flex';
+    document.getElementById('participantCount').textContent = room?.participant_count || 0;
+    
+    // Show action buttons (모든 채팅방에서 표시)
+    const db = document.getElementById('deleteBtn');
+    const rb = document.getElementById('renameBtn');
+    const pb = document.getElementById('participantsBtn');
+    if (room) {
+        if (db) db.style.display = 'inline-flex';
+        if (rb) rb.style.display = 'inline-flex';
+        if (pb) pb.style.display = 'inline-flex';
+    } else {
+        if (db) db.style.display = 'none';
+        if (rb) rb.style.display = 'none';
+        if (pb) pb.style.display = 'none';
+    }
+    
+    // Clear messages
+    document.getElementById('messageContainer').innerHTML = '';
+    const emptyChat = document.getElementById('emptyChat');
+    if (emptyChat) {
+        emptyChat.style.display = 'block';
+        const p = emptyChat.querySelector('p');
+        if (p) p.textContent = '메시지를 불러오는 중...';
+    }
+    
+    // Show chat main (mobile)
+    document.getElementById('chatMain').classList.remove('hidden');
+    document.getElementById('chatSidebar').classList.add('hidden');
+    
+    // Load messages
+    loadMessages();
+    
+    // Connect WebSocket
+    connectWebSocket(roomId);
+}
+
+function showRoomList() {
+    document.getElementById('chatMain').classList.add('hidden');
+    document.getElementById('chatSidebar').classList.remove('hidden');
+}
+
+async function loadMessages() {
+    if (!currentRoomId || isLoadingMessages || !hasMoreMessages) return;
+    isLoadingMessages = true;
+    
+    try {
+        let url = `/chat/rooms/${currentRoomId}/messages?limit=50`;
+        if (msgOffset > 0) url += `&before=${msgOffset}`;
+        
+        const res = await apiGet(url);
+        const messages = res?.data || [];
+        
+        if (messages.length < 50) hasMoreMessages = false;
+        const isInitialLoad = msgOffset === 0;
+        if (messages.length > 0) {
+            msgOffset = messages[0].id;
+        }
+        
+        const container = document.getElementById('messageContainer');
+        let emptyEl = document.getElementById('emptyChat');
+        
+        // emptyChat이 없으면 새로 생성 (selectRoom에서 innerHTML=''로 삭제된 경우)
+        if (!emptyEl) {
+            emptyEl = document.createElement('div');
+            emptyEl.className = 'chat-empty';
+            emptyEl.id = 'emptyChat';
+            emptyEl.style.display = 'none';
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'icon';
+            iconDiv.textContent = '💬';
+            const p = document.createElement('p');
+            p.textContent = '대화를 시작해보세요';
+            emptyEl.appendChild(iconDiv);
+            emptyEl.appendChild(p);
+            container.prepend(emptyEl);
+        }
+        
+        if (messages.length === 0 && msgOffset === 0) {
+            emptyEl.style.display = 'flex';
+            emptyEl.querySelector('p').textContent = '대화를 시작해보세요';
+            return;
+        }
+        
+        emptyEl.style.display = 'none';
+        
+        // Prepend messages (입장/퇴장 제외)
+        const filteredMessages = messages.filter(m => !(m.message_type === 'system' && (m.content.includes('입장') || m.content.includes('퇴장'))));
+        if (filteredMessages.length === 0) return;
+        const fragment = document.createDocumentFragment();
+        // We use temporary div to generate HTML and insert at top
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = filteredMessages.map(m => renderMessage(m, false)).join('');
+        
+        if (!isInitialLoad && filteredMessages.length > 0) {
+            // Insert before first child
+            while (tempDiv.firstChild) {
+                container.insertBefore(tempDiv.firstChild, container.firstChild);
+            }
+        } else {
+            container.innerHTML = filteredMessages.map(m => renderMessage(m, false)).join('');
+            // Re-create emptyChat if it was destroyed by innerHTML
+            if (!document.getElementById('emptyChat')) {
+                const emptyEl = document.createElement('div');
+                emptyEl.className = 'chat-empty';
+                emptyEl.id = 'emptyChat';
+                emptyEl.style.display = 'none';
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'icon';
+                iconDiv.textContent = '💬';
+                const p = document.createElement('p');
+                p.textContent = '대화를 시작해보세요';
+                emptyEl.appendChild(iconDiv);
+                emptyEl.appendChild(p);
+                container.appendChild(emptyEl);
+            }
+        }
+        
+        // Scroll to bottom on initial load
+        if (isInitialLoad) {
+            scrollToBottom();
+        }
+        
+        // Auto mark as read
+        if (messages.length > 0) {
+            const maxId = Math.max(...messages.map(m => m.id));
+            markRead(maxId);
+        }
+    } catch (e) {
+        console.error('Load messages error:', e);
+    } finally {
+        isLoadingMessages = false;
+    }
+}
+
+function renderMessage(m, withTime) {
+    const isMine = m.sender_id === currentUser?.id;
+    const isAdmin = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
+    const isSystem = m.message_type === 'system';
+    const isFile = m.message_type === 'file';
+    const time = m.created_at ? formatChatTime(m.created_at) : '';
+    
+    if (isSystem) {
+        return `<div class="chat-msg-wrap system"><div class="chat-msg-bubble">${esc(m.content)}</div></div>`;
+    }
+    
+    const readMark = isMine ? '<span class="chat-msg-read">✓</span>' : '';
+    let contentHtml = '';
+    
+    if (isFile) {
+        const fileIcon = getFileIcon(m.file_name || '');
+        const fileSize = m.file_size ? formatFileSize(m.file_size) : '';
+        contentHtml = `<div class="chat-msg-file">
+            <span class="file-icon">${fileIcon}</span>
+            <div class="file-info">
+                <div class="file-name">${esc(m.file_name || m.content || '파일')}</div>
+                ${fileSize ? '<div class="file-size">' + fileSize + '</div>' : ''}
+            </div>
+            ${m.file_url ? '<a class="file-dl" href="' + m.file_url + '" target="_blank" rel="noopener">⬇ 다운로드</a>' : ''}
+        </div>`;
+    } else {
+        contentHtml = esc(m.content);
+    }
+    
+    const actions = (isMine || isAdmin) && !isFile
+        ? `<span class="msg-actions">
+            <span class="msg-action" onclick="event.stopPropagation();editMsg(${m.id},${m.sender_id})" title="수정">✏️</span>
+            <span class="msg-action" onclick="event.stopPropagation();deleteMsg(${m.id},${m.sender_id})" title="삭제">🗑️</span>
+          </span>`
+        : '';
+    
+    return `<div class="chat-msg-wrap ${isMine ? 'mine' : ''}" data-msg-id="${m.id}">
+        ${!isMine ? `<div class="chat-msg-sender">${esc(m.sender_name)}</div>` : ''}
+        <div class="chat-msg-bubble">
+            ${contentHtml}${actions}
+            <div class="chat-msg-time">${time}${readMark}</div>
+        </div>
+    </div>`;
+}
+
+function getFileIcon(filename) {
+    const ext = (filename || '').split('.').pop().toLowerCase();
+    const icons = {
+        'pdf': '📄', 'hwp': '📝', 'doc': '📝', 'docx': '📝',
+        'xls': '📊', 'xlsx': '📊', 'csv': '📊',
+        'ppt': '📽️', 'pptx': '📽️',
+        'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'webp': '🖼️',
+        'mp4': '🎬', 'avi': '🎬', 'mov': '🎬', 'webm': '🎬',
+        'mp3': '🎵', 'wav': '🎵', 'ogg': '🎵',
+        'zip': '📦', 'rar': '📦', 'gz': '📦', '7z': '📦',
+        'ino': '🤖', 'py': '🐍', 'js': '📜', 'html': '🌐', 'css': '🎨',
+    };
+    return icons[ext] || '📄';
+}
+
+function formatFileSize(bytes) {
+    if (!bytes) return '';
+    if (bytes < 1024) return bytes + 'B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + 'KB';
+    if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + 'MB';
+    return (bytes / 1073741824).toFixed(1) + 'GB';
+}
+
+function connectWebSocket(roomId) {
+    const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+    if (!token) {
+        console.error('WebSocket: No auth token available');
+        return;
+    }
+    
+    const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl = `${protocol}://${location.host}/api/v1/chat/ws/${roomId}?token=${encodeURIComponent(token)}`;
+    
+    currentWs = new WebSocket(wsUrl);
+    
+    currentWs.onopen = () => {
+        console.log('WebSocket connected');
+    };
+    
+    currentWs.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            handleWsMessage(data);
+        } catch (e) {
+            console.error('WS parse error:', e);
+        }
+    };
+    
+    currentWs.onclose = (e) => {
+        console.log('WebSocket closed:', e.code, e.reason);
+        // Reconnect after 5 seconds (max 3 attempts)
+        if (!window._wsRetry) window._wsRetry = {};
+        if (!window._wsRetry[roomId]) window._wsRetry[roomId] = 0;
+        if (currentRoomId === roomId && window._wsRetry[roomId] < 3) {
+            window._wsRetry[roomId]++;
+            setTimeout(() => {
+                if (currentRoomId === roomId) connectWebSocket(roomId);
+            }, 5000);
+        }
+        setTimeout(() => { if (window._wsRetry) delete window._wsRetry[roomId]; }, 60000);
+    };
+    
+    currentWs.onerror = () => {
+        // onerror triggers onclose — let onclose handle reconnection
+    };
+}
+
+function handleWsMessage(data) {
+    const type = data.type;
+    const payload = data.data;
+    
+    if (type === 'message') {
+        appendMessage(payload);
+        // Update room list
+        updateRoomLastMessage(payload);
+        // Mark as read
+        markRead(payload.id);
+    } else if (type === 'system') {
+        // 입장/퇴장 시스템 메시지는 표시하지 않음
+        if (payload.content.includes('입장') || payload.content.includes('퇴장')) {
+            return;
+        }
+        appendSystemMessage(payload.content);
+    } else if (type === 'read_receipt') {
+        // Update read marks (simplified - just update all mine messages)
+        updateReadMarks(payload.user_id, payload.last_read_id);
+    } else if (type === 'typing') {
+        showTyping(payload.user_name, payload.is_typing);
+    } else if (type === 'edit') {
+        // 메시지 수정 실시간 반영
+        const msgEl = document.querySelector(`[data-msg-id="${payload.id}"]`);
+        if (msgEl) {
+            const bubble = msgEl.querySelector('.chat-msg-bubble');
+            if (bubble) {
+                // Replace content (keep time, actions intact)
+                const timeEl = bubble.querySelector('.chat-msg-time');
+                const actionsEl = bubble.querySelector('.msg-actions');
+                bubble.innerHTML = esc(payload.content) + (actionsEl ? actionsEl.outerHTML : '') + (timeEl ? timeEl.outerHTML : '');
+            }
+        }
+    } else if (type === 'delete') {
+        // 메시지 삭제 실시간 반영
+        const msgEl = document.querySelector(`[data-msg-id="${payload.id}"]`);
+        if (msgEl) {
+            msgEl.style.transition = 'opacity 0.3s';
+            msgEl.style.opacity = '0';
+            setTimeout(() => { if (msgEl.parentNode) msgEl.parentNode.removeChild(msgEl); }, 300);
+        }
+    }
+}
+
+function appendMessage(msg) {
+    const container = document.getElementById('messageContainer');
+    const emptyEl = document.getElementById('emptyChat');
+    if (emptyEl) {
+        emptyEl.style.display = 'none';
+    }
+    
+    container.insertAdjacentHTML('beforeend', renderMessage(msg, true));
+    scrollToBottom();
+}
+
+function appendSystemMessage(content) {
+    const container = document.getElementById('messageContainer');
+    container.insertAdjacentHTML('beforeend', `<div class="chat-msg-wrap system"><div class="chat-msg-bubble">${esc(content)}</div></div>`);
+    scrollToBottom();
+}
+
+function scrollToBottom() {
+    const container = document.getElementById('messageContainer');
+    setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+    }, 50);
+}
+
+function setupInfiniteScroll() {
+    const container = document.getElementById('messageContainer');
+    container.addEventListener('scroll', () => {
+        if (container.scrollTop < 50) {
+            loadMessages();
+        }
+    });
+}
+
+function sendMessage() {
+    const input = document.getElementById('msgInput');
+    const text = input.value.trim();
+    if (!text || !currentWs || currentWs.readyState !== WebSocket.OPEN) return;
+    
+    currentWs.send(JSON.stringify({
+        type: 'message',
+        data: { content: text, message_type: 'text' }
+    }));
+    
+    input.value = '';
+    document.getElementById('sendBtn').disabled = true;
+    input.style.height = '44px';
+    
+    // Cancel typing
+    sendTyping(false);
+}
+
+async function editMsg(msgId, senderId) {
+    const isMine = senderId === currentUser?.id;
+    const isAdmin = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
+    if (!isMine && !isAdmin) return;
+    
+    const msgEl = document.querySelector(`[data-msg-id="${msgId}"]`);
+    if (!msgEl) return;
+    const bubble = msgEl.querySelector('.chat-msg-bubble');
+    if (!bubble) return;
+    
+    // Get current text (without action buttons)
+    const currentText = bubble.childNodes[0]?.textContent?.trim() || '';
+    const newText = prompt('메시지 수정:', currentText);
+    if (!newText || newText === currentText) return;
+    
+    try {
+        const res = await apiPut('/chat/messages/' + msgId, {content: newText});
+        if (res?.status === 'success') {
+            // Update locally immediately
+            const actionsEl = bubble.querySelector('.msg-actions');
+            const timeEl = bubble.querySelector('.chat-msg-time');
+            bubble.innerHTML = esc(newText) + (actionsEl ? actionsEl.outerHTML : '') + (timeEl ? timeEl.outerHTML : '');
+        } else {
+            showAlert(res?.message || '수정 실패', 'error');
+        }
+    } catch (e) {
+        showAlert('수정 오류: ' + (e.message || ''), 'error');
+    }
+}
+
+async function deleteMsg(msgId, senderId) {
+    const isMine = senderId === currentUser?.id;
+    const isAdmin = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
+    if (!isMine && !isAdmin) return;
+    
+    if (!confirm('이 메시지를 삭제하시겠습니까?')) return;
+    
+    try {
+        const res = await api('DELETE', '/chat/messages/' + msgId);
+        if (res?.status === 'success') {
+            // Remove from UI
+            const msgEl = document.querySelector(`[data-msg-id="${msgId}"]`);
+            if (msgEl) {
+                msgEl.style.transition = 'opacity 0.3s';
+                msgEl.style.opacity = '0';
+                setTimeout(() => { if (msgEl.parentNode) msgEl.parentNode.removeChild(msgEl); }, 300);
+            }
+        } else {
+            showAlert(res?.message || '삭제 실패', 'error');
+        }
+    } catch (e) {
+        showAlert('삭제 오류: ' + (e.message || ''), 'error');
+    }
+}
+
+function onInputChange() {
+    const input = document.getElementById('msgInput');
+    const hasText = input.value.trim().length > 0;
+    document.getElementById('sendBtn').disabled = !hasText || !currentWs;
+    
+    // Auto resize
+    input.style.height = '44px';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    
+    // Typing indicator
+    if (hasText && !isTyping) {
+        sendTyping(true);
+        isTyping = true;
+    }
+    
+    // Clear typing after 2 seconds of no input
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        if (isTyping) {
+            sendTyping(false);
+            isTyping = false;
+        }
+    }, 2000);
+}
+
+function onInputKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+}
+
+function sendTyping(isTyping) {
+    if (currentWs && currentWs.readyState === WebSocket.OPEN) {
+        currentWs.send(JSON.stringify({
+            type: 'typing',
+            data: { is_typing: isTyping }
+        }));
+    }
+}
+
+function markRead(messageId) {
+    if (!currentRoomId || !messageId) return;
+    // No need to send read every time - just do it for the latest message
+    apiPut(`/chat/rooms/${currentRoomId}/read`, { message_id: messageId }).catch(() => {});
+}
+
+function updateReadMarks(userId, lastReadId) {
+    // Update read marks in UI (simplified - just refresh unread count)
+    renderRoomList();
+}
+
+function updateRoomLastMessage(msg) {
+    const room = chatRooms.find(r => r.id === currentRoomId);
+    if (room) {
+        room.last_message = {
+            content: msg.content,
+            sender_name: msg.sender_name,
+            created_at: msg.created_at
+        };
+    }
+}
+
+function showTyping(userName, isTyping) {
+    const el = document.getElementById('typingIndicator');
+    if (isTyping) {
+        el.textContent = `${esc(userName)}님이 입력 중...`;
+        el.style.display = 'block';
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+function filterRooms() {
+    renderRoomList();
+}
+
+// ============================================================
+// New Chat Modal
+// ============================================================
+
+async function openNewChatModal() {
+    selectedUsers.clear();
+    document.getElementById('selectedUserTags').innerHTML = '';
+    document.getElementById('userSearch').value = '';
+    document.getElementById('chatTypeSelect').value = 'direct';
+    const gnf = document.getElementById('groupNameField');
+    if (gnf) gnf.style.display = 'none';
+    document.getElementById('groupNameInput').value = '';
+    
+    // Load available users
+    try {
+        const res = await apiGet('/chat/users-available');
+        availableUsers = res?.data || [];
+        renderAvailableUsers();
+    } catch (e) {
+        availableUsers = [];
+    }
+    
+    openModal('newChatModal');
+}
+
+function onChatTypeChange() {
+    const type = document.getElementById('chatTypeSelect').value;
+    const gnf = document.getElementById('groupNameField');
+    if (gnf) gnf.style.display = type === 'group' ? 'block' : 'none';
+}
+
+function renderAvailableUsers() {
+    const searchVal = (document.getElementById('userSearch').value || '').toLowerCase();
+    let filtered = availableUsers.filter(u => !selectedUsers.has(u.id));
+    if (searchVal) {
+        filtered = filtered.filter(u => u.name.toLowerCase().includes(searchVal) || u.role.toLowerCase().includes(searchVal));
+    }
+    
+    const container = document.getElementById('availableUserList');
+    if (!filtered.length) {
+        container.innerHTML = '<div class="user-select-item" style="color:var(--text-tertiary);cursor:default">검색 결과가 없습니다.</div>';
+        return;
+    }
+    
+    container.innerHTML = filtered.map(u => {
+        const roleLabel = {super_admin:'본사', admin:'본사', branch_admin:'에듀케어', branch_manager:'에듀케어', director:'원장', student:'학생', parent:'학부모'}[u.role] || u.role;
+        return `<div class="user-select-item" onclick="toggleUserSelect(${u.id}, '${esc(u.name)}', '${esc(roleLabel)}')">
+            <div class="check"></div>
+            <span><strong>${esc(u.name)}</strong> <span style="font-size:11px;color:var(--text-tertiary)">(${roleLabel})</span></span>
+        </div>`;
+    }).join('');
+}
+
+function filterAvailableUsers() {
+    renderAvailableUsers();
+}
+
+function toggleUserSelect(id, name, role) {
+    if (selectedUsers.has(id)) {
+        selectedUsers.delete(id);
+    } else {
+        selectedUsers.add(id);
+    }
+    renderAvailableUsers();
+    renderSelectedTags();
+}
+
+function renderSelectedTags() {
+    const container = document.getElementById('selectedUserTags');
+    if (selectedUsers.size === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = Array.from(selectedUsers).map(id => {
+        const u = availableUsers.find(u => u.id === id);
+        return `<span class="selected-tag">${esc(u ? u.name : '?')} <span class="remove" onclick="toggleUserSelect(${id})">×</span></span>`;
+    }).join('');
+}
+
+async function createChatRoom() {
+    const type = document.getElementById('chatTypeSelect').value;
+    
+    if (type === 'direct') {
+        if (selectedUsers.size !== 1) {
+            showAlert('1:1 채팅은 한 명만 선택해주세요.', 'error');
+            return;
+        }
+        const targetId = Array.from(selectedUsers)[0];
+        try {
+            const res = await apiPost('/chat/rooms', {
+                room_type: 'direct',
+                user_id: targetId
+            });
+            if (res?.status === 'success') {
+                closeModal('newChatModal');
+                await loadRooms();
+                selectRoom(res.data.id);
+            }
+        } catch (e) {
+            showAlert('채팅방 생성 실패: ' + (e.message || ''), 'error');
+        }
+    } else {
+        const name = document.getElementById('groupNameInput').value.trim();
+        if (!name) {
+            showAlert('그룹방 이름을 입력해주세요.', 'error');
+            return;
+        }
+        if (selectedUsers.size < 2) {
+            showAlert('그룹 채팅은 최소 2명 이상 선택해주세요.', 'error');
+            return;
+        }
+        try {
+            const res = await apiPost('/chat/rooms', {
+                room_type: 'group',
+                name: name,
+                user_ids: Array.from(selectedUsers)
+            });
+            if (res?.status === 'success') {
+                closeModal('newChatModal');
+                await loadRooms();
+                selectRoom(res.data.id);
+            }
+        } catch (e) {
+            showAlert('채팅방 생성 실패: ' + (e.message || ''), 'error');
+        }
+    }
+}
+
+// ============================================================
+// Participants Modal
+// ============================================================
+
+async function toggleParticipants() {
+    if (!currentRoomId) return;
+    openModal('participantsModal');
+    document.getElementById('participantsBody').innerHTML = '<div class="chat-empty"><p>로딩 중...</p></div>';
+    
+    try {
+        const res = await apiGet(`/chat/rooms/${currentRoomId}/participants`);
+        const participants = res?.data || [];
+        document.getElementById('participantsBody').innerHTML = participants.map(p => 
+            `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--chat-border)">
+                <div><strong>${esc(p.name)}</strong> <span style="font-size:11px;color:var(--text-tertiary)">(${p.role})</span></div>
+                <span style="font-size:11px;color:var(--text-tertiary)">${p.participant_role === 'admin' ? '방장' : '멤버'}</span>
+            </div>`
+        ).join('');
+    } catch (e) {
+        document.getElementById('participantsBody').innerHTML = '<div class="chat-empty"><p>불러오기 실패</p></div>';
+    }
+}
+
+// ============================================================
+// Utils
+// ============================================================
+
+function formatChatTime(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+        return d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    } else if (diffDays === 1) {
+        return '어제';
+    } else if (diffDays < 7) {
+        return `${diffDays}일 전`;
+    } else {
+        return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
+}
+
+// ============================================================
+// Room Management
+// ============================================================
+
+async function deleteRoom() {
+    if (!currentRoomId) return;
+    const room = chatRooms.find(r => r.id === currentRoomId);
+    if (!room) return;
+    
+    // 방장/본사: 방 삭제, 일반 참여자: 방 나가기
+    const isCreator = room.created_by === currentUser?.id;
+    const isAdmin = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
+    
+    if (isCreator || isAdmin) {
+        if (!confirm('정말 이 채팅방을 삭제하시겠습니까? 모든 메시지가 사라집니다.')) return;
+    } else {
+        if (!confirm('이 채팅방을 나가시겠습니까?')) return;
+    }
+    
+    try {
+        let res;
+        if (isCreator || isAdmin) {
+            res = await api('DELETE', '/chat/rooms/' + currentRoomId);
+        } else {
+            res = await api('POST', '/chat/rooms/' + currentRoomId + '/leave');
+        }
+        if (res && res.status === 'success') {
+            showAlert(isCreator || isAdmin ? '채팅방이 삭제되었습니다.' : '방을 나갔습니다.', 'success');
+            if (currentWs) { currentWs.close(); currentWs = null; }
+            currentRoomId = null;
+            await loadRooms();
+            const cm = document.getElementById('chatMain');
+            const cs = document.getElementById('chatSidebar');
+            if (cm) cm.classList.add('hidden');
+            if (cs) cs.classList.remove('hidden');
+        } else {
+            showAlert(res?.message || '실패', 'error');
+        }
+    } catch (e) {
+        showAlert('오류: ' + (e.message || ''), 'error');
+    }
+}
+
+async function renameRoom() {
+    if (!currentRoomId) return;
+    const room = chatRooms.find(r => r.id === currentRoomId);
+    if (!room) return;
+    const newName = prompt('새 채팅방 이름을 입력하세요:', room.name);
+    if (!newName || newName === room.name) return;
+    try {
+        const res = await apiPut('/chat/rooms/' + currentRoomId, {name: newName});
+        if (res && res.status === 'success') {
+            showAlert('채팅방 이름이 변경되었습니다.', 'success');
+            room.name = newName;
+            const crn = document.getElementById('currentRoomName');
+            if (crn) crn.textContent = newName;
+            renderRoomList();
+        } else {
+            showAlert(res?.message || '이름 변경 실패', 'error');
+        }
+    } catch (e) {
+        showAlert('이름 변경 중 오류: ' + (e.message || ''), 'error');
+    }
+}
+
+function esc(s) {
+    if (s == null) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+// ============================================================
+// File Upload
+// ============================================================
+let pendingFile = null;
+
+function onFileSelected(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // 10MB 제한
+    if (file.size > 10 * 1024 * 1024) {
+        showAlert('파일 크기는 10MB 이하여야 합니다.', 'error');
+        return;
+    }
+    
+    pendingFile = file;
+    document.getElementById('fpName').textContent = file.name + ' (' + formatFileSize(file.size) + ')';
+    document.getElementById('filePreview').classList.add('show');
+    
+    // 업로드 자동 시작
+    uploadFile();
+}
+
+function cancelFileUpload() {
+    pendingFile = null;
+    document.getElementById('filePreview').classList.remove('show');
+    document.getElementById('fileInput').value = '';
+}
+
+async function uploadFile() {
+    if (!pendingFile || !currentRoomId) return;
+    
+    const file = pendingFile;
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+    
+    document.getElementById('fpName').textContent = '⏳ 업로드 중... ' + file.name;
+    
+    try {
+        const res = await fetch('/api/v1/chat/rooms/' + currentRoomId + '/upload', {
+            method: 'POST',
+            headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+            body: formData,
+        });
+        const json = await res.json();
+        
+        if (!res.ok) throw new Error(json.detail || '업로드 실패');
+        
+        // Add file message locally via WS
+        if (currentWs && currentWs.readyState === WebSocket.OPEN) {
+            currentWs.send(JSON.stringify({
+                type: 'message',
+                data: {
+                    content: json.data.file_name,
+                    message_type: 'file',
+                    file_url: json.data.file_url,
+                    file_name: json.data.file_name,
+                    file_size: json.data.file_size,
+                }
+            }));
+        }
+        
+        cancelFileUpload();
+    } catch (e) {
+        document.getElementById('fpName').textContent = '❌ 업로드 실패: ' + (e.message || '');
+        setTimeout(cancelFileUpload, 3000);
+    }
+}
+</script>
+
+<script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+    <script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

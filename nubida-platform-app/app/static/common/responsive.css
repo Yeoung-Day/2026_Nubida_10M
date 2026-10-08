@@ -1,0 +1,419 @@
+/* ================================================================
+   누비다플랫폼 v10.0 — 전면 반응형 CSS (Top Navbar Layout)
+   모바일(≤480px) → 태블릿(≤768px) → 데스크톱(≤1024px) 순서
+   ================================================================ */
+
+/* =================================================================
+   0. Variables
+   ================================================================= */
+:root {
+  --topnav-mobile-h: 52px;
+  --touch-target-min: 44px;
+  --overlay-z: 150;
+  --modal-z: 1000;
+}
+
+/* =================================================================
+   1. 기본 모바일 (< 768px)
+   ================================================================= */
+@media (max-width: 768px) {
+  .app-layout {
+    min-height: 100dvh;
+  }
+
+  /* ── Top Navbar Mobile ── */
+  .top-navbar {
+    height: var(--topnav-mobile-h);
+    padding: 0 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .top-navbar::-webkit-scrollbar { display: none; }
+
+  .top-navbar-logo img {
+    height: 22px;
+  }
+
+  .top-navbar-center {
+    margin: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 2px;
+  }
+  .top-navbar-center::-webkit-scrollbar { display: none; }
+
+  .top-nav-item {
+    font-size: var(--text-xs);
+    padding: 4px 8px;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .top-nav-item .icon {
+    font-size: 14px;
+    width: 16px;
+  }
+
+  .top-navbar-user-name {
+    display: none;
+  }
+  .top-navbar-user-role {
+    display: none;
+  }
+
+  .top-navbar-right {
+    flex-shrink: 0;
+  }
+
+  /* ── Dropdown Menu Mobile ── */
+  .top-navbar-dropdown-menu {
+    position: fixed;
+    top: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    min-width: auto;
+    max-height: 60vh;
+    overflow-y: auto;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
+    z-index: 300;
+  }
+
+  /* ── 메인 콘텐츠 ── */
+  .main-content {
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  }
+
+  /* ── 페이지 헤더 ── */
+  .page-header {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    min-height: auto;
+  }
+  .page-header-left {
+    width: 100%;
+  }
+  .page-header-left h1 {
+    font-size: var(--text-2xl);
+  }
+  .page-header-right {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .page-header-right select,
+  .page-header-right .form-select,
+  .page-header-right input,
+  .page-header-right .form-input {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 검색 input max-width 오버라이드 */
+  .nav-search .form-input,
+  input#userSearch,
+  input#studentSearch,
+  input#paymentSearch,
+  input#videoSearch,
+  input[type="text"].form-input {
+    max-width: 100% !important;
+    width: 100% !important;
+    flex: none !important;
+    box-sizing: border-box;
+  }
+
+  /* ── 통계 카드 ── */
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    padding: 14px;
+  }
+  .stat-value {
+    font-size: 1.3rem;
+  }
+  .stat-card .stat-icon {
+    font-size: 22px;
+    top: 12px;
+    right: 12px;
+  }
+
+  /* ── 그리드 레이아웃 ── */
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .grid-2.mobile-2col,
+  .grid-3.mobile-2col,
+  .grid-4.mobile-2col {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* ── 테이블 (가로 스크롤) ── */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+  .data-table {
+    min-width: 500px;
+  }
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .data-table td .btn {
+    min-height: 28px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 10px;
+    width: auto;
+    min-width: auto;
+  }
+  .data-table td .btn + .btn {
+    margin-left: 2px;
+  }
+  .data-table td div[style*="display:flex"] {
+    gap: 2px !important;
+  }
+  .data-table td div[style*="display:flex"] .btn {
+    min-height: 28px;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  /* ── 카드 ── */
+  .card,
+  .card-premium {
+    margin: 0;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .card-header {
+    padding: 12px 14px;
+  }
+  .card-header h2 {
+    font-size: 0.95rem;
+  }
+  .card-body {
+    padding: 12px 14px;
+  }
+  .card-body[style*="padding:0"],
+  .card-body[style*="padding:0px"] {
+    padding: 0 !important;
+  }
+  .card-body[style*="padding:0"] .table-wrapper {
+    margin: 0;
+    border-radius: 0;
+  }
+  .card-footer {
+    padding: 10px 14px;
+  }
+
+  /* ── 필터 바 ── */
+  .filter-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+  .filter-item {
+    width: 100%;
+  }
+  .filter-item select,
+  .filter-item input,
+  .filter-item .form-select,
+  .filter-item .form-input {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ── 버튼 ── */
+  .btn {
+    min-height: var(--touch-target-min);
+    font-size: 13px;
+  }
+  .btn-sm {
+    min-height: 36px;
+    font-size: 12px;
+  }
+  .btn-filled,
+  .btn-ghost,
+  .btn-outline,
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+  .toolbar .btn,
+  .toolbar-right .btn,
+  .toolbar-left .btn {
+    width: auto;
+    min-width: auto;
+  }
+  .btn-group {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .btn-group .btn {
+    width: 100%;
+  }
+  .card-header .btn {
+    width: auto;
+  }
+
+  /* ── 모달 (하단 시트) ── */
+  .modal-overlay {
+    align-items: flex-end;
+  }
+  .modal {
+    width: 100%;
+    margin: 0;
+    border-radius: 16px 16px 0 0;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+  }
+  .modal-lg {
+    max-width: 100%;
+    max-height: 90vh;
+  }
+  .modal-header {
+    padding: 0 0 12px 0;
+  }
+  .modal-body {
+    padding: 0;
+  }
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-white);
+    padding: 12px 0 0 0;
+    margin-top: 16px;
+    border-top: 1px solid var(--border-default);
+  }
+  .modal-actions .btn {
+    width: 100% !important;
+  }
+  .modal div[style*="display:flex"][style*="justify-content:flex-end"],
+  .modal div[style*="display:flex"][style*="gap"] {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .modal div[style*="display:flex"][style*="justify-content:flex-end"] .btn,
+  .modal div[style*="display:flex"][style*="gap"] .btn {
+    width: 100% !important;
+  }
+
+  /* ── 폼 ── */
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .form-group {
+    width: 100%;
+  }
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+  label.form-label {
+    font-size: 12px;
+  }
+  .form-input[style*="max-width"],
+  .form-select[style*="max-width"] {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* ── 탭 ── */
+  .tabs,
+  .tab-bar {
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-item {
+    padding: 10px 14px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── 뷰 토글 ── */
+  .view-toggle {
+    width: 100%;
+  }
+  .view-toggle .vt-btn {
+    flex: 1;
+    padding: 8px;
+    font-size: 11px;
+  }
+
+  /* ── 검색/페이지네이션 ── */
+  .search-bar input {
+    width: 100%;
+  }
+  .pagination {
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+  }
+  .pagination button,
+  .pagination .btn {
+    min-width: 36px;
+    min-height: 32px;
+    font-size: 11px;
+    width: auto;
+  }
+
+  /* ── 체크박스/토글 ── */
+  label.checkbox-label,
+  label.toggle-label {
+    min-height: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+  }
+  input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ── 포트폴리오 그리드 ── */
+  .portfolio-grid,
+  .portfolio-container,
+  #portfolioGridView {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+  .portfolio-card {
+    padding: 10px;
+  }
+  .portfolio-thumb {
+    width: 100%;
+    height: 72px;
+  }
+  .portfolio-title {
+    font-size: 11px;
+  }
+}

@@ -1,0 +1,117 @@
+/* 누비다플랫폼 — 공개사이트 위지윅 블록 공용 CSS
+   공개 페이지(company/policy/partnership/contact 등)와
+   본사 에디터(site-editor.html)가 함께 로드해 시각을 동일하게 유지한다.
+   블록 6종: section(카드) / heading / text / image / divider / button
+   ── .site-hblock    단독 제목 (h2~h4)
+   ── .site-tblock    단독 문단
+   ── .site-fblock    단독 이미지 카드 (+figcaption)
+   ── .site-divider-block  구분선
+   ── .site-btn-block CTA 버튼 (primary/outline/ghost)
+   ── .ed-*           에디터 전용 (site-editor.html — 블록 툴바/선택)
+*/
+
+/* ===== 위지윅 단독 블록 ===== */
+.site-hblock {
+    font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    font-weight: 700; letter-spacing: -0.02em; color: var(--text);
+    display: flex; align-items: center; gap: 12px;
+}
+.site-hblock::before {
+    content: ""; display: inline-block; width: 4px; border-radius: 2px;
+    background: var(--primary); flex: none;
+}
+.site-hblock.site-h2 { font-size: 19px; margin: 34px 0 16px; }
+.site-hblock.site-h3 { font-size: 16.5px; margin: 28px 0 12px; }
+.site-hblock.site-h4 { font-size: 15px; margin: 22px 0 10px; }
+.site-hblock.site-h2::before { height: 18px; }
+.site-hblock.site-h3::before { height: 15px; }
+.site-hblock.site-h4::before { height: 13px; }
+
+.site-tblock {
+    font-size: 14.5px; line-height: 1.85; color: var(--text-sub);
+    margin: 0 0 10px;
+}
+.site-tblock:last-child { margin-bottom: 0; }
+
+.site-fblock {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow); margin: 0 0 18px;
+}
+.site-fblock .site-fig {
+    display: block; width: 100%; max-height: 360px;
+    object-fit: cover; object-position: center;
+}
+.site-fblock figcaption {
+    padding: 12px 20px; font-size: 13px; color: var(--text-mute);
+    text-align: center; border-top: 1px solid var(--border);
+}
+
+.site-divider-block {
+    border: none; border-top: 1px solid var(--border);
+    margin: 28px 0;
+}
+
+.site-btn-block {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 12px 30px; border-radius: 999px;
+    font-size: 14px; font-weight: 700; font-family: inherit;
+    text-decoration: none; cursor: pointer;
+    border: 1px solid transparent; transition: all .2s ease;
+    margin: 4px 0 10px;
+}
+.site-btn-block.primary {
+    background: var(--primary); color: #fff;
+    box-shadow: 0 6px 18px rgba(79, 70, 229, .18);
+}
+.site-btn-block.primary:hover { background: var(--primary-strong, #4338ca); transform: translateY(-1px); }
+.site-btn-block.outline {
+    background: var(--card); border-color: var(--border); color: var(--text);
+}
+.site-btn-block.outline:hover { border-color: var(--primary); color: var(--primary); }
+.site-btn-block.ghost { background: transparent; color: var(--primary); }
+.site-btn-block.ghost:hover { background: rgba(79, 70, 229, .06); }
+
+/* ===== 위지윅 에디터 UI (site-editor.html 전용) ===== */
+.ed-block {
+    position: relative;
+    margin: 10px 0;
+    border-radius: 12px;
+    transition: box-shadow .15s ease, outline .15s ease;
+    outline: 1.5px solid transparent;
+    outline-offset: 2px;
+}
+.ed-block:hover { outline-color: rgba(79, 70, 229, .22); }
+.ed-block.ed-active { outline-color: var(--primary); }
+.ed-block.ed-active > .ed-bar { opacity: 1; pointer-events: auto; }
+
+.ed-bar {
+    position: absolute; top: -15px; right: 8px; z-index: 10;
+    display: flex; align-items: stretch; gap: 2px;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 9px; padding: 3px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .10);
+    opacity: 0; pointer-events: none;
+    transition: opacity .15s ease;
+}
+.ed-block:hover > .ed-bar { opacity: 1; pointer-events: auto; }
+.ed-type {
+    font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+    display: flex; align-items: center; padding: 0 10px; letter-spacing: -.01em;
+}
+.ed-acts { display: flex; gap: 2px; }
+.ed-act {
+    width: 26px; height: 26px; border: none; background: transparent;
+    border-radius: 6px; cursor: pointer; font-size: 13px; line-height: 1;
+    color: var(--text-secondary); display: flex; align-items: center; justify-content: center;
+}
+.ed-act:hover { background: #F4F4F5; color: var(--text); }
+.ed-act.ed-danger:hover { background: #FEF2F2; color: #EF4444; }
+
+/* 빈 블록 안내 (heading/text 등 내용 없음) */
+.ed-block .ed-empty-hint {
+    display: none; font-size: 12px; color: var(--text-tertiary);
+    border: 1px dashed var(--border); border-radius: 8px;
+    padding: 14px 18px; margin: 2px 0;
+}
+.ed-block.ed-empty .ed-empty-hint { display: block; }

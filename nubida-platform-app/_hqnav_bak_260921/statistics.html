@@ -1,0 +1,531 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>통계 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub active" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="security.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="nav-label">보안 설정</span></a>
+        <a class="nav-item sub" href="access-control.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="nav-label">노래 AI 이용 관리</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>📈 통계</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span><span class="small-text" id="autoRefreshInfo" style="margin-left:8px;color:var(--text-tertiary)"></span><button class="btn btn-ghost btn-xs" onclick="exportExcel('statistics')" style="margin-left:8px">📥 엑셀</button>
+   </div>
+   </div>
+
+   <!-- ===== 핵심 지표 (Main Stats Cards) ===== -->
+   <div class="section-title">핵심 지표</div>
+   <div class="stats-grid" id="statsGrid">
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">👥</div>
+   <span class="stat-badge info">총계</span>
+   </div>
+   <div class="stat-value" id="statUsers">—</div>
+   <div class="stat-label">전체 사용자</div>
+   <div class="stat-change" id="statUsersChange"></div>
+   </div>
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">🏢</div>
+   <span class="stat-badge success">운영 중</span>
+   </div>
+   <div class="stat-value" id="statBranches">—</div>
+   <div class="stat-label">운영 에듀케어</div>
+   <div class="stat-change" id="statBranchesChange"></div>
+   </div>
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">📖</div>
+   <span class="stat-badge info">누적</span>
+   </div>
+   <div class="stat-value" id="statEnrollments">—</div>
+   <div class="stat-label">수강 등록</div>
+   <div class="stat-change" id="statEnrollmentsChange"></div>
+   </div>
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">💰</div>
+   <span class="stat-badge warning">총 매출</span>
+   </div>
+   <div class="stat-value" id="statRevenue">—</div>
+   <div class="stat-label">총 매출</div>
+   <div class="stat-change" id="statRevenueChange"></div>
+   </div>
+   </div>
+
+   <!-- ===== 퀵 스탯 (Quick Stats Row) ===== -->
+   <div class="section-title">오늘 현황</div>
+   <div class="quick-stats" id="quickStats">
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot gold">📋</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsTodaySignups">—</div>
+   <div class="qs-label">오늘 가입</div>
+   </div>
+   </div>
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot teal">💳</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsRevenueToday">—</div>
+   <div class="qs-label">오늘 매출</div>
+   </div>
+   </div>
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot success">🏫</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsActiveBranches">—</div>
+   <div class="qs-label">활성 에듀케어</div>
+   </div>
+   </div>
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot info">📈</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsTodayEnrollments">—</div>
+   <div class="qs-label">오늘 등록</div>
+   </div>
+   </div>
+   </div>
+
+   <!-- ===== 일일 / 월간 보고 + 매출 비교 ===== -->
+   <div class="reports-row">
+   <div class="report-card" id="dailyReport">
+   <h3>📋 일일 보고</h3>
+   <div id="dailyContent">
+   <div class="report-row">
+   <span class="label"><span class="dot gold"></span> 신규 수강 등록</span>
+   <span class="value" id="dailyEnrollments">—</span>
+   </div>
+   <div class="report-row">
+   <span class="label"><span class="dot teal"></span> 일 매출</span>
+   <span class="value" id="dailyRevenue">—</span>
+   </div>
+   </div>
+   </div>
+   <div class="report-card" id="monthlyReport">
+   <h3>📊 월간 보고</h3>
+   <div id="monthlyContent">
+   <div class="report-row">
+   <span class="label"><span class="dot gold"></span> 월간 매출</span>
+   <span class="value" id="monthlyRevenue">—</span>
+   </div>
+   <div class="report-row">
+   <span class="label"><span class="dot teal"></span> 오늘 가입</span>
+   <span class="value" id="todaySignups">—</span>
+   </div>
+   <!-- Revenue comparison mini section -->
+   <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-subtle)">
+   <div style="font-size:var(--text-2xs);color:var(--text-tertiary);font-weight:var(--weight-semibold);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em">매출 비교</div>
+   <div class="comparison-grid">
+   <div class="comparison-item">
+   <div class="cmp-label">오늘</div>
+   <div class="cmp-value" id="cmpToday">₩0</div>
+   <div class="cmp-sub" id="cmpTodayDetail"></div>
+   </div>
+   <div class="comparison-item">
+   <div class="cmp-label">이번 달</div>
+   <div class="cmp-value" id="cmpMonthly">₩0</div>
+   <div class="cmp-sub" id="cmpMonthlyDetail"></div>
+   </div>
+   </div>
+   </div>
+   </div>
+   </div>
+   </div>
+
+   <!-- ===== 월별 강좌 통계 (Bar Chart) ===== -->
+   <div class="chart-container" id="courseChart">
+   <div class="chart-header">
+   <h3>📈 월별 강좌 통계</h3>
+   <span class="chart-total" id="chartTotal">총 <strong>0</strong>개</span>
+   </div>
+   <div class="chart-bar-wrap" id="chartBars">
+   <div class="chart-loading">📊 차트를 불러오는 중...</div>
+   </div>
+   </div>
+
+   <!-- ===== 에듀케어별 통계 (Branch Mini Table) ===== -->
+   <div class="branch-table-wrap" id="branchStats">
+   <h3>🏢 에듀케어별 현황</h3>
+   <div id="branchContent">
+   <div class="branch-empty">로딩 중...</div>
+   </div>
+   </div>
+
+   <!-- ===== 최근 활동 (Recent Activity) ===== -->
+   <div class="activity-card" id="recentActivity">
+   <h3>🕐 최근 활동</h3>
+   <ul class="activity-list" id="activityList">
+   <li class="activity-empty">로딩 중...</li>
+   </ul>
+   </div>
+
+   </main>
+   </div>
+
+   <script src="/common/js/api.js?v=20260918abort"></script>
+   <script src="/common/js/auth.js?v=20260911nav"></script>
+   <script src="/common/js/utils.js?v=20260911nav"></script>
+
+   <script>
+   const MONTH_LABELS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+   // ---- XSS Helper (utils.js 미로드 대비) ----
+   function escHtml(s) {
+     if (s == null) return '';
+     const d = document.createElement('div');
+     d.textContent = s;
+     return d.innerHTML;
+   }
+
+   // ---- Helpers ----
+   function fmtNum(n) { return (n || 0).toLocaleString(); }
+   function fmtWon(n) { return '₩' + ((n || 0)).toLocaleString(); }
+   function timeAgo(dateStr) {
+   if (!dateStr) return '';
+   const d = new Date(dateStr);
+   if (isNaN(d.getTime())) return dateStr;
+   const now = new Date();
+   const diff = Math.floor((now - d) / 1000);
+   if (diff < 60) return '방금 전';
+   if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+   if (diff < 86400) return Math.floor(diff / 3600) + '시간 전';
+   if (diff < 604800) return Math.floor(diff / 86400) + '일 전';
+   return d.toLocaleDateString('ko-KR', { month:'short', day:'numeric' });
+   }
+   function getDotClass(type) {
+   if (type === 'enrollment' || type === 'signup') return 'success';
+   if (type === 'revenue' || type === 'payment') return 'gold';
+   if (type === 'warning' || type === 'alert') return 'warning';
+   return 'info';
+   }
+   function getActivityIcon(type) {
+   if (type === 'enrollment') return '📖';
+   if (type === 'signup') return '👤';
+   if (type === 'revenue' || type === 'payment') return '💰';
+   if (type === 'warning' || type === 'alert') return '⚠️';
+   return '📌';
+   }
+
+   // ===== 월별 강좌 통계 차트 렌더링 =====
+   function renderCourseChart(months) {
+   const barsContainer = document.getElementById('chartBars');
+   const totalEl = document.getElementById('chartTotal');
+   if (!barsContainer) return;
+   if (!months || months.length === 0) {
+   barsContainer.innerHTML = '<div class="chart-loading">📊 통계 데이터가 없습니다</div>';
+   if (totalEl) totalEl.innerHTML = '총 <strong>0</strong>개';
+   return;
+   }
+   const total = months.reduce((s, m) => s + (m.count || 0), 0);
+   if (totalEl) totalEl.innerHTML = '총 <strong>' + fmtNum(total) + '</strong>개';
+   const maxCount = Math.max(...months.map(m => m.count || 0), 1);
+   const html = months.map(m => {
+   const cnt = m.count || 0;
+   const height = Math.max(cnt > 0 ? Math.round((cnt / maxCount) * 160) : 4, 4);
+   const monthLabel = (m.month || '').replace(/^\d{4}-/, '') + '월';
+   return `<div class="chart-bar-item">
+   <div class="chart-bar" style="height:${height}px;background:linear-gradient(180deg,var(--accent),#6C7AFF)"><span class="bar-val ${cnt === maxCount ? 'peek' : ''}">${fmtNum(cnt)}</span></div>
+   <div class="chart-bar-label">${escHtml(monthLabel)}</div>
+   </div>`;
+   }).join('');
+   barsContainer.innerHTML = html;
+   }
+
+   // ===== 지표 카드 렌더링 (초기 로드 + 자동 갱신 공용) =====
+   function applyStats(d) {
+   // Main stat cards
+   const totalUsers = d.total_users || 0;
+   const activeBranches = d.active_branches || 0;
+   const totalBranches = d.total_branches || 0;
+   const totalEnrollments = d.total_enrollments || 0;
+   const totalRevenue = d.total_revenue || 0;
+   const monthlyRevenue = d.monthly_revenue || 0;
+   const todaySignups = d.today_signups || 0;
+   const revenueToday = d.revenue_today || 0;
+
+   document.getElementById('statUsers').textContent = fmtNum(totalUsers);
+   document.getElementById('statBranches').textContent = fmtNum(activeBranches) + '/' + fmtNum(totalBranches);
+   document.getElementById('statEnrollments').textContent = fmtNum(totalEnrollments);
+   document.getElementById('statRevenue').textContent = fmtWon(totalRevenue);
+
+   // Change indicators
+   const uChange = document.getElementById('statUsersChange');
+   if (todaySignups > 0) {
+   uChange.textContent = '↑ 오늘 +' + fmtNum(todaySignups) + '명';
+   uChange.className = 'stat-change up';
+   }
+   const bChange = document.getElementById('statBranchesChange');
+   const inactiveBranches = (totalBranches || 0) - activeBranches;
+   if (inactiveBranches > 0) {
+   bChange.textContent = inactiveBranches + '개 에듀케어 미운영';
+   bChange.className = 'stat-change down';
+   } else {
+   bChange.textContent = '전 에듀케어 운영 중';
+   bChange.className = 'stat-change up';
+   }
+   const eChange = document.getElementById('statEnrollmentsChange');
+   if (d.today_enrollments) {
+   eChange.textContent = '↑ 오늘 +' + fmtNum(d.today_enrollments) + '건';
+   eChange.className = 'stat-change up';
+   }
+   const rChange = document.getElementById('statRevenueChange');
+   if (revenueToday > 0) {
+   const pct = monthlyRevenue > 0 ? Math.round((revenueToday / (monthlyRevenue / 30)) * 100) : 0;
+   rChange.textContent = '오늘 ₩' + fmtNum(revenueToday) + ' (일평균 ' + pct + '%)';
+   rChange.className = 'stat-change up';
+   }
+
+   // Quick Stats row
+   document.getElementById('qsTodaySignups').textContent = fmtNum(todaySignups) + '명';
+   document.getElementById('qsRevenueToday').textContent = fmtWon(revenueToday);
+   document.getElementById('qsActiveBranches').textContent = fmtNum(activeBranches) + '/' + fmtNum(totalBranches);
+   document.getElementById('qsTodayEnrollments').textContent = fmtNum(d.today_enrollments || todaySignups);
+
+   // Daily report
+   document.getElementById('dailyEnrollments').textContent = fmtNum(todaySignups);
+   document.getElementById('dailyRevenue').textContent = fmtWon(revenueToday);
+
+   // Monthly report
+   document.getElementById('monthlyRevenue').textContent = fmtWon(monthlyRevenue);
+   document.getElementById('todaySignups').textContent = fmtNum(todaySignups) + '명';
+
+   // Revenue comparison
+   document.getElementById('cmpToday').textContent = fmtWon(revenueToday);
+   document.getElementById('cmpMonthly').textContent = fmtWon(monthlyRevenue);
+   const avgDaily = monthlyRevenue > 0 ? Math.round(monthlyRevenue / 30) : 0;
+   const vsAvg = avgDaily > 0 ? Math.round((revenueToday / avgDaily) * 100) : 0;
+   document.getElementById('cmpTodayDetail').textContent = '일평균 대비 ' + vsAvg + '%';
+   document.getElementById('cmpMonthlyDetail').textContent = '월 누적 매출';
+
+   // Recent Activity
+   const activities = d.recent_activities || [];
+   const activityList = document.getElementById('activityList');
+   if (activities.length > 0) {
+   activityList.innerHTML = activities.slice(0, 10).map(a => {
+   const type = a.type || 'info';
+   const dotClass = getDotClass(type);
+   const icon = getActivityIcon(type);
+   const label = a.label || a.message || a.description || '';
+   const time = timeAgo(a.created_at || a.timestamp || a.date);
+   return `<li class="activity-item">
+   <span class="activity-dot ${dotClass}"></span>
+   <span class="activity-text">${icon} ${escHtml(label)}</span>
+   <span class="activity-time">${escHtml(time)}</span>
+   </li>`;
+   }).join('');
+   } else {
+   activityList.innerHTML = '<li class="activity-empty">📭 최근 활동이 없습니다</li>';
+   }
+
+   // Branch Mini Table
+   const branches = d.branches || [];
+   const branchContent = document.getElementById('branchContent');
+   if (branches.length > 0) {
+   let rows = branches.slice(0, 8).map(b => {
+   const name = b.name || b.branch_name || '—';
+   const status = (b.status === 'active' || b.active === true) ? 'active' : 'inactive';
+   const statusLabel = status === 'active' ? '운영중' : '미운영';
+   const enrollments = fmtNum(b.enrollment_count || b.enrollments || b.total_enrollments || 0);
+   const revenue = b.revenue || b.monthly_revenue || 0;
+   return `<tr>
+   <td class="branch-name">${escHtml(name)}</td>
+   <td><span class="branch-status ${status}">${statusLabel}</span></td>
+   <td>${enrollments}</td>
+   <td>${fmtWon(revenue)}</td>
+   </tr>`;
+   }).join('');
+   branchContent.innerHTML = `<table class="branch-table">
+   <thead><tr>
+   <th>에듀케어</th>
+   <th>상태</th>
+   <th>수강생</th>
+   <th>매출</th>
+   </tr></thead>
+   <tbody>${rows}</tbody>
+   </table>`;
+   } else {
+   branchContent.innerHTML = '<div class="branch-empty">📊 에듀케어 데이터가 없습니다</div>';
+   }
+   }
+
+   // ===== 전체 통계 로드 (초기 + 자동 갱신 공용) =====
+   async function loadAllStats() {
+   // --- 1. Dashboard Stats ---
+   try {
+   const stats = await apiGet('/headquarters/dashboard/stats');
+   applyStats(stats.data || {});
+   } catch(e) {
+   console.error('Stats load error:', e);
+   ['statUsers','statBranches','statEnrollments','statRevenue',
+   'qsTodaySignups','qsRevenueToday','qsActiveBranches','qsTodayEnrollments',
+   'dailyEnrollments','dailyRevenue','monthlyRevenue','todaySignups',
+   'cmpToday','cmpMonthly'].forEach(id => {
+   const el = document.getElementById(id);
+   if (el) el.textContent = '—';
+   });
+   }
+
+   // --- 2. Course Monthly Stats Chart ---
+   try {
+   const monthsRes = await apiGet('/headquarters/courses/stats/months');
+   renderCourseChart(monthsRes.data || []);
+   } catch(e) {
+   console.error('Chart load error:', e);
+   const barsContainer = document.getElementById('chartBars');
+   if (barsContainer) barsContainer.innerHTML = '<div class="chart-loading">❌ 차트를 불러올 수 없습니다</div>';
+   }
+
+   // 자동 갱신 시간 표시
+   const info = document.getElementById('autoRefreshInfo');
+   if (info) info.textContent = '🔄 자동 갱신: ' + new Date().toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+   }
+
+   // ===== Main =====
+   document.addEventListener('DOMContentLoaded', async () => {
+   requireAuth();
+   const user = getCurrentUser();
+   if (user) document.getElementById('sidebarUserName').textContent = user.name || '관리자';
+   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+   await loadAllStats();
+
+   // 통계 실시간 반영 — 60초마다 자동 갱신
+   setInterval(loadAllStats, 60000);
+   });
+   </script>
+   <script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

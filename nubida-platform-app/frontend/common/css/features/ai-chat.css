@@ -1,0 +1,428 @@
+/* ============================================================
+   누비다 AI — 채팅 어시스턴트 스타일 (위젯 + 전체 페이지)
+   디자인: 글래스모피즘 패널, 필렛 버튼, 테일 포인트(--primary)
+   ============================================================ */
+
+/* --- 플로팅 버튼 --- */
+.ai-chat-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--primary-light, #06B6D4), var(--primary, #0891B2));
+  color: #fff;
+  font-size: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(8, 145, 178, 0.35);
+  z-index: 9990;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.ai-chat-fab:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 12px 28px rgba(8, 145, 178, 0.45);
+}
+
+/* --- 패널 (공통) --- */
+.ai-chat-panel {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(8, 145, 178, 0.12);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+  font-family: 'Noto Sans KR', 'Inter', sans-serif;
+}
+
+/* 플로팅 모드: 기본 숨김 */
+.ai-chat-mode-floating {
+  position: fixed;
+  right: 24px;
+  bottom: 92px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 560px;
+  max-height: calc(100vh - 120px);
+  z-index: 9991;
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.ai-chat-mode-floating.ai-chat-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* 전체 페이지 모드 */
+.ai-chat-mode-full {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  border-radius: 20px;
+}
+
+/* --- 헤더 --- */
+.ai-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--primary, #0891B2), var(--primary-dark, #0E7490));
+  color: #fff;
+  flex-shrink: 0;
+}
+.ai-chat-title { display: flex; align-items: center; gap: 10px; }
+.ai-chat-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.ai-chat-name { font-weight: 700; font-size: 15px; letter-spacing: -0.2px; }
+.ai-chat-sub { font-size: 11px; opacity: 0.85; margin-top: 1px; }
+.ai-chat-close {
+  background: rgba(255, 255, 255, 0.14);
+  border: none;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s ease;
+}
+.ai-chat-close:hover { background: rgba(255, 255, 255, 0.28); }
+
+/* --- 메시지 영역 --- */
+.ai-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(248, 250, 252, 0.6);
+}
+.ai-chat-row { display: flex; flex-direction: column; }
+.ai-chat-row-user { align-items: flex-end; }
+.ai-chat-row-assistant { align-items: flex-start; }
+.ai-chat-row-system { align-items: center; }
+
+.ai-chat-bubble {
+  max-width: 88%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ai-chat-bubble-user {
+  background: var(--primary, #0891B2);
+  color: #fff;
+  border-bottom-right-radius: 6px;
+}
+.ai-chat-bubble-assistant {
+  background: #fff;
+  color: #1F2937;
+  border: 1px solid #E2E8F0;
+  border-bottom-left-radius: 6px;
+  white-space: normal; /* 마크다운 렌더링 시 줄바꿈 제어 */
+}
+
+/* --- AI 답변 마크다운 렌더링 스타일 --- */
+.ai-chat-bubble-assistant .ai-svg-diagram {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 8px 0;
+  overflow-x: auto;
+  text-align: center;
+}
+.ai-chat-bubble-assistant .ai-svg-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+/* ASCII 박스 다이어그램 (AI가 코드블록 안에 그린 개념 도식) */
+.ai-chat-bubble-assistant .ai-ascii-diagram {
+  background: linear-gradient(180deg, #ffffff, #F8FAFC);
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 8px 0;
+  overflow-x: auto;
+}
+.ai-chat-bubble-assistant .ai-ascii-diagram pre {
+  margin: 0;
+  color: #1E293B !important;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre;
+  text-align: left;
+}
+.ai-chat-bubble-assistant .ai-hl-title {
+  font-weight: 800;
+  font-size: 14.5px;
+  color: #1E293B;
+  padding: 6px 10px 7px;
+  border-radius: 8px;
+  background: linear-gradient(to bottom, transparent 25%, #FDE68A 25%);
+  border: 1px solid #FDE68A;
+  margin-bottom: 8px;
+  margin-top: 4px;
+  letter-spacing: -0.3px;
+  display: inline-block;
+  word-break: keep-all;
+}
+.ai-chat-bubble-assistant mark {
+  background: linear-gradient(to bottom, transparent 22%, #FDE68A 22%, #FDE68A 88%, transparent 88%);
+  color: #92400E;
+  font-weight: 800;
+  padding: 0 3px;
+  border-radius: 4px;
+  letter-spacing: -0.2px;
+}
+.ai-chat-bubble-assistant code {
+  background: #F1F5F9;
+  color: #0F766E;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 12.5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid #E2E8F0;
+}
+.ai-chat-bubble-assistant .ai-code-block {
+  background: #0F172A;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  overflow-x: auto;
+}
+.ai-chat-bubble-assistant .ai-code-block pre {
+  margin: 0;
+  color: #F8FAFC;
+  background: transparent;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+/* 코드블록 내부 글자·텍스트 색을 명시적으로 강제 (상속/전역 규칙 덮어쓰기 방지) */
+.ai-chat-bubble-assistant .ai-code-block pre,
+.ai-chat-bubble-assistant .ai-code-block pre *,
+.ai-chat-bubble-assistant .ai-code-block code {
+  color: #F8FAFC !important;
+  background: transparent !important;
+  font-style: normal !important;
+}
+.ai-chat-bubble-assistant .ai-list-item {
+  padding: 3px 0 3px 10px;
+  margin: 3px 0;
+  line-height: 1.7;
+  position: relative;
+}
+.ai-chat-bubble-assistant .ai-quote {
+  background: linear-gradient(135deg, #ECFEFF, #F0F9FF);
+  border-left: 4px solid var(--primary, #0891B2);
+  padding: 8px 12px;
+  border-radius: 0 10px 10px 0;
+  margin: 6px 0;
+  font-size: 13px;
+  color: #0E7490;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+.ai-chat-bubble-assistant .ai-line {
+  margin: 4px 0;
+  line-height: 1.75;
+  word-break: keep-all;
+}
+.ai-chat-bubble-assistant .ai-line:first-child {
+  margin-top: 0;
+}
+.ai-chat-bubble-system {
+  background: var(--accent-bg, #ECFEFF);
+  color: var(--primary-dark, #0E7490);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+/* --- 해결/부족 버튼 --- */
+.ai-chat-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  margin-left: 4px;
+}
+.ai-btn {
+  border: 1px solid #E2E8F0;
+  background: #fff;
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #334155;
+}
+.ai-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); }
+.ai-btn-copy:hover { border-color: var(--brand, #4F5EF8); color: var(--brand, #4F5EF8); background: #F5F6FF; }
+.ai-btn-copy:disabled { color: var(--success, #10B981); border-color: var(--success, #10B981); background: var(--success-bg, #F0FDF4); }
+.ai-btn-solve:hover { border-color: var(--success, #10B981); color: var(--success, #10B981); background: var(--success-bg, #F0FDF4); }
+.ai-btn-lack:hover { border-color: var(--warning, #F59E0B); color: var(--warning, #F59E0B); background: var(--warning-bg, #FFFBEB); }
+.ai-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.ai-btn-done { border-color: var(--success, #10B981); color: var(--success, #10B981); }
+.ai-attempt-tag {
+  font-size: 11px;
+  color: var(--secondary-light, #94A3B8);
+  background: var(--secondary-bg, #F8FAFC);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* --- 입력 영역 --- */
+.ai-chat-input-row {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-top: 1px solid #E2E8F0;
+  background: #fff;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+.ai-chat-input {
+  flex: 1;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-family: inherit;
+  resize: none;
+  max-height: 120px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ai-chat-input:focus {
+  border-color: var(--primary, #0891B2);
+  box-shadow: 0 0 0 3px var(--accent-ring, rgba(8, 145, 178, 0.18));
+}
+.ai-chat-send {
+  border: none;
+  border-radius: 14px;
+  padding: 10px 18px;
+  background: var(--primary, #0891B2);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.ai-chat-send:hover { background: var(--primary-dark, #0E7490); }
+.ai-chat-send:disabled { opacity: 0.55; cursor: default; }
+
+/* --- 반응형 --- */
+@media (max-width: 480px) {
+  .ai-chat-mode-floating {
+    right: 12px;
+    bottom: 84px;
+    width: calc(100vw - 24px);
+    height: 70vh;
+  }
+  .ai-chat-fab { right: 16px; bottom: 16px; }
+}
+
+/* ============================================================
+   누비다 AI — 전체 페이지 모드 (pages/student/ai-chat.html)
+   ============================================================ */
+.ai-chat-page-main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+.ai-chat-page-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.ai-chat-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bg-inverse, #1F2937);
+  letter-spacing: -0.5px;
+}
+.ai-chat-page-desc {
+  color: var(--secondary, #64748B);
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.ai-chat-page-root {
+  height: 62vh;
+  min-height: 480px;
+}
+.ai-chat-page-footer {
+  text-align: center;
+  color: var(--secondary-light, #94A3B8);
+  font-size: 12.5px;
+  margin-top: 14px;
+}
+@media (max-width: 480px) {
+  .ai-chat-page-root { height: 68vh; min-height: 420px; }
+}
+
+/* ---- AI 패널 안 텍스트 선택/복사 허용 ---- */
+/* 어느 조상에서 user-select:none 을 걸었든, AI 대화 내용은 드래그 선택·Ctrl+C 가 되도록
+   패널과 모든 하위 요소(코드/강조 포함)에 선택을 강제로 되살린다. */
+.ai-chat-panel,
+.ai-chat-block,
+.ai-chat-bubble,
+.ai-chat-bubble *,
+.ai-chat-messages,
+.ai-chat-messages * {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+.ai-chat-row-assistant,
+.ai-chat-row-user { cursor: text; }
+
+/* ---------- 스트리밍(실시간 타이핑) ---------- */
+/* 답변이 생성되는 동안 깜빡이는 커서 — "지금 쓰고 있다"는 신호 */
+.ai-live-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  color: #6366f1;
+  font-weight: 700;
+  animation: ai-live-blink 1s steps(2, start) infinite;
+  vertical-align: baseline;
+  opacity: 0.85;
+}
+@keyframes ai-live-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+/* 스트리밍 중 말풍선 — 좌측 액센트로 진행 상태 표현 */
+.ai-chat-row-live .ai-chat-bubble {
+  border-left: 3px solid #6366f1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-live-cursor { animation: none; opacity: 0.85; }
+}

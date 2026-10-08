@@ -1,0 +1,265 @@
+import os
+import mimetypes
+import json
+import mysql.connector
+import redis
+import uuid
+import traceback
+import sys
+sys.path.insert(0, '/app')
+from password_hash import hash_password, verify_password
+from flask import Flask, send_from_directory, abort, jsonify, request
+
+# static_url_path를 설정하여 /static/ 경로를 Flask가 자동으로 처리하게 합니다.
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(BASE_DIR, 'static')
+
+app = Flask(__name__, static_folder=static_dir)
+
+# 1. MariaDB 연결 설정
+db_config = {
+    'host': 'music-db',               # 도커 서비스 이름
+    'user': 'nubidaplet',             # DB 사용자명
+    'password': '***MASKED***',     # DB 비밀번호
+    'database': 'nubida_ai',          # DB 이름
+    'port': 3306,
+    'raise_on_warnings': True
+}
+
+def get_db_connection():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        return conn
+    except Exception as e:
+        print(f"!!! DB 연결 실패: {e}")
+        return None
+
+# 2. 필수 MIME 타입 추가 (WASM 엔진 인식용)
+mimetypes.add_type('application/octet-stream', '.data')
+mimetypes.add_type('application/wasm', '.wasm')
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('application/octet-stream', '.onnx')
+# espeak-ng 데이터 파일들을 위한 타입
+mimetypes.add_type('application/octet-stream', '.phontab')
+mimetypes.add_type('application/octet-stream', '.phonindex')
+mimetypes.add_type('application/octet-stream', '.phondata')
+
+
+@app.route('/api/posts', methods=['GET'])
+def get_posts():
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"error": "데이터베이스 연결 실패"}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM posts ORDER BY created_at DESC")
+        rows = cursor.fetchall()
+        
+        for row in rows:
+            if row.get('recipe'):
+                try: row['recipe'] = json.loads(row['recipe'])
+                except: row['recipe'] = []
+            else:
+                row['recipe'] = []
+            
+            # 해당 게시물 댓글 가져오기
+            cursor.execute("SELECT text FROM comments WHERE post_id = %s", (row['id'],))
+            row['comments'] = [c_row['text'] for c_row in cursor.fetchall()]
+            
+            if row['created_at']:
+                row['created_at'] = row['created_at'].strftime('%Y-%m-%d %H:%M:%S')
+
+        return jsonify(rows)
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        conn.close()
+
+# [수정됨] 게시물 저장 시 비밀번호(password)를 쿼리에 추가했습니다.
+@app.route('/api/posts', methods=['POST'])
+def save_post():
+    data = request.json
+    conn = get_db_connection()
+    if not conn: return jsonify({"error": "DB 연결 실패"}), 500
+    
+    try:
+        cursor = conn.cursor()
+        # 가사 데이터(recipe)를 문자열로 변환하여 유실 방지
+        recipe_str = json.dumps(data.get('recipe', []), ensure_ascii=False)
+        
+        sql = """INSERT INTO posts (id, title, password, author, school, singerId, singerName, mrPath, recipe, likes) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 0)"""
+        
+        cursor.execute(sql, (
+            data.get('id'),
+            data.get('title'),
+            hash_password(str(data.get('password', ''))),
+            data.get('author', '무명'),
+            data.get('school', '개인'),
+            data.get('singerId'),
+            data.get('singerName'),
+            data.get('mrPath'), # 사용자가 선택한 MR 경로
+            recipe_str         # [핵심] JSON 문자열로 저장
+        ))
+        conn.commit()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        print(f"저장 에러: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/posts/<post_id>/like', methods=['POST'])
+def toggle_like(post_id):
+    data = request.json or {}
+    user_id = data.get('user_id', request.remote_addr)
+
+    conn = get_db_connection()
+    if not conn: return jsonify({"error": "DB 연결 실패"}), 500
+        
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM post_likes WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+        exists = cursor.fetchone()
+
+        if exists:
+            cursor.execute("DELETE FROM post_likes WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+            cursor.execute("UPDATE posts SET likes = GREATEST(0, likes - 1) WHERE id = %s", (post_id,))
+            action = "unliked"
+        else:
+            cursor.execute("INSERT INTO post_likes (post_id, user_id) VALUES (%s, %s)", (post_id, user_id))
+            cursor.execute("UPDATE posts SET likes = likes + 1 WHERE id = %s", (post_id,))
+            action = "liked"
+
+        conn.commit()
+        return jsonify({"status": "success", "action": action})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/posts/<post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    data = request.json
+    client_password = str(data.get('password', '')).strip()
+
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT password FROM posts WHERE id = %s", (post_id,))
+        post = cursor.fetchone()
+
+        if not post:
+            return jsonify({"status": "error", "message": "게시물을 찾을 수 없습니다."}), 404
+
+        db_password = str(post['password'] if post['password'] is not None else '').strip()
+
+        print(f"--- 삭제 시도 로그 ---")
+        print(f"ID: {post_id} | 비밀번호 검증")
+
+        if not verify_password(client_password, db_password):
+            return jsonify({"status": "error", "message": "비밀번호가 일치하지 않습니다."}), 401
+
+        # 기존 평문이면 검증 성공 시점에 해시로 자동 교체
+        if db_password and not db_password.startswith("pbkdf2_sha256$"):
+            try:
+                cursor.execute("UPDATE posts SET password = %s WHERE id = %s",
+                               (hash_password(client_password), post_id))
+                conn.commit()
+            except Exception:
+                pass
+
+        cursor.execute("DELETE FROM posts WHERE id = %s", (post_id,))
+        conn.commit()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        print(traceback.format_exc())
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/posts/<post_id>/comment', methods=['POST'])
+def add_comment(post_id):
+    text = request.json.get('text')
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO comments (post_id, text) VALUES (%s, %s)", (post_id, text))
+        conn.commit()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+# ---------------------------------------------------------
+# [보안 헤더 및 파일 서빙 구역]
+# ---------------------------------------------------------
+
+@app.after_request
+def add_security_headers(response):
+    response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
+    response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+@app.route('/')
+def index():
+    return send_from_directory(BASE_DIR, 'index.html')
+
+@app.route('/<path:path>')
+def serve_root_files(path):
+    # API 요청과 겹치지 않게 우선 탐색
+    # 1. static/sherpa 우선 탐색
+    sherpa_path = os.path.join(app.static_folder, 'sherpa', path)
+    if os.path.exists(sherpa_path) and os.path.isfile(sherpa_path):
+        return send_from_directory(os.path.join(app.static_folder, 'sherpa'), path)
+
+    # 2. 루트(BASE_DIR) 탐색 (js, css 등)
+    full_path = os.path.join(BASE_DIR, path)
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        return send_from_directory(BASE_DIR, path)
+    
+    # 3. static 일반 탐색
+    static_path = os.path.join(app.static_folder, path)
+    if os.path.exists(static_path) and os.path.isfile(static_path):
+        return send_from_directory(app.static_folder, path)
+        
+    return abort(404)
+
+rd = redis.Redis(host='redis', port=6379, db=0)
+
+@app.route('/<path:filename>')
+def serve_root(filename):
+    # index.js, config.js 등이 루트에 있을 경우를 대비
+    return send_from_directory(BASE_DIR, filename)
+
+# 3. 모든 정적 파일 서빙 (하위 폴더 무제한 지원)
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    # 파일이 실제로 존재하는지 확인하는 로그 (디버깅용)
+    # print(f"Serving: {filename}") 
+    return send_from_directory(app.static_folder, filename)
+
+@app.route('/api/generate', methods=['POST'])
+def generate_request():
+    task_id = str(uuid.uuid4())
+    # 1. 대기열에 요청 추가
+    rd.rpush("music_queue", task_id)
+    # 2. 현재 대기 인원 확인
+    queue_len = rd.llen("music_queue")
+    return jsonify({"task_id": task_id, "queue_number": queue_len})
+
+@app.route('/api/check_status/<task_id>', methods=['GET'])
+def check_status(task_id):
+    # 현재 내 순서 계산 로직 등
+    return jsonify({"status": "waiting", "position": 3})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, threaded=True, debug=False)

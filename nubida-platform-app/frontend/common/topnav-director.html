@@ -1,0 +1,47 @@
+<nav class="top-navbar">
+    <div class="top-navbar-left">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+        <a href="dashboard.html" class="top-navbar-logo"><img src="/common/assets/logo.svg?v=20260706g" alt="누비다플랫폼">누비다</a>
+    </div>
+    <div class="top-navbar-center">
+        <a class="top-nav-item active" href="dashboard.html"><span class="icon">📊</span>대시보드</a>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'dirReportMenu')"><span class="icon">📑</span>보고 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="dirReportMenu">
+                <a class="top-navbar-dropdown-item" href="monthly-report.html"><span class="icon">📑</span>월간 보고서</a>
+                <a class="top-navbar-dropdown-item" href="reports.html"><span class="icon">📋</span>보고서</a>
+                <a class="top-navbar-dropdown-item" href="portfolio.html"><span class="icon">🎨</span>포트폴리오</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'dirClassMenu')"><span class="icon">🏫</span>학급 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="dirClassMenu">
+                <a class="top-navbar-dropdown-item" href="classes.html"><span class="icon">🏫</span>학급 관리</a>
+                <a class="top-navbar-dropdown-item" href="progress.html"><span class="icon">📈</span>학습 진도</a>
+                <a class="top-navbar-dropdown-item" href="attendance.html"><span class="icon">📅</span>출결 관리</a>
+                <a class="top-navbar-dropdown-item" href="grades.html"><span class="icon">📊</span>성적 관리</a>
+                <a class="top-navbar-dropdown-item" href="exams.html"><span class="icon">📝</span>시험 관리</a>
+            </div>
+        </div>
+        <a class="top-nav-item" href="approvals.html"><span class="icon">✅</span>승인</a>
+        <a class="top-nav-item" href="chat.html"><span class="icon">💬</span>채팅</a>
+        <a class="top-nav-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+    </div>
+    <div class="top-navbar-right">
+        <button class="sg-guide-btn" id="sgGuideBtn" type="button" title="사용 가이드 다시 보기">❓ <span>가이드</span></button>
+        <div class="top-navbar-dropdown">
+            <div class="top-navbar-user" onclick="toggleDropdown(event,'dirUserMenu')">
+                <div class="top-navbar-avatar">원</div>
+                <div>
+                    <div class="top-navbar-user-name" id="topNavUserName">원장</div>
+                    <div class="top-navbar-user-role">원장</div>
+                </div>
+            </div>
+            <div class="top-navbar-dropdown-menu" id="dirUserMenu">
+                <a class="top-navbar-dropdown-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+                <div class="top-navbar-dropdown-divider"></div>
+                <a class="top-navbar-dropdown-item" href="#" onclick="handleLogout()"><span class="icon">🚪</span>로그아웃</a>
+            </div>
+        </div>
+    </div>
+</nav>

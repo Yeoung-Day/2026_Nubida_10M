@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>교육 자료 — 누비다 플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+<div class="app-layout">
+<aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="active nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<main class="main-content">
+    <div class="top-nav">
+        <div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>교육 자료</h1></div>
+        <div class="top-nav-right">
+            <span class="small-text" id="todayDate"></span>
+        </div>
+    </div>
+
+    <!-- 과목 탭 (과목 마스터 기반 — 한 줄 네비게이션) -->
+    <div class="subject-tabs-wrap">
+        <div class="subject-tabs" id="subjectTabs"><button type="button" class="subject-tab active" onclick="selectSubjectTab('')">전체</button></div>
+    </div>
+
+    <!-- 툴바 -->
+    <div class="edu-toolbar">
+        <div class="edu-toolbar-left">
+            <input type="text" class="form-input" id="searchInput" placeholder="제목·설명 검색..." oninput="debounceSearch()" style="width:180px;">
+            <select class="form-input" id="categoryFilter" onchange="onCategorySelectChange()" style="width:150px;">
+                <option value="">전체 교육명</option>
+            </select>
+            <select class="form-input" id="typeFilter" onchange="loadMaterials(1)" style="width:120px;">
+                <option value="">전체 유형</option>
+                <option value="document">📄 문서</option>
+                <option value="video">🎬 영상</option>
+                <option value="image">🖼️ 이미지</option>
+                <option value="link">🔗 링크</option>
+            </select>
+            <span class="small-text" id="materialCount">0개</span>
+        </div>
+        <div class="edu-toolbar-right">
+            <span class="small-text" style="color:var(--text-tertiary);">📢 본사에서 제공하는 교육 자료입니다</span>
+        </div>
+    </div>
+
+    <!-- 목록 -->
+    <div class="edu-card">
+        <table class="edu-table" data-card-view>
+            <thead>
+            <tr>
+                <th style="width:38%;">제목</th>
+                <th style="width:13%;">교육명</th>
+                <th style="width:10%;">유형</th>
+                <th style="width:12%;">첨부</th>
+                <th style="width:9%;">조회</th>
+                <th style="width:12%;">등록일</th>
+                <th style="width:14%;">관리</th>
+            </tr>
+            </thead>
+            <tbody id="materialTableBody">
+            <tr><td colspan="7" class="empty-cell">자료를 불러오는 중...</td></tr>
+            </tbody>
+        </table>
+        <div class="pagination-wrap" id="paginationWrap"></div>
+    </div>
+</main>
+</div>
+
+<!-- ============ 상세 보기 모달 ============ -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal edu-detail-modal">
+        <div class="modal-header">
+            <h3 id="detailTitle">자료 보기</h3>
+        </div>
+        <div class="modal-body" id="detailBody" style="min-height:280px;">
+            <div class="detail-meta" id="detailMeta"></div>
+            <div class="detail-content" id="detailContent">
+                <div class="viewer-placeholder">👁 자료를 여는 중...</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div style="flex:1;" class="small-text" id="detailHint"></div>
+            <button class="btn btn-outline btn-sm" onclick="closeDetail()">닫기</button>
+            <button class="btn btn-primary btn-sm" id="btnDetailDownload" onclick="downloadCurrent()" style="display:none;">⬇ 다운로드</button>
+        </div>
+    </div>
+</div>
+
+    <script src="/common/js/api.js?v=20260911nav"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('sidebarUserName').textContent = user.name || user.username || '관리자';
+                document.getElementById('sidebarUserRole').textContent = '원장';
+            }
+            const now = new Date();
+            ['todayDate'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = now.toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                });
+            });
+        });
+    </script>
+    <script src="/common/js/pages-director.js?v=20260911nav"></script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+<style>
+    /* ── 교육 자료 (원장) 전용 ── */
+    .edu-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+    .edu-toolbar-left, .edu-toolbar-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .edu-card { background:var(--card-bg,#fff); border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:6px 4px; box-shadow:var(--shadow-sm,0 1px 3px rgba(0,0,0,.05)); }
+    .edu-table { width:100%; border-collapse:collapse; }
+    .edu-table th { text-align:left; padding:10px 12px; font-size:12px; font-weight:600; color:var(--text-tertiary,#9ca3af); border-bottom:1px solid var(--border,#eee); white-space:nowrap; }
+    .edu-table td { padding:11px 12px; font-size:13px; border-bottom:1px solid #f3f4f6; vertical-align:middle; }
+    .edu-table tr:last-child td { border-bottom:none; }
+    .edu-table tr:hover td { background:#fafbff; }
+    .edu-title { font-weight:600; color:var(--text-primary,#111827); cursor:pointer; }
+    .edu-title:hover { color:var(--primary,#4F5EF8); }
+    .edu-desc { font-size:11px; color:var(--text-tertiary,#9ca3af); margin-top:2px; max-width:420px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .badge-type { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:500; }
+    .badge-type.document { background:#E3F2FD; color:#1565C0; }
+    .badge-type.video { background:#F3E5F5; color:#7B1FA2; }
+    .badge-type.image { background:#E8F5E9; color:#2E7D32; }
+    .badge-type.link { background:#FFF3E0; color:#E65100; }
+    .file-cell { font-size:11px; color:var(--text-secondary,#4b5563); }
+    .action-btn { border:1px solid var(--border,#e5e7eb); background:#fff; border-radius:6px; padding:3px 8px; font-size:11px; cursor:pointer; color:var(--text-secondary,#374151); }
+    .action-btn:hover { border-color:var(--primary,#4F5EF8); color:var(--primary,#4F5EF8); }
+    .empty-cell { text-align:center; color:var(--text-tertiary,#9ca3af); padding:32px 0 !important; font-size:13px; }
+    .pagination-wrap { display:flex; justify-content:center; gap:4px; padding:14px 0 8px; }
+    .pagination-wrap button { min-width:30px; height:30px; border:1px solid var(--border,#e5e7eb); background:#fff; border-radius:6px; cursor:pointer; font-size:12px; color:var(--text-secondary,#374151); }
+    .pagination-wrap button.active { background:var(--primary,#4F5EF8); border-color:var(--primary,#4F5EF8); color:#fff; }
+    .pagination-wrap button:disabled { opacity:.4; cursor:default; }
+    .edu-detail-modal { max-width:860px; width:92vw; }
+    .detail-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; font-size:12px; color:var(--text-tertiary,#9ca3af); }
+    .detail-meta .cat-pill { background:#EEF2FF; color:#4F5EF8; padding:2px 10px; border-radius:20px; font-weight:500; }
+    /* 교육명(과목) 컬러 칩 */
+    .subject-pill { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; line-height:1.5; white-space:nowrap; }
+    .subject-pill.sp-0 { background:#FCE7F3; color:#9D174D; } /* 국어 */
+    .subject-pill.sp-1 { background:#DBEAFE; color:#1D4ED8; } /* 수학 */
+    .subject-pill.sp-2 { background:#DCFCE7; color:#15803D; } /* 영어 */
+    .subject-pill.sp-3 { background:#CFFAFE; color:#0E7490; } /* 과학 */
+    .subject-pill.sp-4 { background:#FEF3C7; color:#B45309; } /* 사회 */
+    .subject-pill.sp-5 { background:#E0E7FF; color:#4338CA; } /* 코딩 */
+    .subject-pill.sp-6 { background:#FFEDD5; color:#C2410C; } /* 메이커 */
+    .subject-pill.sp-7 { background:#F3E8FF; color:#7E22CE; } /* AI */
+    .subject-pill.sp-8 { background:#F1F5F9; color:#475569; } /* 기타 */
+    .subject-pill.sp-9 { background:#F1F5F9; color:#6B7280; font-weight:500; } /* 기존(레거시) */
+    /* ── 과목 탭 한 줄 네비게이션 ── */
+    .subject-tabs-wrap { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin:0 0 12px; }
+    .subject-tabs { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .subject-tab { border:1px solid var(--border,#e5e7eb); background:#fff; border-radius:20px; padding:6px 14px; font-size:12px; font-weight:600; color:var(--text-secondary,#374151); cursor:pointer; transition:all .15s ease; white-space:nowrap; }
+    .subject-tab:hover { border-color:var(--primary,#4F5EF8); color:var(--primary,#4F5EF8); }
+    .subject-tab.active { background:var(--primary,#4F5EF8); border-color:var(--primary,#4F5EF8); color:#fff; }
+    .subject-manage-btn { flex-shrink:0; }
+
+    .detail-content { border:1px solid var(--border,#e5e7eb); border-radius:10px; overflow:hidden; min-height:260px; background:#fff; }
+    .viewer-placeholder { display:flex; align-items:center; justify-content:center; min-height:260px; color:var(--text-tertiary,#9ca3af); font-size:13px; }
+    .detail-content video, .detail-content img { width:100%; max-height:62vh; object-fit:contain; display:block; background:#111; }
+    .detail-desc { padding:12px 14px; font-size:13px; color:var(--text-secondary,#374151); white-space:pre-wrap; border-top:1px solid #f3f4f6; }
+    /* 슬라이드 뷰어 */
+    .slide-viewer { width:100%; max-width:100%; background:#1a1a2e; overflow:hidden; position:relative; }
+    .slide-viewer .slide-display { position:relative; width:100%; aspect-ratio:16/9; min-height:220px; background:#16213e; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .slide-viewer .slide-display img { max-width:100%; max-height:100%; object-fit:contain; display:block; transition:opacity .25s ease; }
+    .slide-viewer .slide-nav { position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; background:rgba(156,163,175,.55); border:1px solid rgba(156,163,175,.3); color:#374151; font-size:16px; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10; transition:all .15s ease; }
+    .slide-viewer .slide-nav:hover { background:rgba(156,163,175,.8); }
+    .slide-viewer .slide-nav.prev { left:10px; }
+    .slide-viewer .slide-nav.next { right:10px; }
+    .slide-viewer .slide-nav:disabled { opacity:.2; cursor:default; pointer-events:none; }
+    .slide-viewer .slide-footer { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; background:rgba(15,52,96,.9); color:#fff; border-top:1px solid rgba(255,255,255,.06); }
+    .slide-viewer .slide-counter { font-size:12px; font-weight:500; opacity:.7; }
+    .slide-viewer .slide-loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.6); font-size:13px; background:#16213e; z-index:5; }
+    .slide-viewer.fullscreen { position:fixed; top:0; left:0; width:100vw; height:100vh; max-width:none; border-radius:0; z-index:10000; background:#0a0a1a; border:none; }
+    .slide-viewer.fullscreen .slide-display { aspect-ratio:auto; flex:1; height:calc(100vh - 46px); }
+    .slide-viewer.fullscreen .slide-footer { background:rgba(0,0,0,.6); }
+</style>
+<script>
+    // ============================================================
+    // 교육 자료 (원장 뷰) — 본사 발행 자료 열람/뷰어/다운로드
+    // ============================================================
+    // ============================================================
+    // 교육 자료 (원장 뷰) — 본사 발행 자료 열람/뷰어/다운로드 + 과목별 과정(강좌)
+    // ============================================================
+    let allMaterials = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    let _currentDetail = null;
+    const PER_PAGE = 15;
+    // ── 과목(교육명) 마스터 (본사 관리 → 원장 화면 탭/필터 기준) ──
+    let subjectMaster = [];
+    let activeSubject = '';       // '' = 전체
+    let _legacyCategoryValues = []; // 마스터 외 기존 등록분(레거시) — 필터에서도 유지
+    const SUBJECT_COLORS = [
+        ['#FCE7F3', '#9D174D'], ['#DBEAFE', '#1D4ED8'], ['#DCFCE7', '#15803D'],
+        ['#CFFAFE', '#0E7490'], ['#FEF3C7', '#B45309'], ['#E0E7FF', '#4338CA'],
+        ['#FFEDD5', '#C2410C'], ['#F3E8FF', '#7E22CE'], ['#F1F5F9', '#475569'],
+        ['#FFE4E6', '#BE123C'], ['#E0F2FE', '#0369A1'], ['#FEF9C3', '#A16207']
+    ];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof requireAuth === 'function') requireAuth();
+        if (typeof renderSidebarUser === 'function') renderSidebarUser();
+        const td = document.getElementById('todayDate');
+        if (td) {
+            const d = new Date();
+            td.textContent = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+        loadSubjects();
+    });
+
+    // ══════════════════════════════════════════════
+    // 과목 마스터 — 탭/필터의 단일 소스 (원장은 조회만)
+    // ══════════════════════════════════════════════
+    function isMasterName(name) {
+        return subjectMaster.some(s => s.name === name);
+    }
+
+    function subjectNames() {
+        return subjectMaster.slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id).map(s => s.name);
+    }
+
+    async function loadSubjects() {
+        try {
+            const res = await apiGet('/subjects');
+            subjectMaster = (res.data && res.data.items) ? res.data.items : [];
+        } catch (e) {
+            subjectMaster = [];
+        }
+        renderSubjectTabs();
+        renderCategoryFilter();
+        loadMaterials(1);
+    }
+
+    // ── 화면 상단 과목 탭 (한 줄 네비게이션) ──
+    function renderSubjectTabs() {
+        const wrap = document.getElementById('subjectTabs');
+        if (!wrap) return;
+        const subs = subjectMaster.filter(s => s.is_active !== false).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id);
+        let html = '<button type="button" class="subject-tab' + (activeSubject === '' ? ' active' : '') + '" onclick="selectSubjectTab(\'\')">전체</button>';
+        subs.forEach(s => {
+            html += '<button type="button" class="subject-tab' + (activeSubject === s.name ? ' active' : '') + '" data-sid="' + s.id + '" onclick="selectSubjectById(' + s.id + ')">' + escHtml(s.name) + '</button>';
+        });
+        wrap.innerHTML = html;
+    }
+
+    function selectSubjectById(id) {
+        const s = subjectMaster.find(x => x.id === id);
+        selectSubjectTab(s ? s.name : '');
+    }
+
+    function selectSubjectTab(name) {
+        activeSubject = name || '';
+        const sel = document.getElementById('categoryFilter');
+        if (sel && subjectNames().indexOf(activeSubject) >= 0) sel.value = activeSubject;
+        renderSubjectTabs();
+        loadMaterials(1);
+    }
+
+    function onCategorySelectChange() {
+        const sel = document.getElementById('categoryFilter');
+        selectSubjectTab(sel ? sel.value : '');
+    }
+
+    const TYPE_META = {
+        document: { icon: '📄', label: '문서', cls: 'document' },
+        video: { icon: '🎬', label: '영상', cls: 'video' },
+        image: { icon: '🖼️', label: '이미지', cls: 'image' },
+        link: { icon: '🔗', label: '링크', cls: 'link' }
+    };
+
+    async function loadMaterials(page) {
+        currentPage = page || 1;
+        const search = encodeURIComponent(document.getElementById('searchInput').value.trim());
+        const category = encodeURIComponent(document.getElementById('categoryFilter').value);
+        const mtype = encodeURIComponent(document.getElementById('typeFilter').value);
+        const tb = document.getElementById('materialTableBody');
+        tb.innerHTML = '<tr><td colspan="7" class="empty-cell">자료를 불러오는 중...</td></tr>';
+        try {
+            const res = await apiGet('/director/edu-materials?search=' + search +
+                '&category=' + category + '&material_type=' + mtype +
+                '&page=' + currentPage + '&page_size=' + PER_PAGE);
+            const data = res.data || {};
+            allMaterials = data.items || [];
+            const total = data.total || 0;
+            totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+            document.getElementById('materialCount').textContent = total + '개';
+            renderMaterials();
+            renderPaginationUI();
+            refreshCategoryOptions();
+        } catch (e) {
+            tb.innerHTML = '<tr><td colspan="7" class="empty-cell">⚠️ ' + escHtml(e.message || '로드 실패') + '</td></tr>';
+        }
+    }
+
+    function renderMaterials() {
+        const tb = document.getElementById('materialTableBody');
+        if (!allMaterials.length) {
+            tb.innerHTML = '<tr><td colspan="7" class="empty-cell">📭 아직 발행된 교육 자료가 없습니다.<br>본사에서 자료를 발행하면 이곳에 표시됩니다.</td></tr>';
+            return;
+        }
+        tb.innerHTML = allMaterials.map(m => {
+            const tm = TYPE_META[m.material_type] || TYPE_META.document;
+            const fileTxt = m.file_url ? extName(m.file_url) + (m.file_size ? ' ' + fmtSize(m.file_size) : '') : '';
+            return '<tr>' +
+                '<td><div class="edu-title" onclick="openDetail(' + m.id + ')">' + escHtml(m.title) + '</div>' +
+                (m.description ? '<div class="edu-desc">' + escHtml(m.description) + '</div>' : '') + '</td>' +
+                '<td>' + subjectPillHtml(m.category) + '</td>' +
+                '<td><span class="badge-type ' + tm.cls + '">' + tm.icon + ' ' + tm.label + '</span></td>' +
+                '<td><span class="file-cell">' + (m.material_type === 'link' ? '🔗 외부 링크' : (m.file_url ? '📎 ' + fileTxt : '-')) + '</span></td>' +
+                '<td>' + (m.view_count || 0) + '</td>' +
+                '<td>' + fmtDate(m.created_at) + '</td>' +
+                '<td><div style="display:flex;gap:4px;">' +
+                '<button class="action-btn" onclick="openDetail(' + m.id + ')">👁 열기</button>' +
+                (m.material_type !== 'link' && m.file_url ? '<button class="action-btn" onclick="downloadMaterial(' + m.id + ')">⬇ 저장</button>' : '') +
+                '</div></td></tr>';
+        }).join('');
+    }
+
+    // ── 상세/뷰어 ──
+    function isViewableDoc(m) {
+        if (m.material_type !== 'document' || !m.file_url) return false;
+        return /\.(pdf|pptx?)$/i.test(m.file_url);
+    }
+
+    async function openDetail(id) {
+        const m = allMaterials.find(x => x.id === id);
+        if (!m) return;
+        // link → 새 탭
+        if (m.material_type === 'link') {
+            window.open(m.file_url, '_blank');
+            return;
+        }
+        _currentDetail = m;
+        document.getElementById('detailTitle').textContent = TYPE_META[m.material_type].icon + ' ' + m.title;
+        document.getElementById('detailMeta').innerHTML =
+            (m.category ? subjectPillHtml(m.category) : '') +
+            '<span>등록일 ' + fmtDate(m.created_at) + '</span>' +
+            '<span>조회 ' + (m.view_count + 1) + '</span>';
+        const btnDl = document.getElementById('btnDetailDownload');
+        btnDl.style.display = (m.material_type !== 'link' && m.file_url) ? '' : 'none';
+        document.getElementById('detailHint').textContent = m.file_url ? ('📎 ' + m.file_url.replace('/uploads/edu/', '')) : '';
+        openModal('detailModal');
+        const body = document.getElementById('detailContent');
+        body.innerHTML = '<div class="viewer-placeholder">👁 자료를 여는 중...</div>';
+        try {
+            // 조회수 증가 겸 상세 조회
+            const detail = await apiGet('/director/edu-materials/' + id);
+            _currentDetail = detail.data || m;
+        } catch (e) { /* 조회수 증가 실패는 무시 */ }
+        await renderContentView(m);
+    }
+
+    async function renderContentView(m) {
+        const body = document.getElementById('detailContent');
+        let html = '';
+        if (m.material_type === 'image' && m.file_url) {
+            html = '<img src="' + escHtml(withToken(m.file_url)) + '" alt="' + escHtml(m.title) + '" onerror="this.parentElement.innerHTML=\'<div class=viewer-placeholder>⚠️ 이미지를 불러올 수 없습니다</div>\'">';
+        } else if (m.material_type === 'video' && m.file_url) {
+            html = '<video controls playsinline preload="metadata" src="' + escHtml(withToken(m.file_url)) + '"></video>';
+        } else if (isViewableDoc(m)) {
+            body.innerHTML = '<div class="viewer-placeholder">🔄 슬라이드 변환 준비 중...</div>';
+            loadDocViewer(m);
+            return;
+        } else {
+            html = '<div class="viewer-placeholder">📄 ' + (m.description ? '' : '이 자료는 미리보기를 지원하지 않습니다.') + '<br>⬇ 하단 [다운로드] 버튼으로 파일을 내려받아 확인해주세요.</div>';
+        }
+        html += (m.description ? '<div class="detail-desc">' + escHtml(m.description) + '</div>' : '');
+        body.innerHTML = html;
+    }
+
+    // ── 문서 슬라이드 뷰어 (check → convert → polling) ──
+    let slideState = null;
+    let slidePollTimer = null;
+
+    function loadDocViewer(m) {
+        clearInterval(slidePollTimer);
+        const fileUrl = m.file_url;
+        const body = document.getElementById('detailContent');
+        body.innerHTML =
+            '<div class="slide-viewer" id="slideViewer">' +
+            '<div class="slide-display"><div class="slide-loading" id="slideLoading"><span>🔄 변환 준비 중...</span></div>' +
+            '<img id="slideImage" alt="슬라이드" style="display:none;">' +
+            '<button class="slide-nav prev" id="slidePrev" onclick="navSlide(-1)" disabled>‹</button>' +
+            '<button class="slide-nav next" id="slideNext" onclick="navSlide(1)" disabled>›</button></div>' +
+            '<div class="slide-footer"><span class="slide-counter" id="slideCounter">0 / 0</span>' +
+            '<span style="font-size:11px;opacity:.8;">' + escHtml(m.title) + '</span>' +
+            '<button class="slide-fullscreen" onclick="toggleFullscreen()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;padding:3px 10px;border-radius:6px;cursor:pointer;font-size:11px;">⛶ 전체화면</button></div>' +
+            '</div>' +
+            (m.description ? '<div class="detail-desc">' + escHtml(m.description) + '</div>' : '');
+        slideState = { slides: [], current: 0 };
+        apiGet('/viewer/check?file_path=' + encodeURIComponent(fileUrl))
+            .then(function (data) {
+                if (data.status === 'ready') { renderSlides(data); return; }
+                if (data.status === 'processing') { setLoading('🔄 변환 중입니다... 잠시만 기다려주세요'); startPolling(fileUrl); return; }
+                setLoading('🔄 변환을 시작합니다...');
+                return apiPost('/viewer/convert?file_path=' + encodeURIComponent(fileUrl))
+                    .then(function (d2) {
+                        if (d2.status === 'ready') { renderSlides(d2); return; }
+                        setLoading('🔄 변환 중입니다... (파일 크기에 따라 수 분 소요)');
+                        startPolling(fileUrl);
+                    });
+            })
+            .catch(function (e) {
+                setLoading('⚠️ 변환 오류: ' + (e.message || '알 수 없음'));
+            });
+    }
+
+    function setLoading(txt) {
+        const l = document.getElementById('slideLoading');
+        if (l) { l.style.display = 'flex'; l.querySelector('span').textContent = txt; }
+    }
+
+    function startPolling(fileUrl) {
+        clearInterval(slidePollTimer);
+        slidePollTimer = setInterval(function () {
+            apiGet('/viewer/check?file_path=' + encodeURIComponent(fileUrl))
+                .then(function (data) {
+                    if (data.status === 'ready') {
+                        clearInterval(slidePollTimer);
+                        renderSlides(data);
+                    }
+                })
+                .catch(function () {});
+            }, 1000);  // 1초마다 폴링
+    }
+
+    function renderSlides(data) {
+        const st = slideState;
+        if (!st) return;
+        st.slides = data.slides || [];
+        st.current = 0;
+        const loading = document.getElementById('slideLoading');
+        const img = document.getElementById('slideImage');
+        const counter = document.getElementById('slideCounter');
+        const prev = document.getElementById('slidePrev');
+        const next = document.getElementById('slideNext');
+        if (!img || !st.slides.length) {
+            if (loading) loading.innerHTML = '<span>⚠️ 변환된 슬라이드가 없습니다. 다운로드로 확인해주세요.</span>';
+            return;
+        }
+        loading.style.display = 'none';
+        img.style.display = 'block';
+        img.src = withToken(st.slides[0]);
+        counter.textContent = '1 / ' + st.slides.length;
+        prev.disabled = true;
+        next.disabled = st.slides.length <= 1;
+    }
+
+    function navSlide(dir) {
+        const st = slideState;
+        if (!st || !st.slides.length) return;
+        const ni = st.current + dir;
+        if (ni < 0 || ni >= st.slides.length) return;
+        st.current = ni;
+        const img = document.getElementById('slideImage');
+        const counter = document.getElementById('slideCounter');
+        const prev = document.getElementById('slidePrev');
+        const next = document.getElementById('slideNext');
+        if (img) img.src = withToken(st.slides[ni]);
+        if (counter) counter.textContent = (ni + 1) + ' / ' + st.slides.length;
+        if (prev) prev.disabled = ni === 0;
+        if (next) next.disabled = ni === st.slides.length - 1;
+    }
+
+    function toggleFullscreen() {
+        const v = document.getElementById('slideViewer');
+        if (!v) return;
+        if (v.classList.contains('fullscreen')) {
+            v.classList.remove('fullscreen');
+        } else {
+            v.classList.add('fullscreen');
+        }
+    }
+
+    function withToken(url) {
+        if (!url) return url;
+        const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        if (!token) return url;
+        return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'token=' + encodeURIComponent(token);
+    }
+
+    function closeDetail() {
+        clearInterval(slidePollTimer);
+        slideState = null;
+        _currentDetail = null;
+        closeModal('detailModal');
+    }
+
+    // ── 다운로드 ──
+    function downloadCurrent() {
+        if (_currentDetail) downloadMaterial(_currentDetail.id);
+    }
+
+    async function downloadMaterial(id) {
+        const m = allMaterials.find(x => x.id === id) || _currentDetail;
+        if (!m) return;
+        try {
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const res = await fetch('/api/v1/director/edu-materials/' + id + '/download', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            if (!res.ok) {
+                let msg = '다운로드 실패';
+                try { const j = await res.json(); msg = j.message || j.detail || msg; } catch (e) {}
+                throw new Error(msg);
+            }
+            const blob = await res.blob();
+            const cd = res.headers.get('Content-Disposition') || '';
+            let fname = 'download';
+            const um = cd.match(/filename\*=UTF-8''([^;]+)/i);
+            if (um) { try { fname = decodeURIComponent(um[1]); } catch (e) { fname = um[1]; } }
+            else { const fm = cd.match(/filename="?([^";]+)"?/i); if (fm) fname = fm[1]; }
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fname;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        } catch (e) {
+            showAlert('⚠️ ' + (e.message || '다운로드 실패'), 'error');
+        }
+    }
+
+    // ── 유틸 ──
+    function fmtSize(bytes) {
+        if (!bytes) return '';
+        if (bytes < 1024) return bytes + 'B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + 'KB';
+        return (bytes / 1024 / 1024).toFixed(1) + 'MB';
+    }
+
+    function extName(url) {
+        if (!url) return '';
+        const m = url.match(/\.([A-Za-z0-9]+)(\?.*)?$/);
+        return m ? m[1].toUpperCase() : '';
+    }
+
+    function fmtDate(iso) {
+        if (!iso) return '-';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return '-';
+        const p = n => String(n).padStart(2, '0');
+        return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+    }
+
+    function escHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    let searchTimer = null;
+    function debounceSearch() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => loadMaterials(1), 350);
+    }
+
+    function refreshCategoryOptions() {
+        // 현재 페이지에서 보이는 레거시(마스터 외) 값도 필터에 보존
+        (allMaterials || []).forEach(m => {
+            const c = (m.category || '').trim();
+            if (c && !isMasterName(c) && _legacyCategoryValues.indexOf(c) < 0) _legacyCategoryValues.push(c);
+        });
+        renderCategoryFilter();
+    }
+
+    // ── 교육명(과목) 옵션/칩 헬퍼 ──
+    function subjectPillHtml(c) {
+        if (!c) return '<span style="color:#d1d5db;">-</span>';
+        const i = subjectMaster.findIndex(s => s.name === c);
+        if (i >= 0) {
+            const colors = SUBJECT_COLORS[i % SUBJECT_COLORS.length];
+            return '<span class="subject-pill" style="background:' + colors[0] + ';color:' + colors[1] + ';">' + escHtml(c) + '</span>';
+        }
+        return '<span class="subject-pill" style="background:#F1F5F9;color:#6B7280;font-weight:500;">' + escHtml(c) + '</span>';
+    }
+
+    function renderCategoryFilter() {
+        const sel = document.getElementById('categoryFilter');
+        if (!sel) return;
+        const cur = sel.value;
+        const masters = subjectNames();
+        let html = '<option value="">전체 교육명</option>';
+        if (masters.length) {
+            html += '<optgroup label="과목">' + masters.map(c => '<option value="' + escHtml(c) + '">' + escHtml(c) + '</option>').join('') + '</optgroup>';
+        }
+        if (_legacyCategoryValues.length) {
+            html += '<optgroup label="기존 등록분">' + _legacyCategoryValues.map(c => '<option value="' + escHtml(c) + '">' + escHtml(c) + '</option>').join('') + '</optgroup>';
+        }
+        sel.innerHTML = html;
+        if (cur) {
+            const ok = Array.prototype.some.call(sel.options, o => o.value === cur);
+            if (ok) sel.value = cur;
+        }
+    }
+
+    // 전체 발행 자료(모든 페이지)를 훑어 레거시 교육명(과목) 값 수집 → 필터 옵션 유지
+    async function collectAllCategories() {
+        try {
+            const seen = [];
+            let page = 1, total = 1;
+            while (seen.length < total && page <= 20) {
+                const res = await apiGet('/director/edu-materials?search=&category=&material_type=&page=' + page + '&page_size=200');
+                const d = res.data || {};
+                total = d.total || 0;
+                (d.items || []).forEach(m => {
+                    const c = (m.category || '').trim();
+                    if (c && !isMasterName(c) && seen.indexOf(c) < 0) seen.push(c);
+                });
+                if (!(d.items || []).length) break;
+                page += 1;
+            }
+            _legacyCategoryValues = seen.sort();
+            renderCategoryFilter();
+        } catch (e) { /* 필터 옵션은 현재 페이지 기준으로도 유지됨 */ }
+    }
+
+    async function syncCategoryOptions() {
+        await collectAllCategories();
+        renderCategoryFilter();
+    }
+
+    function renderPaginationUI() {
+        const wrap = document.getElementById('paginationWrap');
+        let html = '';
+        html += (currentPage > 1) ? '<button onclick="loadMaterials(1)">«</button><button onclick="loadMaterials(' + (currentPage - 1) + ')">‹</button>' : '<button disabled>«</button><button disabled>‹</button>';
+        const start = Math.max(1, currentPage - 2);
+        const end = Math.min(totalPages, currentPage + 2);
+        for (let i = start; i <= end; i++) {
+            html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="loadMaterials(' + i + ')">' + i + '</button>';
+        }
+        html += (currentPage < totalPages) ? '<button onclick="loadMaterials(' + (currentPage + 1) + ')">›</button><button onclick="loadMaterials(' + totalPages + ')">»</button>' : '<button disabled>›</button><button disabled>»</button>';
+        wrap.innerHTML = html;
+    }
+</script>
+</body>
+</html>

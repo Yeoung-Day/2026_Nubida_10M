@@ -1,0 +1,52 @@
+<nav class="top-navbar">
+    <div class="top-navbar-left">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+        <a href="dashboard.html" class="top-navbar-logo"><img src="/common/assets/logo.svg?v=20260706g" alt="누비다플랫폼">누비다</a>
+    </div>
+    <div class="top-navbar-center">
+        <a class="top-nav-item active" href="dashboard.html"><span class="icon">📊</span>대시보드</a>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'branchOpMenu')"><span class="icon">🏢</span>운영 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="branchOpMenu">
+                <a class="top-navbar-dropdown-item" href="employees.html"><span class="icon">👥</span>원장 관리</a>
+                <a class="top-navbar-dropdown-item" href="students.html"><span class="icon">👤</span>수강생 관리</a>
+                <a class="top-navbar-dropdown-item" href="revenue.html"><span class="icon">💰</span>매출 관리</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'branchEduMenu')"><span class="icon">📖</span>교육 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="branchEduMenu">
+                <a class="top-navbar-dropdown-item" href="studios.html"><span class="icon">🏫</span>공부방 관리</a>
+                <a class="top-navbar-dropdown-item" href="courses.html"><span class="icon">📖</span>강좌 관리</a>
+                <a class="top-navbar-dropdown-item" href="schedule.html"><span class="icon">📅</span>일정 관리</a>
+            </div>
+        </div>
+        <div class="top-navbar-dropdown">
+            <a class="top-nav-item" href="#" onclick="toggleDropdown(event,'branchReportMenu')"><span class="icon">📋</span>보고 ▾</a>
+            <div class="top-navbar-dropdown-menu" id="branchReportMenu">
+                <a class="top-navbar-dropdown-item" href="director-reports.html"><span class="icon">📑</span>에듀케어 보고서</a>
+                <a class="top-navbar-dropdown-item" href="branch-reports.html"><span class="icon">📊</span>에듀케어 보고서</a>
+                <a class="top-navbar-dropdown-item" href="portfolio.html"><span class="icon">🎨</span>포트폴리오</a>
+            </div>
+        </div>
+        <a class="top-nav-item" href="chat.html"><span class="icon">💬</span>채팅</a>
+        <a class="top-nav-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+    </div>
+    <div class="top-navbar-right">
+        <button type="button" class="top-navbar-guide-btn" id="sgGuideBtnStatic" title="사용 가이드 다시 보기" onclick="window.location.href='dashboard.html?guide=1'">❓ <span>가이드</span></button>
+        <div class="top-navbar-dropdown">
+            <div class="top-navbar-user" onclick="toggleDropdown(event,'branchUserMenu')">
+                <div class="top-navbar-avatar">에</div>
+                <div>
+                    <div class="top-navbar-user-name" id="topNavUserName">에듀케어</div>
+                    <div class="top-navbar-user-role">에듀케어</div>
+                </div>
+            </div>
+            <div class="top-navbar-dropdown-menu" id="branchUserMenu">
+                <a class="top-navbar-dropdown-item" href="settings.html"><span class="icon">⚙️</span>설정</a>
+                <div class="top-navbar-dropdown-divider"></div>
+                <a class="top-navbar-dropdown-item" href="#" onclick="handleLogout()"><span class="icon">🚪</span>로그아웃</a>
+            </div>
+        </div>
+    </div>
+</nav>

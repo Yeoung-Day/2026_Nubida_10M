@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>학급 관리 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/classes.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="active nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <!-- ===== SIDEBAR ===== -->
+        
+    
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>학급 관리</h1></div>
+            </div>
+
+            <!-- 요약 -->
+            <section class="cl-summary">
+                <div class="cl-sum-card cl-sum-main">
+                    <div class="cl-sum-label">전체 학급</div>
+                    <div class="cl-sum-value" id="totalClasses">-</div>
+                    <div class="cl-sum-sub">등록된 전체 학급 수</div>
+                </div>
+                <div class="cl-sum-card cl-sum-ok">
+                    <div class="cl-sum-label">운영 중</div>
+                    <div class="cl-sum-value" id="activeClasses">-</div>
+                    <div class="cl-sum-sub">현재 운영 상태의 학급</div>
+                </div>
+                <div class="cl-sum-card">
+                    <div class="cl-sum-label">평균 인원</div>
+                    <div class="cl-sum-value" id="avgStudents">-</div>
+                    <div class="cl-sum-sub">학급당 평균 학생 수</div>
+                </div>
+            </section>
+
+            <!-- 2-pane: 학급 목록 + 상세 -->
+            <div class="cl-split">
+                <!-- 좌측: 학급 목록 -->
+                <div class="cl-panel">
+                    <div class="cl-panel-head">
+                        <span class="cl-panel-title">학급 목록</span>
+                        <div class="cl-panel-head-right">
+                            <span class="cl-panel-meta" id="classCountLabel"></span>
+                            <button class="btn btn-primary btn-sm" onclick="openClassCRUDModal()">학급 등록</button>
+                        </div>
+                    </div>
+                    <div class="cl-panel-body class-cards" id="classListContainer">
+                        <div class="empty-state cl-empty">
+                            <p>로딩 중...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 우측: 상세 패널 -->
+                <div class="cl-detail" id="detailPanel">
+                    <div class="cl-detail-empty" id="detailEmpty">
+                        <div class="cl-empty-mark">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/><path d="M9 10h.01"/><path d="M15 10h.01"/></svg>
+                        </div>
+                        <h3>학급을 선택하세요</h3>
+                        <p>왼쪽 목록에서 학급을 클릭하면 강좌·학생·출결 정보를 확인할 수 있습니다.</p>
+                    </div>
+
+                    <!-- 상세 내용 (기본 숨김) -->
+                    <div id="detailContent" style="display:none">
+                        <div class="cl-detail-header">
+                            <h2 id="detailClassName">-</h2>
+                            <div class="cl-flex">
+                                <span id="detailStatusBadge"></span>
+                            </div>
+                        </div>
+
+                        <!-- 탭 -->
+                        <div class="cl-tabs tab-bar">
+                            <button class="tab-item active" data-tab="courses" onclick="switchTab('courses')">강좌 연결</button>
+                            <button class="tab-item" data-tab="students" onclick="switchTab('students')">학생 관리</button>
+                            <button class="tab-item" data-tab="attendance" onclick="switchTab('attendance')">출결 관리</button>
+                        </div>
+
+                        <div class="cl-tab-body">
+                            <!-- TAB: 강좌 -->
+                            <div id="tabCourses" class="tab-content">
+                                <div class="cl-action-bar">
+                                    <button class="btn btn-primary btn-sm" onclick="openLinkCourseModal()">강좌 연결</button>
+                                </div>
+                                <div id="linkedCoursesList" class="cl-list">
+                                    <div class="empty-state cl-empty"><p>연결된 강좌가 없습니다.</p></div>
+                                </div>
+                            </div>
+
+                            <!-- TAB: 학생 -->
+                            <div id="tabStudents" class="tab-content" style="display:none">
+                                <div class="cl-action-bar">
+                                    <button class="btn btn-primary btn-sm" onclick="openAddStudentModal()">학생 추가</button>
+                                </div>
+                                <div id="classStudentsList" class="cl-list">
+                                    <div class="empty-state cl-empty"><p>등록된 학생이 없습니다.</p></div>
+                                </div>
+                            </div>
+
+                            <!-- TAB: 출결 -->
+                            <div id="tabAttendance" class="tab-content" style="display:none">
+                                <div class="cl-action-bar">
+                                    <label class="cl-field">
+                                        날짜
+                                        <input type="date" class="form-input" id="attDate">
+                                    </label>
+                                    <button class="btn btn-primary btn-sm" onclick="loadAttendance()">조회</button>
+                                    <button class="btn btn-outline btn-sm" onclick="autoGenerateAttendance()">자동 생성 (오늘)</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="generateAttendanceWithDate()">출석부 생성</button>
+                                </div>
+                                <div id="attendanceSummary" class="attendance-summary cl-att-summary"></div>
+                                <div id="attendanceTableContainer">
+                                    <div class="empty-state cl-empty"><p>출석 데이터가 없습니다. 날짜를 선택하고 생성하세요.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== MODAL: Class CRUD (Create/Edit) ===== -->
+    <div class="modal-overlay" id="classCRUDModal">
+        <div class="modal" style="max-width:420px">
+            <div class="modal-header">
+                <h3 id="classCRUDModalTitle">학급 등록</h3>
+            </div>
+            <form id="classCRUDForm" onsubmit="saveClassCRUD(); return false;">
+                <input type="hidden" id="editClassId" value="">
+                <div class="form-group">
+                    <label>학급명</label>
+                    <input type="text" class="form-input" id="className" required placeholder="예: 초등A반">
+                </div>
+                <div class="form-group">
+                    <label>학년 (선택)</label>
+                    <select class="form-select" id="classGrade">
+                        <option value="">선택 안함</option>
+                        <option value="초등1">초등 1학년</option>
+                        <option value="초등2">초등 2학년</option>
+                        <option value="초등3">초등 3학년</option>
+                        <option value="초등4">초등 4학년</option>
+                        <option value="초등5">초등 5학년</option>
+                        <option value="초등6">초등 6학년</option>
+                        <option value="중등1">중등 1학년</option>
+                        <option value="중등2">중등 2학년</option>
+                        <option value="중등3">중등 3학년</option>
+                        <option value="고등1">고등 1학년</option>
+                        <option value="고등2">고등 2학년</option>
+                        <option value="고등3">고등 3학년</option>
+                    </select>
+                </div>
+                <div class="form-group" id="classStatusGroup" style="display:none">
+                    <label>상태</label>
+                    <select class="form-select" id="classStatus">
+                        <option value="active">운영 중</option>
+                        <option value="inactive">중단</option>
+                        <option value="completed">종료</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('classCRUDModal')">취소</button>
+                    <button type="submit" class="btn btn-primary">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Link Courses ===== -->
+    <div class="modal-overlay" id="linkCourseModal">
+        <div class="modal" style="max-width:520px">
+            <div class="modal-header">
+                <h3>강좌 연결</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="search-filter-input" id="courseSearchFilter" placeholder="강좌명, 과목, 카테고리 검색" oninput="filterAvailableCourses()">
+                <div class="checkbox-list cl-check-list" id="availableCoursesList">
+                    <div class="cl-modal-loading">로딩 중...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('linkCourseModal')">취소</button>
+                <button class="btn btn-primary" onclick="linkSelectedCourses()">연결하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Add Students ===== -->
+    <div class="modal-overlay" id="addStudentModal">
+        <div class="modal" style="max-width:520px">
+            <div class="modal-header">
+                <h3>학생 추가</h3>
+            </div>
+            <div class="modal-body">
+                <p class="cl-modal-hint">등록 코드로 바로 찾거나, 이름·이메일·코드로 상세 검색할 수 있습니다.</p>
+                <div class="cl-search-row">
+                    <input type="text" class="form-input cl-code-input" id="studentCodeInput" placeholder="#000000" maxlength="7" oninput="findStudentByCode(this.value)">
+                    <input type="text" class="search-filter-input" id="studentSearchFilter" placeholder="이름, 이메일, 코드 검색" oninput="filterAvailableStudents()">
+                </div>
+                <div class="checkbox-list cl-check-list" id="availableStudentsList">
+                    <div class="cl-modal-loading">로딩 중...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('addStudentModal')">취소</button>
+                <button class="btn btn-primary" onclick="addSelectedStudents()">추가하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260911nav"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+
+    <script>
+        // ============================================================
+        // STATE
+        // ============================================================
+        let _allClasses = [];
+        let _selectedClassId = null;
+        let _linkedCourses = [];
+        let _availableCourses = [];
+        let _classStudents = [];
+        let _availableStudents = [];
+        let _attendanceRecords = [];
+        let _cachedAvailableCoursesRaw = [];
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            requireAuth();
+            renderSidebarUser();
+
+            // Set default date to today
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const d = String(today.getDate()).padStart(2, '0');
+            document.getElementById('attDate').value = `${y}-${m}-${d}`;
+
+            loadClassList();
+        });
+
+        // ============================================================
+        // FEATURE 1: CLASS CRUD
+        // ============================================================
+        async function loadClassList() {
+            try {
+                const res = await apiGet('/director/classes');
+                const data = res.data || res || [];
+                _allClasses = Array.isArray(data) ? data : (Array.isArray(res) ? res : []);
+
+                updateClassStats();
+                renderClassCards();
+
+                // If previously selected class exists, re-select
+                if (_selectedClassId) {
+                    const exists = _allClasses.find(c => c.id == _selectedClassId);
+                    if (exists) {
+                        selectClass(_selectedClassId);
+                    } else {
+                        _selectedClassId = null;
+                        showDetailEmpty();
+                    }
+                }
+            } catch (e) {
+                console.error('loadClassList error:', e);
+                document.getElementById('classListContainer').innerHTML = `
+                    <div class="empty-state cl-empty">
+                        <p>학급을 불러오지 못했습니다.</p>
+                    </div>`;
+            }
+        }
+
+        function updateClassStats() {
+            const total = _allClasses.length;
+            const active = _allClasses.filter(c => c.status === 'active').length;
+            const totalStudents = _allClasses.reduce((s, c) => s + (Number(c.student_count) || 0), 0);
+            const avg = total > 0 ? Math.round(totalStudents / total) : 0;
+
+            document.getElementById('totalClasses').textContent = formatNumber(total);
+            document.getElementById('activeClasses').textContent = formatNumber(active);
+            document.getElementById('avgStudents').textContent = formatNumber(avg);
+            document.getElementById('classCountLabel').textContent = `총 ${total}개 학급`;
+        }
+
+        function renderClassCards() {
+            const container = document.getElementById('classListContainer');
+            if (!_allClasses.length) {
+                container.innerHTML = `
+                    <div class="empty-state cl-empty">
+                        <p>등록된 학급이 없습니다.<br>'학급 등록' 버튼으로 추가하세요.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = _allClasses.map(cls => {
+                const selected = _selectedClassId && cls.id == _selectedClassId ? 'selected' : '';
+                const statusLabel = cls.status === 'active' ? '운영 중' : cls.status === 'inactive' ? '중단' : cls.status === 'completed' ? '종료' : cls.status || '-';
+                const statusCls = cls.status === 'active' ? 'badge-success' : cls.status === 'inactive' ? 'badge-warning' : 'badge-secondary';
+                const gradeLabel = cls.grade || '-';
+
+                return `
+                    <div class="class-card ${selected}" onclick="selectClass(${cls.id})" data-id="${cls.id}">
+                        <div class="class-card-info">
+                            <div class="class-card-name">${esc(cls.name)}</div>
+                            <div class="class-card-meta">
+                                <span>${esc(gradeLabel)}</span>
+                                <span>${formatNumber(cls.student_count || 0)}명</span>
+                                <span><span class="badge ${statusCls}">${statusLabel}</span></span>
+                            </div>
+                        </div>
+                        <div class="class-card-actions" onclick="event.stopPropagation()">
+                            <button class="btn btn-ghost" title="수정" onclick="openClassCRUDModal(${cls.id})">수정</button>
+                            <button class="btn btn-ghost" title="삭제" onclick="deleteClass(${cls.id})">삭제</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openClassCRUDModal(id) {
+            const title = document.getElementById('classCRUDModalTitle');
+            const editId = document.getElementById('editClassId');
+            const nameInput = document.getElementById('className');
+            const gradeSelect = document.getElementById('classGrade');
+            const statusGroup = document.getElementById('classStatusGroup');
+            const statusSelect = document.getElementById('classStatus');
+
+            if (id) {
+                const cls = _allClasses.find(c => c.id == id);
+                if (!cls) { showAlert('학급을 찾을 수 없습니다.', 'error'); return; }
+                title.textContent = '학급 수정';
+                editId.value = id;
+                nameInput.value = cls.name || '';
+                gradeSelect.value = cls.grade || '';
+                statusGroup.style.display = 'block';
+                statusSelect.value = cls.status || 'active';
+            } else {
+                title.textContent = '학급 등록';
+                editId.value = '';
+                nameInput.value = '';
+                gradeSelect.value = '';
+                statusGroup.style.display = 'none';
+                statusSelect.value = 'active';
+            }
+            openModal('classCRUDModal');
+        }
+
+        async function saveClassCRUD() {
+            const id = document.getElementById('editClassId').value;
+            const name = document.getElementById('className').value.trim();
+            const grade = document.getElementById('classGrade').value;
+
+            if (!name) {
+                showAlert('학급명을 입력하세요.', 'error');
+                return;
+            }
+
+            try {
+                if (id) {
+                    const status = document.getElementById('classStatus').value;
+                    await apiPut(`/director/classes/${id}`, { name, grade, status });
+                    showAlert('학급이 수정되었습니다.', 'success');
+                } else {
+                    await apiPost('/director/classes', { name, grade });
+                    showAlert('학급이 등록되었습니다.', 'success');
+                }
+                closeModal('classCRUDModal');
+                await loadClassList();
+            } catch (e) {
+                showAlert(e.message, 'error');
+            }
+        }
+
+        async function deleteClass(id) {
+            if (!confirm('정말 이 학급을 삭제하시겠습니까?')) return;
+            try {
+                await apiDelete(`/director/classes/${id}`);
+                showAlert('삭제되었습니다.', 'success');
+                if (_selectedClassId && _selectedClassId == id) {
+                    _selectedClassId = null;
+                    showDetailEmpty();
+                }
+                await loadClassList();
+            } catch (e) {
+                showAlert(e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // CLASS SELECTION + DETAIL PANEL
+        // ============================================================
+        function selectClass(id) {
+            _selectedClassId = id;
+            renderClassCards();
+
+            const cls = _allClasses.find(c => c.id == id);
+            if (!cls) return;
+
+            // Show detail panel
+            document.getElementById('detailEmpty').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+
+            document.getElementById('detailClassName').textContent = `${esc(cls.name)}`;
+            document.getElementById('detailStatusBadge').innerHTML = statusBadge(cls.status || 'active');
+
+            // Load first tab
+            switchTab('courses');
+        }
+
+        function showDetailEmpty() {
+            document.getElementById('detailEmpty').style.display = 'flex';
+            document.getElementById('detailContent').style.display = 'none';
+        }
+
+        // ============================================================
+        // TAB SWITCHING
+        // ============================================================
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab-item[data-tab="${tabName}"]`).classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+            document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).style.display = 'block';
+
+            // Load data for the selected tab
+            if (tabName === 'courses') loadLinkedCourses();
+            else if (tabName === 'students') loadClassStudents();
+            else if (tabName === 'attendance') loadAttendance();
+        }
+
+        // ============================================================
+        // FEATURE 2: COURSE LINKING
+        // ============================================================
+        async function loadLinkedCourses() {
+            if (!_selectedClassId) return;
+            const container = document.getElementById('linkedCoursesList');
+
+            try {
+                const [coursesRes, pagesRes, foldersRes] = await Promise.all([
+                    apiGet(`/director/classes/${_selectedClassId}/courses`),
+                    apiGet(`/director/classes/${_selectedClassId}/materials`),
+                    apiGet('/director/folders/available'),
+                ]);
+                _linkedCourses = Array.isArray(coursesRes) ? coursesRes : (coursesRes.data || []);
+                const linkedPages = Array.isArray(pagesRes) ? pagesRes : (pagesRes.data || []);
+                const folderTree = foldersRes.data || [];
+
+                if (!_linkedCourses.length && !linkedPages.length) {
+                    container.innerHTML = `<div class="empty-state cl-empty"><p>연결된 강좌/페이지가 없습니다.</p></div>`;
+                    return;
+                }
+
+                // Build course_id → linkedCourse map
+                const linkedCourseMap = {};
+                _linkedCourses.forEach(c => {
+                    linkedCourseMap[c.course_id || c.id] = c;
+                });
+
+                // Build page map
+                const linkedPageIds = new Set(linkedPages.map(p => p.id));
+
+                // Build a filtered folder tree — only folders containing linked courses or linked pages
+                function buildLinkedTree(folders) {
+                    const result = [];
+                    for (const f of folders) {
+                        // Linked courses in this folder
+                        const folderLinkedCourses = (f.courses || []).filter(c => linkedCourseMap[c.id]);
+                        // Linked pages in this folder
+                        const folderLinkedPages = (f.pages || []).filter(p => linkedPageIds.has(p.id));
+                        // Process children recursively
+                        const processedChildren = f.children ? buildLinkedTree(f.children) : [];
+
+                        if (folderLinkedCourses.length > 0 || folderLinkedPages.length > 0 || processedChildren.length > 0) {
+                            result.push({
+                                ...f,
+                                linkedCourses: folderLinkedCourses,
+                                linkedPages: folderLinkedPages,
+                                children: processedChildren,
+                            });
+                        }
+                    }
+                    return result;
+                }
+
+                const filteredTree = buildLinkedTree(folderTree);
+
+                // Render the tree
+                const iconMap = {document:'', video:'', image:'', link:''};
+
+                function renderLinkedTree(folders, depth) {
+                    if (!folders || !folders.length) return '';
+                    const indent = depth * 16;
+                    let html = '';
+                    for (const f of folders) {
+                        const expandId = `linkedExpand_${f.id}`;
+                        html += `<div style="margin-left:${indent}px;margin-bottom:2px">`;
+                        html += `<div class="folder-header">`;
+                        html += `<span id="${expandId}_icon" style="cursor:pointer" onclick="toggleFolderCourses('${expandId}')">▾</span>`;
+                        html += `<span style="cursor:pointer;flex:1" onclick="toggleFolderCourses('${expandId}')">${esc(f.name)}</span>`;
+                        html += `</div>`;
+                        html += `<div id="${expandId}" style="display:${depth < 2 ? 'block' : 'none'}">`;
+
+                        // Linked courses in this folder
+                        if (f.linkedCourses && f.linkedCourses.length > 0) {
+                            f.linkedCourses.forEach(c => {
+                                html += `<div class="linked-item" style="margin-left:12px">`;
+                                html += `<div class="linked-item-info">`;
+                                html += `<div class="linked-item-name">${esc(c.course_name || c.name || '-')}</div>`;
+                                const subParts = [c.subject, c.instructor].filter(Boolean);
+                                if (subParts.length) {
+                                    html += `<div class="linked-item-sub">${subParts.map(v => esc(v)).join(' · ')}</div>`;
+                                }
+                                html += `</div>`;
+                                html += `<button class="btn btn-ghost btn-sm" onclick="unlinkCourse(${c.id})" title="연결 해제">해제</button>`;
+                                html += `</div>`;
+                            });
+                        }
+
+                        // Linked pages in this folder
+                        if (f.linkedPages && f.linkedPages.length > 0) {
+                            f.linkedPages.forEach(p => {
+                                html += `<div class="linked-item" style="margin-left:12px">`;
+                                html += `<div class="linked-item-info">`;
+                                html += `<div class="linked-item-name">${esc(p.title)}</div>`;
+                                if (p.material_type) {
+                                    html += `<div class="linked-item-sub">${esc(p.material_type)}</div>`;
+                                }
+                                html += `</div>`;
+                                html += `<button class="btn btn-ghost btn-sm" onclick="unlinkPage(${p.id})" title="연결 해제">해제</button>`;
+                                html += `</div>`;
+                            });
+                        }
+
+                        // Children (recursive)
+                        html += renderLinkedTree(f.children, depth + 1);
+                        html += `</div></div>`;
+                    }
+                    return html;
+                }
+
+                // 폴더 트리에 표시된 강좌/페이지 id 수집 (폴더 미지정 항목 분리용)
+                const shownCourseIds = new Set();
+                const shownPageIds = new Set();
+                (function collectShown(folders) {
+                    folders.forEach(f => {
+                        (f.linkedCourses || []).forEach(c => shownCourseIds.add(c.id));
+                        (f.linkedPages || []).forEach(p => shownPageIds.add(p.id));
+                        collectShown(f.children || []);
+                    });
+                })(filteredTree);
+
+                // 폴더에 없는(미지정) 연결 강좌/페이지 — 누락 없이 모두 표시
+                const orphanCourses = _linkedCourses.filter(c => !shownCourseIds.has(c.course_id || c.id));
+                const orphanPages = linkedPages.filter(p => !shownPageIds.has(p.id));
+
+                let listHtml = renderLinkedTree(filteredTree, 0);
+
+                if (orphanCourses.length || orphanPages.length) {
+                    listHtml += `<div class="folder-header" style="margin-top:10px">폴더 미지정 ${orphanCourses.length + orphanPages.length}</div>`;
+                    orphanCourses.forEach(c => {
+                        listHtml += `<div class="linked-item">`;
+                        listHtml += `<div class="linked-item-info">`;
+                        listHtml += `<div class="linked-item-name">${esc(c.course_name || c.name || '-')}</div>`;
+                        const subParts = [c.subject, c.instructor].filter(Boolean);
+                        if (subParts.length) {
+                            listHtml += `<div class="linked-item-sub">${subParts.map(v => esc(v)).join(' · ')}</div>`;
+                        }
+                        listHtml += `</div>`;
+                        listHtml += `<button class="btn btn-ghost btn-sm" onclick="unlinkCourse(${c.id})" title="연결 해제">해제</button>`;
+                        listHtml += `</div>`;
+                    });
+                    orphanPages.forEach(p => {
+                        listHtml += `<div class="linked-item">`;
+                        listHtml += `<div class="linked-item-info">`;
+                        listHtml += `<div class="linked-item-name">${esc(p.title)}</div>`;
+                        if (p.material_type) {
+                            listHtml += `<div class="linked-item-sub">${esc(p.material_type)}</div>`;
+                        }
+                        listHtml += `</div>`;
+                        listHtml += `<button class="btn btn-ghost btn-sm" onclick="unlinkPage(${p.id})" title="연결 해제">해제</button>`;
+                        listHtml += `</div>`;
+                    });
+                }
+
+                container.innerHTML = listHtml;
+            } catch (e) {
+                console.error('loadLinkedCourses error:', e);
+                container.innerHTML = `<div class="empty-state cl-empty"><p>정보를 불러오지 못했습니다.</p></div>`;
+            }
+        }
+
+        async function openLinkCourseModal() {
+            if (!_selectedClassId) return;
+            document.getElementById('courseSearchFilter').value = '';
+            document.getElementById('availableCoursesList').innerHTML = '<div class="cl-modal-loading">로딩 중...</div>';
+            openModal('linkCourseModal');
+
+            try {
+                const res = await apiGet('/director/courses');
+                const courses = res.items || res.data || [];
+                _cachedAvailableCoursesRaw = courses;
+                renderCourseList(courses);
+            } catch (e) {
+                console.error('load courses error:', e);
+                document.getElementById('availableCoursesList').innerHTML =
+                    '<div class="cl-modal-loading">강좌 정보를 불러오지 못했습니다.</div>';
+            }
+        }
+
+        function renderCourseList(courses) {
+            const container = document.getElementById('availableCoursesList');
+            if (!courses || !courses.length) {
+                container.innerHTML = '<div class="cl-modal-loading">연결 가능한 강좌가 없습니다.</div>';
+                return;
+            }
+            const linkedIds = new Set(_linkedCourses.map(c => c.course_id || c.id));
+            let html = '';
+            courses.forEach(c => {
+                const alreadyLinked = linkedIds.has(c.id);
+                html += `<div class="checkbox-item">`;
+                if (alreadyLinked) {
+                    html += `<input type="checkbox" disabled checked style="opacity:0.4">`;
+                    html += `<label style="opacity:0.5;text-decoration:line-through">${esc(c.name)} <span class="sub-label">(이미 연결됨)</span></label>`;
+                } else {
+                    html += `<input type="checkbox" class="link-course-cb" id="availCourse_${c.id}" value="${c.id}">`;
+                    html += `<label for="availCourse_${c.id}">${esc(c.name)}</label>`;
+                }
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderFolderTree(folders, depth) {
+            depth = depth || 0;
+            const container = document.getElementById('availableCoursesList');
+            if (!folders || !folders.length) {
+                container.innerHTML = '<div class="cl-modal-loading">연결 가능한 폴더/강좌가 없습니다.</div>';
+                return;
+            }
+
+            const linkedIds = new Set(_linkedCourses.map(c => c.course_id || c.id));
+            let html = '';
+            folders.forEach(folder => {
+                const indent = depth * 16;
+                const hasCourses = folder.courses && folder.courses.length > 0;
+                const hasChildren = folder.children && folder.children.length > 0;
+                const expandId = `folderExpand_${folder.id}`;
+
+                const hasCoursesAnywhere = hasCourses || (hasChildren && folder.children.some(ch => {
+                    if (ch.courses && ch.courses.length > 0) return true;
+                    if (ch.children) return ch.children.some(gch => gch.courses && gch.courses.length > 0);
+                    return false;
+                }));
+
+                html += `<div style="margin-left:${indent}px;margin-bottom:2px">`;
+                html += `<div class="folder-header">`;
+                const folderAllLinked = hasCourses && folder.courses.every(c => linkedIds.has(c.id));
+                if (hasCoursesAnywhere) {
+                    html += `<input type="checkbox" id="folderCb_${folder.id}" onchange="toggleFolderCheckbox('${folder.id}')">`;
+                } else {
+                    html += `<span style="width:16px"></span>`;
+                }
+                html += `<span id="${expandId}_icon" style="cursor:pointer" onclick="toggleFolderCourses('${expandId}')">▸</span>`;
+                html += `<span style="cursor:pointer;flex:1" onclick="toggleFolderCourses('${expandId}')">${esc(folder.name)}</span>`;
+                html += `<span class="badge badge-secondary">${hasCourses ? folder.courses.length + '개' : ''}</span>`;
+                html += `</div>`;
+                html += `<div id="${expandId}" style="display:none">`;
+
+                // Courses in this folder
+                if (hasCourses) {
+                    folder.courses.forEach(c => {
+                        const alreadyLinked = linkedIds.has(c.id);
+                        if (alreadyLinked) return;
+                        html += `<div class="checkbox-item" style="margin-left:12px">`;
+                        html += `<input type="checkbox" class="folder-course-cb folder_${folder.id}_cb" id="availCourse_${c.id}" value="${c.id}">`;
+                        html += `<label for="availCourse_${c.id}">${esc(c.name)}<span class="sub-label"> · ${esc(c.subject || '-')} · ${esc(c.instructor || '-')}</span></label>`;
+                        html += `</div>`;
+                    });
+                }
+                // Pages (materials) in this folder
+                if (folder.pages && folder.pages.length > 0) {
+                    html += `<div class="cl-page-label" style="margin-left:12px">페이지 (${folder.pages.length})</div>`;
+                    folder.pages.forEach(p => {
+                        html += `<div class="checkbox-item" style="margin-left:12px">`;
+                        html += `<input type="checkbox" class="folder-page-cb folder_${folder.id}_page_cb" id="availPage_${p.id}" value="${p.id}">`;
+                        html += `<label for="availPage_${p.id}">${esc(p.title)}<span class="sub-label"> · ${esc(p.material_type || '-')}</span></label>`;
+                        html += `</div>`;
+                    });
+                }
+
+                // Child folders (recursive)
+                if (hasChildren) {
+                    let childHtml = '';
+                    folder.children.forEach(child => {
+                        const childExpandId = `folderExpand_${child.id}`;
+                        const childHasCourses = child.courses && child.courses.length > 0;
+                        const childHasChildren2 = child.children && child.children.length > 0;
+
+                        const childHasCoursesAnywhere = childHasCourses || (childHasChildren2 && child.children.some(gch => gch.courses && gch.courses.length > 0));
+
+                        childHtml += `<div style="margin-left:12px;margin-bottom:2px">`;
+                        childHtml += `<div class="folder-header cl-sub-folder">`;
+                        const childAllLinked = childHasCourses && child.courses.every(c => linkedIds.has(c.id));
+                        if (childHasCoursesAnywhere) {
+                            childHtml += `<input type="checkbox" id="folderCb_${child.id}" onchange="toggleFolderCheckbox('${child.id}')">`;
+                        } else {
+                            childHtml += `<span style="width:16px"></span>`;
+                        }
+                        childHtml += `<span id="${childExpandId}_icon" style="cursor:pointer" onclick="toggleFolderCourses('${childExpandId}')">▸</span>`;
+                        childHtml += `<span style="cursor:pointer;flex:1" onclick="toggleFolderCourses('${childExpandId}')">${esc(child.name)}</span>`;
+                        if (childHasCourses) childHtml += `<span class="badge badge-secondary">${child.courses.length}개</span>`;
+                        childHtml += `</div>`;
+                        childHtml += `<div id="${childExpandId}" style="display:none">`;
+
+                        if (childHasCourses) {
+                            child.courses.forEach(c => {
+                                const alreadyLinked2 = linkedIds.has(c.id);
+                                if (alreadyLinked2) return;
+                                childHtml += `<div class="checkbox-item" style="margin-left:12px">`;
+                                childHtml += `<input type="checkbox" class="folder-course-cb folder_${child.id}_cb" id="availCourse_${c.id}" value="${c.id}">`;
+                                childHtml += `<label for="availCourse_${c.id}">${esc(c.name)}<span class="sub-label"> · ${esc(c.subject || '-')} · ${esc(c.instructor || '-')}</span></label>`;
+                                childHtml += `</div>`;
+                            });
+                        }
+                        // Pages (materials) in child folder
+                        if (child.pages && child.pages.length > 0) {
+                            childHtml += `<div class="cl-page-label" style="margin-left:12px">페이지 (${child.pages.length})</div>`;
+                            child.pages.forEach(p => {
+                                childHtml += `<div class="checkbox-item" style="margin-left:12px">`;
+                                childHtml += `<input type="checkbox" class="folder-page-cb folder_${child.id}_page_cb" id="availPage_${p.id}" value="${p.id}">`;
+                                childHtml += `<label for="availPage_${p.id}">${esc(p.title)}<span class="sub-label"> · ${esc(p.material_type || '-')}</span></label>`;
+                                childHtml += `</div>`;
+                            });
+                        }
+
+                        if (!childHasCourses && !(childHasChildren2 && child.children.some(ch => ch.courses?.length))) {
+                            childHtml += '<div class="cl-none-label">강좌 없음</div>';
+                        }
+
+                        childHtml += `</div></div>`;
+                    });
+                    html += childHtml;
+                }
+
+                if (!hasCourses && !hasChildren) {
+                    html += '<div class="cl-none-label">강좌 없음</div>';
+                }
+
+                html += `</div></div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleFolderCheckbox(folderId) {
+            const folderCb = document.getElementById('folderCb_' + folderId);
+            if (!folderCb) return;
+            const checked = folderCb.checked;
+
+            // 1) 직속 강좌 체크/해제
+            document.querySelectorAll('.folder_' + folderId + '_cb').forEach(cb => {
+                if (!cb.disabled) cb.checked = checked;
+            });
+
+            // 1-2) 직속 페이지 체크/해제
+            document.querySelectorAll('.folder_' + folderId + '_page_cb').forEach(cb => {
+                cb.checked = checked;
+            });
+
+            // 2) 하위 폴더 체크박스 + 하위 강좌 + 하위 페이지까지 재귀 처리
+            //    _cachedAvailableCoursesRaw 에서 해당 폴더 찾아 children 순회
+            function processChildFolders(folders, id) {
+                for (const f of folders) {
+                    if (f.id == id) {
+                        if (f.children) {
+                            f.children.forEach(child => {
+                                // 하위 폴더 체크박스 토글
+                                const childCb = document.getElementById('folderCb_' + child.id);
+                                if (childCb) childCb.checked = checked;
+                                // 하위 폴더의 직속 강좌 토글
+                                document.querySelectorAll('.folder_' + child.id + '_cb').forEach(cb => {
+                                    if (!cb.disabled) cb.checked = checked;
+                                });
+                                // 하위 폴더의 페이지 토글
+                                document.querySelectorAll('.folder_' + child.id + '_page_cb').forEach(cb => {
+                                    cb.checked = checked;
+                                });
+                                // 재귀: 더 깊은 하위
+                                processChildFolders([child], child.id);
+                            });
+                        }
+                        return;
+                    }
+                    if (f.children && processChildFolders(f.children, id)) return;
+                }
+            }
+            processChildFolders(_cachedAvailableCoursesRaw, folderId);
+        }
+
+        function toggleFolderCourses(expandId) {
+            const el = document.getElementById(expandId);
+            const icon = document.getElementById(expandId + '_icon');
+            if (!el) return;
+            const isHidden = el.style.display === 'none';
+            el.style.display = isHidden ? 'block' : 'none';
+            if (icon) icon.textContent = isHidden ? '▾' : '▸';
+        }
+
+        function filterAvailableCourses() {
+            const q = (document.getElementById('courseSearchFilter').value || '').toLowerCase();
+            if (!q) {
+                renderCourseList(_cachedAvailableCoursesRaw);
+                return;
+            }
+            const filtered = _cachedAvailableCoursesRaw.filter(c =>
+                (c.name || '').toLowerCase().includes(q) ||
+                (c.subject || '').toLowerCase().includes(q) ||
+                (c.instructor || '').toLowerCase().includes(q)
+            );
+            renderCourseList(filtered);
+        }
+
+        async function linkSelectedCourses() {
+            const courseCheckboxes = document.querySelectorAll('#availableCoursesList .link-course-cb:checked:not(:disabled)');
+            const courseIds = Array.from(courseCheckboxes).map(cb => parseInt(cb.value));
+
+            if (!courseIds.length) {
+                showAlert('연결할 강좌를 선택하세요.', 'error');
+                return;
+            }
+
+            try {
+                // 연결된 강좌 링크
+                for (const cid of courseIds) {
+                    await apiPost(`/director/classes/${_selectedClassId}/courses`, { course_id: cid });
+                }
+                showAlert(`${courseIds.length}개 강좌가 연결되었습니다.`, 'success');
+                closeModal('linkCourseModal');
+                await loadLinkedCourses();
+            } catch (e) {
+                showAlert(e.message, 'error');
+            }
+        }
+
+        async function unlinkCourse(courseId) {
+            if (!confirm('강좌 연결을 해제하시겠습니까?')) return;
+            try {
+                await apiDelete(`/director/classes/${_selectedClassId}/courses/${courseId}`);
+                showAlert('연결이 해제되었습니다.', 'success');
+                await loadLinkedCourses();
+            } catch (e) {
+                showAlert(e.message, 'error');
+            }
+        }
+
+        async function unlinkPage(materialId) {
+            if (!confirm('페이지 연결을 해제하시겠습니까?')) return;
+            try {
+                await apiDelete(`/director/classes/${_selectedClassId}/materials/${materialId}`);
+                showAlert('페이지 연결이 해제되었습니다.', 'success');
+                await loadLinkedCourses();
+            } catch (e) {
+                showAlert(e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // FEATURE 3: STUDENT MANAGEMENT
+        // ============================================================
+        async function loadClassStudents() {
+            if (!_selectedClassId) return;
+            const container = document.getElementById('classStudentsList');
+
+            try {
+                const res = await apiGet(`/director/classes/${_selectedClassId}/students`);
+                _classStudents = Array.isArray(res) ? res : (res.data || []);
+
+                if (!_classStudents.length) {
+                    container.innerHTML = `<div class="empty-state cl-empty"><p>등록된 학생이 없습니다.</p></div>`;
+                    return;
+                }
+
+                container.innerHTML = _classStudents.map(s => `
+                    <div class="linked-item">
+                        <div class="linked-item-info">
+                            <div class="linked-item-name">${esc(s.name || s.student_name || '-')}</div>
+                            <div class="linked-item-sub">
+                                ${esc(s.email || '-')} · ${esc(s.phone || '-')}
+                                ${s.enrollment_date ? ` · ${formatDate(s.enrollment_date)}` : ''}
+                            </div>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" onclick="removeStudent(${s.id || s.student_id})" title="퇴소">퇴소</button>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('loadClassStudents error:', e);
+                container.innerHTML = `<div class="empty-state cl-empty"><p>학생 정보를 불러오지 못했습니다.</p></div>`;
+            }
+        }
+
+        async function openAddStudentModal() {
+            if (!_selectedClassId) return;
+            document.getElementById('studentSearchFilter').value = '';
+            document.getElementById('studentCodeInput').value = '';
+            document.getElementById('availableStudentsList').innerHTML =
+                '<div class="cl-modal-loading">내 학생을 불러오는 중...</div>';
+            openModal('addStudentModal');
+
+            try {
+                const res = await apiGet('/director/students/available');
+                _availableStudents = Array.isArray(res) ? res : (res.data || []);
+                // 내 학생은 검색 없이도 전체 표시. 검색은 그 위에서 상세 찾기용.
+                renderAvailableStudents(_availableStudents);
+            } catch (e) {
+                console.error('load available students error:', e);
+                document.getElementById('availableStudentsList').innerHTML =
+                    '<div class="cl-modal-loading">추가 가능한 학생이 없습니다.</div>';
+            }
+        }
+
+        function renderAvailableStudents(students) {
+            const container = document.getElementById('availableStudentsList');
+            if (!students.length) {
+                container.innerHTML = '<div class="cl-modal-loading">추가 가능한 학생이 없습니다.</div>';
+                return;
+            }
+
+            // Already in this class
+            const existingIds = new Set(_classStudents.map(s => s.id || s.student_id));
+
+            container.innerHTML = students.map(s => {
+                const alreadyIn = existingIds.has(s.id);
+                const disabled = alreadyIn ? 'disabled' : '';
+                const disabledCls = alreadyIn ? ' class="is-disabled"' : '';
+                const code = s.registration_code ? ` ${s.registration_code}` : '';
+                return `
+                    <div class="checkbox-item"${disabledCls}>
+                        <input type="checkbox" id="availStudent_${s.id}" value="${s.id}" ${disabled} ${alreadyIn ? 'checked' : ''}>
+                        <label for="availStudent_${s.id}">
+                            ${esc(s.name || s.student_name || '-')}
+                            <span class="sub-label">${code} · ${esc(s.email || '-')}</span>
+                        </label>
+                        ${alreadyIn ? '<span class="badge badge-secondary">등록됨</span>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterAvailableStudents() {
+            const q = (document.getElementById('studentSearchFilter').value || '').toLowerCase();
+            if (!q) {
+                // 검색어 없음 → 내 학생 전체 표시 (검색은 상세 찾기용)
+                renderAvailableStudents(_availableStudents);
+                return;
+            }
+            const filtered = _availableStudents.filter(s =>
+                (s.name || '').toLowerCase().includes(q) ||
+                (s.student_name || '').toLowerCase().includes(q) ||
+                (s.email || '').toLowerCase().includes(q) ||
+                (s.registration_code || '').toLowerCase().includes(q)
+            );
+            renderAvailableStudents(filtered);
+        }
+
+        function findStudentByCode(code) {
+            // Clear search filter when typing direct code
+            if (code) {
+                document.getElementById('studentSearchFilter').value = '';
+            }
+            // Strip # prefix: '#' alone or empty → show nothing
+            const clean = code.replace(/^#/, '').trim();
+            if (!clean) {
+                // 코드 초기화 → 내 학생 전체 표시
+                renderAvailableStudents(_availableStudents);
+                return;
+            }
+            const q = clean.toLowerCase();
+            const filtered = _availableStudents.filter(s =>
+                (s.registration_code || '').toLowerCase().includes(q)
+            );
+            renderAvailableStudents(filtered);
+        }
+
+        async function addSelectedStudents() {
+            const checkboxes = document.querySelectorAll('#availableStudentsList input[type="checkbox"]:checked:not(:disabled)');
+            const studentIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+            if (!studentIds.length) {
+                showAlert('추가할 학생을 선택하세요.', 'error');
+                return;
+            }
+
+            try {
+                await apiPost(`/director/classes/${_selectedClassId}/students`, { student_ids: studentIds });
+                showAlert(`${studentIds.length}명의 학생이 추가되었습니다.`, 'success');
+                closeModal('addStudentModal');
+                await loadClassStudents();
+                await loadClassList(); // Refresh student counts
+            } catch (e) {
+                showAlert(e.message, 'error');
+            }
+        }
+
+        async function removeStudent(studentId) {
+            const reason = prompt('퇴소 사유를 입력해주세요.\n※ 퇴소는 반 이동입니다. 학급에서만 제거되며 학생 계정과 원장 연결은 유지됩니다:') || '';
+            if (reason === null) return; // 취소
+            if (!confirm('정말 이 학생을 학급에서 제거하시겠습니까? (반 이동)\n- 학급에서만 제거됩니다\n- 학생 계정과 원장 연결은 유지됩니다\n- 해당 학급 강좌 수강만 해제됩니다')) return;
+            try {
+                await apiDelete(`/director/classes/${_selectedClassId}/students/${studentId}?reason=${encodeURIComponent(reason)}`);
+                showAlert('학생이 학급에서 제거되었습니다(반 이동). 학생 계정과 원장 연결은 유지됩니다.', 'success');
+                await loadClassStudents();
+                await loadClassList(); // Refresh student counts
+            } catch (e) {
+                showAlert(e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // FEATURE 4: ATTENDANCE
+        // ============================================================
+        async function loadAttendance() {
+            if (!_selectedClassId) return;
+            const dateStr = document.getElementById('attDate').value;
+            if (!dateStr) {
+                showAlert('날짜를 선택하세요.', 'error');
+                return;
+            }
+
+            const container = document.getElementById('attendanceTableContainer');
+            const summaryEl = document.getElementById('attendanceSummary');
+
+            try {
+                const res = await apiGet(`/director/classes/${_selectedClassId}/attendance?date_str=${dateStr}`);
+                _attendanceRecords = Array.isArray(res) ? res : (res.data || []);
+
+                if (!_attendanceRecords.length) {
+                    container.innerHTML = `<div class="empty-state cl-empty"><p>출석 데이터가 없습니다. "출석부 생성" 또는 "자동 생성" 버튼을 사용하세요.</p></div>`;
+                    summaryEl.innerHTML = '';
+                    return;
+                }
+
+                renderAttendanceSummary();
+                renderAttendanceTable();
+            } catch (e) {
+                console.error('loadAttendance error:', e);
+                container.innerHTML = `<div class="empty-state cl-empty"><p>출석 정보를 불러오지 못했습니다.</p></div>`;
+                summaryEl.innerHTML = '';
+            }
+        }
+
+        function renderAttendanceSummary() {
+            const summaryEl = document.getElementById('attendanceSummary');
+            const total = _attendanceRecords.length;
+            const present = _attendanceRecords.filter(r => r.status === 'present').length;
+            const late = _attendanceRecords.filter(r => r.status === 'late').length;
+            const absent = _attendanceRecords.filter(r => r.status === 'absent').length;
+            const excused = _attendanceRecords.filter(r => r.status === 'excused').length;
+
+            summaryEl.innerHTML = `
+                <div class="attendance-summary-item present">
+                    <span>출석</span>
+                    <span class="num">${present}</span>
+                </div>
+                <div class="attendance-summary-item late">
+                    <span>지각</span>
+                    <span class="num">${late}</span>
+                </div>
+                <div class="attendance-summary-item absent">
+                    <span>결석</span>
+                    <span class="num">${absent}</span>
+                </div>
+                <div class="attendance-summary-item">
+                    <span>공결</span>
+                    <span class="num">${excused}</span>
+                </div>
+                <div class="attendance-summary-item">
+                    <span>총</span>
+                    <span class="num">${total}</span>
+                </div>
+            `;
+        }
+
+        function renderAttendanceTable() {
+            const container = document.getElementById('attendanceTableContainer');
+
+            // Use a proper table
+            let html = `<div class="cl-table-wrap no-print"><table class="cl-table" data-card-view>
+                <thead><tr>
+                    <th class="cl-col-no">#</th>
+                    <th>학생명</th>
+                    <th>상태</th>
+                    <th class="cl-col-manage">관리</th>
+                </tr></thead>
+                <tbody>`;
+
+            _attendanceRecords.forEach((r, idx) => {
+                const studentName = esc(r.student_name || r.name || '-');
+                const statusVal = r.status || 'present';
+                const attId = r.id || r.attendance_id;
+
+                html += `<tr>
+                    <td><span class="cl-no">${idx + 1}</span></td>
+                    <td>${studentName}</td>
+                    <td>${statusBadge(statusVal)}</td>
+                    <td>
+                        <select class="att-status-select status-${statusVal}" data-att-id="${attId}" data-student-id="${r.student_id || ''}" onchange="updateAttendanceStatus(this, ${_selectedClassId})">
+                            <option value="present" ${statusVal === 'present' ? 'selected' : ''}>출석</option>
+                            <option value="late" ${statusVal === 'late' ? 'selected' : ''}>지각</option>
+                            <option value="absent" ${statusVal === 'absent' ? 'selected' : ''}>결석</option>
+                            <option value="excused" ${statusVal === 'excused' ? 'selected' : ''}>공결</option>
+                        </select>
+                    </td>
+                </tr>`;
+            });
+
+            html += `</tbody></table></div>`;
+
+            // Also add a print-friendly version
+            html += `<div style="display:none" class="print-only">
+                <h3 style="margin-bottom:16px">출석부 — ${document.getElementById('attDate').value}</h3>
+                <table style="width:100%;border-collapse:collapse;font-size:12px">
+                    <thead><tr style="border-bottom:2px solid #333">
+                        <th style="padding:8px;text-align:left">#</th>
+                        <th style="padding:8px;text-align:left">학생명</th>
+                        <th style="padding:8px;text-align:left">상태</th>
+                    </tr></thead>
+                    <tbody>
+                        ${_attendanceRecords.map((r, idx) => {
+                            const labels = { present: '출석', late: '지각', absent: '결석', excused: '공결' };
+                            return `<tr style="border-bottom:1px solid #ddd">
+                                <td style="padding:6px 8px">${idx + 1}</td>
+                                <td style="padding:6px 8px">${esc(r.student_name || r.name || '-')}</td>
+                                <td style="padding:6px 8px">${labels[r.status] || r.status}</td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>`;
+
+            container.innerHTML = html;
+        }
+
+        async function updateAttendanceStatus(selectEl, classId) {
+            const newStatus = selectEl.value;
+            const attId = selectEl.dataset.attId;
+
+            try {
+                // Use PUT to update individual attendance status
+                await apiPut(`/director/attendance/${attId}`, { status: newStatus });
+                showAlert('출석 상태가 업데이트되었습니다.', 'success');
+                // Update the badge in the same row
+                const td = selectEl.closest('tr').querySelector('td:nth-child(3)');
+                if (td) td.innerHTML = statusBadge(newStatus);
+                selectEl.className = `att-status-select status-${newStatus}`;
+                // Refresh summary
+                // Find and update the record in our array
+                const rec = _attendanceRecords.find(r => (r.id || r.attendance_id) == attId);
+                if (rec) rec.status = newStatus;
+                renderAttendanceSummary();
+            } catch (e) {
+                showAlert(e.message, 'error');
+                // Revert select
+                const oldStatus = _attendanceRecords.find(r => (r.id || r.attendance_id) == attId)?.status || 'present';
+                selectEl.value = oldStatus;
+            }
+        }
+
+        async function autoGenerateAttendance() {
+            if (!_selectedClassId) return;
+            const btn = document.querySelector('.btn-outline[onclick*="autoGenerateAttendance"]');
+            if (btn) btn.disabled = true;
+            try {
+                const res = await apiPost(`/director/classes/${_selectedClassId}/attendance/auto`, {});
+                showAlert(res.message || '출석이 자동 생성되었습니다.', 'success');
+                const today = new Date();
+                const y = today.getFullYear();
+                const m = String(today.getMonth() + 1).padStart(2, '0');
+                const d = String(today.getDate()).padStart(2, '0');
+                document.getElementById('attDate').value = `${y}-${m}-${d}`;
+                await loadAttendance();
+            } catch (e) {
+                showAlert(e.message, 'error');
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        async function generateAttendanceWithDate() {
+            if (!_selectedClassId) return;
+            const btn = document.querySelector('.btn-secondary[onclick*="generateAttendanceWithDate"]');
+            if (btn) btn.disabled = true;
+            const dateStr = document.getElementById('attDate').value;
+            try {
+                const payload = {};
+                if (dateStr) payload.date = dateStr;
+                const res = await apiPost(`/director/classes/${_selectedClassId}/attendance`, payload);
+                showAlert(res.message || '출석부가 생성되었습니다.', 'success');
+                await loadAttendance();
+            } catch (e) {
+                showAlert(e.message, 'error');
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        // UTILITY FUNCTIONS (re-use from pages-director.js patterns)
+        // ============================================================
+        function setText(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text || '-';
+        }
+
+        function esc(str) {
+            if (str == null) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function formatNumber(n) {
+            if (n == null) return '-';
+            return Number(n).toLocaleString('ko-KR');
+        }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            const date = new Date(d);
+            if (isNaN(date.getTime())) return d;
+            return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        function statusBadge(status) {
+            const map = {
+                'active':    ['success', '운영 중'],
+                'inactive':  ['warning', '중단'],
+                'pending':   ['warning', '대기'],
+                'completed': ['success', '종료'],
+                'present':   ['success', '출석'],
+                'late':      ['warning', '지각'],
+                'absent':    ['danger', '결석'],
+                'excused':   ['info', '공결'],
+            };
+            const [cls, label] = map[status] || ['info', status];
+            return `<span class="badge badge-${cls}">${label}</span>`;
+        }
+
+        console.log('[classes.html] loaded — All 4 features active');
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

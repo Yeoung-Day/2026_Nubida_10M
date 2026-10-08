@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>보안 설정 — 누비다플랫폼</title>
+    <link rel="stylesheet" href="/common/css/common.css">
+    <link rel="stylesheet" href="/common/css/pages-headquarters.css">
+    <style>
+        .sec-wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
+        .sec-card { background: #fff; border: 1px solid #E2E8F0; border-radius: 16px; padding: 28px; margin-bottom: 20px; }
+        .sec-card h2 { margin: 0 0 6px; font-size: 19px; color: #0F172A; }
+        .sec-card .sub { margin: 0 0 22px; font-size: 13.5px; color: #64748B; line-height: 1.6; }
+        .state-badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+        .state-on { background: #ECFDF5; color: #047857; }
+        .state-off { background: #FEF2F2; color: #B91C1C; }
+        .state-na { background: #F1F5F9; color: #64748B; }
+        .btn-primary { background: #4F5EF8; color: #fff; border: none; border-radius: 10px; padding: 12px 22px; font-size: 14.5px; font-weight: 600; cursor: pointer; }
+        .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+        .btn-ghost { background: #fff; color: #475569; border: 1.5px solid #CBD5E1; border-radius: 10px; padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-danger { background: #fff; color: #DC2626; border: 1.5px solid #FCA5A5; border-radius: 10px; padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 7px; }
+        .field input { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1.5px solid #CBD5E1; border-radius: 10px; font-size: 15px; }
+        .field input:focus { outline: none; border-color: #4F5EF8; }
+        .code-input { letter-spacing: 5px; text-align: center; font-size: 22px !important; font-weight: 700; }
+        .steps { counter-reset: st; margin: 0; padding: 0; list-style: none; }
+        .steps li { counter-increment: st; position: relative; padding-left: 38px; margin-bottom: 15px; font-size: 14px; color: #334155; line-height: 1.65; }
+        .steps li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 24px; height: 24px; background: #4F5EF8; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 700; }
+        .secret-box { background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 10px; padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; letter-spacing: 1.5px; word-break: break-all; color: #0F172A; }
+        .recovery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin: 16px 0; }
+        .recovery-code { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 9px; padding: 11px; text-align: center; font-family: ui-monospace, Menlo, monospace; font-size: 15px; font-weight: 700; letter-spacing: 1.2px; color: #1E293B; }
+        .msg { padding: 12px 15px; border-radius: 10px; font-size: 13.5px; margin-bottom: 16px; display: none; }
+        .msg.ok { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
+        .msg.err { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+        .msg.warn { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+<div id="nav-container"></div>
+<div class="sec-wrap">
+    <h1 style="font-size:24px;margin:0 0 6px;color:#0F172A;">🔐 보안 설정</h1>
+    <p style="margin:0 0 26px;color:#64748B;font-size:14px;">관리자 계정의 2단계 인증(2FA)을 관리합니다.</p>
+
+    <div id="msgBox" class="msg"></div>
+
+    <!-- ══ 상태 ══ -->
+    <div class="sec-card">
+        <h2>2단계 인증 상태</h2>
+        <p class="sub">비밀번호가 유출되어도 인증 앱의 6자리 코드가 없으면 로그인할 수 없습니다.<br>최고관리자·관리자·본사 관리자 계정에 적용됩니다.</p>
+        <div id="statusArea" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+            <span id="stateBadge" class="state-badge state-na">확인 중…</span>
+            <div id="statusActions"></div>
+        </div>
+        <div id="recoveryInfo" class="hidden" style="margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9;font-size:13.5px;color:#64748B;">
+            남은 복구코드: <strong id="recoveryCount" style="color:#0F172A;">0</strong>개
+        </div>
+    </div>
+
+    <!-- ══ 등록 1단계 ══ -->
+    <div id="setupCard" class="sec-card hidden">
+        <h2>1단계 — 인증 앱에 등록</h2>
+        <p class="sub">Google Authenticator, Authy 등 인증 앱을 열고 아래 방법 중 하나로 등록하세요.</p>
+        <ol class="steps">
+            <li>인증 앱에서 <strong>+</strong> 버튼 → <strong>설정 키 입력</strong>을 선택합니다.</li>
+            <li>계정 이름에 <strong id="accName">-</strong> 를 입력합니다.</li>
+            <li>아래 <strong>설정 키(시크릿)</strong>를 정확히 입력합니다.</li>
+            <li>앱에 표시되는 <strong>6자리 코드</strong>를 아래에 입력하고 활성화합니다.</li>
+        </ol>
+        <div class="field">
+            <label>설정 키 (시크릿)</label>
+            <div class="secret-box" id="secretBox">-</div>
+        </div>
+        <div class="field">
+            <label for="enableCode">인증 앱의 6자리 코드</label>
+            <input type="text" id="enableCode" class="code-input" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn-primary" id="btnEnable">✅ 2단계 인증 활성화</button>
+            <button class="btn-ghost" id="btnCancelSetup">취소</button>
+        </div>
+    </div>
+
+    <!-- ══ 복구코드 ══ -->
+    <div id="recoveryCard" class="sec-card hidden">
+        <h2>2단계 — 복구코드 보관</h2>
+        <p class="sub" style="color:#B45309;">
+            ⚠️ 아래 복구코드는 <strong>지금 한 번만</strong> 표시됩니다. 휴대폰을 분실했을 때 로그인할 수 있는 유일한 수단이니
+            안전한 곳에 보관하세요. 각 코드는 <strong>1회용</strong>입니다.
+        </p>
+        <div class="recovery-grid" id="recoveryGrid"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn-ghost" id="btnCopyCodes">📋 복사</button>
+            <button class="btn-ghost" id="btnDownloadCodes">⬇️ 텍스트로 저장</button>
+            <button class="btn-primary" id="btnDoneCodes">확인했습니다</button>
+        </div>
+    </div>
+
+    <!-- ══ 해제 ══ -->
+    <div id="disableCard" class="sec-card hidden">
+        <h2>2단계 인증 해제</h2>
+        <p class="sub">해제하려면 현재 비밀번호를 입력해 주세요. 보안이 크게 약해지므로 권장하지 않습니다.</p>
+        <div class="field">
+            <label for="disablePw">현재 비밀번호</label>
+            <input type="password" id="disablePw" placeholder="비밀번호를 입력하세요" autocomplete="current-password">
+        </div>
+        <button class="btn-danger" id="btnDisable">2단계 인증 해제</button>
+    </div>
+</div>
+
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/nav.js"></script>
+<script>
+(function () {
+    var msgBox = document.getElementById('msgBox');
+    var stateBadge = document.getElementById('stateBadge');
+    var statusActions = document.getElementById('statusActions');
+    var recoveryInfo = document.getElementById('recoveryInfo');
+
+    function showMsg(text, kind) {
+        msgBox.className = 'msg ' + (kind || 'ok');
+        msgBox.textContent = text;
+        msgBox.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function hideMsg() { msgBox.style.display = 'none'; }
+    function el(id) { return document.getElementById(id); }
+    function show(id) { el(id).classList.remove('hidden'); }
+    function hide(id) { el(id).classList.add('hidden'); }
+
+    // ══ 상태 로드 ══
+    async function loadStatus() {
+        try {
+            var res = await apiGet('/auth/totp/status');
+            var d = (res && res.data) || {};
+            if (!d.eligible) {
+                stateBadge.className = 'state-badge state-na';
+                stateBadge.textContent = '대상 아님';
+                statusActions.innerHTML = '<span style="font-size:13.5px;color:#64748B;">관리자 계정만 사용할 수 있습니다.</span>';
+                return;
+            }
+            if (d.enabled) {
+                stateBadge.className = 'state-badge state-on';
+                stateBadge.textContent = '✅ 사용 중';
+                statusActions.innerHTML = '<button class="btn-danger" id="btnShowDisable">해제하기</button>';
+                el('btnShowDisable').addEventListener('click', function () {
+                    show('disableCard'); hide('setupCard'); hide('recoveryCard');
+                    el('disablePw').focus();
+                    el('disableCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+                recoveryInfo.classList.remove('hidden');
+                el('recoveryCount').textContent = d.recovery_remaining || 0;
+            } else {
+                stateBadge.className = 'state-badge state-off';
+                stateBadge.textContent = '⚠️ 사용 안 함';
+                statusActions.innerHTML = '<button class="btn-primary" id="btnStartSetup">2단계 인증 설정하기</button>';
+                el('btnStartSetup').addEventListener('click', startSetup);
+            }
+        } catch (e) {
+            stateBadge.className = 'state-badge state-na';
+            stateBadge.textContent = '조회 실패';
+            statusActions.innerHTML = '<span style="font-size:13px;color:#B91C1C;">' + (e.message || '오류') + '</span>';
+        }
+    }
+
+    // ══ 등록 시작 ══
+    var pendingSecret = '';
+    async function startSetup() {
+        hideMsg();
+        try {
+            var res = await apiPost('/auth/totp/setup', {});
+            var d = (res && res.data) || {};
+            pendingSecret = d.secret || '';
+            el('secretBox').textContent = pendingSecret;
+            el('accName').textContent = d.account || '';
+            el('enableCode').value = '';
+            show('setupCard'); hide('disableCard'); hide('recoveryCard');
+            el('setupCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (e) {
+            showMsg('설정을 시작하지 못했습니다: ' + (e.message || ''), 'err');
+        }
+    }
+
+    el('btnCancelSetup').addEventListener('click', function () {
+        hide('setupCard');
+        pendingSecret = '';
+        loadStatus();
+    });
+
+    el('btnEnable').addEventListener('click', async function () {
+        var code = (el('enableCode').value || '').trim();
+        if (code.length !== 6) { showMsg('6자리 코드를 입력해 주세요.', 'err'); return; }
+        var btn = el('btnEnable');
+        btn.disabled = true; btn.textContent = '확인 중…';
+        try {
+            var res = await apiPost('/auth/totp/enable', { code: code });
+            var d = (res && res.data) || {};
+            var codes = d.recovery_codes || [];
+            hide('setupCard');
+            renderRecovery(codes);
+            showMsg('✅ 2단계 인증이 활성화되었습니다. 복구코드를 꼭 보관하세요.', 'ok');
+            pendingSecret = '';
+            loadStatus();
+        } catch (e) {
+            showMsg('코드가 올바르지 않습니다. 인증 앱의 최신 코드를 입력해 주세요.', 'err');
+        } finally {
+            btn.disabled = false; btn.textContent = '✅ 2단계 인증 활성화';
+        }
+    });
+
+    // ══ 복구코드 표시 ══
+    var lastCodes = [];
+    function renderRecovery(codes) {
+        lastCodes = codes || [];
+        var grid = el('recoveryGrid');
+        grid.innerHTML = '';
+        lastCodes.forEach(function (c) {
+            var div = document.createElement('div');
+            div.className = 'recovery-code';
+            div.textContent = c;
+            grid.appendChild(div);
+        });
+        show('recoveryCard');
+        el('recoveryCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    el('btnCopyCodes').addEventListener('click', function () {
+        var text = lastCodes.join('\n');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+                showMsg('복구코드를 클립보드에 복사했습니다.', 'ok');
+            }, function () {
+                showMsg('복사에 실패했습니다. 직접 선택해 복사해 주세요.', 'warn');
+            });
+        } else {
+            showMsg('이 브라우저에서는 자동 복사를 지원하지 않습니다. 직접 선택해 주세요.', 'warn');
+        }
+    });
+
+    el('btnDownloadCodes').addEventListener('click', function () {
+        var text = '누비다플랫폼 2단계 인증 복구코드\n발급일: ' + new Date().toLocaleString('ko-KR') +
+                   '\n각 코드는 1회용입니다. 안전한 곳에 보관하세요.\n\n' + lastCodes.join('\n') + '\n';
+        var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'nubida_recovery_codes.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+    });
+
+    el('btnDoneCodes').addEventListener('click', function () {
+        lastCodes = [];
+        el('recoveryGrid').innerHTML = '';
+        hide('recoveryCard');
+        hideMsg();
+        loadStatus();
+    });
+
+    // ══ 해제 ══
+    el('btnDisable').addEventListener('click', async function () {
+        var pw = el('disablePw').value;
+        if (!pw) { showMsg('비밀번호를 입력해 주세요.', 'err'); return; }
+        if (!confirm('2단계 인증을 해제하시겠습니까? 계정 보안이 약해집니다.')) return;
+        var btn = el('btnDisable');
+        btn.disabled = true; btn.textContent = '처리 중…';
+        try {
+            await apiPost('/auth/totp/disable', { password: pw });
+            el('disablePw').value = '';
+            hide('disableCard');
+            showMsg('2단계 인증이 해제되었습니다.', 'warn');
+            loadStatus();
+        } catch (e) {
+            showMsg('해제하지 못했습니다: ' + (e.message || '비밀번호를 확인해 주세요.'), 'err');
+        } finally {
+            btn.disabled = false; btn.textContent = '2단계 인증 해제';
+        }
+    });
+
+    loadStatus();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+/* ============================================ */
+/*  notifications.css — 알림/공지 전용 스타일   */
+/*  출처: common.css alerts 섹션 +              */
+/*        notifications.html 인라인 스타일      */
+/* ============================================ */
+
+/* ---------- Pulse Dot (미확인 알림 표시) ---------- */
+
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ---------- Alert / 공통 알림 메시지 ---------- */
+
+.alert {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.alert-error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+}
+
+.alert-success {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid rgba(5, 150, 105, 0.15);
+}
+
+.alert-warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+}
+
+.alert-info {
+  background: var(--info-bg);
+  color: var(--info);
+  border: 1px solid rgba(2, 132, 199, 0.15);
+}
+
+/* ---------- Navigation 섹션 (알림 페이지 사이드바) ---------- */
+
+.nav-section {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  padding: 12px 16px 4px 16px;
+  margin-top: 4px;
+}
+
+.nav-item {
+  padding-left: 24px !important;
+}
+
+.nav-section + .nav-item {
+  padding-left: 24px;
+}
+
+/* ---------- Notification Center — 페이지 레이아웃 ---------- */
+
+.notif-page-layout {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.notif-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.notif-header-bar h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.notif-header-bar .btn-text {
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.notif-header-bar .btn-text:hover {
+  background: var(--bg-subtle);
+}
+
+.notif-header-bar .btn-text:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+}
+
+/* ---------- 알림 목록 ---------- */
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-white);
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.notif-item:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.06);
+}
+
+.notif-item.unread {
+  border-left: 3px solid var(--accent);
+  background: var(--bg-accent-light);
+}
+
+/* ---------- 알림 아이템 — 아이콘 ---------- */
+
+.notif-item .notif-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.notif-item .notif-icon.info {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.notif-item .notif-icon.warning {
+  background: #FFF3E0;
+  color: #E65100;
+}
+
+.notif-item .notif-icon.success {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.notif-item .notif-icon.broadcast {
+  background: #F3E5F5;
+  color: #7B1FA2;
+}
+
+/* ---------- 알림 아이템 — 본문 ---------- */
+
+.notif-item .notif-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-item .notif-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.notif-item .notif-body-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notif-item .notif-time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* ---------- 알림 아이템 — 읽음 처리 버튼 ---------- */
+
+.notif-item .notif-read-btn {
+  font-size: 11px;
+  color: var(--accent);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.notif-item:hover .notif-read-btn {
+  opacity: 1;
+}
+
+.notif-item .notif-read-btn:hover {
+  background: var(--bg-subtle);
+}
+
+/* ---------- 읽은 알림 ---------- */
+
+.notif-item.read {
+  opacity: 0.6;
+}
+
+/* ---------- 알림 없음 (빈 상태) ---------- */
+
+.notif-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.notif-empty .icon {
+  font-size: 48px;
+  opacity: 0.3;
+}
+
+.notif-empty h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 12px;
+}
+
+/* ---------- 페이지네이션 ---------- */
+
+.notif-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 24px;
+}
+
+.notif-pagination button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.notif-pagination button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.notif-pagination button.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.notif-pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

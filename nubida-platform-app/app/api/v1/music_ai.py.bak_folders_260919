@@ -1,0 +1,188 @@
+"""
+누비다플랫폼 — 노래 AI(music-ai) 관리 프록시 라우터
+
+본사 관리자(super_admin/admin)가 누비다플랫폼에서 노래 AI 의
+접속 잠금 / 코드 / 권한별 설정을 관리할 수 있게 중계한다.
+
+[구조]
+  브라우저 → 누비다플랫폼.kr /api/v1/music-ai/*  (이 라우터)
+           → music-ai-app:8001 /api/access/admin/*  (실제 API)
+
+[인증]
+  - 플랫폼 쪽은 require_role("super_admin","admin") 로 보호
+  - music-ai 쪽은 X-Nubida-Admin 헤더 키 사용 (내부망 전용이라 안전)
+
+[의존성]
+  stdlib urllib 만 사용 (플랫폼에 httpx/aiohttp 없음)
+  → 동기 호출이므로 asyncio.to_thread 로 감싼다.
+"""
+import os
+import json
+import asyncio
+import urllib.request
+import urllib.error
+
+from fastapi import APIRouter, Depends, HTTPException, Body
+
+from app.core.security import require_role
+from app.schemas import ApiResponse
+
+router = APIRouter(prefix="/music-ai", tags=["노래 AI 관리"])
+
+# 내부 컨테이너 주소 (docker_ai-net 공유)
+# ⚠️ 컨테이너 내부 리스닝 포트는 8080 (호스트 매핑 8001->8080)
+MUSIC_AI_BASE = os.environ.get("MUSIC_AI_BASE", "http://music-ai-app:8080")
+# music-ai 쪽 관리자 키 (app.py 의 ADMIN_API_KEY 와 동일해야 함)
+ADMIN_KEY = os.environ.get("NUBIDA_ACCESS_KEY", "nubida-admin-260919")
+TIMEOUT = 15
+
+
+def _call(method: str, path: str, payload: dict = None):
+    """music-ai 관리자 API 동기 호출 (to_thread 로 감쌀 것)"""
+    url = MUSIC_AI_BASE + path
+    data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    req = urllib.request.Request(
+        url,
+        data=data,
+        headers={
+            "Content-Type": "application/json",
+            "X-Nubida-Admin": ADMIN_KEY,
+        },
+        method=method,
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        # ⚠️ 노래AI의 원래 상태코드를 보존한다 (400/403/404/500).
+        #    502로 뭉개면 진짜 원인이 숨는다 — 260919 경험.
+        body = e.read().decode("utf-8", errors="replace")[:300]
+        detail = "노래 AI 오류(%s): %s" % (e.code, body)
+        if e.code in (400, 403, 404, 409, 422):
+            raise HTTPException(e.code, detail=detail)
+        raise HTTPException(502, detail=detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            503, detail="노래 AI 서버에 연결할 수 없습니다: %s" % e
+        )
+
+
+async def _acall(method: str, path: str, payload: dict = None):
+    return await asyncio.to_thread(_call, method, path, payload)
+
+
+# ── 잠금 설정 ──────────────────────────────────────────────
+
+@router.get("/lock", response_model=ApiResponse)
+async def get_lock(current_user: dict = Depends(require_role("super_admin", "admin"))):
+    """현재 잠금 상태 + 활성 코드 조회"""
+    cfg = await _acall("GET", "/api/access/admin/config")
+    codes = await _acall("GET", "/api/access/admin/codes")
+    return ApiResponse(
+        data={
+            "lock_enabled": cfg.get("lock_enabled", False),
+            "updated_by": cfg.get("updated_by"),
+            "codes": codes.get("codes", []),
+        }
+    )
+
+
+@router.post("/lock", response_model=ApiResponse)
+async def set_lock(
+    payload: dict = Body(...),
+    current_user: dict = Depends(require_role("super_admin", "admin")),
+):
+    """잠금 ON/OFF"""
+    enabled = bool(payload.get("lock_enabled"))
+    res = await _acall(
+        "POST",
+        "/api/access/admin/config",
+        {"lock_enabled": enabled, "updated_by": current_user.get("username", "")},
+    )
+    return ApiResponse(
+        data={"lock_enabled": res.get("lock_enabled", enabled)},
+        message="잠금을 켰습니다." if enabled else "잠금을 해제했습니다.",
+    )
+
+
+# ── 코드 관리 ──────────────────────────────────────────────
+
+@router.get("/codes", response_model=ApiResponse)
+async def list_codes(current_user: dict = Depends(require_role("super_admin", "admin"))):
+    """코드 목록"""
+    res = await _acall("GET", "/api/access/admin/codes")
+    return ApiResponse(data={"codes": res.get("codes", [])})
+
+
+@router.post("/codes", response_model=ApiResponse)
+async def create_code(
+    payload: dict = Body(...),
+    current_user: dict = Depends(require_role("super_admin", "admin")),
+):
+    """코드 생성 (자동생성 or 직접입력)"""
+    # ⚠️ code/label/max_uses 는 "값이 있을 때만" 키를 넣는다.
+    #    None 을 보내면 노래AI가 str(None)="NONE"(4자) 로 보고 400 을 낸다.
+    body = {
+        "starts_at": payload.get("starts_at"),
+        "ends_at": payload.get("ends_at"),
+        "created_by": current_user.get("username", ""),
+    }
+    code = (payload.get("code") or "").strip().upper()
+    if code:
+        body["code"] = code
+    label = (payload.get("label") or "").strip()
+    if label:
+        body["label"] = label
+    mu = payload.get("max_uses")
+    if mu not in (None, "", 0, "0"):
+        try:
+            body["max_uses"] = int(mu)
+        except (TypeError, ValueError):
+            pass
+    # 노래 길이 (20/30/40초) — 코드별 상한
+    ds = payload.get("duration_sec")
+    if ds not in (None, "", 0, "0"):
+        try:
+            body["duration_sec"] = int(ds)
+        except (TypeError, ValueError):
+            pass
+    if not body["starts_at"] or not body["ends_at"]:
+        raise HTTPException(400, detail="시작/종료 시간을 입력해 주세요.")
+    res = await _acall("POST", "/api/access/admin/codes", body)
+    return ApiResponse(
+        data={"code": res.get("code"), "id": res.get("id")},
+        message="코드가 생성되었습니다.",
+    )
+
+
+@router.post("/codes/{code_id}/deactivate", response_model=ApiResponse)
+async def deactivate_code(
+    code_id: str,
+    current_user: dict = Depends(require_role("super_admin", "admin")),
+):
+    """코드 즉시 중지"""
+    await _acall("POST", "/api/access/admin/codes/%s/deactivate" % code_id)
+    return ApiResponse(message="코드를 중지했습니다.")
+
+
+# ── 권한별 노래 설정 (2단계 후반) ────────────────────────────
+
+@router.get("/role-settings", response_model=ApiResponse)
+async def get_role_settings(
+    current_user: dict = Depends(require_role("super_admin", "admin")),
+):
+    """권한별 노래 길이/기능 설정 조회"""
+    res = await _acall("GET", "/api/access/admin/role-settings")
+    return ApiResponse(data={"roles": res.get("roles", [])})
+
+
+@router.post("/role-settings", response_model=ApiResponse)
+async def set_role_settings(
+    payload: dict = Body(...),
+    current_user: dict = Depends(require_role("super_admin", "admin")),
+):
+    """권한별 노래 설정 저장"""
+    res = await _acall("POST", "/api/access/admin/role-settings", payload)
+    return ApiResponse(data=res.get("roles", []), message="설정을 저장했습니다.")

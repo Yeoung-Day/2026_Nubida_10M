@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>누비다머신 교구 자료실</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    background: linear-gradient(160deg, #0F172A 0%, #1E293B 100%);
+    min-height: 100vh; padding: 40px 20px; color: #E2E8F0;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; }
+
+  /* ── 헤더 ── */
+  .head { text-align:center; margin-bottom: 34px; }
+  .badge {
+    display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.1em;
+    color:#38BDF8; background:rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.3);
+    padding:6px 14px; border-radius:999px; margin-bottom:18px;
+  }
+  h1 { font-size:26px; font-weight:700; letter-spacing:-.03em; margin-bottom:9px; }
+  .sub { font-size:14px; color:#94A3B8; line-height:1.65; }
+  .sub b { color:#38BDF8; font-weight:600; }
+
+  /* ── 보고서 카드 ── */
+  .report {
+    background: linear-gradient(135deg, rgba(79,70,229,.16), rgba(56,189,248,.1));
+    border: 1px solid rgba(99,102,241,.34);
+    border-radius: 16px; padding: 22px 24px; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .report .ico { font-size: 30px; line-height: 1; flex-shrink: 0; }
+  .report .txt { flex: 1; min-width: 0; }
+  .report .txt h2 { font-size: 16px; font-weight: 700; margin-bottom: 5px; letter-spacing:-.01em; }
+  .report .txt p { font-size: 12.5px; color: #94A3B8; line-height: 1.55; }
+  .report a.go {
+    flex-shrink: 0; display: inline-block; padding: 11px 20px;
+    background: linear-gradient(135deg,#4F5EF8,#6366F1); color: #fff;
+    text-decoration: none; font-weight: 700; font-size: 13.5px;
+    border-radius: 10px; transition: .18s; white-space: nowrap;
+  }
+  .report a.go:hover { opacity: .9; transform: translateY(-1px); }
+
+  /* 보고서 버튼 2개 (HTML / PDF) */
+  .report .btns { flex-shrink: 0; display: flex; gap: 8px; align-items: center; }
+  .report a.go.pdf {
+    background: linear-gradient(135deg,#0EA5E9,#22D3EE);
+    border: 1px solid rgba(34,211,238,.45);
+  }
+  @media (max-width: 620px) {
+    .report { flex-wrap: wrap; }
+    .report .btns { width: 100%; }
+    .report .btns a.go { flex: 1; text-align: center; }
+  }
+
+  /* ── 교구 목록 ── */
+  .label {
+    font-size: 12px; font-weight: 700; letter-spacing: .07em; color: #64748B;
+    margin: 30px 0 13px 2px;
+  }
+  .kit {
+    background: rgba(30,41,59,.72);
+    border: 1px solid rgba(148,163,184,.16);
+    border-radius: 14px; padding: 18px 20px; margin-bottom: 11px;
+    display: flex; align-items: center; gap: 16px;
+    transition: .18s;
+  }
+  .kit:hover { border-color: rgba(148,163,184,.34); background: rgba(30,41,59,.9); }
+  .kit .num {
+    flex-shrink: 0; width: 40px; height: 40px; border-radius: 11px;
+    background: rgba(56,189,248,.11); border: 1px solid rgba(56,189,248,.24);
+    color: #38BDF8; font-weight: 800; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .kit .info { flex: 1; min-width: 0; }
+  .kit .info h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; letter-spacing:-.01em; }
+  .kit .info p { font-size: 12.5px; color: #94A3B8; line-height: 1.5; }
+  .kit .info .pins {
+    display: inline-block; margin-top: 7px; font-size: 11.5px; color: #7DD3FC;
+    background: rgba(56,189,248,.09); border-radius: 6px; padding: 3px 9px;
+  }
+  .kit a.dl {
+    flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 17px; background: rgba(148,163,184,.11);
+    border: 1px solid rgba(148,163,184,.24); color: #E2E8F0;
+    text-decoration: none; font-weight: 600; font-size: 13px;
+    border-radius: 10px; transition: .18s; white-space: nowrap;
+  }
+  .kit a.dl:hover { background: rgba(56,189,248,.15); border-color: rgba(56,189,248,.4); color: #fff; }
+
+  /* ── 안내 ── */
+  .tip {
+    margin-top: 32px; padding: 22px 24px;
+    background: rgba(15,23,42,.6);
+    border: 1px solid rgba(148,163,184,.13);
+    border-left: 3px solid #F59E0B;
+    border-radius: 12px;
+    font-size: 12.5px; color: #94A3B8; line-height: 1.95;
+  }
+  .tip h4 { font-size: 13px; color: #FCD34D; font-weight: 700; margin-bottom: 9px; }
+  .tip b { color: #CBD5E1; font-weight: 600; }
+  .tip code {
+    background: rgba(148,163,184,.14); padding: 1px 6px; border-radius: 4px;
+    font-family: 'SF Mono', Consolas, monospace; font-size: 11.5px; color: #7DD3FC;
+  }
+
+  .foot { text-align: center; font-size: 12px; color: #475569; margin-top: 30px; line-height: 1.8; }
+
+  @media (max-width: 620px) {
+    body { padding: 26px 14px; }
+    h1 { font-size: 21px; }
+    .report { flex-direction: column; align-items: stretch; text-align: center; gap: 14px; }
+    .report .ico { font-size: 26px; }
+    .report a.go { width: 100%; text-align: center; padding: 13px; }
+    .kit { flex-wrap: wrap; gap: 13px; padding: 16px; }
+    .kit .info { flex: 1 1 100%; order: 2; }
+    .kit a.dl { order: 3; width: 100%; justify-content: center; padding: 12px; }
+  }
+
+  /* ── 내려받기 버튼(버튼 태그화) ── */
+  button.go, button.dl {
+    font-family: inherit; cursor: pointer; border: none;
+  }
+  button.dl {
+    flex-shrink: 0; display: inline-block; padding: 10px 18px;
+    background: rgba(56,189,248,.12); color: #7DD3FC;
+    border: 1px solid rgba(56,189,248,.32);
+    text-decoration: none; font-weight: 700; font-size: 13px;
+    border-radius: 10px; transition: .18s; white-space: nowrap;
+  }
+  button.dl:hover { background: rgba(56,189,248,.2); transform: translateY(-1px); }
+  button.dl:disabled { opacity: .55; cursor: wait; transform: none; }
+
+  /* ── 핀번호 모달 ── */
+  .pk-ov {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(2,6,23,.78); backdrop-filter: blur(7px);
+    display: none; align-items: center; justify-content: center; padding: 22px;
+  }
+  .pk-ov.on { display: flex; }
+  .pk {
+    width: 100%; max-width: 372px; text-align: center;
+    background: linear-gradient(160deg, #1E293B, #0F172A);
+    border: 1px solid rgba(56,189,248,.3);
+    border-radius: 18px; padding: 30px 26px 26px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.6);
+    animation: pkIn .22s ease-out;
+  }
+  @keyframes pkIn { from { opacity:0; transform:translateY(12px) scale(.97);} to { opacity:1; transform:none; } }
+  .pk .ic { font-size: 30px; margin-bottom: 12px; }
+  .pk h3 { font-size: 17px; font-weight: 700; margin-bottom: 7px; letter-spacing: -.02em; }
+  .pk .dsc { font-size: 12.5px; color: #94A3B8; line-height: 1.6; margin-bottom: 19px; }
+  .pk .dsc b { color: #7DD3FC; font-weight: 600; }
+  .pk .row { display: flex; gap: 9px; }
+  .pk input {
+    flex: 1; min-width: 0; text-align: center;
+    font-family: inherit; font-size: 21px; font-weight: 700;
+    letter-spacing: .42em; text-indent: .42em;
+    color: #F1F5F9; background: rgba(15,23,42,.9);
+    border: 1px solid rgba(148,163,184,.28);
+    border-radius: 11px; padding: 12px 8px; outline: none;
+    transition: .16s;
+  }
+  .pk input:focus { border-color: #38BDF8; box-shadow: 0 0 0 3px rgba(56,189,248,.16); }
+  .pk input::placeholder { color: #475569; letter-spacing: .3em; }
+  .pk .ok {
+    flex-shrink: 0; padding: 0 20px; font-family: inherit;
+    background: linear-gradient(135deg,#4F5EF8,#6366F1); color: #fff;
+    border: none; border-radius: 11px; font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: .16s;
+  }
+  .pk .ok:hover { opacity: .9; }
+  .pk .ok:disabled { opacity: .55; cursor: wait; }
+  .pk .msg {
+    min-height: 17px; margin-top: 12px; font-size: 12px;
+    color: #F87171; font-weight: 600;
+  }
+  .pk .msg.good { color: #4ADE80; }
+  .pk .cancel {
+    margin-top: 13px; background: none; border: none; font-family: inherit;
+    color: #64748B; font-size: 12.5px; cursor: pointer;
+  }
+  .pk .cancel:hover { color: #94A3B8; }
+  @media (max-width: 620px) {
+    .kit { flex-wrap: wrap; }
+    button.dl { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <span class="badge">NUBIDA MACHINE · KITS</span>
+    <h1>누비다머신 교구 자료실</h1>
+    <p class="sub">
+      아두이노 나노(CH340) 기반 <b>머신러닝 교구 5종</b><br>
+      펌웨어와 핀맵·명령어 자료를 내려받을 수 있습니다.
+    </p>
+  </div>
+
+  <!-- 보고서 -->
+  <div class="report">
+    <div class="ico">📋</div>
+    <div class="txt">
+      <h2>교구 핀맵 · 명령어 보고서</h2>
+      <p>5개 교구의 배선 핀맵과 블루투스 명령어를 한 문서에 정리</p>
+    </div>
+    <div class="btns">
+      <button class="go" type="button" data-kit="kit_pinmap_report.html" data-name="누비다머신_교구_핀맵_명령어_보고서.html">⤓ HTML</button>
+      <button class="go pdf" type="button" data-kit="kit_pinmap_report.pdf" data-name="누비다머신_교구_핀맵_명령어_보고서.pdf">⤓ PDF</button>
+    </div>
+  </div>
+
+  <!-- 교구 목록 -->
+  <div class="label">교구별 펌웨어 (.zip)</div>
+
+  <div class="kit">
+    <div class="num">1</div>
+    <div class="info">
+      <h3>도리도리 로봇</h3>
+      <p>고개를 좌우로 흔들고 인사하는 로봇 · 서보 2개</p>
+      <span class="pins">서보 9 · 7번 / 부저 8번</span>
+    </div>
+    <button class="dl" type="button" data-kit="doridori_v7.zip">⤓ 내려받기</button>
+  </div>
+
+  <div class="kit">
+    <div class="num">2</div>
+    <div class="info">
+      <h3>강아지 로봇</h3>
+      <p>고개 흔들기 + 앞발 내밀기 / 하이파이브 · 서보 2개</p>
+      <span class="pins">서보 9 · 7번 / 부저 8번</span>
+    </div>
+    <button class="dl" type="button" data-kit="puppy_v1.zip">⤓ 내려받기</button>
+  </div>
+
+  <div class="kit">
+    <div class="num">3</div>
+    <div class="info">
+      <h3>스마트 휴지통</h3>
+      <p>분리수거 3칸 독립 뚜껑 제어 · 서보 3개</p>
+      <span class="pins">서보 5 · 7 · 9번</span>
+    </div>
+    <button class="dl" type="button" data-kit="trashbin_v8.zip">⤓ 내려받기</button>
+  </div>
+
+  <div class="kit">
+    <div class="num">4</div>
+    <div class="info">
+      <h3>블루투스카</h3>
+      <p>전진 · 후진 · 좌우회전 주행 자동차 · DC모터 2개</p>
+      <span class="pins">모터 4 · 5 · 6 · 7번</span>
+    </div>
+    <button class="dl" type="button" data-kit="btcar_v5.zip">⤓ 내려받기</button>
+  </div>
+
+  <div class="kit">
+    <div class="num">5</div>
+    <div class="info">
+      <h3>누비다머신 (통합본)</h3>
+      <p>서보 + 모터 + LED + 부저 + 초음파를 한 보드에</p>
+      <span class="pins">서보 9·7 / 모터 5·4 / LED 3 / 부저 6 / 초음파 10·11</span>
+    </div>
+    <button class="dl" type="button" data-kit="nubida_v26.zip">⤓ 내려받기</button>
+  </div>
+
+  <!-- 안내 -->
+  <div class="tip">
+    <h4>업로드 전 확인하세요</h4>
+    1. 내려받은 <b>.zip 파일은 압축을 풀어 폴더째</b> 아두이노에 넣습니다.<br>
+    2. <code>.ino</code> 이름과 폴더 이름이 같아야 열립니다.<br>
+    3. 시리얼 모니터를 <b>반드시 닫고</b> 업로드하세요. (COM 포트 점유 시 조용히 실패)<br>
+    4. 보드 <b>Arduino Nano</b> · 프로세서 <b>ATmega328P (Old Bootloader)</b><br>
+    5. <b>2번 · 3번 핀은 블루투스 전용</b>입니다. 다른 부품을 꽂지 마세요.
+  </div>
+
+  <div class="foot">
+    누비다플랫폼 · 머신러닝 교구 자료실
+  </div>
+
+</div>
+
+<!-- ── 교구 자료 핀번호 잠금 ── -->
+<div class="pk-ov" id="pkOv">
+  <div class="pk">
+    <div class="ic">🔒</div>
+    <h3>교구 자료 내려받기</h3>
+    <div class="dsc">선생님께 받은 <b>6자리 핀번호</b>를 입력해 주세요.</div>
+    <div class="row">
+      <input id="pkIn" type="text" inputmode="numeric" autocomplete="off"
+             maxlength="6" placeholder="••••••">
+      <button class="ok" id="pkOk" type="button">확인</button>
+    </div>
+    <div class="msg" id="pkMsg"></div>
+    <button class="cancel" id="pkCancel" type="button">취소</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var ov   = document.getElementById('pkOv');
+  var inp  = document.getElementById('pkIn');
+  var ok   = document.getElementById('pkOk');
+  var msg  = document.getElementById('pkMsg');
+  var cc   = document.getElementById('pkCancel');
+  var pend = null;          // 대기 중인 파일명
+
+  function show(text, good) {
+    msg.textContent = text || '';
+    msg.className = 'msg' + (good ? ' good' : '');
+  }
+  function open(fname) {
+    pend = fname;
+    inp.value = '';
+    show('');
+    ov.classList.add('on');
+    setTimeout(function () { inp.focus(); }, 60);
+  }
+  function close() {
+    ov.classList.remove('on');
+    pend = null;
+    ok.disabled = false;
+    ok.textContent = '확인';
+  }
+
+  // 서버에 핀번호 전송 → 성공하면 쿠키가 심어지고 파일이 바로 내려온다
+  async function submit() {
+    var pin = (inp.value || '').replace(/\D/g, '');
+    if (pin.length !== 6) { show('6자리 숫자를 입력해 주세요.'); return; }
+    ok.disabled = true; ok.textContent = '확인 중';
+    show('');
+    try {
+      var r = await fetch('/api/kit/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pin })
+      });
+      var j = {};
+      try { j = await r.json(); } catch (e) {}
+      if (!r.ok || !j.ok) {
+        show(j.message || '핀번호가 올바르지 않습니다.');
+        ok.disabled = false; ok.textContent = '확인';
+        inp.select();
+        return;
+      }
+      show('확인되었습니다. 내려받기를 시작합니다.', true);
+      var target = pend;
+      setTimeout(function () { close(); if (target) fetchFile(target); }, 420);
+    } catch (e) {
+      show('연결에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      ok.disabled = false; ok.textContent = '확인';
+    }
+  }
+
+  // 실제 파일 요청 — 쿠키가 있으면 그대로 내려온다
+  async function fetchFile(fname) {
+    var btn = document.querySelector('button[data-kit="' + fname + '"]');
+    var r = await fetch('/download/kit/' + encodeURIComponent(fname));
+    if (r.status === 401) { open(fname); return; }
+    if (!r.ok) { alert('내려받기에 실패했습니다. (' + r.status + ')'); return; }
+    var cd = r.headers.get('Content-Disposition') || '';
+    var nm = null;
+    var m1 = cd.match(/filename\*=utf-8''([^;]+)/i);
+    var m2 = cd.match(/filename="?([^";]+)"?/i);
+    if (m1) { try { nm = decodeURIComponent(m1[1]); } catch (e) { nm = m1[1]; } }
+    else if (m2) { nm = m2[1]; }
+    if (btn && btn.dataset.name) { nm = btn.dataset.name; }
+    if (!nm) { nm = fname; }
+    var blob = await r.blob();
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = nm;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
+  // 내려받기 버튼 클릭
+  document.querySelectorAll('button[data-kit]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var fname = b.dataset.kit;
+      b.disabled = true;
+      fetchFile(fname).finally(function () { b.disabled = false; });
+    });
+  });
+
+  ok.addEventListener('click', submit);
+  inp.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') submit();
+  });
+  inp.addEventListener('input', function () {
+    inp.value = inp.value.replace(/\D/g, '').slice(0, 6);
+  });
+  cc.addEventListener('click', close);
+  ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && ov.classList.contains('on')) close();
+  });
+})();
+</script>
+
+</body>
+</html>

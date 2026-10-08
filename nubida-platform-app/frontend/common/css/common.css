@@ -1,0 +1,582 @@
+/* ============================================================
+   누비다플랫폼 v6.0 — 공통 레이아웃 및 베이스 스타일
+   레이아웃/사이드바/네비게이션/유틸리티 클래스만 유지
+   컴포넌트 스타일: components/*.css
+   기능별 스타일: features/*.css
+   최종 수정: 2026-06-03
+   ============================================================ */
+
+/* ===== Base — 초기화 및 기본 타이포그래피 ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background: var(--bg-canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Display Font Utility (Outfit for headings) ===== */
+.font-display {
+  font-family: var(--font-display);
+}
+
+a { color: var(--text-link); text-decoration: none; transition: color var(--transition-fast); }
+a:hover { color: var(--accent-dark); text-decoration: underline; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+
+h1 { font-size: var(--text-5xl); }
+h2 { font-size: var(--text-4xl); }
+h3 { font-size: var(--text-3xl); }
+h4 { font-size: var(--text-2xl); }
+
+/* ===== App Layout — flex 기반 메인 레이아웃 ===== */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== Sidebar — 고정 너비 다크 사이드바 ===== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  height: 100dvh;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  padding: var(--space-6) var(--space-6) var(--space-5);
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--sidebar-text);
+  letter-spacing: var(--tracking-tight);
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-4) var(--space-3);
+}
+
+/* ── 네비게이션 섹션 (영역 구분 헤더) ── */
+.nav-section {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--sidebar-text-secondary);
+  padding: var(--space-5) var(--space-4) var(--space-3);
+  opacity: 0.7;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: var(--space-2);
+  padding-top: var(--space-5);
+}
+.nav-section:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: var(--space-3);
+}
+
+/* ── 사이드바 아이콘 SVG — 인라인 SVG 기본 크기(300x150) 방지 ──
+   [260910] 이모지 → 인라인 SVG 교체 후, width/height 미지정 시
+   SVG가 거대하게 렌더링되는 문제 방지. 페이지별 CSS가 없어도 안전. */
+.sidebar-nav .nav-section svg,
+.sidebar .nav-section svg {
+  width: 13px !important;
+  height: 13px !important;
+  flex: 0 0 auto;
+  stroke-width: 2;
+  vertical-align: -2px;
+}
+.sidebar-nav .nav-item .icon svg,
+.sidebar .nav-item .icon svg {
+  width: 17px !important;
+  height: 17px !important;
+  flex: 0 0 auto;
+  stroke-width: 2;
+}
+.sidebar-nav .nav-item .icon,
+.sidebar .nav-item .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  font-size: 0;
+  line-height: 1;
+}
+/* 섹션 헤더는 아이콘+텍스트 가로 정렬 */
+.sidebar-nav .nav-section,
+.sidebar .nav-section {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ── 네비게이션 아이템 — 사이드바 메뉴 링크 ── */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  color: var(--sidebar-text);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  margin-bottom: 1px;
+}
+
+.nav-item:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+  text-decoration: none;
+}
+
+.nav-item.active {
+  background: var(--sidebar-active);
+  color: #FFFFFF;
+  font-weight: var(--weight-semibold);
+}
+
+.nav-item .icon {
+  font-size: var(--text-lg);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── 사이드바 하단 (사용자 정보, 로그아웃) ── */
+.sidebar-footer {
+  padding: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.user-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--sidebar-text);
+}
+
+.user-role {
+  font-size: var(--text-2xs);
+  color: var(--sidebar-text-secondary);
+  margin-top: 2px;
+}
+
+.logout-btn {
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--sidebar-text-secondary);
+  background: transparent;
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+
+.logout-btn:hover {
+  background: var(--sidebar-hover);
+  color: var(--danger);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+/* ===== Main Content — 사이드바 옆 콘텐츠 영역 ===== */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  padding: var(--space-7) var(--space-8);
+  width: calc(100% - var(--sidebar-width));
+}
+
+/* ===== Top Navigation (Page Header) — 페이지 상단 제목/액션바 ===== */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-7);
+}
+
+.top-nav-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.top-nav-left h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.top-nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ===== Utility Classes — 간격/정렬 유틸리티 ===== */
+.mb-16 { margin-bottom: var(--space-5); }
+.mb-24 { margin-bottom: var(--space-7); }
+.mb-32 { margin-bottom: var(--space-8); }
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-12 { gap: var(--space-4); }
+.gap-16 { gap: var(--space-5); }
+.gap-24 { gap: var(--space-7); }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== Section Divider — 구분선 ===== */
+.section-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--space-8) 0;
+  border: none;
+}
+
+/* ===== Breadcrumb — 페이지 계층 경로 ===== */
+.breadcrumb {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  padding: var(--space-2) 0 var(--space-1) 0;
+  margin-bottom: var(--space-1);
+  line-height: 1.4;
+}
+.breadcrumb span {
+  color: var(--text-secondary);
+}
+.breadcrumb .sep {
+  margin: 0 4px;
+  color: var(--text-quaternary, #aaa);
+}
+.breadcrumb .current {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* ===== Pagination — 페이지네이션 컨트롤 ===== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+.pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 36px;
+  padding: 0 10px;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pagination button:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-default);
+}
+
+.pagination button.active {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+/* ===== Charts / Visualization Placeholders — 차트 컨테이너 ===== */
+.chart-container {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5);
+  min-height: 200px;
+}
+
+/* ===== Glassmorphism — 유리 효과 ===== */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Hero Section (from AI Studio) — 랜딩/소개 영역 ===== */
+.hero-section {
+  position: relative;
+  padding: var(--space-10) 0;
+  margin-bottom: var(--space-8);
+}
+
+.hero-section .hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 16px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-full);
+  color: var(--accent);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  margin-bottom: var(--space-5);
+}
+
+.hero-section h1 {
+  font-size: var(--text-6xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.15;
+  margin-bottom: var(--space-5);
+  color: var(--text-primary);
+}
+
+.hero-section h1 .highlight {
+  color: var(--accent);
+}
+
+.hero-section p {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  max-width: 560px;
+  margin-bottom: var(--space-7);
+}
+
+.hero-section .hero-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ===== Loading State — 로딩 플레이스홀더/스피너 ===== */
+.loading-placeholder {
+  text-align: center;
+  padding: var(--space-9);
+  color: var(--text-tertiary);
+  font-size: var(--text-base);
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* ===== Empty State — 빈 상태 표시 ===== */
+.empty-state {
+  text-align: center;
+  padding: var(--space-10) var(--space-6);
+  color: var(--text-tertiary);
+}
+
+.empty-state .icon {
+  font-size: 48px;
+  margin-bottom: var(--space-5);
+  opacity: 0.5;
+}
+
+.empty-state p {
+  font-size: var(--text-base);
+  margin: 0;
+}
+
+/* ===== Alert/Notification — 알림 메시지 박스 ===== */
+.alert {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.alert-error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+}
+
+.alert-success {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid rgba(5, 150, 105, 0.15);
+}
+
+.alert-warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+}
+
+.alert-info {
+  background: var(--info-bg);
+  color: var(--info);
+  border: 1px solid rgba(2, 132, 199, 0.15);
+}
+
+/* ===== Sidebar toggle for mobile — 모바일 사이드바 접기 ===== */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: 0;
+    padding: var(--space-5);
+  }
+  .top-nav-left h1 {
+    font-size: var(--text-3xl);
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stat-value {
+    font-size: var(--text-4xl);
+  }
+}
+
+/* ===== 네비게이션 토글 (카테고리 접기/펼치기) ===== */
+.nav-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    color: var(--sidebar-text);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    margin-bottom: 1px;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    font-family: inherit;
+}
+.nav-toggle:hover {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-text);
+}
+.nav-toggle .toggle-arrow {
+    margin-left: auto;
+    transition: transform var(--transition-fast);
+    font-size: 12px;
+    color: var(--sidebar-text-secondary);
+}
+.nav-toggle.open .toggle-arrow {
+    transform: rotate(90deg);
+}
+.nav-submenu {
+    display: none;
+    overflow: hidden;
+}
+.nav-submenu.open {
+    display: block;
+}
+.nav-submenu .nav-item.sub {
+    padding-left: 48px !important;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-normal);
+}
+.nav-submenu .nav-item.sub .icon {
+    font-size: var(--text-base);
+    width: 18px;
+}
+.nav-item.top-item {
+    font-weight: var(--weight-semibold);
+}

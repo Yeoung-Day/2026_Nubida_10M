@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>원장 대시보드 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+    /* ============================================================
+       원장 대시보드 — Professional Minimal Redesign (override layer)
+       기존 공통 클래스(stats-grid, stat-card, card, data-table, btn 등)를
+       덮어써서 전문적·세련된 미니멀 톤으로 재구성한다.
+       ============================================================ */
+    .main-content {
+        background: linear-gradient(180deg, #FBFCFE 0%, #F6F8FC 100%);
+        min-height: 100vh;
+    }
+    /* ---- Top nav ---- */
+    .top-nav {
+        padding: 22px 28px 16px;
+        background: transparent !important;
+        border-bottom: none !important;
+    }
+    .top-nav-left h1 {
+        font-size: 21px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #1F2437;
+    }
+    .top-nav-left { gap: 12px; }
+    .hamburger-btn {
+        background: #fff;
+        border: 1px solid #E8ECF5;
+        border-radius: 10px;
+        color: #1F2437;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hamburger-btn svg { display: block; }
+    .top-nav-right .small-text {
+        font-size: 12.5px;
+        color: #98A1B2;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+    }
+    .section-divider {
+        height: 0;
+        background: none;
+        border-bottom: 1px solid #E8ECF5;
+        margin: 0 28px 4px;
+        opacity: 1;
+    }
+
+    /* ---- Stats grid ---- */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        padding: 20px 28px 0;
+        margin: 0;
+    }
+    .stats-grid + .stats-grid { padding-top: 16px; }
+
+    /* ---- Stat card: icon badge + label + big number ---- */
+    .stat-card,
+    .stat-card.stat-card-accent {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        background: #FFFFFF;
+        border: 1px solid #E8ECF5;
+        border-left: 1px solid #E8ECF5 !important;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 1px 2px rgba(31, 36, 55, 0.04), 0 8px 24px -12px rgba(31, 36, 55, 0.10);
+        transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+        overflow: hidden;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        border-color: #DCE2F0;
+        box-shadow: 0 2px 4px rgba(31, 36, 55, 0.05), 0 16px 32px -16px rgba(31, 36, 55, 0.16);
+    }
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #4F5EF8, #7C86FF);
+        opacity: 0;
+        transition: opacity .18s ease;
+    }
+    .stat-card:hover::before { opacity: 1; }
+
+    .stat-card .stat-label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: #98A1B2;
+        order: 2;
+    }
+    .stat-card .stat-label svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        stroke: #4F5EF8;
+        stroke-width: 1.9;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .stat-card .stat-value {
+        order: 1;
+        font-size: 30px;
+        line-height: 1.05;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: #1F2437;
+        font-variant-numeric: tabular-nums;
+    }
+    /* accent variants recolor the icon badge stroke only (keep it clean) */
+    .stat-card.info  .stat-label svg { stroke: #3B82F6; }
+    .stat-card.success .stat-label svg { stroke: #10B981; }
+    .stat-card.warning .stat-label svg { stroke: #4F5EF8; }
+    .stat-card.danger  .stat-label svg { stroke: #EF4444; }
+
+    /* ---- Cards ---- */
+    .card {
+        background: #FFFFFF;
+        border: 1px solid #E8ECF5;
+        border-radius: 16px;
+        box-shadow: 0 1px 2px rgba(31, 36, 55, 0.04), 0 8px 24px -14px rgba(31, 36, 55, 0.10);
+        overflow: hidden;
+        margin: 0 28px;
+    }
+    .card + .card { margin-top: 16px; }
+    .hover-glow { box-shadow: 0 1px 2px rgba(31,36,55,0.04), 0 8px 24px -14px rgba(31,36,55,0.10) !important; }
+    .hover-glow:hover { box-shadow: 0 2px 4px rgba(31,36,55,0.05), 0 18px 34px -18px rgba(31,36,55,0.16) !important; }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        border-bottom: 1px solid #E8ECF5;
+        background: linear-gradient(180deg, #FFFFFF 0%, #FDFDFF 100%);
+    }
+    .card-header h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: #1F2437;
+    }
+    .card-header h2 svg {
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+        stroke: #4F5EF8;
+        stroke-width: 1.9;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .card-body { padding: 18px 22px; }
+
+    /* ---- Grid layouts ---- */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin: 16px 0;
+    }
+    .grid-2 .card { margin: 0; }
+
+    /* ---- Data table ---- */
+    .table-wrapper { width: 100%; overflow-x: auto; }
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+    }
+    .data-table thead th {
+        text-align: left;
+        padding: 12px 22px;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #98A1B2;
+        background: #F9FAFD;
+        border-bottom: 1px solid #E8ECF5;
+        white-space: nowrap;
+    }
+    .data-table tbody td {
+        padding: 13px 22px;
+        color: #1F2437;
+        border-bottom: 1px solid #F0F3FA;
+        vertical-align: middle;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr { transition: background .14s ease; }
+    .data-table tbody tr:hover { background: #F7F9FE; }
+    .data-table tbody td:first-child { font-weight: 600; }
+    .data-table tbody td[colspan] { color: #98A1B2 !important; }
+
+    /* ---- Badges (status) ---- */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        border: 1px solid transparent;
+    }
+    .badge-success { background: #ECFDF5; color: #059669; border-color: #D1FAE5; }
+    .badge-warning { background: #FFF7ED; color: #B45309; border-color: #FED7AA; }
+    .badge-danger  { background: #FEF2F2; color: #DC2626; border-color: #FECACA; }
+    .badge-info    { background: #EEF2FF; color: #4F5EF8; border-color: #E0E7FF; }
+
+    /* ---- Quick action buttons ---- */
+    .card-body.flex { gap: 10px !important; }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 12px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, color .16s ease, transform .16s ease;
+    }
+    .btn.btn-outline {
+        background: #FFFFFF;
+        border: 1px solid #E8ECF5;
+        color: #384056;
+        box-shadow: 0 1px 2px rgba(31, 36, 55, 0.03);
+    }
+    .btn.btn-outline:hover {
+        background: #F7F9FE;
+        border-color: #C9D2E6;
+        color: #4F5EF8;
+        box-shadow: 0 6px 16px -10px rgba(79, 94, 248, 0.35);
+    }
+    .btn.btn-outline svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+    }
+    .btn-sm { padding: 9px 15px; font-size: 13px; }
+    .hover-lift:hover { transform: translateY(-1px); }
+
+    /* ---- Sidebar polish ---- */
+    .sidebar .nav-section {
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #6A7183;
+        padding: 14px 20px 5px;
+    }
+    .sidebar .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 9px 20px !important;
+        margin: 2px 10px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        color: #C7CBD6;
+        transition: background .15s ease, color .15s ease;
+    }
+    .sidebar .nav-item .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+    .sidebar .nav-item .icon svg {
+        width: 17px;
+        height: 17px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .sidebar .nav-item:hover { background: rgba(255,255,255,0.06); color: #FFFFFF; }
+    .sidebar .nav-item.active {
+        background: rgba(79, 94, 248, 0.16) !important;
+        color: #FFFFFF !important;
+    }
+    .sidebar .nav-item.active .icon { color: #8E96FF; }
+    .sidebar-footer {
+        border-top: 1px solid rgba(255,255,255,0.06);
+        padding: 16px 20px;
+    }
+    .sidebar .user-name { font-weight: 600; color: #FFFFFF; }
+    .sidebar .user-role { font-size: 12px; color: #8A90A0; }
+    .sidebar .logout-btn {
+        margin-top: 10px;
+        width: 100%;
+        padding: 9px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #C7CBD6;
+        font-weight: 500;
+        transition: background .15s ease, color .15s ease;
+    }
+    .sidebar .logout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 1024px) {
+        .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+        .top-nav { padding: 16px 16px 12px; }
+        .section-divider { margin: 0 16px 4px; }
+        .stats-grid { grid-template-columns: 1fr; padding: 16px 16px 0; }
+        .card { margin: 0 16px; }
+        .card-body.flex { flex-direction: column; }
+        .card-body.flex .btn { width: 100%; justify-content: center; }
+    }
+    </style>
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="active nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></button><h1>원장 대시보드</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+<div class="section-divider"></div>
+
+            <div class="stats-grid">
+                <div class="stat-card stat-card-accent animate-fade-up delay-1"><div class="stat-label"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M10 21v-6h4v6"/></svg>전체 학급</div><div class="stat-value" id="totalClasses">-</div></div>
+                <div class="stat-card stat-card-accent info animate-fade-up delay-2"><div class="stat-label"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6"/></svg>재학생</div><div class="stat-value" id="totalStudents">-</div></div>
+                <div class="stat-card stat-card-accent success animate-fade-up delay-3"><div class="stat-label"><svg viewBox="0 0 24 24"><path d="M9 11.5 12 15l7-7"/><path d="M20 12a8 8 0 1 1-3.2-6.4"/></svg>오늘 출석</div><div class="stat-value" id="todayAttendance">-</div></div>
+                <div class="stat-card stat-card-accent warning animate-fade-up delay-4"><div class="stat-label"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>시험 건수</div><div class="stat-value" id="weekExams">-</div></div>
+            </div>
+
+            <!-- Payment Summary Row -->
+            <div class="stats-grid" style="margin-top:var(--space-4)">
+                <div class="stat-card stat-card-accent animate-fade-up delay-1" style="border-left-color:var(--md-primary)"><div class="stat-label"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>총 수강료</div><div class="stat-value" id="totalEnrollments">-</div></div>
+                <div class="stat-card stat-card-accent success animate-fade-up delay-2"><div class="stat-label"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>납부 완료</div><div class="stat-value" id="paidCount">-</div></div>
+                <div class="stat-card stat-card-accent danger animate-fade-up delay-3"><div class="stat-label"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9.5 9.5 5 5"/><path d="m14.5 9.5-5 5"/></svg>미납</div><div class="stat-value" id="unpaidCount">-</div></div>
+                <div class="stat-card stat-card-accent warning animate-fade-up delay-4"><div class="stat-label"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M17 6.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5S9.2 10 12 10s5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg>결제 금액</div><div class="stat-value" id="totalPaidAmount">-</div></div>
+            </div>
+
+            <div class="grid-2 mb-24">
+                <div class="card animate-fade-up delay-2">
+                    <div class="card-header"><h2><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M10 21v-6h4v6"/></svg>학급별 현황</h2></div>
+                    <div class="card-body" style="padding:0">
+                        <div class="table-wrapper">
+                            <table class="data-table" data-card-view>
+                                <thead><tr><th>학급</th><th>분류</th><th>인원</th><th>상태</th></tr></thead>
+                                <tbody id="classStatusBody"><tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:24px">불러오는 중...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate-fade-up delay-4 hover-glow">
+                <div class="card-header"><h2><svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11l-1 8.5 9.5-11.5H13z"/></svg>빠른 작업</h2></div>
+                <div class="card-body flex gap-16" style="flex-wrap:wrap;gap:12px">
+                    <a href="classes.html" class="btn btn-outline btn-sm hover-lift"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M10 21v-6h4v6"/></svg>학급 관리</a>
+                    <a href="exams.html" class="btn btn-outline btn-sm hover-lift"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>시험 등록</a>
+                    <a href="attendance.html" class="btn btn-outline btn-sm hover-lift"><svg viewBox="0 0 24 24"><path d="M9 11.5 12 15l7-7"/><path d="M20 12a8 8 0 1 1-3.2-6.4"/></svg>출석 체크</a>
+                    <a href="reports.html" class="btn btn-outline btn-sm hover-lift"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>보고서</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('sidebarUserName').textContent = user.name || user.username || '관리자';
+                document.getElementById('sidebarUserRole').textContent = '원장';
+            }
+            const now = new Date();
+            ['todayDate'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = now.toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                });
+            });
+        });
+    </script>
+    <script src="/common/js/pages-director.js?v=20260911nav"></script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>기프티콘 상점 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/reset.css">
+    <link rel="stylesheet" href="/common/css/variables.css">
+    <link rel="stylesheet" href="/common/css/common.css">
+    <style>
+        body { background:#f8f9fa; font-family:'Noto Sans KR',sans-serif; }
+        .container { max-width:800px; margin:0 auto; padding:32px 20px; }
+        .header-info { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+        .my-points { background:linear-gradient(135deg,#4F5EF8,#7C3AED); color:white; padding:8px 16px; border-radius:12px; font-weight:600; font-size:15px; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+        .item-card { background:white; border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,0.08); text-align:center; transition:transform 0.15s; cursor:pointer; }
+        .item-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+        .item-icon { font-size:48px; margin-bottom:12px; }
+        .item-name { font-size:16px; font-weight:600; margin-bottom:4px; }
+        .item-value { font-size:13px; color:#6B7280; margin-bottom:12px; }
+        .item-points { font-size:20px; font-weight:700; color:#4F5EF8; }
+        .item-points-label { font-size:12px; color:#9CA3AF; }
+        .exchange-btn { margin-top:12px; padding:8px 20px; background:#4F5EF8; color:white; border:none; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; width:100%; }
+        .exchange-btn:hover { background:#3B4AE8; }
+        .exchange-btn:disabled { background:#D1D5DB; cursor:not-allowed; }
+        .empty { text-align:center; padding:60px; color:#9CA3AF; }
+        .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1F2937; color:white; padding:12px 24px; border-radius:8px; font-size:14px; z-index:1000; display:none; }
+    </style>
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header-info">
+        <h1 style="font-size:24px;font-weight:700">🎁 기프티콘 상점</h1>
+        <div style="display:flex;align-items:center;gap:10px">
+            <div class="my-points">내 포인트: <span id="myBalance">0</span>P</div>
+            <button class="logout-btn" onclick="handleLogout()" style="margin-top:0;padding:6px 14px;min-height:40px;display:inline-flex;align-items:center;justify-content:center">로그아웃</button>
+        </div>
+    </div>
+    <div class="grid" id="shopGrid"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/auth.js?v=20260908a"></script>
+<script>
+let myBalance = 0;
+
+async function loadShop() {
+    try {
+        const [ptRes, shopRes] = await Promise.all([
+            apiGet('/student/points').catch(() => ({data:{balance:0}})),
+            apiGet('/student/gifticon-shop').catch(() => ({data:[]}))
+        ]);
+        myBalance = (ptRes.data || {}).balance || 0;
+        document.getElementById('myBalance').textContent = myBalance.toLocaleString();
+
+        const items = shopRes.data || [];
+        const grid = document.getElementById('shopGrid');
+        if (!items.length) {
+            grid.innerHTML = '<div class="empty">현재 교환 가능한 상품이 없습니다.</div>';
+            return;
+        }
+
+        const typeIcon = {치킨:'🍗',커피:'☕',문화상품권:'🎫',편의점:'🏪',기타:'🎁'};
+        grid.innerHTML = items.map(item => {
+            const canAfford = myBalance >= item.points_required;
+            const icon = typeIcon[item.gifticon_type] || '🎁';
+            return `<div class="item-card">
+                <div class="item-icon">${icon}</div>
+                <div class="item-name">${item.name}</div>
+                <div class="item-value">${item.value.toLocaleString()}원 상당</div>
+                <div class="item-points">${item.points_required.toLocaleString()}</div>
+                <div class="item-points-label">포인트</div>
+                <button class="exchange-btn" ${canAfford ? '' : 'disabled'} onclick="requestGifticon(${item.id},'${item.name}')">
+                    ${canAfford ? '교환 신청' : '포인트 부족'}
+                </button>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        document.getElementById('shopGrid').innerHTML = '<div class="empty">상점 정보를 불러올 수 없습니다.</div>';
+    }
+}
+
+async function requestGifticon(id, name) {
+    if (!confirm(`${name} (을)를 교환하시겠습니까?`)) return;
+    try {
+        await apiPost('/student/gifticon-requests', { gifticon_setting_id: id });
+        showToast(`✅ ${name} 신청 완료! 관리자 승인 후 지급됩니다.`);
+        loadShop();
+    } catch(e) {
+        showToast(`❌ ${e.message || '오류가 발생했습니다.'}`);
+    }
+}
+
+function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3000);
+}
+
+loadShop();
+</script>
+    <script src="/common/js/protection.js?v=20260804b"></script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

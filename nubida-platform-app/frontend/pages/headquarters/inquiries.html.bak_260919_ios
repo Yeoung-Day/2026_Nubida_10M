@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Q&A 관리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260910inq">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        /* ===== Q&A 테이블 — 전문가용 디자인 ===== */
+        .inq-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+            min-width: 720px;
+        }
+        .inq-table th,
+        .inq-table td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+        }
+        .inq-table thead th {
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 600;
+            color: #6B7280;
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            background: #FBFCFE;
+            border-bottom: 1px solid #E9EDF3;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .inq-table tbody td {
+            padding: 14px;
+            border-bottom: 1px solid #F1F4F8;
+            color: #374151;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .inq-table tbody tr {
+            transition: background .15s ease;
+        }
+        .inq-table tbody tr:last-child td { border-bottom: none; }
+        .inq-table tbody tr:hover td { background: #F8FAFC; }
+
+        /* 숫자/ID 컬럼 — 고정폭 숫자 */
+        .inq-table .col-id {
+            color: #9CA3AF;
+            font-variant-numeric: tabular-nums;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        /* 제목 — 본문 굵기 + 살짝 진하게, 말줄임 */
+        .inq-table .col-title {
+            color: #111827;
+            font-weight: 600;
+            font-size: 13.5px;
+        }
+        /* 보조 텍스트(작성자/에듀케어) */
+        .inq-table .col-dim { color: #6B7280; }
+        /* 작성일 — 숫자 정렬 */
+        .inq-table .col-date {
+            color: #6B7280;
+            font-variant-numeric: tabular-nums;
+            font-size: 12.5px;
+        }
+        /* 역할 라벨 — 조용한 텍스트 pill */
+        .inq-role {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4B5563;
+            background: #F3F5F9;
+            border-radius: 6px;
+            padding: 2px 8px;
+            letter-spacing: 0.02em;
+        }
+
+        /* 상태 배지 — 점(dot) + 텍스트, 은은한 배경 */
+        .inq-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 3px 10px 3px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.01em;
+        }
+        .inq-status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex: 0 0 auto;
+        }
+        .inq-status.pending { color: #92400E; background: #FEF6E7; }
+        .inq-status.pending::before { background: #F59E0B; }
+        .inq-status.answered { color: #065F46; background: #ECFAF2; }
+        .inq-status.answered::before { background: #10B981; }
+
+        /* 작업 버튼 — 조용한 아웃라인 */
+        .inq-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid #DCE3EC;
+            background: #FFFFFF;
+            color: #374151;
+            cursor: pointer;
+            transition: background .15s, border-color .15s, color .15s;
+            white-space: nowrap;
+        }
+        .inq-action:hover { background: #F4F6FA; border-color: #C9D2DE; }
+        .inq-action.primary { background: #4F5EF8; border-color: #4F5EF8; color: #fff; }
+        .inq-action.primary:hover { background: #4338CA; border-color: #4338CA; }
+
+        /* 컬럼 폭 */
+        .inq-table th:nth-child(1) { width: 64px; }
+        .inq-table th:nth-child(2) { width: 78px; }
+        .inq-table th:nth-child(3) { width: 110px; }
+        .inq-table th:nth-child(4) { width: auto; min-width: 160px; }
+        .inq-table th:nth-child(5) { width: 96px; }
+        .inq-table th:nth-child(6) { width: 100px; }
+        .inq-table th:nth-child(7) { width: 108px; }
+        .inq-table th:nth-child(8) { width: 104px; }
+
+        .badge-pending { background:#FEF6E7; color:#92400E; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; display:inline-block; }
+        .badge-answered { background:#ECFAF2; color:#065F46; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; display:inline-block; }
+
+        .answer-modal-content { padding:20px; }
+        .answer-modal-content .qa-label { font-size:11px; font-weight:600; color:#6B7280; margin-bottom:4px; letter-spacing:.03em; text-transform:uppercase; }
+        .answer-modal-content .qa-title { font-size:16px; font-weight:700; color:#111827; margin-bottom:8px; }
+        .answer-modal-content .qa-meta { font-size:11px; color:#9CA3AF; margin-bottom:12px; }
+        .answer-modal-content .qa-content { background:#F8FAFC; border:1px solid #EEF2F7; border-radius:10px; padding:14px; font-size:13px; line-height:1.7; color:#374151; margin-bottom:16px; white-space:pre-wrap; }
+        .answer-modal-content .qa-answer-label { font-size:11px; font-weight:600; color:#4F5EF8; margin-bottom:6px; letter-spacing:.03em; text-transform:uppercase; }
+        .answer-modal-content textarea { width:100%; min-height:120px; box-sizing:border-box; }
+        .answer-modal-content .qa-existing-answer { background:#F5F7FF; border-left:3px solid #4F5EF8; border-radius:8px; padding:14px; font-size:13px; line-height:1.7; color:#374151; margin-bottom:16px; white-space:pre-wrap; }
+        .answer-modal-content .qa-existing-answer .meta { font-size:11px; color:#9CA3AF; margin-top:6px; }
+
+        .stats-ribbon { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:18px 20px; background:#fff; border-bottom:1px solid #E9EDF3; }
+        .stats-ribbon .sr-item { text-align:center; }
+        .stats-ribbon .sr-label { font-size:11px; color:#9CA3AF; letter-spacing:.04em; text-transform:uppercase; font-weight:600; }
+        .stats-ribbon .sr-value { font-size:22px; font-weight:700; color:#111827; margin-top:4px; font-variant-numeric:tabular-nums; }
+        .stats-ribbon .sr-value.warning { color:#F59E0B; }
+        .stats-ribbon .sr-value.success { color:#10B981; }
+    </style>
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260910inq" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub active" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">본사</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>❓ Q&A 관리</h1></div>
+                <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+            </div>
+
+            <div class="card" style="border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
+                <!-- Stats -->
+                <div class="stats-ribbon" id="statsRibbon">
+                    <div class="sr-item"><div class="sr-label">전체 Q&A</div><div class="sr-value" id="statTotal">0</div></div>
+                    <div class="sr-item"><div class="sr-label">대기</div><div class="sr-value warning" id="statPending">0</div></div>
+                    <div class="sr-item"><div class="sr-label">답변 완료</div><div class="sr-value success" id="statAnswered">0</div></div>
+                    <div class="sr-item"><div class="sr-label">처리율</div><div class="sr-value" id="statRate">0%</div></div>
+                </div>
+
+                <!-- Filters -->
+                <div class="inq-filters">
+                    <select class="form-input" id="statusFilter" onchange="loadInquiries()" style="width:130px;">
+                        <option value="">전체 상태</option>
+                        <option value="pending">대기중</option>
+                        <option value="answered">답변완료</option>
+                    </select>
+                    <input type="text" class="form-input" id="searchInput" placeholder="작성자/제목 검색..." oninput="filterTable()" style="width:200px;">
+                    <span class="small-text" id="inqCount">0건</span>
+                    <button class="btn btn-primary btn-sm" onclick="loadInquiries()" style="margin-left:auto;">새로고침</button>
+                </div>
+
+                <!-- Table -->
+                <div style="overflow-x:auto;">
+                    <table class="inq-table" data-card-view>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>구분</th>
+                                <th>에듀케어</th>
+                                <th>제목</th>
+                                <th>상태</th>
+                                <th>작성자</th>
+                                <th>작성일</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiryTbody">
+                            <tr><td colspan="8" style="text-align:center;padding:40px;color:#9CA3AF;">불러오는 중...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 답변 모달 -->
+    <div class="modal-overlay" id="answerModal" style="display:none;">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header"><h3>Q&A 답변</h3></div>
+            <div class="answer-modal-content">
+                <div class="qa-label">Q&A 제목</div>
+                <div class="qa-title" id="amTitle"></div>
+                <div class="qa-meta" id="amMeta"></div>
+                <div class="qa-label">Q&A 내용</div>
+                <div class="qa-content" id="amContent"></div>
+                <div id="amImageContainer" style="display:none;"></div>
+                
+                <div id="amExistingAnswer" style="display:none;">
+                    <div class="qa-answer-label">기존 답변</div>
+                    <div class="qa-existing-answer" id="amExistingAnswerText"></div>
+                </div>
+
+                <div class="qa-answer-label">답변 작성</div>
+                <textarea class="form-input" id="amAnswer" placeholder="문의에 대한 답변을 작성해주세요..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeAnswerModal()">취소</button>
+                <button class="btn btn-primary" id="amSubmitBtn" onclick="submitAnswer()">답변 등록</button>
+            </div>
+            <input type="hidden" id="amInquiryId">
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script>
+        // ============================================================
+        // Q&A 관리 페이지 — 인라인 스크립트 (전체 try/catch 보호)
+        // ============================================================
+        (function() {
+            'use strict';
+            try {
+                let allInquiries = [];
+
+                function esc(s) {
+                    if (s == null) return '';
+                    const d = document.createElement('div');
+                    d.textContent = s;
+                    return d.innerHTML;
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    try {
+                        console.log('[Q&A] DOMContentLoaded — 초기화 시작');
+                        const user = getCurrentUser();
+                        if (user) {
+                            document.getElementById('sidebarUserName').textContent = user.name || user.username || '관리자';
+                            document.getElementById('sidebarUserRole').textContent = '본사';
+                        }
+                        const now = new Date();
+                        document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', {
+                            year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                        });
+                        console.log('[Q&A] loadInquiries() 호출');
+                        loadInquiries();
+                    } catch(e) {
+                        console.error('[Q&A] DOMContentLoaded 핸들러 오류:', e);
+                    }
+                });
+
+                async function loadInquiries() {
+                    console.log('[Q&A] loadInquiries() 시작');
+                    const statusEl = document.getElementById('statusFilter');
+                    const status = statusEl ? statusEl.value : '';
+                    let url = '/inquiries/all';
+                    if (status) url += '?status=' + encodeURIComponent(status);
+
+                    try {
+                        console.log('[Q&A] API 호출:', url);
+                        const res = await apiGet(url);
+                        console.log('[Q&A] API 응답:', res && res.status);
+                        allInquiries = (res && res.data) || [];
+                        renderTable();
+                    } catch(e) {
+                        console.error('[Q&A] Load error:', e);
+                        const tbody = document.getElementById('inquiryTbody');
+                        if (tbody) {
+                            tbody.innerHTML = 
+                                '<tr><td colspan="8" style="text-align:center;padding:40px;color:#EF4444;">데이터를 불러올 수 없습니다. 서버 상태를 확인해주세요.</td></tr>';
+                        }
+                    }
+                }
+
+        function renderTable() {
+            console.log('[Q&A] renderTable() 시작 — 데이터 건수:', allInquiries.length);
+            try {
+                // Stats
+                const total = allInquiries.length;
+                const pending = allInquiries.filter(i => i.status === 'pending').length;
+                const answered = allInquiries.filter(i => i.status === 'answered').length;
+                const rate = total > 0 ? Math.round(answered / total * 100) : 0;
+
+                setTextSafe('statTotal', total);
+                setTextSafe('statPending', pending);
+                setTextSafe('statAnswered', answered);
+                setTextSafe('statRate', rate + '%');
+                setTextSafe('inqCount', total + '건');
+
+                const searchEl = document.getElementById('searchInput');
+                const search = searchEl ? searchEl.value.trim().toLowerCase() : '';
+                let filtered = allInquiries;
+                if (search) {
+                    const writer = (i) => (i.student_name || i.director_name || '').toLowerCase();
+                    filtered = filtered.filter(i => 
+                        i.title.toLowerCase().includes(search) || writer(i).includes(search)
+                    );
+                }
+
+                const tbody = document.getElementById('inquiryTbody');
+                if (!tbody) { console.warn('[Q&A] tbody 없음'); return; }
+                if (filtered.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#9CA3AF;">문의가 없습니다</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = filtered.map(i => {
+                    const isPending = i.status === 'pending';
+                    const writerName = i.student_name || i.director_name || '-';
+                    const roleLabel = i.student_name ? '학생' : i.director_name ? '원장' : '-';
+                    const branchName = i.branch_name || '-';
+                    const date = i.created_at ? new Date(i.created_at).toLocaleDateString('ko-KR') : '-';
+
+                    return `<tr>
+                        <td class="col-id">${i.id}</td>
+                        <td><span class="inq-role">${roleLabel}</span></td>
+                        <td class="col-dim">${esc(branchName)}</td>
+                        <td class="col-title" title="${esc(i.title)}">${esc(i.title)}</td>
+                        <td><span class="inq-status ${isPending ? 'pending' : 'answered'}">${isPending ? '대기' : '완료'}</span></td>
+                        <td class="col-dim">${esc(writerName)}</td>
+                        <td class="col-date">${date}</td>
+                        <td>
+                            <button class="inq-action ${isPending ? 'primary' : ''}" onclick="openAnswerModal(${i.id})">
+                                ${isPending ? '답변' : '보기'}
+                            </button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            } catch(e) {
+                console.error('[Q&A] renderTable 오류:', e);
+            }
+        }
+
+        function setTextSafe(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = (val == null ? '' : String(val));
+        }
+
+        // ===== onclick에서 호출되는 함수들은 window에 노출 =====
+        window.filterTable = function() { try { renderTable(); } catch(e) { console.error('[Q&A] filterTable 오류:', e); } };
+
+        window.openAnswerModal = function(inquiryId) {
+            try {
+                const item = allInquiries.find(i => i.id === inquiryId);
+                if (!item) return;
+
+                const amIdEl = document.getElementById('amInquiryId');
+                if (amIdEl) amIdEl.value = inquiryId;
+                setTextSafe('amTitle', item.title);
+
+                const writerName = item.student_name || item.director_name || '-';
+                const roleLabel = item.student_name ? '🎒학생' : item.director_name ? '👤원장' : '';
+                const branchName = item.branch_name || '-';
+                const date = item.created_at ? new Date(item.created_at).toLocaleString('ko-KR') : '-';
+                setTextSafe('amMeta', `${roleLabel} ${writerName} · ${branchName} · ${date}`);
+                setTextSafe('amContent', item.content);
+
+                // 이미지 첨부 표시
+                const imgContainer = document.getElementById('amImageContainer');
+                if (imgContainer) {
+                    if (item.image_path && item.image_path !== 'null') {
+                        imgContainer.style.display = 'block';
+                        imgContainer.innerHTML = `<img src="${esc(item.image_path)}" style="max-width:100%;max-height:300px;border-radius:8px;border:1px solid #E5E7EB;margin-top:8px;">`;
+                    } else {
+                        imgContainer.style.display = 'none';
+                    }
+                }
+
+                const answerEl = document.getElementById('amAnswer');
+                if (answerEl) answerEl.value = '';
+
+                const existingAnswer = document.getElementById('amExistingAnswer');
+                const existingAnswerText = document.getElementById('amExistingAnswerText');
+                const submitBtn = document.getElementById('amSubmitBtn');
+
+                if (item.answer && existingAnswer && existingAnswerText) {
+                    existingAnswer.style.display = 'block';
+                    existingAnswerText.innerHTML = 
+                        `<div>${esc(item.answer).replace(/\n/g, '<br>')}</div>
+                         <div class="meta">${item.answered_by_name || '본사'} · ${item.answered_at ? new Date(item.answered_at).toLocaleString('ko-KR') : ''}</div>`;
+                    if (submitBtn) submitBtn.textContent = '답변 수정';
+                } else {
+                    if (existingAnswer) existingAnswer.style.display = 'none';
+                    if (submitBtn) submitBtn.textContent = '📤 답변 등록';
+                }
+
+                const modal = document.getElementById('answerModal');
+                if (modal) modal.style.display = 'flex';
+            } catch(e) {
+                console.error('[Q&A] openAnswerModal 오류:', e);
+            }
+        };
+
+        window.closeAnswerModal = function() {
+            try {
+                const modal = document.getElementById('answerModal');
+                if (modal) modal.style.display = 'none';
+            } catch(e) {
+                console.error('[Q&A] closeAnswerModal 오류:', e);
+            }
+        };
+
+        window.submitAnswer = async function() {
+            try {
+                const inquiryIdEl = document.getElementById('amInquiryId');
+                const answerEl = document.getElementById('amAnswer');
+                if (!inquiryIdEl || !answerEl) return;
+                const inquiryId = inquiryIdEl.value;
+                const answer = answerEl.value.trim();
+
+                if (!answer) { alert('답변 내용을 입력해주세요.'); return; }
+
+                const btn = document.getElementById('amSubmitBtn');
+                if (btn) { btn.disabled = true; btn.textContent = '⏳ 저장 중...'; }
+
+                const params = new URLSearchParams({ answer });
+                const res = await apiPost('/inquiries/answer/' + inquiryId + '?' + params.toString());
+                if (res && res.status === 'success') {
+                    alert('✅ 답변이 등록되었습니다.');
+                    closeAnswerModal();
+                    loadInquiries();
+                } else {
+                    alert('❌ ' + (res.message || '실패했습니다.'));
+                }
+            } catch(e) {
+                alert('❌ 오류: ' + (e.message || '알 수 없음'));
+            } finally {
+                const btn = document.getElementById('amSubmitBtn');
+                if (btn) { btn.disabled = false; btn.textContent = '📤 답변 등록'; }
+            }
+        };
+
+        window.handleLogout = function() {
+            try {
+                localStorage.removeItem('token');
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('user');
+                window.location.href = '/pages/login.html';
+            } catch(e) {
+                console.error('[Q&A] handleLogout 오류:', e);
+            }
+        };
+
+        // ===== 사이드바 네비게이션 토글 =====
+        function initSidebarNav() {
+            // 열려야 할 섹션 확인 (쿼리 파라미터 또는 localStorage)
+            const saved = localStorage.getItem('sidebar_open_section');
+            if (saved) {
+                const toggle = document.querySelector('.nav-toggle[data-section="' + saved + '"]');
+                if (toggle) {
+                    toggle.classList.add('open');
+                    const sub = document.getElementById('sub-' + saved);
+                    if (sub) sub.classList.add('open');
+                }
+            }
+
+            // 토글 버튼 클릭 이벤트
+            document.querySelectorAll('.nav-toggle').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var section = this.getAttribute('data-section');
+                    var sub = document.getElementById('sub-' + section);
+                    if (!sub) return;
+
+                    // 현재 토글 상태 토글
+                    var isOpen = this.classList.contains('open');
+                    this.classList.toggle('open');
+                    sub.classList.toggle('open');
+
+                    // 상태 저장
+                    if (!isOpen) {
+                        localStorage.setItem('sidebar_open_section', section);
+                    } else {
+                        localStorage.removeItem('sidebar_open_section');
+                    }
+                });
+            });
+        }
+
+        // ===== 페이지 초기화 =====
+        initSidebarNav();
+
+        // ===== 전역 함수 노출 (onclick에서 사용) =====
+        window.loadInquiries = loadInquiries;
+
+        // ===== IIFE 종료 (전체 try/catch) =====
+            } catch(e) {
+                console.error('[Q&A] 스크립트 초기화 치명적 오류:', e);
+            }
+        })();
+    </script>
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

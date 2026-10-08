@@ -1,0 +1,106 @@
+"""
+누비다 AI — 자체 LLM 클라이언트 (Ollama OPENAI 호환 API)
+
+- 외부 API(OpenRouter 등) 사용 금지 — 자체 LLM(RTX 3080 서버) 전제
+- 기본 엔드포인트: http://<LLM_HOST>:11434/v1  (Ollama OPENAI 호환)
+- 설정은 환경변수로 주입 (서버 접근 정보 수신 후 .env/docker-compose에 반영)
+  - LLM_BASE_URL : 예) http://192.168.0.10:11434/v1  (기본 http://localhost:11434/v1)
+  - LLM_MODEL    : 예) exaone3.0:7.8b (기본)
+  - LLM_TIMEOUT  : 초 단위 (기본 60)
+- 의존성 최소화: stdlib urllib만 사용 (httpx/aiohttp 미설치 환경 대응),
+  네트워크 호출은 asyncio.to_thread로 블로킹 방지
+"""
+import asyncio
+import json
+import os
+import urllib.error
+import urllib.request
+
+from app.core.config import settings
+
+# 설정 우선순위: 환경변수 > .env(pydantic-settings) > 기본값
+LLM_BASE_URL = settings.LLM_BASE_URL
+LLM_MODEL = settings.LLM_MODEL
+LLM_TIMEOUT = settings.LLM_TIMEOUT
+
+
+class LlmUnavailableError(RuntimeError):
+    """자체 LLM 서버에 연결할 수 없음 (서버 미기동/주소 미설정)"""
+
+
+def _http_post_json(url: str, payload: dict, timeout: int) -> dict:
+    """동기 urllib POST — to_thread로 감싸서 호출할 것"""
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")[:300]
+        raise LlmUnavailableError(f"LLM HTTP {e.code}: {body}") from e
+    except Exception as e:  # 연결 실패/타임아웃 등
+        raise LlmUnavailableError(f"LLM 연결 실패: {e}") from e
+
+
+async def chat(
+    messages: list[dict],
+    temperature: float = 0.7,
+    max_tokens: int = 512,
+) -> dict:
+    """
+    채팅 완성 요청 → {content, model, tokens_in, tokens_out}
+    messages: [{"role": "system"|"user"|"assistant", "content": str}, ...]
+    """
+    payload = {
+        "model": LLM_MODEL,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "stream": False,
+    }
+    data = await asyncio.to_thread(
+        _http_post_json, f"{LLM_BASE_URL}/chat/completions", payload, LLM_TIMEOUT
+    )
+    try:
+        choice = data["choices"][0]["message"]
+        content = choice.get("content", "")
+        usage = data.get("usage", {})
+        return {
+            "content": content,
+            "model": data.get("model", LLM_MODEL),
+            "tokens_in": usage.get("prompt_tokens", 0),
+            "tokens_out": usage.get("completion_tokens", 0),
+        }
+    except (KeyError, IndexError) as e:
+        raise LlmUnavailableError(f"LLM 응답 형식 오류: {str(data)[:200]}") from e
+
+
+async def embed(text: str) -> list[float]:
+    """
+    텍스트 임베딩 (RAG용) — 로컬 모델(bge-m3 등) 사용
+    실패 시 빈 리스트 반환 (호출부에서 키워드 fallback)
+    """
+    payload = {"model": os.environ.get("LLM_EMBED_MODEL", "bge-m3"), "prompt": text}
+    try:
+        data = await asyncio.to_thread(
+            _http_post_json, f"{LLM_BASE_URL}/embeddings", payload, min(LLM_TIMEOUT, 30)
+        )
+        return data.get("embedding", [])
+    except LlmUnavailableError:
+        return []
+
+
+async def health() -> dict:
+    """Ollama /api/tags — 서버 기동 여부 (스켈레톤: 상태 확인용)"""
+    try:
+        data = await asyncio.to_thread(
+            _http_post_json, f"{LLM_BASE_URL.replace('/v1', '')}/api/tags", {}, 5
+        )
+        models = [m.get("name") for m in data.get("models", [])]
+        return {"ok": True, "models": models}
+    except LlmUnavailableError as e:
+        return {"ok": False, "error": str(e)}

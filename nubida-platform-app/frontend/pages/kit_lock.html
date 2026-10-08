@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>교구 자료실 · 잠금</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    background: linear-gradient(160deg, #0F172A 0%, #1E293B 100%);
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    color: #E2E8F0; padding: 24px;
+  }
+  .box {
+    width: 100%; max-width: 392px; text-align: center;
+    background: linear-gradient(160deg, rgba(30,41,59,.96), rgba(15,23,42,.98));
+    border: 1px solid rgba(56,189,248,.28);
+    border-radius: 20px; padding: 36px 30px 30px;
+    box-shadow: 0 26px 80px rgba(0,0,0,.62);
+    animation: up .3s ease-out;
+  }
+  @keyframes up { from { opacity:0; transform:translateY(16px);} to { opacity:1; transform:none; } }
+  .ic {
+    width: 60px; height: 60px; margin: 0 auto 18px; border-radius: 17px;
+    background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.3);
+    display: flex; align-items: center; justify-content: center; font-size: 27px;
+  }
+  h1 { font-size: 19px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 9px; }
+  .dsc { font-size: 13px; color: #94A3B8; line-height: 1.7; margin-bottom: 24px; }
+  .dsc b { color: #7DD3FC; font-weight: 600; }
+  .row { display: flex; gap: 9px; }
+  input {
+    flex: 1; min-width: 0; text-align: center;
+    font-family: inherit; font-size: 22px; font-weight: 700;
+    letter-spacing: .42em; text-indent: .42em;
+    color: #F1F5F9; background: rgba(15,23,42,.92);
+    border: 1px solid rgba(148,163,184,.28);
+    border-radius: 12px; padding: 13px 8px; outline: none; transition: .16s;
+  }
+  input:focus { border-color: #38BDF8; box-shadow: 0 0 0 3px rgba(56,189,248,.16); }
+  input::placeholder { color: #475569; letter-spacing: .3em; }
+  button {
+    flex-shrink: 0; padding: 0 22px; font-family: inherit;
+    background: linear-gradient(135deg,#4F5EF8,#6366F1); color: #fff;
+    border: none; border-radius: 12px; font-weight: 700; font-size: 14.5px;
+    cursor: pointer; transition: .16s;
+  }
+  button:hover { opacity: .9; transform: translateY(-1px); }
+  button:disabled { opacity: .55; cursor: wait; transform: none; }
+  .msg { min-height: 18px; margin-top: 13px; font-size: 12.5px; font-weight: 600; color: #F87171; }
+  .msg.good { color: #4ADE80; }
+  .foot { margin-top: 22px; font-size: 11.5px; color: #475569; letter-spacing: .02em; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <div class="ic">🔒</div>
+  <h1>교구 자료실</h1>
+  <div class="dsc">
+    이 페이지는 <b>핀번호</b>가 있어야 열립니다.<br>
+    선생님께 받은 <b>6자리 핀번호</b>를 입력해 주세요.
+  </div>
+
+  <div class="row">
+    <input id="pin" type="text" inputmode="numeric" autocomplete="off"
+           maxlength="6" placeholder="••••••" autofocus>
+    <button id="ok" type="button">들어가기</button>
+  </div>
+  <div class="msg" id="msg"></div>
+
+  <div class="foot">누비다플랫폼 · 머신러닝 교구 자료실</div>
+</div>
+
+<script>
+(function () {
+  var inp = document.getElementById('pin');
+  var btn = document.getElementById('ok');
+  var msg = document.getElementById('msg');
+
+  function show(t, good) {
+    msg.textContent = t || '';
+    msg.className = 'msg' + (good ? ' good' : '');
+  }
+
+  async function submit() {
+    var pin = (inp.value || '').replace(/\D/g, '');
+    if (pin.length !== 6) { show('6자리 숫자를 입력해 주세요.'); return; }
+    btn.disabled = true; btn.textContent = '확인 중';
+    show('');
+    try {
+      var r = await fetch('/api/kit/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pin })
+      });
+      var j = {};
+      try { j = await r.json(); } catch (e) {}
+      if (!r.ok || !j.ok) {
+        show(j.message || '핀번호가 올바르지 않습니다.');
+        btn.disabled = false; btn.textContent = '들어가기';
+        inp.select();
+        return;
+      }
+      show('확인되었습니다. 들어갑니다…', true);
+      setTimeout(function () { location.replace('/pages/firmware.html?ok=' + Date.now()); }, 400);
+    } catch (e) {
+      show('연결에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      btn.disabled = false; btn.textContent = '들어가기';
+    }
+  }
+
+  btn.addEventListener('click', submit);
+  inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
+  inp.addEventListener('input', function () {
+    inp.value = inp.value.replace(/\D/g, '').slice(0, 6);
+  });
+  inp.focus();
+})();
+</script>
+</body>
+</html>

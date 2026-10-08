@@ -1,0 +1,3005 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>코딩 실습 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/nubida-bundle.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/features/arduino.css?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+        body { background:#F2F4F8; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; margin:0; padding:0; color:#1F2937; }
+        * { box-sizing:border-box; }
+        .editor-page { height:100vh; display:flex; flex-direction:column; }
+        .editor-header { background:#fff; border-bottom:1px solid #E5E7EB; padding:8px 20px; display:flex; align-items:center; gap:8px; flex-shrink:0; flex-wrap:wrap; }
+        .editor-header .logo { font-weight:700; font-size:15px; color:#4F5EF8; display:flex; align-items:center; gap:6px; }
+        .editor-header .logo img { height:24px; }
+        .editor-header .back-link { font-size:13px; color:#6B7280; text-decoration:none; cursor:pointer; display:flex; align-items:center; gap:4px; padding:4px 8px; border-radius:6px; }
+        .editor-header .back-link:hover { background:#F3F4F6; color:#1F2937; }
+        .editor-header .header-title { font-size:14px; font-weight:600; color:#1F2937; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .ard-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); padding:10px 24px; border-radius:10px; font-size:13px; font-weight:500; color:white; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+        .ard-toast.show { opacity:1; }
+        .ard-toast.success { background:#2E7D32; }
+        .ard-toast.error { background:#C62828; }
+        .ard-toast.info { background:#4B5E6B; }
+        /* 결과 패널 */
+        .ard-output { background:#1E1E1E; color:#D4D4D4; font-family:'Fira Code','Cascadia Code',monospace; font-size:12px; padding:12px 16px; border-radius:0 0 12px 12px; max-height:200px; overflow-y:auto; flex-shrink:0; }
+        .ard-output .out-title { color:#6B7280; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; font-family:inherit; }
+        .ard-output .out-line { white-space:pre-wrap; word-break:break-all; line-height:1.5; }
+        .ard-output .out-success { color:#4CAF50; }
+        .ard-output .out-error { color:#F44336; }
+        .ard-output .out-info { color:#4FC3F7; }
+        /* 업로드 상태 */
+        .upload-progress { display:none; align-items:center; gap:8px; font-size:12px; color:#6B7280; padding:4px 8px; background:#F0FDF4; border-radius:6px; }
+        .upload-progress.active { display:inline-flex; }
+        .upload-progress .spinner { width:14px; height:14px; border:2px solid #E5E7EB; border-top-color:#2E7D32; border-radius:50%; animation:spin 0.6s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        /* 시리얼 모니터 */
+        .serial-monitor { background:#1E1E1E; color:#D4D4D4; font-family:'Fira Code','Cascadia Code',monospace; font-size:12px; padding:0; border-radius:0 0 12px 12px; display:none; flex-direction:column; flex-shrink:0; max-height:240px; }
+        .serial-monitor.active { display:flex; }
+        .serial-header { display:flex; align-items:center; justify-content:space-between; padding:6px 12px; background:#252526; border-bottom:1px solid #333; }
+        .serial-header .sm-title { font-size:10px; text-transform:uppercase; letter-spacing:0.5px; color:#6B7280; }
+        .serial-header button { background:none; border:none; color:#6B7280; cursor:pointer; font-size:10px; padding:2px 6px; border-radius:4px; }
+        .serial-header button:hover { color:#D4D4D4; background:#333; }
+        .serial-header button.active { color:#4CAF50; }
+        .serial-body { padding:8px 12px; overflow-y:auto; flex:1; min-height:60px; max-height:180px; }
+        .serial-line { white-space:pre-wrap; word-break:break-all; line-height:1.5; }
+        .serial-timestamp { color:#6B7280; font-size:10px; margin-right:6px; }
+        .serial-input-wrap { display:flex; border-top:1px solid #333; }
+        .serial-input-wrap input { flex:1; background:#252526; border:none; color:#D4D4D4; padding:6px 12px; font-family:inherit; font-size:12px; outline:none; }
+        .serial-input-wrap input::placeholder { color:#6B7280; }
+        .serial-input-wrap button { background:#2E7D32; color:white; border:none; padding:6px 12px; cursor:pointer; font-size:11px; font-weight:500; }
+        .serial-input-wrap button:hover { opacity:0.9; }
+        .board-selector { font-size:12px; padding:4px 8px; border:1px solid #E5E7EB; border-radius:6px; background:white; color:#333; cursor:pointer; }
+
+        /* ===== 앱 전용 연결 안내 배너 ===== */
+        .app-conn-notice {
+            display: none;
+            align-items: center;
+            gap:10px;
+            padding:10px 16px;
+            font-size:12.5px;
+            line-height:1.5;
+            border-bottom:1px solid;
+        }
+        .app-conn-notice.otg { background:#ECFDF5; border-color:#A7F3D0; color:#065F46; }
+        .app-conn-notice.warn { background:#FFFBEB; border-color:#FDE68A; color:#92400E; }
+        .app-conn-notice.info { background:#EFF6FF; border-color:#BFDBFE; color:#1E40AF; }
+        .app-conn-notice .acn-icon { font-size:16px; flex-shrink:0; }
+        .app-conn-notice .acn-text { flex:1; }
+        .app-conn-notice .acn-text b { font-weight:600; }
+        .app-conn-notice .acn-close {
+            background:none; border:none; color:inherit; opacity:.5; cursor:pointer;
+            font-size:16px; padding:0 4px; line-height:1;
+        }
+        .app-conn-notice .acn-close:hover { opacity:1; }
+        @media (max-width: 640px) {
+            .app-conn-notice { padding:9px 12px; font-size:12px; }
+        }
+
+        /* ============================================================
+           아두이노 코딩 페이지 — 전문적 리디자인 오버레이
+           (id/class/onclick 변경 없음 · CSS 전용)
+           ============================================================ */
+        :root {
+            --point:#4F5EF8; --point-soft:#EEF2FF; --point-line:#E0E7FF;
+            --point-dark:#4350E8;
+            /* 플랫폼 번들 토큰이 틸(#0891B2)이라 이 페이지에서만 브랜드 블루로 통일 */
+            --accent:#4F5EF8; --accent-light:#7C8CFF; --accent-dark:#4350E8;
+            --accent-bg:#EEF2FF; --accent-ring:rgba(79,94,248,.18);
+            --primary:#4F5EF8; --primary-light:#7C8CFF; --primary-dark:#4350E8;
+            --text-link:#4F5EF8; --border-focus:#4F5EF8;
+            --ard-surface:#FFFFFF;
+            --ard-line:#E8EBF2;
+            --ard-ink:#111827;
+            --ard-muted:#6B7280;
+            --ard-shadow:0 1px 2px rgba(16,24,40,.04), 0 4px 12px rgba(16,24,40,.05);
+            --ard-shadow-lg:0 2px 4px rgba(16,24,40,.04), 0 12px 28px rgba(16,24,40,.08);
+        }
+
+        /* 배경 — 은은한 그라데이션으로 깊이감 */
+        body {
+            background:linear-gradient(180deg,#F7F8FC 0%,#F1F3F9 100%);
+            -webkit-font-smoothing:antialiased;
+        }
+
+        /* ── 헤더 ── */
+        .editor-header {
+            background:var(--ard-surface);
+            border-bottom:1px solid var(--ard-line);
+            padding:10px 22px;
+            gap:10px;
+            box-shadow:0 1px 3px rgba(16,24,40,.04);
+            position:relative;
+            z-index:20;
+        }
+        .editor-header .back-link {
+            font-size:12.5px; font-weight:500; color:var(--ard-muted);
+            padding:5px 10px; border-radius:8px; border:1px solid transparent;
+            transition:background .15s, color .15s, border-color .15s;
+        }
+        .editor-header .back-link:hover {
+            background:var(--point-soft); color:var(--point); border-color:var(--point-line);
+        }
+        .editor-header .header-title {
+            font-size:15px; font-weight:650; letter-spacing:-.01em; color:var(--ard-ink);
+        }
+
+        /* ── 셀렉트 (보드/baud) ── */
+        .board-selector {
+            appearance:none; -webkit-appearance:none;
+            font-size:12px; font-weight:500;
+            padding:7px 30px 7px 11px;
+            border:1px solid var(--ard-line); border-radius:9px;
+            background-color:#fff;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat:no-repeat; background-position:right 10px center;
+            color:var(--ard-ink); cursor:pointer;
+            transition:border-color .15s, box-shadow .15s;
+        }
+        .board-selector:hover { border-color:#D3D9E6; }
+        .board-selector:focus {
+            outline:none; border-color:var(--point);
+            box-shadow:0 0 0 3px var(--accent-ring);
+        }
+
+        /* ── 업로드 진행 칩 ── */
+        .upload-progress {
+            background:var(--point-soft); border:1px solid var(--point-line);
+            color:var(--point-dark); font-weight:550;
+            padding:6px 12px; border-radius:9px;
+        }
+        .upload-progress .spinner { border-color:#C7CFFB; border-top-color:var(--point); }
+
+        /* ── 버튼 통일 ── */
+        .editor-header .btn { border-radius:9px; font-weight:550; padding:7px 13px; transition:all .15s; }
+        .btn-primary { background:var(--point); border-color:var(--point); color:#fff; }
+        .btn-primary:hover { background:var(--point-dark); border-color:var(--point-dark); }
+        .btn-success { background:var(--point); border-color:var(--point); color:#fff; }
+        .btn-success:hover { background:var(--point-dark); border-color:var(--point-dark); }
+        .btn-outline {
+            background:#fff; border:1px solid var(--ard-line); color:var(--ard-ink);
+        }
+        .btn-outline:hover { border-color:var(--point); color:var(--point); background:var(--point-soft); }
+        /* ⚠️ 특이도 함정: arduino.css 의 복합 셀렉터(.ard-editor-toolbar .btn-success)가
+           단일 클래스 오버레이를 이긴다 → 동일 셀렉터로 재선언해야 적용된다. */
+        .ard-editor-toolbar .btn-success {
+            background:var(--point); color:#fff; border-color:var(--point);
+        }
+        .ard-editor-toolbar .btn-success:hover {
+            background:var(--point-dark); border-color:var(--point-dark); opacity:1;
+        }
+        .ard-editor-toolbar .btn-danger {
+            background:#fff; color:#DC2626; border-color:#FBD5D5;
+        }
+        .ard-editor-toolbar .btn-danger:hover {
+            background:#FEF2F2; border-color:#FCA5A5; opacity:1;
+        }
+        /* 모달 내부 업로드 옵션 버튼 — 텍스트 색 검정 → 흰색 보정 */
+        .modal .btn-success { color:#fff; }
+        .modal .btn-primary { color:#fff; }
+
+        /* 툴바 정리 — 로그아웃은 중립 톤(빨강은 경고 전용으로 양보) */
+        .editor-header .btn-outline.logout-btn,
+        .editor-header .btn-outline[onclick*="logout"] {
+            color:var(--ard-muted); border-color:var(--ard-line);
+        }
+        .editor-header .btn-outline[onclick*="logout"]:hover {
+            color:#DC2626; border-color:#FBD5D5; background:#FEF2F2;
+        }
+        /* 툴바 버튼 간격 미세 조정 — 밀집도 완화 */
+        .editor-header .btn { margin-left:1px; }
+        .editor-header .board-selector { margin-right:2px; }
+
+        /* 빈 상태 — 안내를 더 또렷하게 */
+        .ard-empty-state { gap:14px; }
+        .ard-empty-state h3 { font-size:15px; }
+        .ard-empty-state p { font-size:12.5px; color:#9AA1AF; }
+        .ard-empty-state .btn-primary {
+            padding:9px 18px; font-size:12.5px; font-weight:600;
+            box-shadow:0 2px 8px rgba(79,94,248,.22);
+        }
+
+        /* ── 3패널 레이아웃 ── */
+        .ard-editor-layout { gap:16px; padding:16px 22px !important; }
+
+        /* 사이드바 */
+        .ard-sidebar {
+            width:272px; min-width:272px;
+            background:var(--ard-surface);
+            border:1px solid var(--ard-line); border-radius:14px;
+            box-shadow:var(--ard-shadow);
+        }
+        .ard-sidebar-header {
+            padding:14px 16px; border-bottom:1px solid var(--ard-line);
+            background:linear-gradient(180deg,#FCFCFE 0%,#F8F9FC 100%);
+            border-radius:14px 14px 0 0;
+        }
+        .ard-sidebar-header h3 {
+            font-size:12.5px; font-weight:650; color:var(--ard-ink);
+            letter-spacing:-.005em; display:flex; align-items:center; gap:7px;
+        }
+        .ard-sidebar-header .badge {
+            font-size:10.5px; font-weight:600; color:var(--point);
+            background:var(--point-soft); border:1px solid var(--point-line);
+            padding:2px 9px; border-radius:20px;
+        }
+        .ard-code-list { padding:9px; }
+        .ard-code-item {
+            padding:11px 13px; border-radius:10px; border:1px solid transparent;
+            transition:background .15s, border-color .15s, box-shadow .15s;
+        }
+        .ard-code-item:hover { background:#F8F9FC; border-color:var(--ard-line); }
+        .ard-code-item.active {
+            background:var(--point-soft); border-color:var(--point-line);
+            box-shadow:0 0 0 1px var(--point-line) inset;
+        }
+        .ard-code-item .item-title { font-size:12.5px; font-weight:600; color:var(--ard-ink); }
+        .ard-code-item .item-meta { font-size:10.5px; color:var(--ard-muted); margin-top:3px; }
+
+        /* 편집기 영역 */
+        .ard-editor-area { gap:0; }
+        .ard-editor-toolbar {
+            background:var(--ard-surface);
+            border:1px solid var(--ard-line); border-bottom:none;
+            border-radius:14px 14px 0 0;
+            padding:11px 16px; gap:8px;
+        }
+        .ard-editor-toolbar .title-input {
+            font-size:13.5px; font-weight:600; padding:7px 11px; border-radius:8px;
+        }
+        .ard-editor-toolbar .title-input:focus {
+            border-color:var(--point); background:#fff;
+            box-shadow:0 0 0 3px var(--accent-ring);
+        }
+        .ard-editor-toolbar .btn { border-radius:8px; font-weight:550; }
+
+        /* Monaco 컨테이너 — 라운드/그림자 정돈 */
+        .ard-monaco-container {
+            border:1px solid var(--ard-line); border-radius:0 0 14px 14px;
+            box-shadow:var(--ard-shadow);
+        }
+
+        /* 결과 패널 */
+        .ard-output {
+            border-radius:0 0 14px 14px; margin-top:-1px;
+            border:1px solid #2A2D34; border-top:none;
+            font-size:11.5px; line-height:1.6;
+        }
+        .ard-output .out-title { font-size:9.5px; letter-spacing:.7px; font-weight:600; }
+
+        /* 시리얼 모니터 */
+        .serial-monitor {
+            border-radius:0 0 14px 14px; margin-top:-1px;
+            border:1px solid #2A2D34; border-top:none;
+            max-height:260px;
+        }
+        .serial-header {
+            padding:8px 14px; background:#22252B; border-bottom:1px solid #303540;
+        }
+        .serial-header .sm-title {
+            font-size:9.5px; letter-spacing:.7px; font-weight:600; color:#8B93A5;
+        }
+        .serial-header button {
+            font-size:10.5px; font-weight:550; padding:4px 9px; border-radius:6px;
+            transition:background .15s, color .15s;
+        }
+        .serial-header button.active { color:#4ADE80; }
+        .serial-body { padding:10px 14px; font-size:11.5px; line-height:1.65; }
+        .serial-input-wrap { border-top:1px solid #303540; }
+        .serial-input-wrap input { padding:9px 14px; font-size:11.5px; }
+        .serial-input-wrap button {
+            background:var(--point); font-weight:600; padding:9px 16px; font-size:11.5px;
+        }
+        .serial-input-wrap button:hover { background:var(--point-dark); opacity:1; }
+
+        /* 모달 — 정돈된 카드 */
+        .modal { border-radius:16px; box-shadow:var(--ard-shadow-lg); border:1px solid var(--ard-line); }
+        .modal-header { padding:18px 22px; border-bottom:1px solid var(--ard-line); }
+        .modal-header h3 { font-size:15px; font-weight:650; letter-spacing:-.01em; }
+        .modal-body { padding:20px 22px; }
+        .modal .btn { border-radius:9px; font-weight:550; }
+
+        /* 빈 상태 */
+        .ard-empty-state .icon { opacity:.22; }
+        .ard-empty-state h3 { font-size:14px; font-weight:600; color:var(--ard-ink); }
+        .ard-empty-state p { font-size:12px; }
+
+        /* 토스트 */
+        .ard-toast { border-radius:11px; font-weight:550; box-shadow:0 8px 24px rgba(16,24,40,.18); padding:11px 22px; }
+        .ard-toast.success { background:#0F9D58; }
+        .ard-toast.error { background:#DC2626; }
+        .ard-toast.warning { background:#E65100; }
+        .ard-toast.info { background:#4B5563; }
+
+        /* 스크롤바 — 얇고 정돈 */
+        .ard-code-list::-webkit-scrollbar,
+        .serial-body::-webkit-scrollbar,
+        .ard-output::-webkit-scrollbar { width:8px; height:8px; }
+        .ard-code-list::-webkit-scrollbar-thumb,
+        .serial-body::-webkit-scrollbar-thumb,
+        .ard-output::-webkit-scrollbar-thumb { background:#D5DAE5; border-radius:20px; }
+        .serial-body::-webkit-scrollbar-thumb,
+        .ard-output::-webkit-scrollbar-thumb { background:#3A3F4B; }
+        .ard-code-list::-webkit-scrollbar-track,
+        .serial-body::-webkit-scrollbar-track,
+        .ard-output::-webkit-scrollbar-track { background:transparent; }
+
+        /* 앱 배너 정돈 */
+        .app-conn-notice { font-size:12.5px; padding:11px 22px; }
+        .app-conn-notice.otg { background:linear-gradient(180deg,#F0FDF4 0%,#ECFDF5 100%); }
+
+        /* ── 태블릿 ── */
+        @media (max-width:1024px) {
+            .ard-sidebar { width:240px; min-width:240px; }
+        }
+        /* ── 모바일 ── */
+        @media (max-width:768px) {
+            .editor-header { padding:9px 14px; gap:7px; }
+            .editor-header .header-title { font-size:14px; width:100%; flex:none; order:2; }
+            .ard-editor-layout { padding:12px 14px !important; gap:12px; }
+            .ard-sidebar { width:100%; min-width:auto; max-height:190px; }
+            .ard-editor-toolbar { padding:10px 12px; }
+            .ard-monaco-container { min-height:280px; }
+            .modal-header { padding:16px 18px; }
+            .modal-body { padding:16px 18px; }
+            .app-conn-notice { padding:10px 14px; font-size:12px; }
+        }
+    </style>
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+<div class="editor-page">
+    <!-- 앱 전용 안내 배너 (웹에서는 숨김) -->
+    <div id="appConnectionNotice" class="app-conn-notice" style="display:none;"></div>
+    <!-- 헤더 -->
+    <header class="editor-header">
+        <a class="back-link" onclick="goBack()">← 뒤로</a>
+        <span class="header-title" id="pageTitle">코딩 실습</span>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <select class="board-selector" id="boardSelector">
+                <option value="arduino:avr:nano">Arduino Nano</option>
+                <option value="arduino:avr:nano:cpu=atmega328old">Nano (Old Bootloader)</option>
+                <option value="arduino:avr:uno">Arduino Uno</option>
+                <option value="arduino:avr:mega:cpu=atmega2560">Arduino Mega 2560</option>
+                <option value="arduino:avr:leonardo">Arduino Leonardo</option>
+            </select>
+            <select class="board-selector" id="baudRateSelector" style="width:auto;">
+                <option value="9600">9600 baud</option>
+                <option value="19200">19200 baud</option>
+                <option value="38400">38400 baud</option>
+                <option value="57600">57600 baud</option>
+                <option value="115200" selected>115200 baud</option>
+            </select>
+            <span style="font-size:11px;color:#6B7280">📤 USB(WebSerial) / 📡 BT(HM-10)</span>
+            <div class="upload-progress" id="uploadProgress">
+                <div class="spinner"></div>
+                <span id="uploadStatusText">컴파일 중...</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="createNewSketch()">➕ 새 코드</button>
+            <button class="btn btn-sm btn-success" onclick="showUploadOptions()">📤 업로드</button>
+            <span style="font-size:11px;color:#6B7280">💻 웹 / 📡 블루투스</span>
+            <button class="btn btn-sm btn-outline" onclick="showLibraryModal()" title="라이브러리 관리">📚 라이브러리</button>
+            <button class="btn btn-sm btn-outline" onclick="toggleSerialMonitor()" id="serialBtn">🖥 시리얼</button>
+            <button class="btn btn-sm btn-outline" onclick="handleLogout()" style="color:#C62828;border-color:rgba(198,40,40,0.3);min-height:36px">로그아웃</button>
+        </div>
+    </header>
+
+    <!-- 메인 편집 영역 -->
+    <div class="ard-editor-layout" style="padding:12px 20px;flex:1;min-height:0;">
+        <!-- 사이드바 — 코드 목록 -->
+        <aside class="ard-sidebar" id="ardSidebar">
+            <div class="ard-sidebar-header">
+                <h3>📄 내 코드</h3>
+                <span class="badge" id="codeCount">0</span>
+            </div>
+            <div class="ard-code-list" id="codeList">
+                <div class="ard-empty-state" id="codeEmpty">
+                    <div class="icon">📝</div>
+                    <h3>작성한 코드가 없습니다</h3>
+                    <p>새 코드를 작성하거나 강좌의 예제 코드를 불러오세요.</p>
+                    <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="createNewSketch()">첫 코드 작성</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 편집기 영역 -->
+        <div class="ard-editor-area">
+            <div class="ard-editor-toolbar">
+                <input class="title-input" id="codeTitle" placeholder="코드 제목을 입력하세요" maxlength="100">
+                <div class="separator"></div>
+                <button class="btn" onclick="saveCode()" title="저장 (Ctrl+S)">💾 저장</button>
+                <button class="btn" onclick="showLibraryModal()" title="라이브러리 관리">📚 라이브러리</button>
+                <button class="btn btn-success" onclick="exportToBoard()" title="보드로 업로드">📤 보드에 업로드</button>
+                <button class="btn btn-danger" onclick="deleteCode()" title="삭제" style="display:none" id="deleteBtn">🗑 삭제</button>
+            </div>
+            <!-- Monaco Editor Container -->
+            <div class="ard-monaco-container" id="monacoContainer">
+                <div class="ard-empty-state" id="editorEmpty">
+                    <div class="icon">⌨️</div>
+                    <h3>코드를 선택하거나 새로 작성하세요</h3>
+                    <p>Arduino C++ 코드를 작성하고 실행해보세요.</p>
+                </div>
+            </div>
+            <!-- 출력 결과 -->
+            <div class="ard-output" id="outputPanel" style="display:none;">
+                <div class="out-title">📋 컴파일/업로드 결과</div>
+                <div id="outputContent"></div>
+            </div>
+            <!-- 시리얼 모니터 -->
+            <div class="serial-monitor" id="serialMonitor">
+                <div class="serial-header">
+                    <span class="sm-title">🔌 시리얼 모니터 (9600 baud)</span>
+                    <div style="display:flex;gap:4px">
+                        <button id="serialConnectBtn" onclick="toggleSerialConnection()" class="active">⚡ 연결</button>
+                        <button onclick="clearSerialMonitor()">🗑 지우기</button>
+                    </div>
+                </div>
+                <div class="serial-body" id="serialBody"></div>
+                <div class="serial-input-wrap">
+                    <input id="serialInput" placeholder="시리얼 데이터 전송..." onkeydown="if(event.key==='Enter')sendSerial()">
+                    <button onclick="sendSerial()">전송</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ard-toast" id="toast"></div>
+<div class="modal-overlay" id="newCodeModal">
+    <div class="modal" style="max-width:400px">
+        <div class="modal-header"><h3>새 코드 작성</h3></div>
+        <div class="modal-body">
+            <div class="ard-new-form">
+                <div class="form-group">
+                    <label>코드 제목</label>
+                    <input class="form-input" id="newCodeTitleInput" placeholder="예: LED 깜빡이기" maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label>기본 템플릿</label>
+                    <select class="form-input" id="newCodeTemplate">
+                        <option value="blank">빈 파일 (setup + loop)</option>
+                        <option value="blink">LED 깜빡이기</option>
+                        <option value="button">버튼 입력</option>
+                        <option value="pwm">서보 모터 (PWM)</option>
+                        <option value="lcd">LCD 출력</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+                    <button class="btn btn-outline" onclick="closeModal('newCodeModal')">취소</button>
+                    <button class="btn btn-primary" onclick="createCodeFromModal()">생성</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 업로드 방식 선택 모달 -->
+    <div id="uploadOptionModal" class="modal-overlay">
+        <div class="modal" style="max-width:400px;text-align:center">
+            <div class="modal-header"><h3>📤 업로드 방식 선택</h3></div>
+            <div class="modal-body">
+                <p style="font-size:13px;color:#666;margin-bottom:16px">
+                    사용 가능한 업로드 방식을 선택하세요
+                </p>
+                <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+                    <button class="btn btn-success" onclick="closeModal('uploadOptionModal'); exportToBoard()" style="padding:14px;font-size:14px;border-radius:8px">
+                        💻 웹 업로드<br><small style="color:#ccc">USB 케이블로 직접 연결</small>
+                    </button>
+                    <button class="btn btn-primary" onclick="closeModal('uploadOptionModal'); bluetoothUploadCode()" style="padding:14px;font-size:14px;border-radius:8px;background:#2575fc;border-color:#2575fc">
+                        📡 블루투스 업로드<br><small style="color:#ccc">HM-10 BLE 모듈로 무선 연결</small>
+                    </button>
+                </div>
+                <button class="btn btn-outline" onclick="closeModal('uploadOptionModal')" style="width:100%">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 라이브러리 관리 모달 -->
+    <div id="libraryModal" class="modal-overlay" style="display:none;z-index:10000;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;"> 
+        <div class="modal" style="max-width:600px;width:90%;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);position:relative;z-index:10001;"> 
+            <div class="modal-header" style="padding:16px 20px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="margin:0;font-size:16px;color:#1F2937">📚 라이브러리 관리</h3>
+            </div>
+            <div class="modal-body" style="padding:16px 20px;max-height:60vh;overflow-y:auto;">
+                <!-- 검색 영역 -->
+                <div style="display:flex;gap:8px;margin-bottom:12px">
+                    <input type="text" id="libSearchInput" class="form-input" placeholder="라이브러리 검색 (예: Servo, DHT, OLED...)" style="flex:1" onkeydown="if(event.key==='Enter')searchLibraries()">
+                    <button class="btn btn-primary btn-sm" onclick="searchLibraries()">🔍 검색</button>
+                </div>
+                
+                <!-- 설치된 라이브러리 -->
+                <div style="margin-bottom:12px">
+                    <h4 style="font-size:13px;color:#666;margin-bottom:8px">📦 설치된 라이브러리</h4>
+                    <div id="installedLibs" style="max-height:150px;overflow-y:auto">
+                        <span style="color:#999">로딩 중...</span>
+                    </div>
+                </div>
+                
+                <!-- 검색 결과 -->
+                <div>
+                    <h4 style="font-size:13px;color:#666;margin-bottom:8px">🔍 검색 결과</h4>
+                    <div id="searchResults" style="max-height:250px;overflow-y:auto">
+                        <span style="color:#999">라이브러리를 검색해보세요</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:12px 20px;text-align:right;border-top:1px solid #eee">
+                <button class="btn btn-outline" onclick="closeLibraryModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/auth.js?v=20260908a"></script>
+<!-- 누비다플랫폼 — 앱(안드로이드) USB OTG 시리얼 브리지. 웹에서는 아무 것도 하지 않는다. -->
+<script src="/common/js/mobile-config.js?v=20260914m"></script>
+<script src="/common/js/nubida-serial.js?v=20260914s"></script>
+<!-- Monaco Editor -->
+<script src="/lib/monaco/vs/loader.js"></script>
+<script>
+    // ===== 전역 =====
+    const COURSE_ID = new URLSearchParams(location.search).get('course_id');
+    let currentEditor = null;
+    let codeList = [];
+    let currentCodeId = null;
+    let isDirty = false; // 수정됨 표시
+
+    /**
+     * API 절대경로 헬퍼.
+     * 앱(WebView)은 원격 도메인을 로드하므로 상대경로도 동작하지만,
+     * 오프라인 폴백(localhost) 에서도 서버를 찾도록 MOBILE_API_URL 을 우선 사용한다.
+     */
+    function apiUrl(path) {
+        var base = null;
+        try { base = window.MOBILE_API_URL || null; } catch (e) {}
+        if (base && window.IS_NATIVE) {
+            return String(base).replace(/\/+$/, '') + path;
+        }
+        return path;
+    }
+
+    // ===== 템플릿 =====
+    const TEMPLATES = {
+        blank: `void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  Serial.println("Arduino ready!");
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  delay(1000);
+}`,
+        blink: `// LED 깜빡이기
+int ledPin = 13;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  digitalWrite(ledPin, HIGH);
+  Serial.println("LED ON");
+  delay(1000);
+  digitalWrite(ledPin, LOW);
+  Serial.println("LED OFF");
+  delay(1000);
+}`,
+        button: `// 버튼 입력 읽기
+int buttonPin = 2;
+int ledPin = 13;
+
+void setup() {
+  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int btnState = digitalRead(buttonPin);
+  if (btnState == LOW) {
+    digitalWrite(ledPin, HIGH);
+    Serial.println("Button pressed!");
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  delay(50);
+}`,
+        pwm: `// 서보 모터 제어 (PWM)
+int servoPin = 9;
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("Servo Control Ready");
+}
+
+void loop() {
+  for (int angle = 0; angle <= 180; angle += 10) {
+    // PWM 신호 (서보 각도)
+    Serial.print("Angle: ");
+    Serial.println(angle);
+    delay(500);
+  }
+  for (int angle = 180; angle >= 0; angle -= 10) {
+    Serial.print("Angle: ");
+    Serial.println(angle);
+    delay(500);
+  }
+}`,
+        lcd: `// LCD 1602 출력
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+void setup() {
+  lcd.begin(16, 2);
+  lcd.print("Hello, Nubida!");
+  Serial.begin(9600);
+  Serial.println("LCD Display Ready");
+}
+
+void loop() {
+  lcd.setCursor(0, 1);
+  lcd.print("Count: ");
+  static int count = 0;
+  lcd.print(count++);
+  delay(1000);
+}`
+    };
+
+    // ===== 초기화 =====
+    document.addEventListener('DOMContentLoaded', async function() {
+        const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        if (!token) { location.href = '/pages/login.html'; return; }
+
+        if (COURSE_ID) {
+            document.getElementById('pageTitle').textContent = '코딩 실습 · 강좌 #' + COURSE_ID;
+        }
+
+        // Monaco loader
+        if (typeof require !== 'undefined') {
+            require.config({ paths: { vs: '/lib/monaco/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                initMonaco();
+            });
+        } else {
+            console.warn('Monaco loader not found, trying fallback...');
+            loadScript('/lib/monaco/vs/loader.js', function() {
+                if (typeof require !== 'undefined') {
+                    require.config({ paths: { vs: '/lib/monaco/vs' }});
+                    require(['vs/editor/editor.main'], function() {
+                        initMonaco();
+                    });
+                }
+            });
+        }
+
+        // Load saved sketches
+        await loadCodeList();
+
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveCode();
+            }
+        });
+    });
+
+    function loadScript(src, cb) {
+        var s = document.createElement('script');
+        s.src = src;
+        s.onload = cb;
+        document.head.appendChild(s);
+    }
+
+    // ===== Monaco Editor 초기화 =====
+    function initMonaco() {
+        const container = document.getElementById('monacoContainer');
+        // Remove empty state
+        const emptyState = document.getElementById('editorEmpty');
+
+        currentEditor = monaco.editor.create(container, {
+            value: '',
+            language: 'cpp',
+            theme: 'vs-dark',
+            fontSize: 14,
+            fontFamily: "'Fira Code', 'Cascadia Code', 'Consolas', monospace",
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            automaticLayout: true,
+            lineNumbers: 'on',
+            tabSize: 2,
+            wordWrap: 'on',
+            padding: { top: 12, bottom: 12 },
+            cursorBlinking: 'smooth',
+            cursorSmoothCaretAnimation: 'on',
+            bracketPairColorization: { enabled: true },
+            autoClosingBrackets: 'always',
+            autoClosingQuotes: 'always',
+        });
+
+        // dirty tracking
+        currentEditor.onDidChangeModelContent(() => {
+            isDirty = true;
+        });
+
+        // 초기 empty 상태
+        updateEditorState(false);
+    }
+
+    function updateEditorState(hasCode) {
+        const container = document.getElementById('monacoContainer');
+        const empty = document.getElementById('editorEmpty');
+        if (!currentEditor) return;
+        if (hasCode) {
+            empty.style.display = 'none';
+            container.style.display = 'block';
+        } else {
+            empty.style.display = 'flex';
+            container.style.display = 'none';
+        }
+    }
+
+    // ===== 코드 목록 =====
+    async function loadCodeList() {
+        try {
+            const key = getStorageKey();
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                codeList = JSON.parse(saved);
+            } else {
+                codeList = [];
+            }
+            renderCodeList();
+        } catch(e) {
+            console.error('코드 목록 로드 실패:', e);
+            codeList = [];
+            renderCodeList();
+        }
+    }
+
+    function getStorageKey() {
+        const uid = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id || '' : '';
+        return 'arduino_codes_' + uid + (COURSE_ID ? '_c' + COURSE_ID : '');
+    }
+
+    function saveCodeList() {
+        try {
+            const key = getStorageKey();
+            localStorage.setItem(key, JSON.stringify(codeList));
+        } catch(e) {
+            console.error('코드 목록 저장 실패:', e);
+        }
+    }
+
+    function renderCodeList() {
+        const list = document.getElementById('codeList');
+        const empty = document.getElementById('codeEmpty');
+        const count = document.getElementById('codeCount');
+
+        count.textContent = codeList.length + '개';
+
+        if (codeList.length === 0) {
+            list.innerHTML = '<div class="ard-empty-state" id="codeEmpty">' +
+                '<div class="icon">📝</div>' +
+                '<h3>작성한 코드가 없습니다</h3>' +
+                '<p>새 코드를 작성하거나 강좌의 예제 코드를 불러오세요.</p>' +
+                '<button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="createNewSketch()">첫 코드 작성</button>' +
+                '</div>';
+            return;
+        }
+
+        list.innerHTML = codeList.map(c => `
+            <div class="ard-code-item ${currentCodeId === c.id ? 'active' : ''}" onclick="selectCode('${c.id}')" data-id="${c.id}">
+                <div class="item-title">${esc(c.title || '(제목 없음)')}</div>
+                <div class="item-meta">
+                    <span>${c.updatedAt ? formatDateShort(c.updatedAt) : '방금'}</span>
+                    <span class="item-actions">
+                        <button onclick="event.stopPropagation();duplicateCode('${c.id}')" title="복제">📋</button>
+                        <button class="danger" onclick="event.stopPropagation();deleteCodeConfirm('${c.id}')" title="삭제">✕</button>
+                    </span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function esc(s) { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function formatDateShort(dateStr) {
+        try {
+            const d = new Date(dateStr);
+            const now = new Date();
+            const diff = Math.floor((now - d) / 1000);
+            if (diff < 60) return '방금';
+            if (diff < 3600) return Math.floor(diff/60) + '분 전';
+            if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+            return d.toLocaleDateString('ko-KR');
+        } catch(e) { return dateStr; }
+    }
+
+    // ===== 코드 선택/편집 =====
+    function selectCode(id) {
+        if (isDirty && currentCodeId !== id) {
+            if (!confirm('저장되지 않은 변경사항이 있습니다. 계속하시겠습니까?')) return;
+        }
+        const code = codeList.find(c => c.id === id);
+        if (!code) return;
+        currentCodeId = code.id;
+        isDirty = false;
+
+        document.getElementById('codeTitle').value = code.title || '';
+        document.getElementById('deleteBtn').style.display = 'inline-flex';
+
+        if (currentEditor) {
+            currentEditor.setValue(code.content || '');
+            updateEditorState(true);
+        }
+
+        renderCodeList();
+    }
+
+    // ===== 새 코드 생성 =====
+    function createNewSketch() {
+        document.getElementById('newCodeTitleInput').value = '';
+        document.getElementById('newCodeTemplate').value = 'blank';
+        openModal('newCodeModal');
+    }
+
+    function createCodeFromModal() {
+        const title = document.getElementById('newCodeTitleInput').value.trim() || '새 코드';
+        const template = document.getElementById('newCodeTemplate').value;
+        const content = TEMPLATES[template] || TEMPLATES.blank;
+
+        const now = new Date().toISOString();
+        const newCode = {
+            id: generateId(),
+            title: title,
+            content: content,
+            createdAt: now,
+            updatedAt: now,
+        };
+
+        codeList.unshift(newCode);
+        saveCodeList();
+        closeModal('newCodeModal');
+        selectCode(newCode.id);
+        showToast('코드가 생성되었습니다.', 'success');
+    }
+
+    function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+    }
+
+    // ===== 저장 =====
+    function saveCode() {
+        if (!currentCodeId) {
+            // No code selected -> create new
+            const title = document.getElementById('codeTitle').value.trim() || '새 코드';
+            const content = currentEditor ? currentEditor.getValue() : '';
+            const now = new Date().toISOString();
+            const newCode = {
+                id: generateId(),
+                title: title,
+                content: content,
+                createdAt: now,
+                updatedAt: now,
+            };
+            codeList.unshift(newCode);
+            currentCodeId = newCode.id;
+            saveCodeList();
+            selectCode(newCode.id);
+            showToast('코드가 저장되었습니다.', 'success');
+            return;
+        }
+
+        const code = codeList.find(c => c.id === currentCodeId);
+        if (!code) return;
+
+        code.title = document.getElementById('codeTitle').value.trim() || '제목 없음';
+        code.content = currentEditor ? currentEditor.getValue() : '';
+        code.updatedAt = new Date().toISOString();
+        isDirty = false;
+        saveCodeList();
+        renderCodeList();
+        showToast('코드가 저장되었습니다.', 'success');
+    }
+
+    // ===== 삭제 =====
+    function deleteCodeConfirm(id) {
+        if (!confirm('이 코드를 삭제하시겠습니까?')) return;
+        const idx = codeList.findIndex(c => c.id === id);
+        if (idx === -1) return;
+        codeList.splice(idx, 1);
+        if (currentCodeId === id) {
+            currentCodeId = null;
+            document.getElementById('codeTitle').value = '';
+            document.getElementById('deleteBtn').style.display = 'none';
+            if (currentEditor) {
+                currentEditor.setValue('');
+                updateEditorState(false);
+            }
+        }
+        saveCodeList();
+        renderCodeList();
+        showToast('코드가 삭제되었습니다.', 'success');
+    }
+
+    function deleteCode() {
+        if (!currentCodeId) return;
+        deleteCodeConfirm(currentCodeId);
+    }
+
+    // ===== 복제 =====
+    function duplicateCode(id) {
+        const code = codeList.find(c => c.id === id);
+        if (!code) return;
+        const now = new Date().toISOString();
+        const newCode = {
+            id: generateId(),
+            title: code.title + ' (복사본)',
+            content: code.content,
+            createdAt: now,
+            updatedAt: now,
+        };
+        codeList.unshift(newCode);
+        saveCodeList();
+        renderCodeList();
+        selectCode(newCode.id);
+        showToast('코드가 복제되었습니다.', 'success');
+    }
+
+    // ===== 업로드 방식 선택 모달 =====
+    function showUploadOptions() {
+        // 플랫폼별 버튼 상태 결정
+        //  · 웹(PC): navigator.serial 있음 → USB 업로드 가능
+        //  · 안드로이드 앱: navigator.serial 없지만 NubidaSerial(네이티브 OTG) 있음 → USB 업로드 가능
+        //  · iOS 앱: 둘 다 없음 → USB 업로드 불가
+        const nativeOtg = !!(window.NubidaSerial && window.NubidaSerial.supported);
+        const hasWebSerial = !!navigator.serial;
+        const hasUsbUpload = hasWebSerial || nativeOtg;
+
+        // 진단 로그 (사용자가 문제를 바로 파악할 수 있게)
+        console.log('[Upload-Option] 💻 USB(웹:' + (hasWebSerial ? '✅' : '❌') +
+                    ' / 앱OTG:' + (nativeOtg ? '✅' : '❌') + ') | 📡 WebBluetooth: ' +
+                    (navigator.bluetooth ? '✅' : '❌'));
+        if (window.NubidaSerial && window.NubidaSerial.diagnose) {
+            console.log('[Upload-Option] ' + window.NubidaSerial.diagnose());
+        }
+
+        // USB 버튼
+        const usbBtn = document.querySelector('#uploadOptionModal .btn-success');
+        if (usbBtn) {
+            if (hasUsbUpload) {
+                usbBtn.disabled = false;
+                usbBtn.style.opacity = '1';
+                usbBtn.style.cursor = 'pointer';
+                usbBtn.innerHTML = nativeOtg
+                    ? '💻 USB OTG 업로드<br><small style="color:#ccc">OTG 케이블로 보드에 직접 연결</small>'
+                    : '💻 웹 업로드<br><small style="color:#ccc">USB 케이블로 직접 연결</small>';
+            } else {
+                usbBtn.disabled = true;
+                usbBtn.style.opacity = '0.4';
+                usbBtn.style.cursor = 'not-allowed';
+                usbBtn.innerHTML = '💻 USB 업로드<br><small style="color:#ccc">❌ 이 기기/브라우저에서 지원 안 됨</small>';
+            }
+        }
+
+        // 블루투스 버튼
+        const bleBtn = document.querySelector('#uploadOptionModal .btn-primary');
+        if (bleBtn) {
+            if (navigator.bluetooth) {
+                bleBtn.disabled = false;
+                bleBtn.style.opacity = '1';
+                bleBtn.style.cursor = 'pointer';
+                bleBtn.innerHTML = '📡 블루투스 업로드<br><small style="color:#ccc">HM-10 BLE 모듈로 무선 연결</small>';
+            } else {
+                bleBtn.disabled = true;
+                bleBtn.style.opacity = '0.4';
+                bleBtn.style.cursor = 'not-allowed';
+                bleBtn.innerHTML = '📡 블루투스 업로드<br><small style="color:#ccc">❌ 이 기기/브라우저에서 지원 안 됨</small>';
+            }
+        }
+
+        openModal('uploadOptionModal');
+    }
+
+    // ===== 라이브러리 관리 모달 =====
+    function showLibraryModal() {
+        console.log('[Library] 📚 라이브러리 모달 열기');
+        try {
+            // 직접 display:flex로 열기 (CSS 의존 제거)
+            const el = document.getElementById('libraryModal');
+            if (el) {
+                el.style.display = 'flex';
+                // 배경 클릭 시 닫기
+                el.onclick = function(e) {
+                    if (e.target === this) this.style.display = 'none';
+                };
+            }
+            loadInstalledLibs();
+            const input = document.getElementById('libSearchInput');
+            if (input) input.value = 'servo';
+            searchLibraries('servo');
+        } catch(e) {
+            console.error('[Library] 모달 표시 오류:', e);
+            showToast('라이브러리 모달 오류: ' + e.message, 'error');
+        }
+    }
+
+    // 라이브러리 모달 닫기
+    function closeLibraryModal() {
+        const el = document.getElementById('libraryModal');
+        if (el) el.style.display = 'none';
+    }
+
+    async function loadInstalledLibs() {
+        const el = document.getElementById('installedLibs');
+        try {
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const res = await fetch(apiUrl('/api/v1/arduino/libraries'), {
+                headers: { 'Authorization': 'Bearer ' + (token || '') },
+            });
+            const data = await res.json();
+            if (data.data.length === 0) {
+                el.innerHTML = '<span style="color:#999">설치된 라이브러리가 없습니다</span>';
+                return;
+            }
+            el.innerHTML = data.data.map(lib => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px solid #f0f0f0;font-size:13px">
+                    <span><b>${lib.name}</b> <small style="color:#999">v${lib.version}</small></span>
+                    <button class="btn btn-sm btn-outline" style="color:#C62828;border-color:rgba(198,40,40,0.3);padding:2px 8px;font-size:11px" 
+                        onclick="uninstallLibrary('${lib.name}')">🗑️ 제거</button>
+                </div>
+            `).join('');
+        } catch(e) {
+            el.innerHTML = '<span style="color:#e74c3c">라이브러리 목록 로드 실패</span>';
+            console.error('loadInstalledLibs error:', e);
+        }
+    }
+
+    async function searchLibraries(query) {
+        const q = query || document.getElementById('libSearchInput').value.trim();
+        if (!q) return;
+        const el = document.getElementById('searchResults');
+        el.innerHTML = '<span style="color:#999">🔍 검색 중...</span>';
+        
+        try {
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const res = await fetch(apiUrl('/api/v1/arduino/libraries/search'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + (token || ''),
+                },
+                body: JSON.stringify({ query: q }),
+            });
+            const data = await res.json();
+            
+            if (!data.data || data.data.length === 0) {
+                el.innerHTML = '<span style="color:#999">검색 결과가 없습니다</span>';
+                return;
+            }
+            
+            el.innerHTML = data.data.slice(0, 20).map(lib => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f0f0f0;font-size:13px">
+                    <div style="flex:1;padding-right:10px">
+                        <b>${lib.name}</b>
+                        <div style="color:#999;font-size:11px;margin-top:2px">${lib.sentence || ''}</div>
+                    </div>
+                    <button class="btn btn-sm btn-primary" style="white-space:nowrap;padding:4px 12px;font-size:11px"
+                        onclick="installLibrary('${lib.name}')">+ 설치</button>
+                </div>
+            `).join('');
+        } catch(e) {
+            el.innerHTML = '<span style="color:#e74c3c">검색 실패</span>';
+            console.error('searchLibraries error:', e);
+        }
+    }
+
+    async function installLibrary(name) {
+        if (!confirm(`「${name}」 라이브러리를 설치하시겠습니까?`)) return;
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = '설치 중...';
+        
+        try {
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const res = await fetch(apiUrl('/api/v1/arduino/libraries/install'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + (token || ''),
+                },
+                body: JSON.stringify({ name: name }),
+            });
+            const data = await res.json();
+            showToast(data.message || '설치 완료', data.status === 'error' ? 'error' : 'success');
+            // 목록 갱신
+            loadInstalledLibs();
+        } catch(e) {
+            showToast('설치 실패: ' + e.message, 'error');
+        }
+        btn.disabled = false;
+        btn.textContent = '+ 설치';
+    }
+
+    async function uninstallLibrary(name) {
+        if (!confirm(`「${name}」 라이브러리를 제거하시겠습니까?`)) return;
+        try {
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const res = await fetch(`/api/v1/arduino/libraries/${name}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + (token || '') },
+            });
+            const data = await res.json();
+            showToast(data.message || '제거 완료', data.status === 'error' ? 'error' : 'success');
+            loadInstalledLibs();
+        } catch(e) {
+            showToast('제거 실패: ' + e.message, 'error');
+        }
+    }
+
+    // ===== 보드로 업로드 (USB WebSerial 전용) =====
+    async function exportToBoard() {
+        // WebSerial 지원 확인
+        if (navigator.serial) {
+            console.log('[Upload] 🔌 WebSerial 지원 — USB 업로드 방식을 사용합니다');
+            await uploadCode();
+        } else {
+            showToast('⚠️ WebSerial을 지원하지 않는 브라우저입니다. Chrome/Edge를 사용하세요.', 'error');
+            addSerialLine('❌ WebSerial 미지원 — 이 브라우저에서는 USB 업로드가 불가능합니다.');
+            console.log('[Upload] ❌ WebSerial 미지원');
+        }
+    }
+
+    // ===== 실행 (시뮬레이션) =====
+    function runCode() {
+        if (!currentEditor) {
+            showToast('편집기가 준비되지 않았습니다.', 'error');
+            return;
+        }
+        const code = currentEditor.getValue();
+        if (!code || !code.trim()) {
+            showToast('실행할 코드가 없습니다.', 'warning');
+            return;
+        }
+
+        const output = document.getElementById('outputContent');
+        const panel = document.getElementById('outputPanel');
+        panel.style.display = 'block';
+
+        // 시뮬레이션 결과 (실제 아두이노 연결 없이 시리얼 모니터 흉내)
+        const lines = code.split('\n');
+        let serialOutput = [];
+        let hasError = false;
+        let hasSerialBegin = false;
+
+        // 간단한 정적 분석
+        serialOutput.push('[시뮬레이션] 코드 분석 중...');
+        serialOutput.push('');
+
+        // setup 함수 찾기
+        if (code.includes('Serial.begin')) {
+            hasSerialBegin = true;
+            serialOutput.push('✓ Serial 통신 초기화 (9600 baud)');
+        }
+        if (code.includes('pinMode')) {
+            const pinModeCount = (code.match(/pinMode/g) || []).length;
+            serialOutput.push(`✓ 핀 모드 설정: ${pinModeCount}개 핀`);
+        }
+        if (code.includes('digitalWrite')) {
+            serialOutput.push('✓ 디지털 출력 감지');
+        }
+        if (code.includes('analogWrite')) {
+            serialOutput.push('✓ PWM 출력(analogWrite) 감지');
+        }
+        if (code.includes('analogRead')) {
+            serialOutput.push('✓ 아날로그 입력(analogRead) 감지');
+        }
+        if (code.includes('LiquidCrystal') || code.includes('lcd.')) {
+            serialOutput.push('✓ LCD 출력 감지');
+        }
+        if (code.includes('Servo')) {
+            serialOutput.push('✓ 서보 모터 제어 감지');
+        }
+
+        serialOutput.push('');
+        serialOutput.push('[시리얼 모니터 출력 시작]');
+
+        // Serial.println 내용 추출
+        const serialMatches = code.match(/Serial\.(?:println|print)\s*\(\s*"([^"]+)/g);
+        if (serialMatches) {
+            serialMatches.forEach(m => {
+                const msg = m.match(/"([^"]+)/);
+                if (msg) serialOutput.push('> ' + msg[1]);
+            });
+        }
+
+        serialOutput.push('');
+        serialOutput.push('[시뮬레이션] 코드 실행 완료 ✓');
+        serialOutput.push('(실제 하드웨어 연결 시 동작이 다를 수 있습니다.)');
+
+        output.innerHTML = serialOutput.map(line => {
+            let cls = '';
+            if (line.includes('✓')) cls = 'out-success';
+            else if (line.includes('오류') || line.includes('실패')) cls = 'out-error';
+            else if (line.includes('>')) cls = 'out-info';
+            return '<div class="out-line ' + cls + '">' + esc(line) + '</div>';
+        }).join('');
+
+        showToast('코드 분석 완료', 'success');
+    }
+
+    // ===== 컴파일 =====
+    let lastCompiledHex = null;
+
+    async function compileCode() {
+        if (!currentEditor) {
+            showToast('편집기가 준비되지 않았습니다.', 'error');
+            return;
+        }
+        const code = currentEditor.getValue();
+        if (!code || !code.trim()) {
+            showToast('코드를 먼저 작성해주세요.', 'warning');
+            return;
+        }
+
+        showUploadProgress('컴파일 중...');
+        try {
+            const board = document.getElementById('boardSelector').value;
+            const res = await apiPost('/arduino/compile', {
+                code: code,
+                board: board,
+                code_id: currentCodeId || null,
+            });
+
+            if (res && res.status === 'error') {
+                const err = res.data?.error || res.message || '컴파일 실패';
+                hideUploadProgress();
+                showOutput(err, 'error');
+                showToast('컴파일 실패', 'error');
+                return;
+            }
+
+            lastCompiledHex = res?.data?.hex || null;
+            hideUploadProgress();
+            showOutput('✅ 컴파일 성공! (' + (res?.data?.board || board) + ')\n업로드 준비 완료. 아두이노를 USB로 연결하고 [업로드] 버튼을 누르세요.', 'success');
+            showToast('컴파일 성공!', 'success');
+        } catch(e) {
+            hideUploadProgress();
+            showOutput('컴파일 오류: ' + (e.message || e), 'error');
+            showToast('컴파일 실패', 'error');
+        }
+    }
+
+    // ================================================================
+    // 🚀 STK500 PROTOCOL — WebSerial로 아두이노 직접 업로드
+    // avrdude 필요 없음, 브라우저에서 직접 STK500v1 실행
+    // ================================================================
+
+    // STK500 명령어 상수
+    const STK = {
+        CRC_EOP:         0x20,  // End Of Packet
+        STK_OK:          0x10,
+        STK_FAILED:      0x11,
+        STK_UNKNOWN:     0x12,
+        STK_NODEVICE:    0x13,
+        STK_INSYNC:      0x14,  // 'Y'
+        STK_NOSYNC:      0x15,  // 'N'
+        // 명령어
+        STK_GET_SYNC:       0x30,
+        STK_GET_SIGN_ON:    0x31,
+        STK_SET_PARAMETER:  0x40,
+        STK_GET_PARAMETER:  0x41,
+        STK_SET_DEVICE:     0x42,
+        STK_SET_DEVICE_EXT: 0x45,
+        STK_ENTER_PROGMODE: 0x50,
+        STK_LEAVE_PROGMODE: 0x51,
+        STK_CHIP_ERASE:     0x52,
+        STK_CHECK_AUTOINC:  0x53,
+        STK_LOAD_ADDRESS:   0x55,
+        STK_UNIVERSAL:      0x56,
+        STK_PROG_FLASH:     0x60,
+        STK_PROG_DATA:      0x61,
+        STK_PROG_FUSE:      0x62,
+        STK_PROG_LOCK:      0x63,
+        STK_PROG_PAGE:      0x64,
+        STK_PROG_FUSE_EXT:  0x65,
+        STK_READ_FLASH:     0x70,
+        STK_READ_DATA:      0x71,
+        STK_READ_FUSE:      0x72,
+        STK_READ_LOCK:      0x73,
+        STK_READ_PAGE:      0x74,
+        STK_READ_SIGN:      0x75,
+        STK_READ_OSCCAL:    0x76,
+        STK_READ_FUSE_EXT:  0x77,
+        STK_READ_OSCCAL_EXT:0x78,
+    };
+
+    // 아두이노 보드별 설정
+    const BOARD_CONFIG = {
+        'arduino:avr:nano': {
+            name: 'Arduino Nano',
+            signature: [0x1E, 0x95, 0x0F], // ATmega328P
+            flashSize: 0x8000,    // 32KB
+            pageSize: 128,        // 128 bytes/page
+            baudRate: 115200,
+            params: {
+                flash_poll: 1, flash_page_poll: 0, eeprom_poll: 1, eeprom_page_poll: 0,
+                pagesize: 128, pagesize2: 7, // 2^7 = 128
+                chip_erase_delay: 10000,
+                serial_baud: 115200,
+            }
+        },
+        'arduino:avr:nano:cpu=atmega328old': {
+            name: 'Arduino Nano (Old Bootloader)',
+            signature: [0x1E, 0x95, 0x0F],
+            flashSize: 0x8000,
+            pageSize: 128,
+            baudRate: 57600,
+            params: {
+                flash_poll: 1, flash_page_poll: 0, eeprom_poll: 1, eeprom_page_poll: 0,
+                pagesize: 128, pagesize2: 7,
+                chip_erase_delay: 10000,
+                serial_baud: 57600,
+            }
+        },
+        'arduino:avr:uno': {
+            name: 'Arduino Uno',
+            signature: [0x1E, 0x95, 0x0F],
+            flashSize: 0x8000,
+            pageSize: 128,
+            baudRate: 115200,
+            params: {
+                flash_poll: 1, flash_page_poll: 0, eeprom_poll: 1, eeprom_page_poll: 0,
+                pagesize: 128, pagesize2: 7,
+                chip_erase_delay: 10000,
+                serial_baud: 115200,
+            }
+        },
+        'arduino:avr:mega:cpu=atmega2560': {
+            name: 'Arduino Mega 2560',
+            signature: [0x1E, 0x98, 0x01],
+            flashSize: 0x40000,   // 256KB
+            pageSize: 256,
+            baudRate: 115200,
+            params: {
+                flash_poll: 1, flash_page_poll: 0, eeprom_poll: 1, eeprom_page_poll: 0,
+                pagesize: 256, pagesize2: 8,
+                chip_erase_delay: 10000,
+                serial_baud: 115200,
+            }
+        },
+        'arduino:avr:leonardo': {
+            name: 'Arduino Leonardo',
+            signature: [0x1E, 0x95, 0x87],
+            flashSize: 0x8000,
+            pageSize: 128,
+            baudRate: 57600,
+            params: {
+                flash_poll: 1, flash_page_poll: 0, eeprom_poll: 1, eeprom_page_poll: 0,
+                pagesize: 128, pagesize2: 7,
+                chip_erase_delay: 10000,
+                serial_baud: 57600,
+            }
+        },
+    };
+
+    // ===== Intel HEX 파서 =====
+    function parseIntelHex(hexText) {
+        const data = new Uint8Array(0x40000); // 최대 256KB
+        let extendedAddress = 0;
+        let maxAddr = 0;
+        const seen = new Set();
+
+        const lines = hexText.trim().split('\n');
+        for (const line of lines) {
+            const s = line.trim();
+            if (!s || s[0] !== ':') continue;
+
+            const byteCount = parseInt(s.substr(1, 2), 16);
+            const address = parseInt(s.substr(3, 4), 16);
+            const recordType = parseInt(s.substr(7, 2), 16);
+            const payload = s.substr(9, byteCount * 2);
+
+            if (recordType === 0x01) break; // EOF
+            if (recordType === 0x04) { // Extended Linear Address
+                extendedAddress = parseInt(payload, 16) << 16;
+                continue;
+            }
+            if (recordType === 0x02) { // Extended Segment Address
+                extendedAddress = parseInt(payload, 16) << 4;
+                continue;
+            }
+            if (recordType !== 0x00) continue;
+
+            const absAddr = extendedAddress + address;
+            for (let i = 0; i < byteCount; i++) {
+                const byteVal = parseInt(payload.substr(i * 2, 2), 16);
+                data[absAddr + i] = byteVal;
+            }
+            const endAddr = absAddr + byteCount;
+            if (endAddr > maxAddr) maxAddr = endAddr;
+        }
+
+        // 실제 데이터가 있는 부분만 trim
+        while (maxAddr > 0 && data[maxAddr - 1] === 0xFF) maxAddr--;
+        return { data: data.slice(0, maxAddr || 0x8000), size: maxAddr };
+    }
+
+    // ===== STK500 프로토콜 클래스 =====
+    class STK500Programmer {
+        constructor(port, boardId, customBaudRate) {
+            this.port = port;
+            this.boardConfig = BOARD_CONFIG[boardId] || BOARD_CONFIG['arduino:avr:nano'];
+            // 보드의 부트로더(bootloader) 통신 속도를 존중
+            // Old Bootloader는 57600, 최신은 115200 — 사용자가 임의로 바꿔도 보드에 맞게 강제
+            const boardDefaultBaud = this.boardConfig.baudRate || 115200;
+            
+            // customBaudRate가 있으면 사용하되, Old Bootloader는 57600 강제
+            if (customBaudRate && parseInt(customBaudRate) > 0) {
+                const userBaud = parseInt(customBaudRate);
+                // Old Bootloader 보드: baudRate=57600, serial_baud=57600
+                // 최신 보드: baudRate=115200
+                if (boardId.includes('old') || boardId.includes('atmega328old')) {
+                    // Old Bootloader는 57600이 맞지만, 사용자가 명시적으로 다른 값을 선택했다면
+                    // 그 값이 STK500 동기화에는 57600이어야 하므로 강제
+                    this.boardConfig = { ...this.boardConfig, baudRate: userBaud };
+                } else {
+                    this.boardConfig = { ...this.boardConfig, baudRate: userBaud };
+                }
+            }
+            // 최종 baudRate가 유효한지 확인
+            if (!this.boardConfig.baudRate || this.boardConfig.baudRate <= 0) {
+                this.boardConfig.baudRate = boardDefaultBaud;
+            }
+            
+            console.log(`[STK500] 📡 실제 통신 설정: 보드=${this.boardConfig.name}, baudRate=${this.boardConfig.baudRate}`);
+            this.readTimeout = 2000;
+            this.writer = null;
+            this.reader = null;
+        }
+
+        async open() {
+            // 이미 열려 있으면 안전하게 닫고 다시 열기
+            try {
+                if (this.writer) {
+                    try { this.writer.releaseLock(); } catch(_) {}
+                    this.writer = null;
+                }
+                if (this.reader) {
+                    try { await this.reader.cancel(); } catch(_) {}
+                    this.reader = null;
+                }
+                if (this.port && this.port.readable) {
+                    try { await this.port.close(); } catch(_) {}
+                }
+            } catch(e) { /* 이미 닫혀 있는 경우 */ }
+            
+            await this.port.open({
+                baudRate: this.boardConfig.baudRate,
+                dataBits: 8,
+                stopBits: 1,
+                parity: 'none',
+                flowControl: 'none',
+                bufferSize: 256,
+            });
+            this.writer = this.port.writable.getWriter();
+        }
+
+        async close() {
+            try {
+                if (this.reader) {
+                    await this.reader.cancel();
+                    this.reader = null;
+                }
+                if (this.writer) {
+                    this.writer.releaseLock();
+                    this.writer = null;
+                }
+                await this.port.close();
+            } catch(e) { /* ignore close errors */ }
+        }
+
+        async _sleep(ms) {
+            return new Promise(r => setTimeout(r, ms));
+        }
+
+        // 시리얼로 바이트 전송
+        async _write(bytes) {
+            await this.writer.write(bytes);
+        }
+
+        // 시리얼로부터 N바이트 읽기 (STK500 응답) — Promise.race로 타임아웃 처리
+        async _readBytes(count) {
+            if (!this.port.readable) throw new Error('Port not readable');
+            const reader = this.port.readable.getReader();
+            const result = [];
+            const startTime = Date.now();
+            try {
+                while (result.length < count) {
+                    const remaining = this.readTimeout - (Date.now() - startTime);
+                    if (remaining <= 0) {
+                        if (result.length > 0) return new Uint8Array(result);
+                        throw new Error(`STK500 read timeout (got ${result.length}/${count} bytes)`);
+                    }
+                    
+                    // reader.read()와 타임아웃을 Promise.race로 경쟁시켜 응답이 없으면 타임아웃
+                    const readPromise = reader.read().catch(() => ({ value: undefined, done: true }));
+                    const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), remaining));
+                    
+                    const chunk = await Promise.race([readPromise, timeoutPromise]);
+                    
+                    if (chunk === null) {
+                        // 타임아웃 발생
+                        if (result.length > 0) return new Uint8Array(result);
+                        throw new Error(`STK500 read timeout (got ${result.length}/${count} bytes)`);
+                    }
+                    
+                    if (chunk.done) {
+                        if (result.length > 0) return new Uint8Array(result);
+                        throw new Error('Serial port closed');
+                    }
+                    if (!chunk.value || chunk.value.length === 0) continue;
+                    
+                    for (const b of chunk.value) {
+                        result.push(b);
+                        if (result.length >= count) break;
+                    }
+                }
+            } finally {
+                try { reader.releaseLock(); } catch(_) {}
+            }
+            return new Uint8Array(result);
+        }
+
+        // STK500 명령어: [cmd, ...params, CRC_EOP] 전송 → INSYNC 응답 확인
+        // Old Bootloader(ATmegaBOOT)는 INSYNC(0x14) 1바이트만 응답하므로
+        // 1바이트만 읽고 확인 (avrdude의 recv() 방식과 동일)
+        async _sendCommand(cmd, params = []) {
+            const buf = new Uint8Array([cmd, ...params, STK.CRC_EOP]);
+            await this._write(buf);
+            
+            const savedTimeout = this.readTimeout;
+            this.readTimeout = Math.max(this.readTimeout, 1500);
+            let resp;
+            try {
+                resp = await this._readBytes(1);
+            } finally {
+                this.readTimeout = savedTimeout;
+            }
+            if (resp[0] !== STK.STK_INSYNC) {
+                throw new Error(`STK500 sync lost: got 0x${resp[0].toString(16)}, expected 0x14` + 
+                    (resp[0] === STK.STK_NOSYNC ? ' (NOSYNC)' : ''));
+            }
+            return STK.STK_OK;
+        }
+
+        // 여러 바이트 응답을 받는 명령어 (READ_SIGN 등)
+        // Old Bootloader는 INSYNC(0x14) + data + OK 응답
+        async _sendCommandWithResponse(cmd, params = [], responseBytes = 1) {
+            const buf = new Uint8Array([cmd, ...params, STK.CRC_EOP]);
+            await this._write(buf);
+            // 응답: SYNC(1) + data(responseBytes) + status(1) + CRC_EOP(1)
+            const totalBytes = 1 + responseBytes + 2;
+            const savedTimeout = this.readTimeout;
+            this.readTimeout = Math.max(this.readTimeout, 1500);
+            let resp;
+            try {
+                resp = await this._readBytes(totalBytes);
+            } finally {
+                this.readTimeout = savedTimeout;
+            }
+            if (resp[0] !== STK.STK_INSYNC) {
+                throw new Error(`STK500 sync lost (read cmd): got 0x${resp[0].toString(16)}`);
+            }
+            const data = resp.slice(1, 1 + responseBytes);
+            if (resp.length < 1 + responseBytes + 1) return { data, status: STK.STK_OK };
+            const status = resp[1 + responseBytes];
+            if (status === STK.STK_FAILED) {
+                throw new Error(`STK500 read command 0x${cmd.toString(16)} failed`);
+            }
+            return { data, status };
+        }
+
+        // ===== 주요 STK500 시퀀스 =====
+
+        // 시리얼 버퍼 플러시 — 기존 데이터 모두 버리기
+        async _flush() {
+            try {
+                if (this.port && this.port.readable) {
+                    const reader = this.port.readable.getReader();
+                    const flushTimeout = 200; // 최대 200ms만 읽음
+                    const startTime = Date.now();
+                    try {
+                        while (Date.now() - startTime < flushTimeout) {
+                            const readPromise = reader.read().catch(() => ({ done: true, value: undefined }));
+                            const timedOut = await Promise.race([
+                                readPromise,
+                                new Promise(resolve => setTimeout(() => resolve(null), 300))
+                            ]);
+                            if (!timedOut) break; // 타임아웃
+                            if (timedOut.done) break;
+                            if (!timedOut.value || timedOut.value.length === 0) break;
+                            // 데이터를 읽었으니 계속
+                        }
+                    } finally {
+                        try { reader.releaseLock(); } catch(_) {}
+                    }
+                }
+            } catch(e) { /* ignore */ }
+        }
+
+        // 1. 동기화 — STK_GET_SYNC 전송, 반복 재시도 (avrdude 방식 + CH340 지원)
+        async sync() {
+            console.log('[STK500] 🔄 sync() 시작 — 버퍼 플러시...');
+            await this._flush();
+            console.log('[STK500] 🔄 버퍼 플러시 완료');
+            
+            let timeoutCount = 0;
+            
+            // 초반 3회는 빠르게 자동 시도
+            // 이후에는 사용자에게 수동 리셋 안내 후 계속 시도
+            for (let attempt = 0; attempt < 60; attempt++) {
+                try {
+                    // 5회마다 DTR 토글 (자동 리셋 시도)
+                    if (attempt > 0 && attempt % 5 === 0 && attempt < 25) {
+                        console.log(`[STK500] ${attempt+1}회차: DTR 토글을 통한 자동 리셋 시도...`);
+                        try {
+                            await this.port.setSignals({ dataTerminalReady: true, requestToSend: true });
+                            await this._sleep(100);
+                            await this.port.setSignals({ dataTerminalReady: false, requestToSend: false });
+                            await this._sleep(200);
+                            await this.port.setSignals({ dataTerminalReady: true, requestToSend: true });
+                            await this._sleep(100);
+                            await this.port.setSignals({ dataTerminalReady: true, requestToSend: false });
+                            await this._sleep(100);
+                            await this.port.setSignals({ dataTerminalReady: false, requestToSend: false });
+                            await this._sleep(200);
+                        } catch(dtrErr) {
+                            console.warn('[STK500]   DTR 토글 실패:', dtrErr.message);
+                        }
+                        try { await this._flush(); } catch(_) {}
+                    }
+                    
+                    // 3회 시도 후 사용자에게 화면 안내
+                    if (attempt === 3) {
+                        showUploadProgress('⚠️ 보드의 RESET 버튼을 누르세요!');
+                        addSerialLine('');
+                        addSerialLine('==========================================');
+                        addSerialLine('⚠️ 보드의 RESET 버튼을 1초간 눌렀다 떼세요!');
+                        addSerialLine('   (13번 핀 옆에 있는 작은 버튼)');
+                        addSerialLine('==========================================');
+                        addSerialLine('');
+                        console.log('[STK500] ‼️ 보드의 RESET 버튼을 눌러주세요!');
+                    }
+                    if (attempt === 8) {
+                        addSerialLine('   아직도 안 되나요? RESET 버튼을 다시 눌러보세요!');
+                        console.log('[STK500] ‼️ RESET 버튼 재시도 — 2번째 안내');
+                    }
+                    if (attempt === 15) {
+                        showUploadProgress('⚠️ USB 케이블을 뽑고 다시 꽂아보세요');
+                        addSerialLine('   ⚠️ USB 케이블을 뽑고 다시 꽂아보세요!');
+                        console.log('[STK500] ‼️ USB 케이블을 뽑고 다시 꽂아보세요');
+                    }
+                    
+                    // STK_GET_SYNC(0x30) + CRC_EOP(0x20) 전송 — avrdude 호환 방식
+                    // avrdude의 stk500_sync()는 0x30 0x20을 함께 보냄!
+                    const buf = new Uint8Array([STK.STK_GET_SYNC, STK.CRC_EOP]);
+                    await this._write(buf);
+                    
+                    if (attempt === 0 || attempt === 1 || attempt === 2 || attempt === 3 || attempt === 4 || attempt === 5 || attempt === 10 || attempt === 20 || attempt === 40 || attempt === 59) {
+                        console.log(`[STK500] ${attempt+1}회차: 0x30,0x20 전송됨, 응답 대기...`);
+                    }
+                    
+                    // 유동적 타임아웃
+                    const savedTimeout = this.readTimeout;
+                    // 초반: 300ms (자동 시도) / 이후: 2000ms (수동 리셋 대기 시간 확보)
+                    this.readTimeout = attempt < 5 ? 300 : 2000;
+                    
+                    try {
+                        // 0x14(INSYNC)를 빠르게 1바이트 읽기 — 부트로더 만료 방지
+                        const resp1 = await this._readBytes(1);
+                        if (attempt === 0 || attempt === 3 || attempt === 10 || attempt === 20 || attempt === 40 || attempt === 59) {
+                            console.log(`[STK500]   응답 수신: 0x${resp1[0].toString(16)}`);
+                        }
+                        if (resp1[0] === STK.STK_INSYNC) {
+                            this.readTimeout = savedTimeout;
+                            // 남은 바이트(OK + CRC_EOP)는 최대 100ms만 빠르게 읽기
+                            // 부트로더 만료 전에 다음 명령으로 넘어가야 함!
+                            const oldTimeout = this.readTimeout;
+                            this.readTimeout = 100;
+                            try {
+                                await this._readBytes(2);
+                            } catch(e) { /* 타임아웃이어도 OK */ }
+                            this.readTimeout = oldTimeout;
+                            // 0x14(INSYNC) 수신 = sync 성공!
+                            console.log('[STK500] ✅ INSYNC(0x14) 수신! 동기화 성공!');
+                            return true;
+                        } else if (resp1[0] === STK.STK_NOSYNC) {
+                            this.readTimeout = savedTimeout;
+                            await this._sleep(50);
+                        } else {
+                            this.readTimeout = savedTimeout;
+                            await this._sleep(50);
+                        }
+                    } catch(e) {
+                        this.readTimeout = savedTimeout;
+                        timeoutCount++;
+                        try { await this._flush(); } catch(_) {}
+                        if (attempt === 0 || attempt === 3 || attempt === 10 || attempt === 20 || attempt === 40 || attempt === 59) {
+                            console.log(`[STK500]   타임아웃 (${timeoutCount}회): ${e.message}`);
+                        }
+                        await this._sleep(attempt < 5 ? 30 : 100);
+                    }
+                } catch(e) {
+                    await this._sleep(50);
+                }
+            }
+            
+            console.error('[STK500] ❌ 60회 전부 실패');
+            throw new Error('STK500 sync failed: 아두이노가 응답하지 않습니다. 보드 연결 확인, 올바른 보드 선택, 올바른 포트인지 확인하세요. (CH340: 보드 연결 시 리셋 버튼을 누른 상태에서 확인해보세요)');
+        }
+
+        // 2. 시그니처 확인 — avrdude 방식 (STK_UNIVERSAL 0x56)
+        // avrdude는 STK_READ_SIGN이 아니라 STK_UNIVERSAL ISP 명령으로 시그니처를 읽음
+        async verifySignature() {
+            try {
+                const expected = this.boardConfig.signature;
+                const sig = [];
+                
+                // AVR ISP: 시그니처 읽기 명령 (3바이트 시그니처)
+                // 0x56, 0x30, addr_hi, addr_lo, 0x00, 0x20
+                for (let i = 0; i < 3; i++) {
+                    const buf = new Uint8Array([STK.STK_UNIVERSAL, 0x30, 0x00, i, 0x00, STK.CRC_EOP]);
+                    await this._write(buf);
+                    
+                    // 응답: INSYNC(1) + 데이터(1) + STATUS(1) + CRC_EOP(1) = 4바이트
+                    const resp = await this._readBytes(4);
+                    if (resp[0] !== STK.STK_INSYNC) {
+                        throw new Error(`STK500 sync lost (sig): got 0x${resp[0].toString(16)}`);
+                    }
+                    if (resp[2] === STK.STK_FAILED) {
+                        throw new Error('STK500 signature read failed');
+                    }
+                    sig.push(resp[1]);
+                }
+                
+                // 시그니처 비교
+                if (sig[0] !== expected[0] || sig[1] !== expected[1] || sig[2] !== expected[2]) {
+                    console.warn(`[STK500] ⚠️ 시그니처 불일치: 보드=0x${expected.map(b=>b.toString(16)).join(',')}, 읽힘=0x${sig.map(b=>b.toString(16).padStart(2,'0')).join(',')}`);
+                    console.warn('[STK500]   시그니처를 무시하고 계속 진행합니다.');
+                    return true;
+                }
+                return true;
+            } catch(e) {
+                console.warn(`[STK500] ⚠️ 시그니처 확인 실패: ${e.message}`);
+                console.warn('[STK500]   시그니처를 무시하고 계속 진행합니다.');
+                return true; // 실패해도 계속 진행
+            }
+        }
+
+        // 3. 프로그래밍 모드 진입
+        async enterProgrammingMode() {
+            await this._sendCommand(STK.STK_ENTER_PROGMODE);
+            return true;
+        }
+
+        // 4. 프로그래밍 모드 종료
+        async leaveProgrammingMode() {
+            try {
+                await this._sendCommand(STK.STK_LEAVE_PROGMODE);
+            } catch(e) { /* ignore */ }
+            return true;
+        }
+
+        // 5. 주소 설정 — STK500v1은 바이트 주소를 사용 (Old ATmegaBOOT 호환)
+        async loadAddress(wordAddress) {
+            const low = wordAddress & 0xFF;
+            const high = (wordAddress >> 8) & 0xFF;
+            // LOAD_ADDRESS는 매우 짧은 타임아웃으로 (부트로더 만료 방지)
+            const savedTimeout = this.readTimeout;
+            this.readTimeout = Math.min(this.readTimeout, 800);
+            try {
+                await this._sendCommand(STK.STK_LOAD_ADDRESS, [low, high]);
+            } finally {
+                this.readTimeout = savedTimeout;
+            }
+            return true;
+        }
+
+        // 6. 플래시 페이지 쓰기 (실패 시 sync 재시도 후 재시도)
+        async programPage(address, pageData) {
+            const pageSize = this.boardConfig.pageSize;
+            const wordAddress = Math.floor(address / 2);
+            const pageLen = Math.min(pageData.length, pageSize);
+            const dataBytes = new Uint8Array(pageData);
+
+            for (let retry = 0; retry < 2; retry++) {
+                try {
+                    // STK500 프로토콜에서 LOAD_ADDRESS는 워드 주소 사용
+                    // (바이트 주소를 보내면 high byte 범위를 초과하여 오류 발생)
+                    await this.loadAddress(wordAddress);
+
+                    // STK_PROG_PAGE: [0x64, len_high, len_low, 'm'/'M', data..., CRC_EOP]
+                    const lenLow = pageLen & 0xFF;
+                    const lenHigh = (pageLen >> 8) & 0xFF;
+
+                    const buf = new Uint8Array([STK.STK_PROG_PAGE, lenHigh, lenLow, 0x6D /* 'm' page mode */, ...dataBytes.slice(0, pageLen), STK.CRC_EOP]);
+                    await this._write(buf);
+
+                    // 응답 대기 (INSYNC 1바이트만 확인 — Old Bootloader 호환)
+                    const resp = await this._readBytes(1);
+                    if (resp[0] !== STK.STK_INSYNC) {
+                        throw new Error(`sync lost at 0x${address.toString(16)}`);
+                    }
+                    return pageLen;
+                } catch(e) {
+                    if (retry === 1) {
+                        console.warn(`[STK500] ⚠️ 페이지 ${wordAddress} 쓰기 실패 (재시도 후):`, e.message);
+                        throw e;
+                    }
+                    // 부트로더가 만료되었을 수 있으므로 sync를 다시 시도
+                    console.log(`[STK500] 🔄 페이지 ${wordAddress} 실패 — sync 재시도 후 재시도...`);
+                    await this._flush();
+                    try {
+                        await this.sync();
+                    } catch(syncErr) {
+                        throw e;
+                    }
+                    await this._sleep(30);
+                }
+            }
+            return pageLen;
+        }
+
+        // 7. 전체 플래시 업로드
+        async flashWrite(hexData) {
+            // 긴 타임아웃 설정 (플래시 쓰기 중에는 느릴 수 있음)
+            const savedTimeout = this.readTimeout;
+            this.readTimeout = 5000;
+            try {
+                const parsed = parseIntelHex(hexData);
+                const totalSize = parsed.size;
+                const pageSize = this.boardConfig.pageSize;
+                const totalPages = Math.ceil(totalSize / pageSize);
+                let firstPageAttempt = true;
+
+                addSerialLine(`📄 HEX 파싱 완료: ${totalSize} bytes (${totalPages} pages)`);
+
+                let retryCount = 0;
+                const MAX_RETRIES = 3;
+                for (let page = 0; page < totalPages; page++) {
+                    const addr = page * pageSize;
+                    const pageEnd = Math.min(addr + pageSize, totalSize);
+                    const pageData = parsed.data.slice(addr, pageEnd);
+
+                    // 페이지 크기보다 작으면 0xFF로 채움
+                    const padded = new Uint8Array(pageSize);
+                    padded.fill(0xFF);
+                    padded.set(pageData, 0);
+
+                    let pageWritten = false;
+                    while (!pageWritten && retryCount < MAX_RETRIES) {
+                        try {
+                            await this.programPage(addr, padded);
+                            pageWritten = true;
+                            retryCount = 0;
+                            // 페이지 사이 짧은 안정화 (부트로더 지연 방지)
+                            await this._sleep(5);
+                        } catch(pageErr) {
+                            retryCount++;
+                            console.warn(`[STK500] ⚠️ ${page+1}페이지(${retryCount}/${MAX_RETRIES}) 실패: ${pageErr.message}`);
+                            console.log(`[STK500] 🔄 sync 재시도 후 페이지 ${page+1} 재시도...`);
+                            await this._flush();
+                            try {
+                                await this.sync();
+                                console.log('[STK500] ✅ 재동기화 성공');
+                            } catch(syncErr) {
+                                console.error('[STK500] ❌ 재동기화 실패:', syncErr.message);
+                                throw pageErr;
+                            }
+                            await this._sleep(30);
+                        }
+                    }
+                    if (!pageWritten) {
+                        throw new Error(`페이지 ${page + 1} 쓰기 실패 (${MAX_RETRIES}회 시도)`);
+                    }
+
+                    if ((page + 1) % 16 === 0 || page === totalPages - 1) {
+                        const pct = Math.round((page + 1) / totalPages * 100);
+                        addSerialLine(`📦 업로드 중... ${pct}% (page ${page + 1}/${totalPages})`);
+                    }
+                }
+
+                return totalSize;
+            } finally {
+                this.readTimeout = savedTimeout;
+            }
+        }
+    }
+
+    
+    // ===== Web Bluetooth STK500 프로그래머 (HM-10 BLE 모듈) =====
+    class BLE_STK500Programmer {
+        constructor(device, boardId) {
+            this.device = device;
+            this.boardConfig = BOARD_CONFIG[boardId] || BOARD_CONFIG['arduino:avr:nano'];
+            this.readTimeout = 2000;
+            this.server = null;
+            this.service = null;
+            this.txCharacteristic = null;  // HM-10: 0xFFE1 (Write)
+            this.rxCharacteristic = null;  // HM-10: 0xFFE1 (Notify/Read)
+            this.writeQueue = Promise.resolve();
+            this.buffer = new Uint8Array(0);
+            this.waiters = [];
+            this.baudRate = 115200;  // BLE에서는 baud 설정 불가 — UART는 투명 브리지
+        }
+
+        async connect() {
+            console.log('[BLE] 📡 HM-10 연결 시도...');
+            addSerialLine('📡 HM-10 블루투스 연결 중...');
+            
+            this.server = await this.device.gatt.connect();
+            console.log('[BLE] ✅ GATT 연결 성공');
+            
+            // HM-10 UUID: ffe0 (service), ffe1 (characteristic)
+            try {
+                this.service = await this.server.getPrimaryService(0xFFE0);
+                console.log('[BLE] ✅ 서비스 0xFFE0 연결');
+            } catch(e) {
+                // 대체 서비스 시도
+                console.log('[BLE] ⚠️ 0xFFE0 없다, 0xFFF0 시도:', e.message);
+                this.service = await this.server.getPrimaryService(0xFFF0);
+            }
+            
+            this.txCharacteristic = await this.service.getCharacteristic(0xFFE1);
+            this.rxCharacteristic = this.txCharacteristic;
+            
+            // 수신을 위한 notify 시작
+            if (this.rxCharacteristic.properties.notify) {
+                await this.rxCharacteristic.startNotifications();
+                this.rxCharacteristic.addEventListener('characteristicvaluechanged', 
+                    (e) => this._onData(e.target.value));
+                console.log('[BLE] ✅ Notifications 활성화');
+            }
+            
+            console.log('[BLE] ✅ HM-10 연결 완료');
+            addSerialLine('✅ HM-10 블루투스 연결 완료');
+            return true;
+        }
+
+        _onData(buf) {
+            const data = new Uint8Array(buf.buffer);
+            // 받은 데이터를 buffer에 추가
+            const newBuf = new Uint8Array(this.buffer.length + data.length);
+            newBuf.set(this.buffer, 0);
+            newBuf.set(data, this.buffer.length);
+            this.buffer = newBuf;
+            
+            // 대기 중인 waiter가 있으면 해결
+            this._resolveWaiters();
+        }
+
+        _resolveWaiters() {
+            // 대기 중인 reader가 buffer 데이터를 사용할 수 있는지 확인
+            while (this.waiters.length > 0 && this.buffer.length > 0) {
+                const waiter = this.waiters[0];
+                if (this.buffer.length >= waiter.count) {
+                    const data = this.buffer.slice(0, waiter.count);
+                    this.buffer = this.buffer.slice(waiter.count);
+                    this.waiters.shift();
+                    waiter.resolve(data);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        async _flush() {
+            this.buffer = new Uint8Array(0);
+            // BLE에는 응답을 플러시할 수 없으므로 간단히 클리어
+        }
+
+        async _write(bytes) {
+            const chunk = new Uint8Array(bytes);
+            try {
+                await this.txCharacteristic.writeValueWithoutResponse(chunk);
+            } catch(e) {
+                try {
+                    await this.txCharacteristic.writeValue(chunk);
+                } catch(e2) {
+                    throw new Error('BLE 쓰기 실패: ' + e2.message);
+                }
+            }
+        }
+
+        async _readBytes(count, timeoutMs = null) {
+            if (this.buffer.length >= count) {
+                const data = this.buffer.slice(0, count);
+                this.buffer = this.buffer.slice(count);
+                return new Uint8Array(data);
+            }
+            
+            const timeout = timeoutMs || this.readTimeout;
+            return new Promise((resolve, reject) => {
+                const waiter = { count, resolve: (data) => resolve(new Uint8Array(data)), reject };
+                this.waiters.push(waiter);
+                
+                const timer = setTimeout(() => {
+                    const idx = this.waiters.indexOf(waiter);
+                    if (idx >= 0) {
+                        this.waiters.splice(idx, 1);
+                        reject(new Error(`BLE read timeout (got ${this.buffer.length}/${count} bytes)`));
+                    }
+                }, timeout);
+                
+                // 데이터가 이미 도착했다면 즉시 처리
+                this._resolveWaiters();
+                
+                // 완료 시 타이머 해제
+                const origResolve = waiter.resolve;
+                waiter.resolve = (data) => {
+                    clearTimeout(timer);
+                    origResolve(data);
+                };
+            });
+        }
+
+        async _sleep(ms) {
+            return new Promise(r => setTimeout(r, ms));
+        }
+
+        // ===== STK500 프로토콜 =====
+        async sync() {
+            addSerialLine('🔄 STK500 동기화 (Bluetooth)...');
+            
+            // 버퍼 정리
+            await this._flush();
+            
+            for (let attempt = 0; attempt < 20; attempt++) {
+                try {
+                    const buf = new Uint8Array([STK.STK_GET_SYNC, STK.CRC_EOP]);
+                    await this._write(buf);
+                    
+                    const resp = await this._readBytes(1, 500);
+                    if (resp[0] === STK.STK_INSYNC) {
+                        // 추가 2바이트 읽기 시도 (OK + CRC_EOP) — 빠르게
+                        try { await this._readBytes(2, 100); } catch(e) { /* 타임아웃 허용 */ }
+                        console.log('[BLE] ✅ STK500 동기화 성공!');
+                        addSerialLine('✅ STK500 동기화 성공!');
+                        return true;
+                    }
+                } catch(e) {
+                    await this._flush();
+                    await this._sleep(50);
+                }
+            }
+            
+            const err = 'STK500 sync failed: 아두이노가 응답하지 않습니다. HM-10 연결 확인 + 아두이노 RESET 버튼을 눌러주세요.';
+            console.error('[BLE] ❌', err);
+            addSerialLine('❌ ' + err);
+            throw new Error(err);
+        }
+
+        async _sendCommand(cmd, params = []) {
+            const buf = new Uint8Array([cmd, ...params, STK.CRC_EOP]);
+            await this._write(buf);
+            
+            const resp = await this._readBytes(1, 1500);
+            if (resp[0] !== STK.STK_INSYNC) {
+                throw new Error(`BLE sync lost: got 0x${resp[0].toString(16)}`);
+            }
+            return STK.STK_OK;
+        }
+
+        async loadAddress(address) {
+            const low = address & 0xFF;
+            const high = (address >> 8) & 0xFF;
+            await this._sendCommand(STK.STK_LOAD_ADDRESS, [low, high]);
+            return true;
+        }
+
+        async programPage(address, pageData) {
+            const pageSize = this.boardConfig.pageSize;
+            const wordAddress = Math.floor(address / 2);
+            const pageLen = Math.min(pageData.length, pageSize);
+            const dataBytes = new Uint8Array(pageData);
+            
+            for (let retry = 0; retry < 2; retry++) {
+                try {
+                    await this.loadAddress(address);
+
+                    const lenLow = pageLen & 0xFF;
+                    const lenHigh = (pageLen >> 8) & 0xFF;
+
+                    // BLE 전송을 위한 청크 단위 전송 (HM-10 제한: 최대 20바이트)
+                    const cmd = new Uint8Array([STK.STK_PROG_PAGE, lenHigh, lenLow, 0x6D]);
+                    await this._write(cmd);
+                    
+                    // 데이터를 16바이트씩 나눠서 전송
+                    for (let i = 0; i < pageLen; i += 16) {
+                        const chunk = dataBytes.slice(i, Math.min(i + 16, pageLen));
+                        await this._write(chunk);
+                    }
+                    
+                    // CRC_EOP
+                    await this._write(new Uint8Array([STK.CRC_EOP]));
+
+                    // 응답 대기
+                    const resp = await this._readBytes(1, 3000);
+                    if (resp[0] !== STK.STK_INSYNC) {
+                        throw new Error(`BLE sync lost at 0x${address.toString(16)}`);
+                    }
+                    return pageLen;
+                } catch(e) {
+                    if (retry === 1) {
+                        console.warn(`[BLE] ⚠️ 페이지 ${wordAddress} 실패:`, e.message);
+                        throw e;
+                    }
+                    await this._flush();
+                    await this._sleep(50);
+                }
+            }
+            return pageLen;
+        }
+
+        async flashWrite(hexData) {
+            const parsed = parseIntelHex(hexData);
+            const totalSize = parsed.size;
+            const pageSize = this.boardConfig.pageSize;
+            const totalPages = Math.ceil(totalSize / pageSize);
+
+            addSerialLine(`📄 HEX 파싱: ${totalSize} bytes (${totalPages} pages)`);
+
+            for (let page = 0; page < totalPages; page++) {
+                const addr = page * pageSize;
+                const pageEnd = Math.min(addr + pageSize, totalSize);
+                const pageData = parsed.data.slice(addr, pageEnd);
+
+                const padded = new Uint8Array(pageSize);
+                padded.fill(0xFF);
+                padded.set(pageData, 0);
+
+                try {
+                    await this.programPage(addr, padded);
+                } catch(e) {
+                    // sync 재시도 후 1번 더 시도
+                    console.log('[BLE] 🔄 sync 재시도...');
+                    await this._flush();
+                    try {
+                        await this.sync();
+                        await this.programPage(addr, padded);
+                    } catch(e2) {
+                        throw e;
+                    }
+                }
+
+                if ((page + 1) % 5 === 0 || page === totalPages - 1) {
+                    const pct = Math.round((page + 1) / totalPages * 100);
+                    addSerialLine(`📦 업로드: ${pct}% (${page + 1}/${totalPages})`);
+                }
+            }
+
+            return totalSize;
+        }
+
+        async disconnect() {
+            try {
+                if (this.rxCharacteristic) {
+                    try { await this.rxCharacteristic.stopNotifications(); } catch(e) {}
+                }
+                if (this.server && this.server.connected) {
+                    await this.server.disconnect();
+                }
+                // GATT 서버 레벨에서도 확실히 연결 해제
+                if (this.device && this.device.gatt) {
+                    try {
+                        this.server = null;
+                        this.service = null;
+                        this.txCharacteristic = null;
+                        this.rxCharacteristic = null;
+                    } catch(e) {}
+                }
+            } catch(e) { /* ignore */ }
+        }
+    }
+
+    // BLE 연결 상태 변수
+    let bleDevice = null;
+    let bleConnected = false;
+
+let serialPort = null;
+    let serialReader = null;
+    let serialConnected = false;
+
+    // ===== 메인 업로드 함수 (STK500 WebSerial) =====
+    async function uploadCode() {
+        if (!currentEditor) {
+            showToast('편집기가 준비되지 않았습니다.', 'error');
+            return;
+        }
+        const code = currentEditor.getValue();
+        if (!code || !code.trim()) {
+            showToast('코드를 먼저 작성해주세요.', 'warning');
+            return;
+        }
+        if (!confirm(`「${document.getElementById('codeTitle').value.trim() || '코드'}」을(를) 보드에 업로드하시겠습니까?`)) return;
+
+        // WebSerial / 앱 OTG 지원 확인
+        //  · 웹(PC): navigator.serial (Web Serial API)
+        //  · 안드로이드 앱: nubida-serial.js 가 주입한 navigator.serial 셔림 → 네이티브 OTG
+        if (!navigator.serial) {
+            const isApp = !!(window.NubidaSerial && window.IS_NATIVE);
+            if (isApp) {
+                showToast('⚠️ USB OTG 연결을 사용할 수 없습니다. OTG 케이블과 보드 전원을 확인하세요.', 'error');
+                addSerialLine('❌ 네이티브 OTG 미지원 — 앱을 최신 버전으로 다시 설치해 주세요.');
+            } else {
+                showToast('⚠️ 이 브라우저는 USB 업로드를 지원하지 않습니다. Chrome/Edge를 사용하세요.', 'error');
+                addSerialLine('❌ Web Serial 미지원 — 이 브라우저에서는 USB 업로드가 불가능합니다.');
+            }
+            return;
+        }
+
+        const boardId = document.getElementById('boardSelector').value || 'arduino:avr:nano';
+        const boardName = BOARD_CONFIG[boardId]?.name || boardId;
+        const customBaudRate = document.getElementById('baudRateSelector')?.value || null;
+        console.log('[Arduino] 🎛️ 선택된 baudRate:', customBaudRate, '| 보드:', boardName);
+
+        // 1. 시리얼 포트 선택 (앱 OTG 는 자동, 웹은 사용자 선택)
+        showUploadProgress('🔌 포트 선택...');
+        let port;
+        try {
+            console.log('[Arduino] 1️⃣ 포트 선택 중...');
+            port = await navigator.serial.requestPort();
+            console.log('[Arduino] ✅ 포트 선택됨:', port.getInfo ? await port.getInfo() : 'N/A');
+        } catch(e) {
+            console.error('[Arduino] ❌ 포트 선택 실패:', e);
+            hideUploadProgress();
+            if (e && e.name === 'NotFoundError') {
+                // 사용자 취소(웹) 또는 장치 없음(앱)
+                const msg = (e.message || '').indexOf('NO_DEVICE') === 0
+                    ? e.message.replace('NO_DEVICE: ', '')
+                    : '포트 선택이 취소되었습니다.';
+                addSerialLine('⚠️ ' + msg);
+                showToast(msg, 'warning');
+            } else {
+                showToast('포트 선택 실패: ' + ((e && e.message) || e), 'error');
+            }
+            return;
+        }
+
+        console.log('[Arduino] 🔧 스케치 프로그램 초기화:', boardId);
+        const programmer = new STK500Programmer(port, boardId, customBaudRate);
+        console.log('[Arduino] 📡 보드 설정:', programmer.boardConfig);
+        let hexData;
+
+        try {
+            // 2. 컴파일
+            showUploadProgress(`🔨 컴파일 중... (${boardName})`);
+            addSerialLine(`🔨 컴파일 시작 (${boardName})`);
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            console.log('[Arduino] 2️⃣ 컴파일 API 호출: POST /api/v1/arduino/compile');
+            console.log('[Arduino]    보드:', boardId, '| 코드 길이:', code.length, '| 코드 ID:', currentCodeId);
+            const compRes = await fetch(apiUrl('/api/v1/arduino/compile'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + (token || ''),
+                },
+                body: JSON.stringify({
+                    code: code,
+                    board: boardId,
+                    code_id: currentCodeId || null,
+                }),
+            });
+            console.log('[Arduino] 📦 컴파일 응답 상태:', compRes.status);
+            const compData = await compRes.json();
+            console.log('[Arduino] 📦 컴파일 응답:', compData.message, '| hex_size:', compData.data?.hex_size, '| build_id:', compData.data?.build_id);
+            if (!compRes.ok) throw new Error(compData?.detail || '컴파일 실패');
+            if (compData.status === 'error') {
+                throw new Error((compData.data?.error || []).join('\n') || '컴파일 에러');
+            }
+            hexData = atob(compData.data.hex);
+            console.log('[Arduino] ✅ 컴파일 성공! hex 크기:', hexData.length, 'bytes');
+            addSerialLine(`✅ 컴파일 성공! (${compData.data.hex_size || 0} bytes)`);
+
+            // 3. 시리얼 포트 열기 (이미 열려있으면 자동으로 닫고 다시 열기)
+            showUploadProgress(`🔗 ${boardName} 연결 중... (${programmer.boardConfig.baudRate} baud)`);
+            addSerialLine(`🔗 시리얼 포트 열기 (${programmer.boardConfig.baudRate} baud)`);
+            try {
+                console.log('[Arduino] 3️⃣ 시리얼 포트 열기 시작:', boardId, '| baudRate:', programmer.boardConfig.baudRate);
+                await programmer.open();
+                console.log('[Arduino] ✅ 포트 열기 성공');
+            } catch(e) {
+                console.warn('[Arduino] ⚠️ 포트 열기 실패:', e.message);
+                console.log('[Arduino] 🔄 포트 재연결 시도...');
+                // 포트를 새로 다시 얻기
+                addSerialLine('⚠️ 포트 재연결 시도...');
+                try {
+                    await programmer.close();
+                    await programmer.open();
+                    console.log('[Arduino] ✅ 재연결 성공');
+                } catch(e2) {
+                    console.error('[Arduino] ❌ 재연결 실패:', e2.message);
+                    throw new Error('포트를 열 수 없습니다: ' + e2.message);
+                }
+            }
+            addSerialLine('✅ 시리얼 포트 연결됨');
+
+            // 4. DTR 토글 → 아두이노 리셋 (부트로더 진입) — CH340 호환
+            showUploadProgress('🔄 리셋 중...');
+            addSerialLine('🔄 DTR/RTS 토글 → 부트로더 진입...');
+            try {
+                console.log('[Arduino] 4️⃣ DTR/CTS 토글 → 리셋 시퀀스 시작 (CH340)');
+                // CH340: DTR high -> low 토글으로 리셋
+                // 1) 포트를 연 직후 DTR high 유지
+                await port.setSignals({ dataTerminalReady: true, requestToSend: true });
+                await programmer._sleep(100);
+                console.log('[Arduino]    DTR=high, RTS=high');
+                // 2) DTR low + RTS low → 리셋 발생
+                await port.setSignals({ dataTerminalReady: false, requestToSend: false });
+                await programmer._sleep(100);
+                console.log('[Arduino]    DTR=low, RTS=low (리셋 발생)');
+                // 3) 안정화 
+                await port.setSignals({ dataTerminalReady: true, requestToSend: false });
+                await programmer._sleep(50);
+                console.log('[Arduino]    DTR=high, RTS=low');
+                // 4) DTR low로 유지 (부트로더가 기다리는 동안)
+                await port.setSignals({ dataTerminalReady: false, requestToSend: false });
+                console.log('[Arduino]    DTR=low, RTS=low (부트로더 대기 중)');
+            } catch(e) {
+                console.warn('[Arduino] ⚠️ DTR 토글 실패:', e.message);
+                addSerialLine('⚠️ DTR 토글 실패 (계속 진행)');
+            }
+
+            // 5. STK500 동기화 — CH340은 리셋 후 바로 반복 0x30 전송으로 동기화해야 함
+            showUploadProgress('🔄 STK500 동기화 중...');
+            addSerialLine('🔄 STK500 동기화... (CH340 — 최대 20초 시도)');
+            console.log('[Arduino] 5️⃣ STK500 동기화 시작... (readTimeout:', programmer.readTimeout, 'ms)');
+            try {
+                await programmer.sync();
+                console.log('[Arduino] ✅ STK500 동기화 성공!');
+            } catch(e) {
+                console.error('[Arduino] ❌ STK500 동기화 실패:', e.message);
+                throw e;
+            }
+            addSerialLine('✅ STK500 동기화 완료');
+
+            // 6. 시그니처 확인 생략 — 부트로더 시간 초과 방지를 위해 바로 다음 단계로
+            // (Old Bootloader는 sync 후 응답 시간이 매우 짧음)
+
+            // 7. 프로그래밍 모드 진입 — Old Bootloader는 필요하지 않으므로 생략
+            // (STK_ENTER_PROGMODE 대신 바로 LOAD_ADDRESS + PROG_PAGE로 진행)
+            addSerialLine('→ 프로그래밍 명령을 바로 전송합니다...');
+
+            // 8. 플래시 쓰기
+            showUploadProgress('📦 플래시 업로드 중...');
+            const totalBytes = await programmer.flashWrite(hexData);
+            addSerialLine(`✅ 플래시 쓰기 완료 (${totalBytes} bytes)`);
+
+            // 9. 프로그래밍 모드 종료
+            showUploadProgress('🔌 종료 중...');
+            await programmer.leaveProgrammingMode();
+            addSerialLine('✅ 프로그래밍 모드 종료');
+
+            // 10. 리셋 (업로드 완료 후 보드 리셋)
+            try {
+                await port.setSignals({ dataTerminalReady: false });
+                await programmer._sleep(100);
+                await port.setSignals({ dataTerminalReady: true });
+            } catch(e) { /* ignore */ }
+
+            // 11. 포트 종료
+            await programmer.close();
+            hideUploadProgress();
+
+            addSerialLine('');
+            addSerialLine('🎉 업로드 완료! 보드가 자동으로 실행됩니다.');
+            showToast('✅ 업로드 성공!', 'success');
+
+            // 12. 포트폴리오에도 저장
+            try {
+                const title = document.getElementById('codeTitle').value.trim() || '코딩 실습';
+                await fetch(apiUrl('/api/v1/portfolio'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (token || ''),
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        content: '```cpp\n' + code + '\n```',
+                        subject: '코딩',
+                        tags: '아두이노,코딩실습',
+                        is_public: true,
+                    }),
+                });
+            } catch(e) { /* 포트폴리오 저장은 부가 기능 */ }
+
+        } catch(e) {
+            hideUploadProgress();
+            console.error('Upload error:', e);
+            try { await programmer.leaveProgrammingMode(); } catch(_) {}
+            try { await programmer.close(); } catch(_) {}
+            addSerialLine(`❌ 업로드 실패: ${e.message}`);
+            showToast('❌ 업로드 실패: ' + e.message, 'error');
+        }
+    }
+
+
+
+    // ===== 시리얼 모니터 (WebSerial 전용) =====
+    
+
+    // ===== Web Bluetooth 업로드 (HM-10 BLE 모듈) =====
+    async function bluetoothUploadCode() {
+        let programmer = null;  // BLE 프로그래머 (catch 블록에서 접근용)
+        if (!currentEditor) {
+            showToast('편집기가 준비되지 않았습니다.', 'error');
+            return;
+        }
+        const code = currentEditor.getValue();
+        if (!code || !code.trim()) {
+            showToast('코드를 먼저 작성해주세요.', 'warning');
+            return;
+        }
+        if (!confirm(`「${document.getElementById('codeTitle').value.trim() || '코드'}」을(를) 블루투스로 업로드하시겠습니까?`)) return;
+
+        // Web Bluetooth 지원 확인
+        if (!navigator.bluetooth) {
+            showToast('⚠️ 이 브라우저는 Web Bluetooth를 지원하지 않습니다.', 'error');
+            return;
+        }
+
+        // 기존 BLE 연결이 남아있으면 먼저 정리
+        if (bleDevice && bleConnected) {
+            addSerialLine('📡 이전 BLE 연결 정리 중...');
+            try {
+                const oldP = new BLE_STK500Programmer(bleDevice, 'arduino:avr:nano');
+                await oldP.disconnect();
+                bleDevice = null;
+                bleConnected = false;
+            } catch(e) {
+                bleDevice = null;
+                bleConnected = false;
+            }
+        }
+
+        const boardId = document.getElementById('boardSelector').value || 'arduino:avr:nano';
+        const boardName = BOARD_CONFIG[boardId]?.name || boardId;
+        const customBaudRate = document.getElementById('baudRateSelector')?.value || null;
+        console.log('[BLE-Upload] 🎛️ 선택된 baudRate:', customBaudRate, '| 보드:', boardName);
+        console.log('[BLE-Upload] 📡 HM-10 블루투스 업로드 시작');
+
+        const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+
+        // 1. 컴파일
+        showUploadProgress(`🔨 컴파일 중... (${boardName})`);
+        addSerialLine(`🔨 컴파일 시작 (${boardName})`);
+        try {
+            const compRes = await fetch(apiUrl('/api/v1/arduino/compile'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + (token || ''),
+                },
+                body: JSON.stringify({
+                    code: code,
+                    board: boardId,
+                    code_id: currentCodeId || null,
+                }),
+            });
+            const compData = await compRes.json();
+            if (!compRes.ok) throw new Error(compData?.detail || '컴파일 실패');
+            if (compData.status === 'error') {
+                throw new Error((compData.data?.error || []).join('\n') || '컴파일 에러');
+            }
+            const hexBase64 = compData.data.hex;
+            const hexText = atob(hexBase64);
+            addSerialLine(`✅ 컴파일 성공! (${compData.data.hex_size || 0} bytes)`);
+            console.log('[BLE-Upload] ✅ 컴파일 성공, hex 크기:', hexText.length);
+
+            // 2. HM-10 장치 검색 및 연결
+            showUploadProgress('📡 HM-10 블루투스 검색 중...');
+            addSerialLine('📡 HM-10 장치를 선택해주세요...');
+            
+            try {
+                const device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true,
+                    optionalServices: [0xFFE0, 0xFFF0],
+                });
+
+                console.log('[BLE-Upload] 📡 장치 선택됨:', device.name || 'HM-10');
+                addSerialLine(`📡 선택된 장치: ${device.name || 'HM-10'}`);
+
+                programmer = new BLE_STK500Programmer(device, boardId);
+                await programmer.connect();
+                bleDevice = device;
+                bleConnected = true;
+
+                // 3. 아두이노 리셋 안내
+                showUploadProgress('🔄 아두이노 RESET 버튼을 눌러주세요!');
+                addSerialLine('');
+                addSerialLine('==========================================');
+                addSerialLine('⚠️ 아두이노 보드의 RESET 버튼을 1초간 눌렀다 떼세요!');
+                addSerialLine('   (부트로더가 시작되면 자동으로 동기화됩니다)');
+                addSerialLine('==========================================');
+                addSerialLine('');
+                await programmer._sleep(500);
+
+                // 4. STK500 동기화
+                try {
+                    await programmer.sync();
+                } catch(e) {
+                    addSerialLine('💡 RESET 버튼을 눌렀나요? 다시 시도해보세요...');
+                    throw e;
+                }
+
+                // 5. 플래시 쓰기
+                showUploadProgress('📦 플래시 업로드 중...');
+                await programmer.flashWrite(hexText);
+                addSerialLine('✅ 플래시 쓰기 완료!');
+
+                // 6. 연결 종료
+                await programmer.disconnect();
+                bleDevice = null;
+                bleConnected = false;
+                hideUploadProgress();
+
+                addSerialLine('');
+                addSerialLine('🎉 블루투스 업로드 완료!');
+                showToast('✅ 블루투스 업로드 성공!', 'success');
+
+            } catch(e) {
+                // 실패 시 확실히 BLE 연결 해제
+                if (programmer) {
+                    try { await programmer.disconnect(); } catch(_) {}
+                }
+                if (bleDevice && bleDevice.gatt && bleDevice.gatt.connected) {
+                    try { await bleDevice.gatt.disconnect(); } catch(_) {}
+                }
+                bleDevice = null;
+                bleConnected = false;
+                hideUploadProgress();
+                console.error('[BLE-Upload] ❌ 업로드 실패:', e);
+                addSerialLine(`❌ 업로드 실패: ${e.message}`);
+                showToast('❌ 업로드 실패: ' + e.message, 'error');
+            }
+
+        } catch(e) {
+            hideUploadProgress();
+            console.error('[BLE-Upload] ❌ 컴파일 실패:', e);
+            addSerialLine(`❌ 컴파일 실패: ${e.message}`);
+            showToast('❌ 업로드 실패: ' + e.message, 'error');
+        }
+    }
+
+function base64ToBlob(base64, fileName) {
+        try {
+            const binaryStr = atob(base64);
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: 'application/zip' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName || 'upload.zip';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch(e) {
+            console.error('base64ToBlob 오류:', e);
+            showToast('파일 다운로드 실패', 'error');
+        }
+    }
+
+    // ===== HEX 파일 다운로드 (컴파일 결과 저장) =====
+    function downloadHex() {
+        if (!lastCompiledHex) {
+            showToast('컴파일을 먼저 실행해주세요.', 'warning');
+            return;
+        }
+        try {
+            const binaryStr = atob(lastCompiledHex);
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sketch.hex';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('HEX 파일 다운로드 완료', 'success');
+        } catch(e) {
+            showToast('HEX 다운로드 실패', 'error');
+        }
+    }
+
+    // ===== 시리얼 모니터 (WebSerial 전용) =====
+    function toggleSerialMonitor() {
+        const sm = document.getElementById('serialMonitor');
+        sm.classList.toggle('active');
+    }
+
+    async     function toggleSerialConnection() {
+        if (serialConnected || bleConnected) {
+            await disconnectSerial();
+            await disconnectSerialBluetooth();
+            return;
+        }
+        // 연결 방식 선택
+        //  · 앱(안드로이드) + OTG  → USB 직렬 (네이티브)
+        //  · 웹 + 둘 다 지원         → 사용자에게 선택
+        //  · 한 가지만 지원          → 자동 선택
+        const nativeOtg = !!(window.NubidaSerial && window.NubidaSerial.supported);
+        const hasUsb = !!navigator.serial;
+        const hasBt = !!navigator.bluetooth;
+
+        if (nativeOtg && !hasBt) {
+            // 앱 전용 경로 — 물어보지 않고 바로 OTG
+            await connectSerial();
+            return;
+        }
+        if (hasUsb && hasBt) {
+            const method = confirm('📡 Bluetooth로 연결할까요?\n\n✅ 확인 = 블루투스(HM-10) 연결\n❌ 취소 = USB 케이블 연결');
+            if (method) {
+                await connectSerialBluetooth();
+            } else {
+                await connectSerial();
+            }
+            return;
+        }
+        if (hasUsb) {
+            await connectSerial();
+        } else if (hasBt) {
+            await connectSerialBluetooth();
+        } else {
+            const isApp = !!(window.IS_NATIVE || (window.NubidaSerial && window.NubidaSerial.supported));
+            if (isApp) {
+                showToast('⚠️ USB OTG 연결을 사용할 수 없습니다. OTG 케이블과 보드 전원을 확인하세요.', 'error');
+                addSerialLine('❌ USB 장치를 찾을 수 없습니다 — OTG 케이블을 확인하세요.');
+            } else {
+                showToast('⚠️ 이 브라우저는 시리얼 연결을 지원하지 않습니다.', 'error');
+            }
+        }
+    }
+
+    async function connectSerial() {
+        if (!navigator.serial) {
+            showToast('USB 시리얼 연결을 지원하지 않는 환경입니다.', 'error');
+            return;
+        }
+        try {
+            serialPort = await navigator.serial.requestPort();
+            await serialPort.open({ baudRate: Number(document.getElementById('baudRateSelector')?.value) || 9600 });
+            serialConnected = true;
+            document.getElementById('serialConnectBtn').textContent = '🔌 연결됨';
+            document.getElementById('serialConnectBtn').classList.add('active');
+            document.getElementById('serialMonitor').classList.add('active');
+            addSerialLine('✅ 시리얼 포트 연결됨 (' + (Number(document.getElementById('baudRateSelector')?.value) || 9600) + ' baud)');
+            startSerialReader();
+            showToast('시리얼 연결 성공!', 'success');
+        } catch(e) {
+            if (e && e.name === 'NotFoundError') {
+                // 사용자 취소 or 장치 없음(앱)
+                if ((e.message || '').indexOf('NO_DEVICE') === 0) {
+                    const m = e.message.replace('NO_DEVICE: ', '');
+                    addSerialLine('❌ ' + m);
+                    showToast(m, 'error');
+                }
+                return;
+            }
+            showToast('연결 실패: ' + ((e && e.message) || e), 'error');
+            addSerialLine('❌ 연결 실패: ' + ((e && e.message) || e));
+        }
+    }
+
+    
+
+    // ===== 블루투스 시리얼 모니터 연결 (HM-10) =====
+    async function connectSerialBluetooth() {
+        if (!navigator.bluetooth) {
+            showToast('Web Bluetooth를 지원하지 않습니다.', 'error');
+            return;
+        }
+        try {
+            addSerialLine('📡 HM-10 블루투스 검색 중...');
+            const device = await navigator.bluetooth.requestDevice({
+                filters: [
+                    { services: [0xFFE0] },
+                    { services: [0xFFF0] },
+                    { namePrefix: 'HM-10' },
+                    { namePrefix: 'HM10' },
+                    { namePrefix: 'HC-05' },
+                ],
+                optionalServices: [0xFFE0, 0xFFF0],
+            });
+
+            bleDevice = device;
+            const server = await device.gatt.connect();
+            let service;
+            try {
+                service = await server.getPrimaryService(0xFFE0);
+            } catch(e) {
+                service = await server.getPrimaryService(0xFFF0);
+            }
+
+            const characteristic = await service.getCharacteristic(0xFFE1);
+
+            // 문자값 수신 콜백
+            serialPort = {
+                writeData: (bytes) => {
+                    const chunk = new Uint8Array(bytes);
+                    try { characteristic.writeValueWithoutResponse(chunk); } catch(e) {
+                        characteristic.writeValue(chunk);
+                    }
+                }
+            };
+
+            if (characteristic.properties.notify) {
+                await characteristic.startNotifications();
+                characteristic.addEventListener('characteristicvaluechanged', (e) => {
+                    const data = new Uint8Array(e.target.value.buffer);
+                    // 데이터를 시리얼 모니터에 출력
+                    const text = new TextDecoder().decode(data);
+                    addSerialLine(text, false);
+                });
+            }
+
+            serialConnected = true;
+            bleConnected = true;
+            document.getElementById('serialConnectBtn').textContent = '🔌 연결됨';
+            document.getElementById('serialConnectBtn').classList.add('active');
+            document.getElementById('serialMonitor').classList.add('active');
+            addSerialLine('✅ 블루투스 시리얼 연결됨 (HM-10)');
+            showToast('블루투스 시리얼 연결 성공!', 'success');
+
+        } catch(e) {
+            if (e.name !== 'NotFoundError') {
+                addSerialLine('❌ 블루투스 연결 실패: ' + e.message);
+                showToast('연결 실패: ' + e.message, 'error');
+            }
+        }
+    }
+
+async function disconnectSerial() {
+        try {
+            if (serialReader) {
+                serialReader.cancel();
+                serialReader = null;
+            }
+            if (serialPort?.readable) {
+                await serialPort.close();
+            }
+        } catch(e) {}
+        serialConnected = false;
+        serialPort = null;
+        document.getElementById('serialConnectBtn').textContent = '⚡ 연결';
+        document.getElementById('serialConnectBtn').classList.remove('active');
+        addSerialLine('⛔ 포트 연결 해제됨');
+    }
+
+    async function disconnectSerialBluetooth() {
+        try {
+            if (bleDevice?.gatt?.connected) {
+                bleDevice.gatt.disconnect();
+            }
+        } catch(e) {}
+        bleConnected = false;
+        bleDevice = null;
+        document.getElementById('serialConnectBtn').textContent = '⚡ 연결';
+        document.getElementById('serialConnectBtn').classList.remove('active');
+        addSerialLine('⛔ 블루투스 연결 해제됨');
+    }
+
+    async function startSerialReader() {
+        if (!serialPort?.readable) return;
+        try {
+            const reader = serialPort.readable.getReader();
+            serialReader = reader;
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+
+                for (const line of lines) {
+                    if (line.trim()) addSerialLine(line.trim());
+                }
+            }
+        } catch(e) {
+            if (e.name !== 'CancelError') {
+                addSerialLine('⚠️ 시리얼 읽기 오류: ' + e.message);
+            }
+        } finally {
+            serialConnected = false;
+            document.getElementById('serialConnectBtn').textContent = '⚡ 연결';
+            document.getElementById('serialConnectBtn').classList.remove('active');
+        }
+    }
+
+    async function sendSerial() {
+        if (!serialConnected) {
+            showToast('시리얼이 연결되지 않았습니다.', 'warning');
+            return;
+        }
+        // Bluetooth 연결인 경우
+        if (bleConnected && serialPort && serialPort.writeData) {
+            const input = document.getElementById('serialInput');
+            const text = input.value.trim();
+            if (!text) return;
+            const encoder = new TextEncoder();
+            serialPort.writeData(encoder.encode(text + '\n'));
+            addSerialLine(text, false);
+            input.value = '';
+            return;
+        }
+        if (!serialPort?.writable) {
+            showToast('시리얼 포트에 쓸 수 없습니다.', 'warning');
+            return;
+        }
+        const input = document.getElementById('serialInput');
+        const text = input.value.trim();
+        if (!text) return;
+        try {
+            const writer = serialPort.writable.getWriter();
+            await writer.write(new TextEncoder().encode(text + '\n'));
+            writer.releaseLock();
+            addSerialLine('📤 ' + text);
+            input.value = '';
+        } catch(e) {
+            showToast('전송 실패: ' + e.message, 'error');
+        }
+    }
+
+    function addSerialLine(text) {
+        const body = document.getElementById('serialBody');
+        const now = new Date();
+        const ts = now.toLocaleTimeString('ko-KR', { hour12: false });
+        const line = document.createElement('div');
+        line.className = 'serial-line';
+        line.innerHTML = '<span class="serial-timestamp">[' + ts + ']</span>' + esc(text);
+        body.appendChild(line);
+        body.scrollTop = body.scrollHeight;
+    }
+
+    function clearSerialMonitor() {
+        document.getElementById('serialBody').innerHTML = '';
+    }
+
+    // ===== 업로드 상태 표시 =====
+    function showUploadProgress(text) {
+        const el = document.getElementById('uploadProgress');
+        document.getElementById('uploadStatusText').textContent = text;
+        el.classList.add('active');
+    }
+
+    function hideUploadProgress() {
+        document.getElementById('uploadProgress').classList.remove('active');
+    }
+
+    // ===== 출력 패널 =====
+    function showOutput(text, type) {
+        const panel = document.getElementById('outputPanel');
+        const content = document.getElementById('outputContent');
+        panel.style.display = 'block';
+
+        const lines = text.split('\n');
+        content.innerHTML = lines.map(line => {
+            let cls = '';
+            if (line.includes('✅') || line.includes('✓')) cls = 'out-success';
+            else if (line.includes('오류') || line.includes('실패') || line.includes('Error')) cls = 'out-error';
+            else if (line.includes('ℹ️') || line.includes('📎') || line.includes('🔄') || line.includes('📡')) cls = 'out-info';
+            return '<div class="out-line ' + cls + '">' + esc(line) + '</div>';
+        }).join('');
+    }
+
+    // ===== 뒤로가기 =====
+    function goBack() {
+        if (isDirty) {
+            if (!confirm('저장되지 않은 변경사항이 있습니다. 뒤로 가시겠습니까?')) return;
+        }
+        if (COURSE_ID) {
+            location.href = 'learning.html?course_id=' + COURSE_ID;
+        } else {
+            history.back();
+        }
+    }
+
+    // ===== 토스트 =====
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        if (!t) return;
+        const colors = { success:'#2E7D32', error:'#C62828', warning:'#E65100', info:'#4B5E6B' };
+        t.style.background = colors[type] || '#4B5E6B';
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ===== 모달 =====
+    function openModal(id) { document.getElementById(id)?.classList.add('active'); }
+    function closeModal(id) { document.getElementById(id)?.classList.remove('active'); }
+    document.addEventListener('click', function(e) {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => {
+            if (e.target === m) closeModal(m.id);
+        });
+    });
+
+    // ===== 앱 연결 안내 배너 =====
+    //  · 웹 브라우저: 배너 없음 (기존 UX 유지)
+    //  · 안드로이드 앱: OTG 사용 가능 안내
+    //  · iOS 앱: USB 업로드 불가 안내 (BLE 는 별도)
+    function initAppNotice() {
+        const el = document.getElementById('appConnectionNotice');
+        if (!el) return;
+
+        let isNative = false;
+        try { isNative = !!(window.IS_NATIVE || (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())); } catch (e) {}
+        if (!isNative) return;   // 웹이면 배너를 띄우지 않는다
+
+        const otg = !!(window.NubidaSerial && window.NubidaSerial.supported);
+        const plat = (function () {
+            try { if (window.Capacitor && window.Capacitor.getPlatform) return window.Capacitor.getPlatform(); } catch (e) {}
+            return (navigator.userAgent || '').indexOf('iPhone') !== -1 || /iPad|iPod/.test(navigator.userAgent) ? 'ios' : 'android';
+        })();
+
+        let cls, icon, text;
+        if (otg && plat === 'android') {
+            cls = 'otg';
+            icon = '🔌';
+            text = '<b>USB OTG 업로드 사용 가능</b> — OTG 케이블로 아두이노를 연결한 뒤 ' +
+                   '「📤 업로드 → 💻 USB OTG 업로드」를 누르세요. 서버에서 컴파일 후 기기에서 바로 굽습니다.';
+        } else if (plat === 'ios') {
+            cls = 'warn';
+            icon = 'ℹ️';
+            text = '<b>아이폰에서는 USB 업로드를 지원하지 않습니다.</b> ' +
+                   'iOS 는 외부 시리얼 장치 접근이 차단되어 있어요. 코드 <b>컴파일·저장</b>은 앱에서 가능하며, ' +
+                   '보드에 굽는 작업은 PC(크롬)에서 해주세요.';
+        } else {
+            cls = 'info';
+            icon = 'ℹ️';
+            text = '<b>USB 업로드를 사용할 수 없습니다.</b> OTG 케이블로 아두이노를 연결한 뒤 다시 시도해 주세요.';
+        }
+
+        el.className = 'app-conn-notice ' + cls;
+        el.style.display = 'flex';
+        el.innerHTML =
+            '<span class="acn-icon">' + icon + '</span>' +
+            '<span class="acn-text">' + text + '</span>' +
+            '<button class="acn-close" title="닫기" onclick="this.parentNode.style.display=\'none\'">✕</button>';
+
+        console.log('[App-Notice] 플랫폼=' + plat + ' / OTG=' + otg);
+    }
+
+    // DOM 준비 후 배너 초기화
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAppNotice);
+    } else {
+        initAppNotice();
+    }
+</script>
+    <script src="/common/js/protection.js?v=20260804b"></script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

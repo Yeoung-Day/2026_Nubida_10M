@@ -1,0 +1,785 @@
+/* ============================================================
+   누비다플랫폼 v6.0 — 지점(Branch) 페이지 스타일
+   ============================================================ */
+/* ============================================================
+   컴포넌트 CSS @import — 공통 UI 컴포넌트 자동 로드
+   ============================================================ */
+
+/* ===== Tree-style Sidebar ===== */
+.nav-section { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-tertiary); padding:12px 16px 4px 16px; margin-top:4px; }
+.nav-item { padding-left:24px !important; }
+.nav-section + .nav-item { padding-left:24px; }
+
+/* --- Dashboard Specific --- */
+.dashboard-welcome {
+  font-size: var(--text-xl);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-7);
+}
+
+.dashboard-welcome strong {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.quick-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.quick-actions a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-actions a:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+/* --- Studios/Director Management --- */
+.studio-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.studio-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.studio-card .studio-name {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.studio-card .studio-info {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-top: var(--space-2);
+}
+
+/* --- Employee Management --- */
+.employee-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--accent-bg);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.page-animate { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============================================================
+   네비게이션 & 유틸리티
+   ============================================================ */
+
+/* 네비게이션 레이블 — 사이드바 링크 텍스트 */
+.nav-label {
+  font-size: var(--text-sm);
+  color: inherit;
+}
+
+/* 보조 텍스트 (날짜/메타 정보) */
+.small-text {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   탭 바 (courses.html)
+   ============================================================ */
+
+.tab-bar {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-3);
+}
+
+.tab-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  user-select: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.tab-item:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.tab-item.active {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   툴바 (courses.html, employees.html)
+   ============================================================ */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ============================================================
+   필터 바 (director-reports.html, branch-reports.html, portfolio.html)
+   ============================================================ */
+
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-item label {
+  font-size: 12px;
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* 필터바 내부 폼/버튼 높이·정렬 통일 (한 줄 정렬 원칙) */
+.filter-bar select,
+.filter-bar input,
+.filter-bar .btn {
+  height: 36px;
+  box-sizing: border-box;
+}
+.filter-bar .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   보고서 카드 (director-reports.html, branch-reports.html)
+   ============================================================ */
+
+.report-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+}
+
+.report-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-default);
+  transform: translateY(-1px);
+}
+
+.rc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.rc-title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.rc-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+
+.rc-stats {
+  display: flex;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+
+.rc-stat {
+  text-align: center;
+  padding: var(--space-3) var(--space-5);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+  min-width: 80px;
+}
+
+.rc-stat .val {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.rc-stat .lbl {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   상세 정보 섹션 (director-reports.html, branch-reports.html)
+   ============================================================ */
+
+.section-block {
+  margin-bottom: var(--space-6);
+}
+
+.section-block h4 {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.detail-table tr {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.detail-table tr:last-child {
+  border-bottom: none;
+}
+
+.detail-table td {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  vertical-align: top;
+}
+
+.detail-table td:first-child {
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  width: 120px;
+}
+
+/* ============================================================
+   카드 푸터 (settings.html 등)
+   ============================================================ */
+
+.card-footer {
+  padding: var(--space-4) var(--space-7);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  background: var(--bg-canvas);
+  border-radius: 0 0 var(--radius-3xl) var(--radius-3xl);
+}
+
+/* ============================================================
+   뷰 토글 (portfolio.html)
+   ============================================================ */
+
+.view-toggle {
+  display: inline-flex;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2px;
+  border: 1px solid var(--border-subtle);
+}
+
+.vt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.vt-btn:hover {
+  color: var(--text-primary);
+}
+
+.vt-btn.active {
+  background: var(--bg-white);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   토글 스위치 (settings.html)
+   ============================================================ */
+
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   모달 확장 (director-reports.html, branch-reports.html, portfolio.html)
+   ============================================================ */
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-5);
+}
+
+.modal-header h3 {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-body {
+  padding: var(--space-2) 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-5);
+}
+
+.modal-lg {
+  max-width: 700px;
+}
+
+/* ============================================================
+   폼 그리드 (branch-reports.html)
+   ============================================================ */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-5);
+}
+
+.form-grid .full {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* ============================================================
+   버튼 변형
+   ============================================================ */
+
+/* 채워진 버튼 */
+.btn-filled {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+.btn-filled:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+/* 텍스트 버튼 (테두리/배경 없음) */
+.btn-text {
+  background: transparent;
+  color: var(--text-link);
+  border-color: transparent;
+  padding: var(--space-2) var(--space-3);
+}
+
+.btn-text:hover {
+  background: var(--accent-bg);
+  color: var(--accent-dark);
+  text-decoration: none;
+}
+
+/* 성공 버튼 */
+.btn-success {
+  background: var(--success);
+  color: var(--on-success);
+  border-color: var(--success);
+}
+
+.btn-success:hover {
+  background: #059669;
+  border-color: #059669;
+  color: var(--on-success);
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   유틸리티
+   ============================================================ */
+
+/* 플렉스 중앙 정렬 */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 상단 마진 */
+.mt-24 {
+  margin-top: var(--space-7);
+}
+
+/* 8px 갭 */
+.gap-8 {
+  gap: var(--space-3);
+}
+
+/* 빈 상태 아이콘 */
+.empty-icon {
+  font-size: 48px;
+  opacity: 0.5;
+  margin-bottom: var(--space-5);
+}
+
+/* ============================================================
+   포트폴리오 이미지 업로드 UI
+   ============================================================ */
+.upload-dropzone {
+  border: 2px dashed var(--border-color, #d1d5db);
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface-secondary, #f9fafb);
+}
+.upload-dropzone:hover,
+.upload-dropzone.drag-over {
+  border-color: var(--primary, #4B5E6B);
+  background: var(--primary-bg, #ecfeff);
+}
+.upload-dropzone .upload-icon { font-size: 40px; margin-bottom: 8px; }
+.upload-dropzone p { margin: 4px 0; font-size: 14px; color: var(--text-secondary, #6b7280); }
+.upload-dropzone .small-text { font-size: 12px; color: var(--text-tertiary, #9ca3af); }
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.image-preview-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: #f3f4f6;
+}
+.image-preview-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.image-preview-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+}
+.image-preview-remove:hover { background: rgba(220,38,38,0.8); }
+.portfolio-detail-content {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--surface-secondary, #f9fafb);
+  border-radius: 8px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+.portfolio-detail-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.portfolio-detail-images img {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+/* ============================================================
+   포트폴리오 카드 (branch portfolio grid)
+   ============================================================ */
+.portfolio-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+.portfolio-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-default);
+  transform: translateY(-1px);
+}
+.portfolio-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: var(--bg-subtle);
+  flex-shrink: 0;
+}
+.portfolio-info {
+  flex: 1;
+  min-width: 0;
+}
+.portfolio-title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.portfolio-meta {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+.portfolio-date {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   태그 입력 UI (포트폴리오 모달)
+   ============================================================ */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  min-height: 40px;
+  cursor: text;
+  transition: border-color var(--transition-base);
+}
+.tags-container:focus-within {
+  border-color: var(--md-primary, #4B5E6B);
+  box-shadow: 0 0 0 1px var(--md-primary, #4B5E6B);
+}
+.tags-container .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: var(--radius-full);
+}
+.tags-container .tag .tag-remove {
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 12px;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+.tags-container .tag .tag-remove:hover {
+  opacity: 1;
+}
+.tags-container input {
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  background: transparent;
+  flex: 1;
+  min-width: 80px;
+  padding: 4px 0;
+}
+.tags-container input::placeholder {
+  color: var(--text-tertiary);
+}
+
+
+/* ============================================================
+   보고서 자동 계산 필드 (.auto-calc / .auto-tag)
+   %·달성률은 화면에서 자동 산출 — 읽기 전용
+   ============================================================ */
+.form-input.auto-calc {
+  background: #F1F5F9 !important;
+  color: #475569 !important;
+  font-weight: 700;
+  cursor: default;
+  border-color: #E2E8F0 !important;
+  box-shadow: none !important;
+}
+.form-input.auto-calc:focus,
+.form-input.auto-calc:active {
+  outline: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: none !important;
+}
+.form-input.auto-calc::-webkit-outer-spin-button,
+.form-input.auto-calc::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.form-input.auto-calc { -moz-appearance: textfield; appearance: textfield; }
+
+.auto-tag {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #4F5EF8;
+  background: #EEF2FF;
+  border-radius: 5px;
+  padding: 1px 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   [260910] 에듀케어 — 소통 네비 '채팅' 숨김
+   요청: 소통 네비게이션의 채팅 메뉴 숨김 처리
+   방식: 기존 HTML/JS 유지, CSS로만 비표시 (복구 용이)
+   ============================================================ */
+.sidebar-nav a.nav-item[href$="chat.html"],
+.sidebar-nav a.nav-item[href="chat.html"] { display: none !important; }
+/* 채팅 항목만 있는 '소통' 섹션 제목도 함께 숨김 (빈 섹션 방지) */
+.sidebar-nav .nav-section:has(+ a.nav-item[href$="chat.html"]) { display: none !important; }

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>학생 명단 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        /* 학생/학부모 카드 그리드 — 모던 카드 UI */
+        .member-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; padding:18px 20px; }
+        .member-card { display:flex; align-items:center; gap:14px; padding:16px 18px; background:#fff; border:1px solid #EEF0F4; border-radius:14px; transition:all 0.2s ease; cursor:pointer; }
+        .member-card:hover { border-color:#4F5EF8; box-shadow:0 6px 20px rgba(79,94,248,0.10); transform:translateY(-2px); }
+        .mc-avatar { position:relative; width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#EEF2FF,#E0E7FF); display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:700; flex-shrink:0; }
+        .mc-avatar.student { background:linear-gradient(135deg,#E0F2FE,#DBEAFE); color:#0369A1; }
+        .mc-avatar.parent { background:linear-gradient(135deg,#FCE7F3,#FDF2F8); color:#BE185D; }
+        .mc-avatar-badge { position:absolute; bottom:-5px; right:-5px; width:19px; height:19px; background:#fff; border:1px solid #E5E7EB; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; box-shadow:0 1px 3px rgba(0,0,0,0.12); }
+        .mc-info { flex:1; min-width:0; }
+        .mc-name { font-size:15px; font-weight:600; color:#111827; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        .mc-code { font-size:11px; color:#9CA3AF; font-family:monospace; background:#F3F4F6; padding:2px 8px; border-radius:6px; }
+        .mc-meta { display:flex; gap:6px; flex-wrap:wrap; margin-top:9px; }
+        .mc-chip { display:inline-flex; align-items:center; gap:4px; font-size:11.5px; color:#6B7280; background:#F9FAFB; border:1px solid #F3F4F6; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+        .mc-status { font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; }
+        .mc-status.active { background:#D1FAE5; color:#065F46; }
+        .mc-status.inactive { background:#FEF3C7; color:#92400E; }
+        .mc-arrow { color:#D1D5DB; font-size:18px; flex-shrink:0; }
+
+        .tabs { display:flex; border-bottom:1px solid #E5E7EB; background:#fff; }
+        .tab { padding:12px 24px; font-size:13px; font-weight:600; color:#6B7280; cursor:pointer; border-bottom:2px solid transparent; transition:all 0.15s; }
+        .tab:hover { color:#374151; }
+        .tab.active { color:#4F5EF8; border-bottom-color:#4F5EF8; }
+        .tab .tab-count { font-size:11px; background:#F3F4F6; padding:1px 7px; border-radius:8px; margin-left:4px; }
+        .tab.active .tab-count { background:#EEF2FF; color:#4F5EF8; }
+
+        /* 검색창 — 상단 툴바와 정렬, 돋보기 아이콘 */
+        .search-bar { padding:16px 20px 6px; }
+        .search-bar input { width:100%; box-sizing:border-box; padding:10px 16px 10px 38px; border:1px solid #E5E7EB; border-radius:10px; font-size:13px; outline:none; background:#F9FAFB url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 14px center; transition:all 0.2s; }
+        .search-bar input:focus { border-color:#4F5EF8; background-color:#fff; box-shadow:0 0 0 3px rgba(79,94,248,0.08); }
+
+        /* 상세 모달 스타일 */
+        .detail-section { padding:16px 20px; }
+        .detail-section .ds-title { font-size:13px; font-weight:700; color:#374151; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+        .detail-section .ds-row { display:flex; padding:8px 0; border-bottom:1px solid #F3F4F6; }
+        .detail-section .ds-row:last-child { border-bottom:none; }
+        .detail-section .ds-label { width:80px; font-size:12px; font-weight:600; color:#6B7280; flex-shrink:0; }
+        .detail-section .ds-value { font-size:13px; color:#111827; }
+        .detail-section .ds-divider { height:1px; background:#E5E7EB; margin:4px 0; }
+
+        .parent-card { display:flex; align-items:center; gap:12px; padding:10px 14px; background:#FAFAFA; border-radius:8px; border:1px solid #E5E7EB; margin-bottom:8px; }
+        .parent-card:last-child { margin-bottom:0; }
+        .parent-card .pc-icon { font-size:24px; }
+        .parent-card .pc-info { flex:1; }
+        .parent-card .pc-name { font-size:13px; font-weight:600; color:#111827; }
+        .parent-card .pc-meta { font-size:11px; color:#9CA3AF; margin-top:2px; }
+    </style>
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="active nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>👥 학생 명단</h1></div>
+                <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+            </div>
+<div class="section-divider"></div>
+
+            <!-- Tabs -->
+            <div class="card">
+                <div class="tabs">
+                    <div class="tab active" data-tab="students" onclick="switchTab('students')">🎒 학생 <span class="tab-count" id="tabCountStudents">0</span></div>
+                    <div class="tab" data-tab="parents" onclick="switchTab('parents')">👪 학부모 <span class="tab-count" id="tabCountParents">0</span></div>
+                    <div class="tab" data-tab="unassigned" onclick="switchTab('unassigned')">📋 미배정 <span class="tab-count" id="tabCountUnassigned">0</span></div>
+                </div>
+
+                <!-- Search -->
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="이름 또는 연락처로 검색... (클릭하면 상세 정보 확인)" oninput="filterMembers()">
+                </div>
+
+                <!-- List -->
+                <div id="memberListBody">
+                    <div style="text-align:center;padding:60px 20px;color:#9CA3AF;">⏳ 로딩 중...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 상세 정보 모달 -->
+    <div class="modal-overlay" id="detailModal" style="display:none;">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 id="detailModalTitle">👤 회원 정보</h3>
+            </div>
+            <div style="max-height:70vh;overflow-y:auto;">
+                <!-- 기본 정보 -->
+                <div class="detail-section">
+                    <div class="ds-title">📋 기본 정보</div>
+                    <div class="ds-row"><div class="ds-label">이름</div><div class="ds-value" id="dName"></div></div>
+                    <div class="ds-row"><div class="ds-label">아이디</div><div class="ds-value" id="dUsername"></div></div>
+                    <div class="ds-row"><div class="ds-label">구분</div><div class="ds-value" id="dRole"></div></div>
+                    <div class="ds-row"><div class="ds-label">이메일</div><div class="ds-value" id="dEmail"></div></div>
+                    <div class="ds-row"><div class="ds-label">연락처</div><div class="ds-value" id="dPhone"></div></div>
+                    <div class="ds-row"><div class="ds-label">등록코드</div><div class="ds-value" id="dCode"></div></div>
+                    <div class="ds-row"><div class="ds-label">가입일</div><div class="ds-value" id="dCreated"></div></div>
+                    <div class="ds-row"><div class="ds-label">상태</div><div class="ds-value" id="dStatus"></div></div>
+                </div>
+
+                <div class="ds-divider"></div>
+
+                <!-- 학부모 정보 (학생 클릭 시) -->
+                <div class="detail-section" id="parentSection" style="display:none;">
+                    <div class="ds-title">👪 연결된 학부모</div>
+                    <div id="parentList"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="withdrawBtn" onclick="confirmWithdraw()" style="margin-right:auto;">⚠️ 탈퇴</button>
+                <button class="btn btn-ghost" onclick="closeModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+    <script src="/common/js/api.js?v=20260911nav"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script src="/common/js/nav.js?v=20260911nav"></script>
+    <script>
+        let allStudents = [];
+        let allParents = [];
+        let currentTab = 'students';
+
+        function esc(s) {
+            if (s == null) return '';
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const u = getCurrentUser();
+            if (u) {
+                document.getElementById('sidebarUserName').textContent = u.name || u.username || '사용자';
+                document.getElementById('sidebarUserRole').textContent = '원장';
+            }
+            document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {
+                year:'numeric', month:'long', day:'numeric', weekday:'long'
+            });
+            loadAllMembers();
+        });
+
+        async function loadAllMembers() {
+            try {
+                const [studentsRes, parentsRes, availableRes] = await Promise.all([
+                    apiGet('/director/students/all?page=1&per_page=500'),
+                    apiGet('/director/parents/all?page=1&per_page=500'),
+                    apiGet('/director/students/available?page=1&per_page=500')
+                ]);
+
+                allStudents = (studentsRes && studentsRes.data) || [];
+                allParents = (parentsRes && parentsRes.data) || [];
+                const unassigned = (availableRes && availableRes.data) || [];
+
+                document.getElementById('tabCountStudents').textContent = allStudents.length;
+                document.getElementById('tabCountParents').textContent = allParents.length;
+                document.getElementById('tabCountUnassigned').textContent = unassigned.length;
+
+                window.unassignedStudents = unassigned;
+                renderCurrentTab();
+            } catch(err) {
+                console.error('Load error:', err);
+                document.getElementById('memberListBody').innerHTML =
+                    `<div style="text-align:center;padding:60px 20px;color:#EF4444;">⚠️ 로딩 실패: ${esc(err.message)}</div>`;
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            renderCurrentTab();
+        }
+
+        function renderCurrentTab() {
+            const search = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+            let items = [];
+            let title = '';
+
+            if (currentTab === 'students') {
+                items = allStudents;
+                title = '🎒 등록된 학생이 없습니다';
+            } else if (currentTab === 'parents') {
+                items = allParents;
+                title = '👪 등록된 학부모가 없습니다';
+            } else if (currentTab === 'unassigned') {
+                items = window.unassignedStudents || [];
+                title = '✅ 모든 학생이 학급에 배정되었습니다';
+            }
+
+            if (search) {
+                items = items.filter(item =>
+                    (item.name || '').toLowerCase().includes(search) ||
+                    (item.phone || '').includes(search) ||
+                    (item.email || '').toLowerCase().includes(search)
+                );
+            }
+
+            const body = document.getElementById('memberListBody');
+            if (!items || items.length === 0) {
+                body.className = '';
+                body.innerHTML = `<div style="text-align:center;padding:60px 20px;color:#9CA3AF;">
+                    <div style="font-size:48px;margin-bottom:12px;">${currentTab === 'students' ? '🎒' : currentTab === 'parents' ? '👪' : '✅'}</div>
+                    <div style="font-size:14px;">${title}</div>
+                    ${search ? '<div style="font-size:12px;color:#D1D5DB;margin-top:4px;">검색 결과가 없습니다</div>' : ''}
+                </div>`;
+                return;
+            }
+
+            body.className = 'member-grid';
+            body.innerHTML = items.map(item => {
+                const name = item.name || item.username || '-';
+                const phone = item.phone || '-';
+                const email = item.email || '-';
+                const code = item.registration_code ? (item.registration_code.startsWith('#') ? item.registration_code : '#' + item.registration_code) : '';
+                const date = item.created_at ? new Date(item.created_at).toLocaleDateString('ko-KR') : '-';
+                const isActive = item.is_active !== false;
+
+                const initial = (name && name.trim()) ? name.trim().charAt(0) : '?';
+                const isStudentTab = currentTab === 'students';
+
+                return `<div class="member-card" onclick="showDetail(${item.id}, '${currentTab}')">
+                    <div class="mc-avatar ${isStudentTab ? 'student' : 'parent'}">${esc(initial)}<span class="mc-avatar-badge">${isStudentTab ? '🎓' : '👪'}</span></div>
+                    <div class="mc-info">
+                        <div class="mc-name">${esc(name)}${code ? `<span class="mc-code">${esc(code)}</span>` : ''}</div>
+                        <div class="mc-meta">
+                            <span class="mc-chip">📱 ${esc(phone)}</span>
+                            <span class="mc-chip">✉️ ${esc(email)}</span>
+                            <span class="mc-chip">📅 ${date}</span>
+                            <span class="mc-status ${isActive ? 'active' : 'inactive'}">${isActive ? '활성' : '대기'}</span>
+                        </div>
+                    </div>
+                    <span class="mc-arrow">›</span>
+                </div>`;
+            }).join('');
+        }
+
+        function filterMembers() {
+            renderCurrentTab();
+        }
+
+        let currentDetailUserId = null;
+
+        // === 상세 정보 모달 ===
+        function showDetail(userId, tab) {
+            let user = null;
+            let isStudent = true;
+            userId = Number(userId);  // 문자열/숫자 타입 통일
+
+            currentDetailUserId = userId;
+
+            if (tab === 'students') {
+                user = allStudents.find(u => u.id === userId);
+            } else if (tab === 'unassigned') {
+                user = (window.unassignedStudents || []).find(u => u.id === userId);
+            } else {
+                user = allParents.find(u => u.id === userId);
+                isStudent = false;
+            }
+
+            if (!user) return;
+
+            // 기본 정보 채우기
+            document.getElementById('detailModalTitle').textContent = isStudent ? '🎒 학생 정보' : '👪 학부모 정보';
+            document.getElementById('dName').textContent = user.name || '-';
+            document.getElementById('dUsername').textContent = user.username || '-';
+            document.getElementById('dRole').textContent = isStudent ? '🎒 학생' : '👪 학부모';
+            document.getElementById('dEmail').textContent = user.email || '-';
+            document.getElementById('dPhone').textContent = user.phone || '-';
+            document.getElementById('dCode').textContent = user.registration_code ? '#' + user.registration_code : '-';
+            document.getElementById('dCreated').textContent = user.created_at ? new Date(user.created_at).toLocaleString('ko-KR') : '-';
+            document.getElementById('dStatus').textContent = user.is_active !== false ? '✅ 활성' : '⏳ 승인 대기';
+
+            // 학부모 섹션 (학생일 때만 표시)
+            const parentSection = document.getElementById('parentSection');
+            const parentList = document.getElementById('parentList');
+
+            if (isStudent) {
+                // 같은 branch_id의 학부모 목록 필터링
+                const studentCode = user.registration_code || '';
+                const matchedParents = allParents.filter(p => 
+                    p.registration_code && studentCode && p.registration_code === studentCode
+                );
+
+                if (matchedParents.length > 0) {
+                    parentSection.style.display = 'block';
+                    parentList.innerHTML = matchedParents.map(p => `
+                        <div class="parent-card">
+                            <div class="pc-icon">👪</div>
+                            <div class="pc-info">
+                                <div class="pc-name">${esc(p.name || '-')}</div>
+                                <div class="pc-meta">📱 ${esc(p.phone || '-')} · ✉️ ${esc(p.email || '-')}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    // 등록코드로 매칭 안 되면 같은 지사의 학부모 전체 표시
+                    const branchParents = allParents;
+                    if (branchParents.length > 0) {
+                        parentSection.style.display = 'block';
+                        parentList.innerHTML = `
+                            <div style="font-size:12px;color:#9CA3AF;margin-bottom:10px;">📌 같은 지사에 등록된 학부모 목록</div>
+                            ${branchParents.map(p => `
+                                <div class="parent-card">
+                                    <div class="pc-icon">👪</div>
+                                    <div class="pc-info">
+                                        <div class="pc-name">${esc(p.name || '-')}</div>
+                                        <div class="pc-meta">📱 ${esc(p.phone || '-')} · ✉️ ${esc(p.email || '-')}${p.registration_code ? ' · #' + esc(p.registration_code) : ''}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        `;
+                    } else {
+                        parentSection.style.display = 'block';
+                        parentList.innerHTML = '<div style="font-size:12px;color:#9CA3AF;">등록된 학부모가 없습니다.</div>';
+                    }
+                }
+            } else {
+                parentSection.style.display = 'none';
+            }
+
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        async function confirmWithdraw() {
+            if (!currentDetailUserId) return;
+            if (!confirm('정말 이 회원을 탈퇴 처리하시겠습니까?\n탈퇴 후에는 시스템을 이용할 수 없습니다.')) return;
+
+            const btn = document.getElementById('withdrawBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 탈퇴 중...';
+
+            try {
+                const res = await apiDelete('/director/students/' + currentDetailUserId + '/withdraw');
+                if (res && res.status === 'success') {
+                    alert('✅ ' + (res.message || '탈퇴 처리 완료'));
+                    closeModal();
+                    loadAllMembers();
+                } else {
+                    alert('❌ ' + (res.message || '탈퇴 처리 실패'));
+                    btn.disabled = false;
+                    btn.textContent = '⚠️ 탈퇴';
+                }
+            } catch(err) {
+                alert('❌ 오류: ' + (err.message || '알 수 없음'));
+                btn.disabled = false;
+                btn.textContent = '⚠️ 탈퇴';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+            const btn = document.getElementById('withdrawBtn');
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = '⚠️ 탈퇴';
+            }
+        }
+
+        // 모달 배경 클릭 시 닫기
+        document.getElementById('detailModal')?.addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+            window.location.href = '/pages/login.html';
+        }
+    </script>
+</body>
+</html>

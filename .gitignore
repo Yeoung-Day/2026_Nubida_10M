@@ -1,0 +1,56 @@
+# ─── 대용량/바이너리 (GitHub 100MB 제한 대비) ───
+*.mp4
+*.wav
+*.ogg
+*.mp3
+*.data
+*.wasm
+*.onnx
+*.h5
+*.pb
+*.zip
+*.tar.gz
+
+# ─── 사용자 업로드/생성 데이터 (백업 제외 — 용량) ───
+uploads/
+static/assets/uploads/
+static/mr/
+static/models/
+viewer_cache/
+db_backup/
+generated_songs/
+
+# ─── 의존성/캐시 ───
+node_modules/
+node_modules_old/
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.cache/
+.pytest_cache/
+logs/
+*.log
+
+# ─── 비밀값 ───
+.env
+.env.local
+.env.production
+*.db
+*.sqlite3
+*.db.backup.*
+*.db.broken
+*.db.corrupted.*
+*.db.locked
+*.db.fullbackup.*
+
+# ─── IDE / OS ───
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ─── 에이전트 ───
+.hermes/

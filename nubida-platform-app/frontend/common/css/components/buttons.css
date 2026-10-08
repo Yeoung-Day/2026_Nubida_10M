@@ -1,0 +1,160 @@
+/* ============================================================
+   버튼 컴포넌트 스타일 (Enterprise Action Buttons)
+   Atlassian & Salesforce Inspired — Sharp, flat, crisp click feedback
+   ============================================================ */
+
+/* ----- 기본 버튼 (.btn) ----- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4); /* 보다 밀도 높은 padding */
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  font-family: var(--font-sans);
+  line-height: var(--leading-none);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md); /* 4px Atlassian Standard */
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  outline: none;
+}
+
+/* 클릭 시 물리적 축소 효과 — 기업용 대시보드의 빠르고 가벼운 반응형 클릭 */
+.btn:active { transform: translateY(1px); }
+
+/* ----- 주요 버튼 (.btn-primary) ----- */
+.btn-primary {
+  background: var(--primary);
+  color: var(--on-accent);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: var(--on-accent);
+  text-decoration: none;
+}
+
+/* ----- 보조 버튼 (.btn-secondary) ----- */
+.btn-secondary {
+  background: var(--secondary);
+  color: #FFFFFF;
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  background: var(--secondary-light);
+  border-color: var(--secondary-light);
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+/* ----- 아웃라인 버튼 (.btn-outline) ----- */
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+.btn-outline:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  text-decoration: none;
+}
+
+/* ----- 고스트 버튼 (.btn-ghost) ----- */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+/* ----- 위험 버튼 (.btn-danger) ----- */
+.btn-danger {
+  background: var(--danger);
+  color: var(--on-danger);
+  border-color: var(--danger);
+}
+
+.btn-danger:hover {
+  background: #A31E00; /* Jira Deep Red Hover */
+  border-color: #A31E00;
+  color: var(--on-danger);
+  text-decoration: none;
+}
+
+/* ----- 작은 버튼 (.btn-sm) ----- */
+.btn-sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm); /* 3px */
+}
+
+/* ----- 큰 버튼 (.btn-lg) ----- */
+.btn-lg {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+  border-radius: var(--radius-lg); /* 6px */
+}
+
+/* ----- 비활성화 버튼 (.btn:disabled) ----- */
+.btn:disabled {
+  opacity: 0.5;
+  background: var(--border-default) !important;
+  border-color: var(--border-default) !important;
+  color: var(--text-disabled) !important;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ----- 액션 버튼 그룹 (.action-buttons) ----- */
+.action-buttons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.action-buttons .btn {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+}
+
+/* ── 페이지네이션 컨테이너 (고급 피드백 반영: 버튼 크기 확장, 날렵한 Atlassian 디자인) ── */
+.pagination-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) 0;
+  flex-wrap: wrap;
+}
+
+.pagination-wrap .btn {
+  min-width: 40px; /* 36px -> 40px 확장 (터치/클릭 편의성 유지) */
+  height: 40px;    /* 고정 정방형 비율 */
+  padding: 0;
+  justify-content: center;
+  border-radius: var(--radius-md); /* Sharp 4px */
+  font-size: var(--text-sm);
+}
+
+.pagination-wrap .btn.active {
+  background: var(--primary);
+  color: var(--on-accent);
+  border-color: var(--primary);
+  font-weight: var(--weight-bold);
+}

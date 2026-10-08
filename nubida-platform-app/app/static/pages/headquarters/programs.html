@@ -1,0 +1,817 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>프로그램 관리 — 누비다플랫폼-본사</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/programs.css?v=20260610a">
+        <link rel="manifest" href="/manifest.json?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    </head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+
+   // 섹션 매핑
+   const sectionMap = {
+   'branches.html': 'operations', 'academy-management.html': 'operations',
+   'courses.html': 'operations', 'users.html': 'operations',
+   'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>프로그램 관리</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+   <!-- 툴바 -->
+   <div class="programs-toolbar">
+   <div class="programs-toolbar-left">
+   <select class="form-input" id="statusFilter" onchange="loadPrograms(1)" style="width:130px">
+   <option value="">전체 상태</option>
+   <option value="active">활성</option>
+   <option value="inactive">비활성</option>
+   </select>
+   <select class="form-input" id="categoryFilter" onchange="loadPrograms(1)" style="width:130px">
+   <option value="">전체 카테고리</option>
+   <option value="regular">정규</option>
+   <option value="special">특별</option>
+   <option value="event">이벤트</option>
+   </select>
+   <input type="text" class="form-input" id="searchInput" placeholder="프로그램명 검색..." oninput="filterPrograms()" style="width:200px">
+   <span class="small-text" id="programCount">0개</span>
+   </div>
+   <div class="programs-toolbar-right">
+   <button class="btn btn-primary btn-sm" onclick="openCreateModal()">+ 새 프로그램</button>
+   </div>
+   </div>
+
+   <!-- 프로그램 목록 -->
+   <div class="programs-card">
+   <table class="programs-table">
+   <thead>
+   <tr>
+   <th style="width:50px">ID</th>
+   <th>프로그램명</th>
+   <th style="width:120px">카테고리</th>
+   <th>설명</th>
+   <th style="width:70px">차시</th>
+   <th style="width:70px">할당</th>
+   <th style="width:70px">상태</th>
+   <th style="width:200px">작업</th>
+   </tr>
+   </thead>
+   <tbody id="programTableBody">
+   <tr><td class="prog-empty" colspan="8">프로그램 정보를 불러오는 중...</td></tr>
+   </tbody>
+   </table>
+   <div class="pagination-wrap" id="paginationWrap"></div>
+   </div>
+   </main>
+   </div>
+
+   <!-- 새 프로그램 생성 모달 -->
+   <div class="modal-overlay" id="createProgramModal">
+   <div class="modal" style="max-width:520px">
+   <div class="modal-header">
+   <h3>📋 새 프로그램</h3>
+   </div>
+   <div class="modal-body">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">프로그램명 *</label>
+   <input type="text" class="form-input" id="newProgName" placeholder="예: 코딩 기초 과정">
+   </div>
+   <div class="form-group">
+   <label class="form-label">카테고리 *</label>
+   <select class="form-input" id="newProgCategory">
+   <option value="regular">정규</option>
+   <option value="special">특별</option>
+   <option value="event">이벤트</option>
+   </select>
+   </div>
+   <div class="full form-group">
+   <label class="form-label">설명</label>
+   <textarea class="form-input form-textarea" id="newProgDescription" placeholder="프로그램 설명을 입력하세요" rows="3"></textarea>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('createProgramModal')">취소</button>
+   <button class="btn btn-primary" onclick="createProgram()">생성</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 프로그램 수정 모달 -->
+   <div class="modal-overlay" id="editProgramModal">
+   <div class="modal" style="max-width:520px">
+   <div class="modal-header">
+   <h3>✏️ 프로그램 수정</h3>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="editProgId">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">프로그램명</label>
+   <input type="text" class="form-input" id="editProgName">
+   </div>
+   <div class="form-group">
+   <label class="form-label">카테고리</label>
+   <select class="form-input" id="editProgCategory">
+   <option value="regular">정규</option>
+   <option value="special">특별</option>
+   <option value="event">이벤트</option>
+   </select>
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="editProgStatus">
+   <option value="active">활성</option>
+   <option value="inactive">비활성</option>
+   </select>
+   </div>
+   <div class="full form-group">
+   <label class="form-label">설명</label>
+   <textarea class="form-input form-textarea" id="editProgDescription" rows="3"></textarea>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('editProgramModal')">취소</button>
+   <button class="btn btn-primary" onclick="updateProgram()">저장</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 차시 관리 모달 -->
+   <div class="modal-overlay" id="chaptersModal">
+   <div class="modal" style="max-width:600px">
+   <div class="modal-header">
+   <h3>📖 차시 관리</h3>
+   <span id="chaptersModalSubtitle" style="font-size:var(--text-xs);color:var(--text-tertiary);margin-left:8px;"></span>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="chaptersProgId">
+   <div id="chaptersList"></div>
+
+   <hr style="border:none;border-top:1px solid var(--border-subtle);margin:16px 0;">
+
+   <h4 style="font-size:var(--text-sm);font-weight:var(--weight-semibold);margin-bottom:12px;">➕ 새 차시 추가</h4>
+   <div class="chapter-form-row">
+   <div class="form-group">
+   <label>차시 순서</label>
+   <input type="number" class="form-input" id="newChapterOrder" value="1" min="1">
+   </div>
+   <div class="form-group">
+   <label>제목 *</label>
+   <input type="text" class="form-input" id="newChapterTitle" placeholder="예: 1강 기초 개념">
+   </div>
+   <div class="full form-group">
+   <label>동영상 URL</label>
+   <input type="text" class="form-input" id="newChapterVideo" placeholder="https://...">
+   </div>
+   <div class="form-group">
+   <label>PPT 자료 URL</label>
+   <input type="text" class="form-input" id="newChapterPpt" placeholder="https://...">
+   </div>
+   <div class="form-group">
+   <label>PPT 페이지 수</label>
+   <input type="number" class="form-input" id="newChapterPptPages" value="0" min="0">
+   </div>
+   </div>
+   <div style="display:flex;gap:8px;margin-top:8px;">
+   <button class="btn btn-secondary btn-sm" onclick="addChapter()">차시 추가</button>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('chaptersModal')">닫기</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 차시 수정 모달 -->
+   <div class="modal-overlay" id="editChapterModal">
+   <div class="modal" style="max-width:520px">
+   <div class="modal-header">
+   <h3>✏️ 차시 수정</h3>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="editChapterId">
+   <div class="chapter-form-row">
+   <div class="form-group">
+   <label>차시 순서</label>
+   <input type="number" class="form-input" id="editChapterOrder" min="1">
+   </div>
+   <div class="form-group">
+   <label>제목 *</label>
+   <input type="text" class="form-input" id="editChapterTitle">
+   </div>
+   <div class="full form-group">
+   <label>동영상 URL</label>
+   <input type="text" class="form-input" id="editChapterVideo">
+   </div>
+   <div class="form-group">
+   <label>PPT 자료 URL</label>
+   <input type="text" class="form-input" id="editChapterPpt">
+   </div>
+   <div class="form-group">
+   <label>PPT 페이지 수</label>
+   <input type="number" class="form-input" id="editChapterPptPages" min="0">
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('editChapterModal')">취소</button>
+   <button class="btn btn-primary" onclick="updateChapter()">저장</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 할당 관리 모달 -->
+   <div class="modal-overlay" id="assignmentModal">
+   <div class="modal" style="max-width:520px">
+   <div class="modal-header">
+   <h3>🔗 할당 관리</h3>
+   <span id="assignmentModalSubtitle" style="font-size:var(--text-xs);color:var(--text-tertiary);margin-left:8px;"></span>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="assignProgId">
+   <div class="assignment-tabs">
+   <button class="assignment-tab active" data-tab="branches" onclick="switchAssignTab('branches')">🏢 컨설턴트</button>
+   <button class="assignment-tab" data-tab="directors" onclick="switchAssignTab('directors')">👤 원장</button>
+   </div>
+   <div id="assignmentBranchList" class="assignment-list"></div>
+   <div id="assignmentDirectorList" class="assignment-list" style="display:none"></div>
+   <p id="assignLoading" style="font-size:var(--text-xs);color:var(--text-tertiary);margin:8px 0 0;text-align:center;">로딩 중...</p>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('assignmentModal')">취소</button>
+   <button class="btn btn-primary" onclick="saveAssignments()">할당 저장</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/utils.js?v=20260610a"></script>
+  <script>
+  /* ===== 헬퍼 함수 ===== */
+  function esc(s) {
+    if (s == null) return '';
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function showToast(msg, type) {
+    var existing = document.getElementById('pageToast');
+    if (existing) existing.remove();
+    var t = document.createElement('div');
+    t.id = 'pageToast';
+    t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:400px;';
+    var colors = { success:'#10B981', error:'#EF4444', warning:'#F59E0B', info:'#4F5EF8' };
+    var bgColors = { success:'#F0FDF4', error:'#FEF2F2', warning:'#FFFBEB', info:'#EFF6FF' };
+    t.style.background = bgColors[type] || '#F0FDF4';
+    t.style.color = colors[type] || '#10B981';
+    t.style.border = '1px solid ' + (colors[type] || '#10B981');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function() { if (t.parentNode) t.remove(); }, 3000);
+  }
+
+  var showAlert = showToast;
+
+  /* ===== 상태 변수 ===== */
+  var allPrograms = [];
+  var filteredPrograms = [];
+  var currentPage = 1;
+  var totalPages = 1;
+  var PER_PAGE = 20;
+  var currentChapters = [];
+  var currentAssignments = [];
+  var targetChapterProgId = null;
+  var targetAssignProgId = null;
+
+  /* ===== 카테고리/상태 레이블 ===== */
+  var categoryLabels = { regular: '정규', special: '특별', event: '이벤트' };
+  var statusLabels = { active: '활성', inactive: '비활성' };
+
+  /* ===== 모달 열기/닫기 ===== */
+  function closeModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  }
+
+  function openModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'flex';
+  }
+
+  /* ===== 초기화 ===== */
+  document.addEventListener('DOMContentLoaded', async function() {
+    requireAuth();
+    renderSidebarUser();
+    displayToday();
+    await loadPrograms(1);
+  });
+
+  /* ===== 프로그램 목록 로드 ===== */
+  async function loadPrograms(page) {
+    currentPage = page || 1;
+    var status = document.getElementById('statusFilter').value;
+    var category = document.getElementById('categoryFilter').value;
+    try {
+      var url = '/headquarters/programs?page=' + currentPage + '&per_page=' + PER_PAGE;
+      if (status) url += '&status=' + encodeURIComponent(status);
+      if (category) url += '&category=' + encodeURIComponent(category);
+      var res = await apiGet(url);
+      allPrograms = res.data || [];
+      totalPages = res.total_pages || 1;
+      filteredPrograms = allPrograms.slice();
+      renderPrograms();
+      renderPaginationUI();
+      document.getElementById('programCount').textContent = (res.total || 0) + '개';
+    } catch (err) {
+      console.error('Failed to load programs:', err);
+      showToast('프로그램 목록을 불러오는데 실패했습니다.', 'error');
+    }
+  }
+
+  function filterPrograms() {
+    var query = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!query) {
+      filteredPrograms = allPrograms.slice();
+    } else {
+      filteredPrograms = allPrograms.filter(function(p) {
+        return (p.name || '').toLowerCase().includes(query);
+      });
+    }
+    currentPage = 1;
+    renderPrograms();
+    renderPaginationUI();
+  }
+
+  /* ===== 프로그램 렌더링 ===== */
+  function renderPrograms() {
+    var tbody = document.getElementById('programTableBody');
+    if (filteredPrograms.length === 0) {
+      tbody.innerHTML = '<tr><td class="prog-empty" colspan="8">📋 등록된 프로그램이 없습니다.</td></tr>';
+      return;
+    }
+    var html = '';
+    filteredPrograms.forEach(function(p) {
+      var catLabel = categoryLabels[p.category] || p.category || '-';
+      var catClass = p.category || 'regular';
+      var stLabel = statusLabels[p.status] || p.status || '-';
+      var stClass = p.status === 'active' ? 'badge-active' : 'badge-inactive';
+      var chCount = p.chapter_count != null ? p.chapter_count : '-';
+      var asCount = p.assignment_count != null ? p.assignment_count : '-';
+      var desc = p.description || '';
+      html += '<tr>';
+      html += '<td style="font-size:12px;color:var(--text-tertiary)">' + esc(String(p.id)) + '</td>';
+      html += '<td><strong>' + esc(p.name || '-') + '</strong></td>';
+      html += '<td><span class="prog-category-badge ' + catClass + '">' + catLabel + '</span></td>';
+      html += '<td style="font-size:12px;color:var(--text-secondary);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(desc) + '">' + esc(desc || '-') + '</td>';
+      html += '<td style="text-align:center;font-size:13px;font-weight:var(--weight-medium)">' + chCount + '</td>';
+      html += '<td style="text-align:center;font-size:13px;font-weight:var(--weight-medium)">' + asCount + '</td>';
+      html += '<td><span class="badge ' + stClass + '">' + stLabel + '</span></td>';
+      html += '<td><div style="display:flex;gap:4px">';
+      html += '<button class="btn btn-ghost btn-sm" onclick="openEditProgramModal(' + p.id + ')" style="font-size:11px">✏️</button>';
+      html += '<button class="btn btn-ghost btn-sm" onclick="openChaptersModal(' + p.id + ')" style="font-size:11px">📖</button>';
+      html += '<button class="btn btn-ghost btn-sm" onclick="openAssignmentModal(' + p.id + ')" style="font-size:11px">🔗</button>';
+      html += '<button class="btn btn-danger btn-sm" onclick="deleteProgram(' + p.id + ')" style="font-size:11px">🗑️</button>';
+      html += '</div></td>';
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  /* ===== 페이지네이션 ===== */
+  function renderPaginationUI() {
+    var el = document.getElementById('paginationWrap');
+    if (totalPages <= 1) {
+      el.innerHTML = '';
+      return;
+    }
+    var html = '';
+    html += '<button class="page-btn" onclick="goPage(1)"' + (currentPage <= 1 ? ' disabled' : '') + '>«</button>';
+    html += '<button class="page-btn" onclick="goPage(' + (currentPage - 1) + ')"' + (currentPage <= 1 ? ' disabled' : '') + '>‹</button>';
+    var start = Math.max(1, currentPage - 2);
+    var end = Math.min(totalPages, currentPage + 2);
+    for (var i = start; i <= end; i++) {
+      html += '<button class="page-btn' + (i === currentPage ? ' active' : '') + '" onclick="goPage(' + i + ')">' + i + '</button>';
+    }
+    html += '<button class="page-btn" onclick="goPage(' + (currentPage + 1) + ')"' + (currentPage >= totalPages ? ' disabled' : '') + '>›</button>';
+    html += '<button class="page-btn" onclick="goPage(' + totalPages + ')"' + (currentPage >= totalPages ? ' disabled' : '') + '>»</button>';
+    el.innerHTML = html;
+  }
+
+  function goPage(page) {
+    if (page < 1 || page > totalPages) return;
+    loadPrograms(page);
+  }
+
+  /* ===== 프로그램 생성 ===== */
+  function openCreateModal() {
+    document.getElementById('newProgName').value = '';
+    document.getElementById('newProgCategory').value = 'regular';
+    document.getElementById('newProgDescription').value = '';
+    openModal('createProgramModal');
+  }
+
+  async function createProgram() {
+    var name = document.getElementById('newProgName').value.trim();
+    var category = document.getElementById('newProgCategory').value;
+    var description = document.getElementById('newProgDescription').value.trim();
+    if (!name) { showToast('프로그램명을 입력하세요.', 'error'); return; }
+    try {
+      await apiPost('/headquarters/programs', { name: name, category: category, description: description });
+      showToast('프로그램이 생성되었습니다.', 'success');
+      closeModal('createProgramModal');
+      await loadPrograms(1);
+    } catch (err) {
+      showToast('생성 실패: ' + (err.message || ''), 'error');
+    }
+  }
+
+  /* ===== 프로그램 수정 ===== */
+  async function openEditProgramModal(id) {
+    try {
+      var res = await apiGet('/headquarters/programs/' + id);
+      var p = res.data || res;
+      document.getElementById('editProgId').value = p.id;
+      document.getElementById('editProgName').value = p.name || '';
+      document.getElementById('editProgCategory').value = p.category || 'regular';
+      document.getElementById('editProgStatus').value = p.status || 'active';
+      document.getElementById('editProgDescription').value = p.description || '';
+      openModal('editProgramModal');
+    } catch (err) {
+      showToast('정보를 불러올 수 없습니다.', 'error');
+    }
+  }
+
+  async function updateProgram() {
+    var id = document.getElementById('editProgId').value;
+    var name = document.getElementById('editProgName').value.trim();
+    var category = document.getElementById('editProgCategory').value;
+    var status = document.getElementById('editProgStatus').value;
+    var description = document.getElementById('editProgDescription').value.trim();
+    if (!name) { showToast('프로그램명을 입력하세요.', 'error'); return; }
+    try {
+      await apiPut('/headquarters/programs/' + id, { name: name, category: category, status: status, description: description });
+      showToast('프로그램이 수정되었습니다.', 'success');
+      closeModal('editProgramModal');
+      await loadPrograms(currentPage);
+    } catch (err) {
+      showToast('수정 실패: ' + (err.message || ''), 'error');
+    }
+  }
+
+  /* ===== 프로그램 삭제 ===== */
+  async function deleteProgram(id) {
+    if (!confirm('정말 이 프로그램을 삭제하시겠습니까?')) return;
+    try {
+      await apiDelete('/headquarters/programs/' + id);
+      showToast('프로그램이 삭제되었습니다.', 'success');
+      await loadPrograms(currentPage);
+    } catch (err) {
+      showToast('삭제 실패: ' + (err.message || ''), 'error');
+    }
+  }
+
+  /* ===== 차시 관리 ===== */
+  async function openChaptersModal(progId) {
+    targetChapterProgId = progId;
+    document.getElementById('chaptersProgId').value = progId;
+    document.getElementById('chaptersModalSubtitle').textContent = '프로그램 ID: ' + progId;
+    document.getElementById('newChapterOrder').value = '1';
+    document.getElementById('newChapterTitle').value = '';
+    document.getElementById('newChapterVideo').value = '';
+    document.getElementById('newChapterPpt').value = '';
+    document.getElementById('newChapterPptPages').value = '0';
+    openModal('chaptersModal');
+    await loadChapters(progId);
+  }
+
+  async function loadChapters(progId) {
+    try {
+      var res = await apiGet('/headquarters/programs/' + progId + '/chapters');
+      currentChapters = res.data || [];
+      renderChapters();
+    } catch (err) {
+      document.getElementById('chaptersList').innerHTML = '<p style="color:var(--text-tertiary);text-align:center">❌ 차시 로딩 실패</p>';
+    }
+  }
+
+  function renderChapters() {
+    var container = document.getElementById('chaptersList');
+    if (currentChapters.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-tertiary);text-align:center;padding:16px 0">📭 등록된 차시가 없습니다.</p>';
+      return;
+    }
+    var html = '';
+    currentChapters.forEach(function(ch) {
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-subtle);">';
+      html += '<div style="flex:1">';
+      html += '<strong>' + (ch.order || '-') + '차시</strong>: ' + esc(ch.title || '-');
+      if (ch.video_url) html += '<br><span style="font-size:11px;color:var(--text-tertiary)">🎬 ' + esc(ch.video_url) + '</span>';
+      if (ch.ppt_url) html += '<br><span style="font-size:11px;color:var(--text-tertiary)">📄 PPT: ' + esc(ch.ppt_url) + ' (' + (ch.ppt_pages || 0) + 'p)</span>';
+      html += '</div>';
+      html += '<div style="display:flex;gap:4px;flex-shrink:0">';
+      html += '<button class="btn btn-ghost btn-sm" onclick="openEditChapterModal(' + ch.id + ')" style="font-size:11px">✏️</button>';
+      html += '<button class="btn btn-danger btn-sm" onclick="deleteChapter(' + ch.id + ')" style="font-size:11px">🗑️</button>';
+      html += '</div></div>';
+    });
+    container.innerHTML = html;
+  }
+
+  async function addChapter() {
+    var progId = document.getElementById('chaptersProgId').value;
+    var order = parseInt(document.getElementById('newChapterOrder').value) || 1;
+    var title = document.getElementById('newChapterTitle').value.trim();
+    var video_url = document.getElementById('newChapterVideo').value.trim() || null;
+    var ppt_url = document.getElementById('newChapterPpt').value.trim() || null;
+    var ppt_pages = parseInt(document.getElementById('newChapterPptPages').value) || 0;
+    if (!title) { showToast('차시 제목을 입력하세요.', 'error'); return; }
+    try {
+      await apiPost('/headquarters/programs/' + progId + '/chapters', { order: order, title: title, video_url: video_url, ppt_url: ppt_url, ppt_pages: ppt_pages });
+      showToast('차시가 추가되었습니다.', 'success');
+      document.getElementById('newChapterOrder').value = String(parseInt(order) + 1);
+      document.getElementById('newChapterTitle').value = '';
+      document.getElementById('newChapterVideo').value = '';
+      document.getElementById('newChapterPpt').value = '';
+      document.getElementById('newChapterPptPages').value = '0';
+      await loadChapters(progId);
+    } catch (err) {
+      showToast('차시 추가 실패: ' + (err.message || ''), 'error');
+    }
+  }
+
+  async function openEditChapterModal(chId) {
+    var chapter = null;
+    for (var i = 0; i < currentChapters.length; i++) {
+      if (currentChapters[i].id === chId) { chapter = currentChapters[i]; break; }
+    }
+    if (!chapter) { showToast('차시 정보를 찾을 수 없습니다.', 'error'); return; }
+    document.getElementById('editChapterId').value = chapter.id;
+    document.getElementById('editChapterOrder').value = chapter.order || 1;
+    document.getElementById('editChapterTitle').value = chapter.title || '';
+    document.getElementById('editChapterVideo').value = chapter.video_url || '';
+    document.getElementById('editChapterPpt').value = chapter.ppt_url || '';
+    document.getElementById('editChapterPptPages').value = chapter.ppt_pages || 0;
+    openModal('editChapterModal');
+  }
+
+  async function updateChapter() {
+    var chId = document.getElementById('editChapterId').value;
+    var order = parseInt(document.getElementById('editChapterOrder').value) || 1;
+    var title = document.getElementById('editChapterTitle').value.trim();
+    var video_url = document.getElementById('editChapterVideo').value.trim() || null;
+    var ppt_url = document.getElementById('editChapterPpt').value.trim() || null;
+    var ppt_pages = parseInt(document.getElementById('editChapterPptPages').value) || 0;
+    if (!title) { showToast('차시 제목을 입력하세요.', 'error'); return; }
+    try {
+      await apiPut('/headquarters/programs/' + targetChapterProgId + '/chapters/' + chId, { order: order, title: title, video_url: video_url, ppt_url: ppt_url, ppt_pages: ppt_pages });
+      showToast('차시가 수정되었습니다.', 'success');
+      closeModal('editChapterModal');
+      await loadChapters(targetChapterProgId);
+    } catch (err) {
+      showToast('차시 수정 실패: ' + (err.message || ''), 'error');
+    }
+  }
+
+  async function deleteChapter(chId) {
+    if (!confirm('정말 이 차시를 삭제하시겠습니까?')) return;
+    try {
+      await apiDelete('/headquarters/programs/' + targetChapterProgId + '/chapters/' + chId);
+      showToast('차시가 삭제되었습니다.', 'success');
+      await loadChapters(targetChapterProgId);
+    } catch (err) {
+      showToast('차시 삭제 실패: ' + (err.message || ''), 'error');
+    }
+  }
+
+  /* ===== 할당 관리 ===== */
+  function switchAssignTab(tab) {
+    document.querySelectorAll('.assignment-tab').forEach(function(t) { t.classList.remove('active'); });
+    var btn = document.querySelector('.assignment-tab[data-tab="' + tab + '"]');
+    if (btn) btn.classList.add('active');
+    document.getElementById('assignmentBranchList').style.display = tab === 'branches' ? '' : 'none';
+    document.getElementById('assignmentDirectorList').style.display = tab === 'directors' ? '' : 'none';
+  }
+
+  async function openAssignmentModal(progId) {
+    targetAssignProgId = progId;
+    document.getElementById('assignProgId').value = progId;
+    document.getElementById('assignmentModalSubtitle').textContent = '프로그램 ID: ' + progId;
+    document.getElementById('assignLoading').textContent = '로딩 중...';
+    switchAssignTab('branches');
+    openModal('assignmentModal');
+    try {
+      var res = await apiGet('/headquarters/programs/' + progId + '/assignments');
+      currentAssignments = res.data || [];
+      renderAssignBranches();
+      renderAssignDirectors();
+      document.getElementById('assignLoading').textContent = currentAssignments.length + '개 할당됨';
+    } catch (err) {
+      document.getElementById('assignLoading').textContent = '로딩 실패';
+    }
+  }
+
+  function renderAssignBranches() {
+    var container = document.getElementById('assignmentBranchList');
+    var assigned = currentAssignments.filter(function(a) { return a.type === 'branch' || !a.type; });
+    if (assigned.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-tertiary);text-align:center;padding:16px 0">할당된 컨설턴트가 없습니다.</p>';
+      return;
+    }
+    var html = '';
+    assigned.forEach(function(a) {
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-subtle);">';
+      html += '<span>' + esc(a.name || a.branch_name || 'ID ' + a.branch_id) + '</span>';
+      html += '<button class="btn btn-danger btn-sm" onclick="removeAssignment(' + a.id + ')" style="font-size:11px">제거</button>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  function renderAssignDirectors() {
+    var container = document.getElementById('assignmentDirectorList');
+    var assigned = currentAssignments.filter(function(a) { return a.type === 'director'; });
+    if (assigned.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-tertiary);text-align:center;padding:16px 0">할당된 원장이 없습니다.</p>';
+      return;
+    }
+    var html = '';
+    assigned.forEach(function(a) {
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-subtle);">';
+      html += '<span>' + esc(a.name || a.director_name || 'ID ' + a.director_id) + '</span>';
+      html += '<button class="btn btn-danger btn-sm" onclick="removeAssignment(' + a.id + ')" style="font-size:11px">제거</button>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  async function removeAssignment(assignId) {
+    if (!confirm('할당을 제거하시겠습니까?')) return;
+    try {
+      await apiDelete('/headquarters/programs/' + targetAssignProgId + '/assignments/' + assignId);
+      showToast('할당이 제거되었습니다.', 'success');
+      await openAssignmentModal(targetAssignProgId);
+    } catch (err) {
+      showToast('제거 실패: ' + (err.message || ''), 'error');
+    }
+  }
+
+  async function saveAssignments() {
+    showToast('할당이 저장되었습니다.', 'success');
+    closeModal('assignmentModal');
+    await loadPrograms(currentPage);
+  }
+  </script>
+     </body>
+     </html>

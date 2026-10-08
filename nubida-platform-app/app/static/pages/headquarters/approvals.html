@@ -1,0 +1,364 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>승인 관리 — 누비다플랫폼-본사</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <link rel="manifest" href="/manifest.json?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    </head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        
+   // 섹션 매핑
+   const sectionMap = {
+   'branches.html': 'operations', 'academy-management.html': 'operations',
+   'courses.html': 'operations', 'users.html': 'operations',
+   'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>승인 관리</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+   <div class="section-divider"></div>
+
+   <div class="card animate-fade-up">
+   <div class="card-header">
+   <h2>⏳ 대기 중인 가입 신청 <span class="pending-count-badge" id="pendingCount">0</span></h2>
+   <button class="btn btn-outline btn-sm" onclick="loadPendingUsers()">🔄 새로고침</button>
+   </div>
+   <div class="card-body" style="padding:0;min-height:200px;">
+   <div id="loadingIndicator" class="loading-placeholder" style="padding:60px 0;">
+   <div class="loading-spinner" style="margin:0 auto 12px;"></div>
+   <span>대기 목록을 불러오는 중...</span>
+   </div>
+   <div id="emptyState" class="empty-state" style="display:none;">
+   <div class="icon">✅</div>
+   <p>대기 중인 가입 신청이 없습니다.</p>
+   </div>
+   <div id="errorState" class="alert alert-error" style="display:none;margin:16px;"></div>
+   <div id="pendingList" style="padding:var(--space-5);"></div>
+   </div>
+   </div>
+
+   <div class="card animate-fade-up delay-2">
+   <div class="card-header">
+   <h2>📋 안내</h2>
+   </div>
+   <div class="card-body">
+   <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;">
+   <strong>✅ 승인</strong>: 계정을 활성화합니다. 사용자가 로그인할 수 있게 됩니다.<br>
+   <strong>❌ 거절</strong>: 가입 신청을 삭제합니다. 되돌릴 수 없습니다.<br>
+   <br>
+   <strong>승인 대상:</strong> 컨설턴트 관리자(branch_admin), 지사 매니저(branch_manager), 원장(director) 계정
+   </p>
+   </div>
+   </div>
+   </main>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/utils.js?v=20260610a"></script>
+
+   <script>
+   // 역할 라벨 매핑
+   const roleLabels = {
+   'branch_admin': { label: '컨설턴트 관리자', cls: 'branch_admin' },
+   'branch_manager': { label: '컨설턴트', cls: 'branch_manager' },
+   'director': { label: '원장', cls: 'director' },
+   'student': { label: '학생', cls: 'student' },
+   'parent': { label: '학부모', cls: 'parent' },
+   };
+
+   const roleIcons = {
+   'branch_admin': '🏢',
+   'branch_manager': '👥',
+   'director': '👨‍🏫',
+   'student': '👦',
+   'parent': '👨‍👩‍👧',
+   };
+
+   // formatDateTime 함수 추가
+   function formatDateTime(str) {
+   if (!str) return '-';
+   try {
+   const d = new Date(str);
+   if (isNaN(d.getTime())) return str;
+   return d.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' }) + ' ' +
+   d.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
+   } catch(e) {
+   return str;
+   }
+   }
+
+   // esc 함수 추가 (XSS 방지)
+   function esc(s) {
+   if (typeof s !== 'string') s = String(s || '');
+   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+   }
+
+   async function loadPendingUsers() {
+   try {
+   document.getElementById('loadingIndicator').style.display = 'block';
+   document.getElementById('emptyState').style.display = 'none';
+   document.getElementById('errorState').style.display = 'none';
+   document.getElementById('pendingList').innerHTML = '';
+
+   const res = await apiGet('/headquarters/pending-users');
+   const users = res.data || [];
+
+   document.getElementById('loadingIndicator').style.display = 'none';
+   document.getElementById('pendingCount').textContent = users.length;
+
+   if (users.length === 0) {
+   document.getElementById('emptyState').style.display = 'block';
+   return;
+   }
+
+   const list = document.getElementById('pendingList');
+   list.innerHTML = '';
+
+   users.forEach(u => {
+   const roleInfo = roleLabels[u.role] || { label: u.role, cls: '' };
+   const icon = roleIcons[u.role] || '👤';
+   const createdDate = formatDateTime(u.created_at);
+
+   const card = document.createElement('div');
+   card.className = 'approval-card animate-fade-up';
+   card.id = `user-card-${u.id}`;
+   card.innerHTML = `
+   <div class="user-info">
+   <div class="name">${esc(u.name)}</div>
+   <div class="meta">
+   <span>🆔 ${esc(u.username)}</span>
+   <span>📧 ${esc(u.email)}</span>
+   <span>📞 ${esc(u.phone || '-')}</span>
+   <span><span class="role-badge-sm ${roleInfo.cls}">${icon} ${roleInfo.label}</span></span>
+   <span>📅 ${createdDate}</span>
+   </div>
+   </div>
+   <div class="actions">
+   <button class="btn btn-approve btn-sm" onclick="approveUser(${u.id})">✅ 승인</button>
+   <button class="btn btn-reject btn-sm" onclick="rejectUser(${u.id})">❌ 거절</button>
+   </div>
+   `;
+   list.appendChild(card);
+   });
+   } catch (err) {
+   document.getElementById('loadingIndicator').style.display = 'none';
+   const errEl = document.getElementById('errorState');
+   errEl.textContent = '❌ ' + (err.message || '목록을 불러오는데 실패했습니다.');
+   errEl.style.display = 'flex';
+   }
+   }
+
+   async function approveUser(userId) {
+   if (!confirm('이 계정을 승인하시겠습니까?')) return;
+
+   try {
+   const btn = event?.target?.closest?.('button') || document.querySelector(`#user-card-${userId} .btn-approve`);
+   if (btn) { btn.disabled = true; btn.textContent = '⏳ 처리 중...'; }
+
+   const res = await apiPost(`/headquarters/users/${userId}/approve`);
+   showAlert(res.message || '승인 완료', 'success');
+
+   // 카드 애니메이션 제거
+   const card = document.getElementById(`user-card-${userId}`);
+   if (card) {
+   card.style.transition = 'all 0.3s ease';
+   card.style.opacity = '0';
+   card.style.transform = 'translateX(30px)';
+   setTimeout(() => card.remove(), 300);
+   }
+   setTimeout(loadPendingUsers, 400);
+   } catch (err) {
+   showAlert('승인 실패: ' + (err.message || '오류'), 'error');
+   }
+   }
+
+   async function rejectUser(userId) {
+   if (!confirm('⚠️ 정말 이 가입 신청을 거절하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
+
+   try {
+   const btn = event?.target?.closest?.('button') || document.querySelector(`#user-card-${userId} .btn-reject`);
+   if (btn) { btn.disabled = true; btn.textContent = '⏳ 처리 중...'; }
+
+   const res = await apiDelete(`/headquarters/users/${userId}/reject`);
+   showAlert(res.message || '거절 완료', 'success');
+
+   const card = document.getElementById(`user-card-${userId}`);
+   if (card) {
+   card.style.transition = 'all 0.3s ease';
+   card.style.opacity = '0';
+   card.style.transform = 'translateX(30px)';
+   setTimeout(() => card.remove(), 300);
+   }
+   setTimeout(loadPendingUsers, 400);
+   } catch (err) {
+   showAlert('거절 실패: ' + (err.message || '오류'), 'error');
+   }
+   }
+
+   document.addEventListener('DOMContentLoaded', () => {
+   const user = getCurrentUser();
+   if (user) {
+   document.getElementById('sidebarUserName').textContent = user.name || user.username || '관리자';
+   document.getElementById('sidebarUserRole').textContent = '본사';
+   }
+   loadPendingUsers();
+   });
+   </script>
+   <script src="/common/js/nav.js?v=20260610a"></script>
+   <script>
+   // 누비다플랫폼 — Service Worker 강제 갱신
+   </script>
+
+   </body>
+   </html>

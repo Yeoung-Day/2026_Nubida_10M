@@ -1,0 +1,441 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>포인트 통합 관리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <style>
+            .stat-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
+            .stat-box { background:white; border-radius:12px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.08); text-align:center; border:1px solid #E5E7EB; }
+            .stat-box .num { font-size:28px; font-weight:700; color:#4F5EF8; }
+            .stat-box .lbl { font-size:13px; color:#6B7280; margin-top:4px; }
+            .filter-bar { display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap; }
+            .filter-bar input, .filter-bar select { padding:8px 12px; border:1px solid #D1D5DB; border-radius:6px; font-size:14px; }
+            .filter-bar input { flex:1; min-width:160px; }
+            .txn-plus { color:#10B981; font-weight:600; }
+            .txn-minus { color:#EF4444; font-weight:600; }
+            .student-select { cursor:pointer; color:#4F5EF8; font-weight:500; }
+            .student-select:hover { text-decoration:underline; }
+            .pagination { display:flex; gap:8px; justify-content:center; margin-top:16px; }
+            .pagination button { padding:6px 12px; border:1px solid #D1D5DB; border-radius:6px; background:white; cursor:pointer; font-size:13px; }
+            .pagination button.active { background:#4F5EF8; color:white; border-color:#4F5EF8; }
+            .tab-header { display:flex; gap:0; margin-bottom:20px; border-bottom:2px solid #E5E7EB; }
+            .tab-header button { padding:10px 20px; border:none; background:none; font-size:14px; font-weight:500; color:#6B7280; cursor:pointer; position:relative; }
+            .tab-header button.active { color:#4F5EF8; }
+            .tab-header button.active::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:2px; background:#4F5EF8; }
+            .tab-panel { display:none; }
+            .tab-panel.active { display:block; }
+            /* ── data-table 스타일 (다른 본사 페이지와 통일) ── */
+            .table-wrapper { border:1px solid #E5E7EB; border-radius:12px; background:#fff; overflow-x:auto; }
+            .data-table { width:100%; border-collapse:collapse; font-size:14px; }
+            .data-table thead th { background:#F9FAFB; font-size:12px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.03em; padding:14px 20px; text-align:left; border-bottom:2px solid #E5E7EB; white-space:nowrap; }
+            .data-table tbody td { padding:14px 20px; border-bottom:1px solid #F3F4F6; font-size:14px; vertical-align:middle; }
+            .data-table tbody tr:nth-child(even) { background:#FAFBFC; }
+            .data-table tbody tr:hover { background:#F0F4FF !important; }
+            .data-table tbody tr:last-child td { border-bottom:none; }
+            .card { background:#fff; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.06); border:1px solid #E5E7EB; }
+            .card-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid #E5E7EB; }
+            .card-header h2 { font-size:16px; font-weight:700; margin:0; }
+            .card-body { padding:20px 24px; }
+            .mb-24 { margin-bottom:24px; }
+        </style>
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+    <body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                        <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="security.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="nav-label">보안 설정</span></a>
+        <a class="nav-item sub" href="access-control.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="nav-label">노래 AI 이용 관리</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav">
+   <div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>💰 포인트 통합 관리</h1></div>
+   <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+   </div>
+   <div class="container-fluid p-24">
+
+   <!-- 통계 -->
+   <div class="stat-row" id="statsRow">
+   <div class="stat-box"><div class="num" id="statStudents">-</div><div class="lbl">포인트 보유 학생</div></div>
+   <div class="stat-box"><div class="num" id="statTotalEarned">-</div><div class="lbl">전체 지급 포인트</div></div>
+   <div class="stat-box"><div class="num" id="statTotalUsed">-</div><div class="lbl">전체 사용 포인트</div></div>
+   <div class="stat-box"><div class="num" id="statPending">-</div><div class="lbl">기프티콘 대기건</div></div>
+   </div>
+
+   <!-- 탭 -->
+   <div class="tab-header">
+   <button class="active" onclick="switchTab('transactions')">📜 거래내역</button>
+   <button onclick="switchTab('students')">👤 학생별 포인트</button>
+   </div>
+
+   <!-- 탭1: 거래내역 -->
+   <div class="tab-panel active" id="tab-transactions">
+   <div class="card mb-24">
+   <div class="card-header"><h2>거래내역</h2></div>
+   <div class="card-body">
+   <div class="filter-bar">
+   <input type="text" id="searchUser" placeholder="학생명 또는 ID 검색" onkeyup="searchTxns()">
+   <select id="filterTypeTxn" onchange="searchTxns()">
+   <option value="">전체 유형</option>
+   <option value="course_complete">교육 완료</option>
+   <option value="portfolio_approve">포트폴리오 승인</option>
+   <option value="gifticon_exchange">기프티콘 교환</option>
+   <option value="admin_adjust">관리자 조정</option>
+   </select>
+   <button class="btn btn-warning" onclick="openAdjustModal()">⚡ 포인트 수동 조정</button>
+   </div>
+  <div class="table-wrapper">
+  <table class="data-table" data-card-view>
+  <thead>
+  <tr><th>일시</th><th>학생</th><th>유형</th><th>포인트</th><th>설명</th></tr>
+  </thead>
+  <tbody id="txnTable"></tbody>
+  </table>
+  </div>
+   <div class="pagination" id="txnPagination"></div>
+   </div>
+   </div>
+   </div>
+
+   <!-- 탭2: 학생별 포인트 -->
+   <div class="tab-panel" id="tab-students">
+   <div class="card mb-24">
+   <div class="card-header"><h2>학생별 포인트</h2></div>
+   <div class="card-body">
+   <div class="filter-bar">
+   <input type="text" id="searchStudentName" placeholder="학생명 검색" onkeyup="searchStudents()">
+   </div>
+  <div class="table-wrapper">
+  <table class="data-table" data-card-view>
+  <thead>
+  <tr><th>학생명</th><th>아이디</th><th>획득 포인트</th><th>사용 포인트</th><th>잔액</th><th>관리</th></tr>
+  </thead>
+  <tbody id="studentTable"></tbody>
+  </table>
+  </div>
+   </div>
+   </div>
+   </div>
+
+   </div>
+   </main>
+   </div>
+
+   <div class="modal-overlay" id="adjustModal">
+   <div class="modal">
+   <div class="modal-header"><h3 class="modal-title">⚡ 포인트 수동 조정</h3></div>
+   <div class="modal-body">
+   <div class="form-group">
+   <label>학생 ID</label>
+   <input type="number" class="input" id="adjUserId" placeholder="학생 ID (숫자)">
+   </div>
+   <div class="form-group">
+   <label>조정 포인트 (+는 지급, -는 차감)</label>
+   <input type="number" class="input" id="adjPoints" placeholder="예: 500 또는 -200">
+   </div>
+   <div class="form-group">
+   <label>사유</label>
+   <input type="text" class="input" id="adjDesc" placeholder="예: 이벤트 지급">
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-primary" onclick="adjustPoints()">실행</button>
+   <button class="btn btn-secondary" onclick="closeAdjustModal()">취소</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260918abort"></script>
+   <script src="/common/js/auth.js?v=20260911nav"></script>
+   <script src="/common/js/hamburger.js?v=20260911nav"></script>
+   <script src="/common/js/nav.js?v=20260913nav"></script>
+   <script>
+   let currentPage = 1;
+   const PER_PAGE = 20;
+   let allTxns = [];
+
+   // ===== 사이드바 사용자명 =====
+   document.addEventListener('DOMContentLoaded', function() {
+   requireAuth();
+   renderSidebarUser();
+   const u = JSON.parse(localStorage.getItem('user') || '{}');
+   if (u.name) document.getElementById('sidebarUserName').textContent = u.name;
+   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+   loadStats();
+   loadTxns(1);
+   loadStudents();
+   });
+
+   function switchTab(name) {
+   document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+   document.querySelectorAll('.tab-header button').forEach(b => b.classList.remove('active'));
+   document.getElementById('tab-' + name).classList.add('active');
+   event.target.classList.add('active');
+   }
+
+   async function loadStats() {
+   try {
+   const [txnRes, reqRes] = await Promise.all([
+   apiGet('/headquarters/point-transactions?per_page=10000').catch(() => ({data:[]})),
+   apiGet('/headquarters/gifticon-requests?status=pending').catch(() => ({data:[]}))
+   ]);
+   const txns = txnRes.data || [];
+   document.getElementById('statStudents').textContent = new Set(txns.map(t => t.user_id)).size;
+   document.getElementById('statTotalEarned').textContent = txns.filter(t => t.points > 0).reduce((a,t) => a + t.points, 0).toLocaleString();
+   document.getElementById('statTotalUsed').textContent = Math.abs(txns.filter(t => t.points < 0).reduce((a,t) => a + t.points, 0)).toLocaleString();
+   document.getElementById('statPending').textContent = (reqRes.data || []).length;
+   } catch(e) {}
+   }
+
+   async function loadTxns(page) {
+   currentPage = page || 1;
+   try {
+   const search = (document.getElementById('searchUser')?.value || '').trim();
+   const type = document.getElementById('filterTypeTxn')?.value || '';
+   let url = `/headquarters/point-transactions?per_page=${PER_PAGE}&page=${currentPage}`;
+   if (search) url += '&search=' + encodeURIComponent(search);
+   if (type) url += '&transaction_type=' + encodeURIComponent(type);
+   const res = await apiGet(url);
+   allTxns = res.data || [];
+   renderTxnTable(allTxns);
+   const total = res.total || 0;
+   const totalPages = Math.ceil(total / PER_PAGE) || 1;
+   const el = document.getElementById('txnPagination');
+   if (totalPages <= 1) { el.innerHTML = ''; return; }
+   let html = `<button ${currentPage <= 1 ? 'disabled' : ''} onclick="loadTxns(${currentPage-1})">‹</button>`;
+   for (let i = 1; i <= totalPages; i++) {
+   if (Math.abs(i - currentPage) <= 2 || i === 1 || i === totalPages) {
+   html += `<button class="${i === currentPage ? 'active' : ''}" onclick="loadTxns(${i})">${i}</button>`;
+   } else if (i === currentPage - 3 || i === currentPage + 3) {
+   html += `<button disabled>…</button>`;
+   }
+   }
+   html += `<button ${currentPage >= totalPages ? 'disabled' : ''} onclick="loadTxns(${currentPage+1})">›</button>`;
+   el.innerHTML = html;
+   } catch(e) {
+   document.getElementById('txnTable').innerHTML = '<tr><td colspan="5" class="empty">오류가 발생했습니다.</td></tr>';
+   }
+   }
+
+   function renderTxnTable(txns) {
+   const tbody = document.getElementById('txnTable');
+   if (!txns.length) {
+   tbody.innerHTML = '<tr><td colspan="5" class="empty text-center p-24">거래 내역이 없습니다.</td></tr>';
+   return;
+   }
+   const typeLabel = { course_complete:'🎓 교육 완료', portfolio_approve:'📁 포트폴리오 승인', gifticon_exchange:'🎁 기프티콘 교환', admin_adjust:'⚡ 관리자 조정' };
+   tbody.innerHTML = txns.map(t => {
+   const cls = t.points > 0 ? 'txn-plus' : 'txn-minus';
+   const sign = t.points > 0 ? '+' : '';
+   return `<tr>
+   <td style="font-size:12px;color:#9CA3AF;white-space:nowrap">${t.created_at || ''}</td>
+   <td><span class="student-select" onclick="filterByUser(${t.user_id})">${t.user_name || 'ID:'+t.user_id}</span></td>
+   <td><span class="badge badge-${t.points > 0 ? 'success' : 'danger'}">${typeLabel[t.transaction_type] || t.transaction_type}</span></td>
+   <td class="${cls}">${sign}${t.points.toLocaleString()}P</td>
+   <td style="font-size:13px;color:#6B7280">${t.description || ''}</td>
+   </tr>`;
+   }).join('');
+   }
+
+   function searchTxns() { loadTxns(1); }
+
+   function filterByUser(userId) {
+   switchTab('students');
+   document.getElementById('searchStudentName').value = String(userId);
+   searchStudents();
+   }
+
+   let allStudentData = [];
+
+   async function loadStudents() {
+   try {
+   const res = await apiGet('/headquarters/point-transactions?per_page=10000');
+   const txns = res.data || [];
+   const map = {};
+   txns.forEach(t => {
+   if (!map[t.user_id]) map[t.user_id] = { user_id: t.user_id, user_name: t.user_name || 'ID:'+t.user_id, earned: 0, used: 0 };
+   if (t.points > 0) map[t.user_id].earned += t.points;
+   else map[t.user_id].used += Math.abs(t.points);
+   });
+   allStudentData = Object.values(map);
+   renderStudentTable(allStudentData);
+   } catch(e) {
+   document.getElementById('studentTable').innerHTML = '<tr><td colspan="6" class="empty">데이터를 불러올 수 없습니다.</td></tr>';
+   }
+   }
+
+   function renderStudentTable(data) {
+   const tbody = document.getElementById('studentTable');
+   if (!data.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty text-center p-24">포인트 내역이 없는 학생이 없습니다.</td></tr>'; return; }
+   data.sort((a,b) => (b.earned - b.used) - (a.earned - a.used));
+   tbody.innerHTML = data.map(s => {
+   const balance = s.earned - s.used;
+   return `<tr>
+   <td><strong>${s.user_name}</strong></td>
+   <td style="font-size:13px;color:#9CA3AF">ID: ${s.user_id}</td>
+   <td style="color:#10B981;font-weight:600">+${s.earned.toLocaleString()}P</td>
+   <td style="color:#EF4444;font-weight:600">-${s.used.toLocaleString()}P</td>
+   <td style="font-weight:700;color:#4F5EF8">${balance.toLocaleString()}P</td>
+   <td><button class="btn btn-sm btn-warning" onclick="quickAdjust(${s.user_id},'${s.user_name}')">조정</button></td>
+   </tr>`;
+   }).join('');
+   }
+
+   function searchStudents() {
+   const q = document.getElementById('searchStudentName').value.trim().toLowerCase();
+   renderStudentTable(q ? allStudentData.filter(s => s.user_name.toLowerCase().includes(q) || String(s.user_id).includes(q)) : allStudentData);
+   }
+
+   function openAdjustModal() {
+   ['adjUserId','adjPoints','adjDesc'].forEach(id => document.getElementById(id).value = '');
+   document.getElementById('adjustModal').classList.add('active');
+   document.getElementById('sidebarOverlay').classList.add('active');
+   }
+   function closeAdjustModal() {
+   document.getElementById('adjustModal').classList.remove('active');
+   document.getElementById('sidebarOverlay').classList.remove('active');
+   }
+   function quickAdjust(userId, userName) {
+   document.getElementById('adjUserId').value = userId;
+   document.getElementById('adjDesc').value = userName + '님 포인트 조정';
+   document.getElementById('adjustModal').classList.add('active');
+   document.getElementById('sidebarOverlay').classList.add('active');
+   }
+
+   async function adjustPoints() {
+   const userId = parseInt(document.getElementById('adjUserId').value);
+   const points = parseInt(document.getElementById('adjPoints').value);
+   const desc = document.getElementById('adjDesc').value.trim();
+   if (!userId || !points) { alert('학생 ID와 조정 포인트를 입력해주세요.'); return; }
+   if (!desc) { alert('사유를 입력해주세요.'); return; }
+   try {
+   await apiPost('/headquarters/point-transactions/adjust', { user_id: userId, points, description: desc });
+   alert(`${points >= 0 ? '+' : ''}${points}P 조정 완료!`);
+   closeAdjustModal(); loadStats(); loadTxns(1); loadStudents();
+   } catch(e) { alert(e.message || '오류가 발생했습니다.'); }
+   }
+   </script>
+   </body>
+   </html>

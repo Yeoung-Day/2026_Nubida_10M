@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>에듀케어 대시보드 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911pub">
+    <link rel="stylesheet" href="/common/css/pages/branch/style.css?v=20260911pub">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="content="no-cache, no-store, must-revalidate">
+    <style>
+        /* =========================================================
+           에듀케어(branch) 대시보드 — 전문적·세련된 미니멀 리디자인
+           기존 클래스 오버라이드 방식 (HTML 구조/ID/이벤트 속성 불변)
+           ========================================================= */
+        :root {
+            --ec-point:#4F5EF8;
+            --ec-point-soft:#EEF0FF;
+            --ec-bg:#FBFCFE;
+            --ec-card:#FFFFFF;
+            --ec-border:#E8ECF5;
+            --ec-border-soft:#F1F4FA;
+            --ec-label:#98A1B2;
+            --ec-text:#1F2437;
+            --ec-muted:#6B7488;
+            --ec-radius:16px;
+            --ec-radius-sm:14px;
+            --ec-shadow:0 1px 2px rgba(31,36,55,0.04), 0 8px 24px -12px rgba(31,36,55,0.10);
+            --ec-shadow-hover:0 2px 4px rgba(31,36,55,0.05), 0 14px 32px -14px rgba(31,36,55,0.16);
+            --ec-space:10px;
+        }
+
+        /* ── 페이지 배경 & 타이포 기본 ── */
+        body { background:var(--ec-bg); color:var(--ec-text); -webkit-font-smoothing:antialiased; }
+        .edu-split-layout { display:grid; grid-template-columns:340px 1fr; gap:20px; align-items:start; }
+        @media (max-width:1000px) { .edu-split-layout { grid-template-columns:1fr; } }
+
+        /* SVG 아이콘 공통 */
+        .ec-ic { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex:none; vertical-align:middle; }
+
+        /* ── 상단 타이틀 영역 (SVG 아이콘으로 이모지 대체) ── */
+        .top-nav h1 { display:inline-flex; align-items:center; gap:9px; font-size:17px; font-weight:700; letter-spacing:-0.01em; color:var(--ec-text); }
+        .top-nav h1::before {
+            content:""; width:19px; height:19px; flex:none;
+            background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7' rx='1.5'/%3E%3Crect x='14' y='3' width='7' height='7' rx='1.5'/%3E%3Crect x='14' y='14' width='7' height='7' rx='1.5'/%3E%3Crect x='3' y='14' width='7' height='7' rx='1.5'/%3E%3C/svg%3E");
+        }
+        .top-nav .small-text { color:var(--ec-label); font-size:12.5px; font-weight:500; }
+
+        /* ═══════════ 좌측 패널 — 소속 원장 목록 ═══════════ */
+        .director-sidebar {
+            background:var(--ec-card); border:1px solid var(--ec-border);
+            border-radius:var(--ec-radius); overflow:hidden; box-shadow:var(--ec-shadow);
+        }
+        .director-sidebar-header {
+            padding:15px 18px; border-bottom:1px solid var(--ec-border);
+            background:linear-gradient(180deg,#FCFDFF 0%,#F8FAFE 100%);
+            font-size:13px; font-weight:700; color:var(--ec-text); letter-spacing:-0.005em;
+            display:flex; justify-content:space-between; align-items:center; gap:10px;
+        }
+        .director-sidebar-header > span:first-child::before {
+            content:""; display:inline-block; width:16px; height:16px; margin-right:9px; vertical-align:-3px;
+            background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E");
+        }
+        .director-sidebar-header #directorTotal {
+            font-size:11.5px; font-weight:600; color:var(--ec-point);
+            background:var(--ec-point-soft); padding:3px 10px; border-radius:999px; white-space:nowrap;
+        }
+        .director-sidebar-body { max-height:72vh; overflow-y:auto; padding:8px; }
+        .director-sidebar-body::-webkit-scrollbar { width:8px; }
+        .director-sidebar-body::-webkit-scrollbar-thumb { background:#E3E8F2; border-radius:8px; border:2px solid #fff; }
+
+        /* ── 원장 목록 아이템 ── */
+        .dir-item {
+            display:flex; align-items:center; gap:11px; padding:11px 13px; cursor:pointer;
+            border-left:3px solid transparent; border-radius:12px;
+            transition:background .15s ease, border-color .15s ease, box-shadow .15s ease;
+        }
+        .dir-item:hover { background:#F7F9FD; }
+        .dir-item.active {
+            background:var(--ec-point-soft); border-left-color:var(--ec-point);
+            box-shadow:inset 0 0 0 1px rgba(79,94,248,0.06);
+        }
+        .dir-item.active .di-name { color:var(--ec-point); }
+        .dir-item .di-icon {
+            width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+            background:#EEF1F8; color:#5A6480; flex-shrink:0; transition:.15s ease;
+        }
+        .dir-item.active .di-icon { background:#DFE3FF; color:var(--ec-point); }
+        .dir-item .di-icon svg { width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+        .dir-item .di-info { flex:1; min-width:0; }
+        .dir-item .di-name { font-size:13.5px; font-weight:600; color:var(--ec-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:-0.005em; }
+        .dir-item .di-meta { font-size:11px; color:var(--ec-label); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .dir-item .di-meta svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2; vertical-align:-1.5px; margin-right:2px; opacity:.85; }
+        .dir-item .di-count {
+            font-size:11px; font-weight:600; background:#EFF2F9; padding:3px 9px; border-radius:999px;
+            color:var(--ec-muted); white-space:nowrap; display:inline-flex; align-items:center; gap:4px;
+        }
+        .dir-item.active .di-count { background:#fff; color:var(--ec-point); }
+        .dir-item .di-count svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2; }
+
+        /* ═══════════ 우측 패널 — 선택한 원장 상세 ═══════════ */
+        .right-panel-branch {
+            min-width:0; background:var(--ec-card); border:1px solid var(--ec-border);
+            border-radius:var(--ec-radius); overflow:hidden; box-shadow:var(--ec-shadow);
+        }
+        .right-panel-header {
+            padding:17px 20px; border-bottom:1px solid var(--ec-border);
+            background:linear-gradient(180deg,#FCFDFF 0%,#F8FAFE 100%);
+            display:flex; justify-content:space-between; align-items:center; gap:12px;
+        }
+        .right-panel-header h2 {
+            font-size:16px !important; font-weight:700; margin:0; color:var(--ec-text);
+            letter-spacing:-0.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        .right-panel-header #detailStats {
+            font-size:12px; font-weight:600; color:var(--ec-point);
+            background:var(--ec-point-soft); padding:4px 12px; border-radius:999px; white-space:nowrap; flex:none;
+        }
+        .right-panel-body { padding:18px; }
+
+        /* ── 정보 섹션 카드 ── */
+        .info-section {
+            background:var(--ec-card); border:1px solid var(--ec-border);
+            border-radius:var(--ec-radius); overflow:hidden; margin-bottom:14px; box-shadow:var(--ec-shadow);
+        }
+        .info-section:last-child { margin-bottom:0; }
+        .info-section-header {
+            padding:12px 16px; border-bottom:1px solid var(--ec-border-soft); background:#FBFCFE;
+            font-size:12.5px; font-weight:700; color:var(--ec-text); letter-spacing:-0.005em;
+            display:flex; justify-content:space-between; align-items:center; gap:10px;
+        }
+        .info-section-header #studentCount {
+            font-size:11.5px; font-weight:600; color:var(--ec-muted);
+            background:#EFF2F9; padding:3px 10px; border-radius:999px;
+        }
+        .info-section-body { padding:15px 16px; overflow-x:auto; }
+
+        /* ── 원장 정보 그리드 (라벨-값 쌍) ── */
+        #directorInfo { display:grid !important; grid-template-columns:1fr 1fr; gap:9px 16px !important; font-size:12.5px !important; }
+        #directorInfo > div {
+            display:flex; flex-direction:column; gap:3px;
+            padding:11px 13px; background:#F9FAFD; border:1px solid var(--ec-border-soft); border-radius:11px;
+            min-width:0;
+        }
+        #directorInfo > div > strong {
+            font-size:10.5px; font-weight:600; color:var(--ec-label);
+            letter-spacing:0.01em; text-transform:uppercase;
+        }
+        #directorInfo > div > span {
+            font-size:13px; font-weight:600; color:var(--ec-text);
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        @media (max-width:640px) { #directorInfo { grid-template-columns:1fr !important; } }
+
+        /* ── 매출 요약 (payment-stat-box) ── */
+        .payment-summary { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:0; }
+        .payment-stat-box {
+            flex:1; min-width:120px; padding:13px 15px; text-align:left;
+            background:#F9FAFD !important; border:1px solid var(--ec-border-soft); border-radius:var(--ec-radius-sm) !important;
+        }
+        .payment-stat-box .label {
+            font-size:10.5px; font-weight:600; color:var(--ec-label); margin-bottom:6px;
+            display:flex; align-items:center; gap:6px; letter-spacing:0.01em;
+        }
+        .payment-stat-box .label::before {
+            content:""; width:6px; height:6px; border-radius:50%; background:var(--ec-point); flex:none; opacity:.85;
+        }
+        .payment-stat-box .value {
+            font-size:17px; font-weight:700; color:var(--ec-text);
+            letter-spacing:-0.02em; font-variant-numeric:tabular-nums;
+        }
+        .payment-stat-box .value.primary { color:var(--ec-point) !important; }
+        .payment-stat-box .value.success { color:#0E9F6E !important; }
+        .payment-stat-box .value.warning { color:#C77700 !important; }
+        .payment-stat-box .value[style*="EF4444"] { color:#E5484D !important; }
+
+        /* ── 빈 상태 ── */
+        .empty-detail { text-align:center; padding:56px 20px; color:var(--ec-label); }
+        .empty-detail .big-icon {
+            width:52px; height:52px; margin:0 auto 14px; border-radius:15px;
+            display:flex; align-items:center; justify-content:center;
+            background:var(--ec-point-soft); color:var(--ec-point);
+        }
+        .empty-detail .big-icon svg { width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+        .empty-detail .text { font-size:13px; color:var(--ec-muted); font-weight:500; }
+
+        /* ── 학생 미니 테이블 ── */
+        .student-mini-table { width:100%; border-collapse:separate; border-spacing:0; font-size:12px; table-layout:fixed; }
+        .student-mini-table th {
+            text-align:left; padding:9px 12px; font-weight:600; color:var(--ec-label);
+            font-size:10.5px; letter-spacing:0.02em; text-transform:uppercase;
+            background:#FBFCFE; border-bottom:1px solid var(--ec-border); white-space:nowrap;
+        }
+        .student-mini-table td {
+            padding:10px 12px; border-bottom:1px solid var(--ec-border-soft); color:#3A4157;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums;
+        }
+        .student-mini-table tbody tr:last-child td { border-bottom:none; }
+        .student-mini-table tbody tr { transition:background .12s ease; }
+        .student-mini-table tbody tr:hover td { background:#F7F9FD; }
+        .student-mini-table td strong { font-weight:600; color:var(--ec-text); }
+        .student-mini-table th:nth-child(1), .student-mini-table td:nth-child(1) { width:52px; color:var(--ec-label); }
+        .student-mini-table th:nth-child(2), .student-mini-table td:nth-child(2) { width:auto; min-width:80px; }
+        .student-mini-table th:nth-child(3), .student-mini-table td:nth-child(3) { width:112px; }
+        .student-mini-table th:nth-child(4), .student-mini-table td:nth-child(4) { width:auto; min-width:90px; }
+        .student-mini-table th:nth-child(5), .student-mini-table td:nth-child(5) { width:74px; }
+        /* 상태 배지 톤 정돈 */
+        .student-mini-table .badge { font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:999px; }
+
+        /* ── 결제 리스트 ── */
+        .payment-mini-list { font-size:12px; }
+        .payment-mini-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--ec-border-soft); }
+        .payment-mini-item:last-child { border-bottom:none; }
+        .payment-mini-item .pmi-left { display:flex; gap:9px; align-items:center; }
+        .payment-mini-item .pmi-date { color:var(--ec-label); font-size:10.5px; font-variant-numeric:tabular-nums; }
+        .payment-mini-item .pmi-amount { font-weight:700; color:var(--ec-text); font-size:12px; font-variant-numeric:tabular-nums; }
+
+        /* ═══════════ 하단 통계 4개 ═══════════ */
+        .stats-grid {
+            display:grid !important; grid-template-columns:repeat(4,1fr) !important;
+            gap:16px !important; margin-top:20px !important;
+        }
+        @media (max-width:860px) { .stats-grid { grid-template-columns:repeat(2,1fr) !important; } }
+        @media (max-width:520px) { .stats-grid { grid-template-columns:1fr !important; } }
+
+        .stats-grid .stat-card {
+            background:var(--ec-card) !important;
+            border:1px solid var(--ec-border) !important;
+            border-radius:var(--ec-radius) !important;
+            padding:17px 18px !important;
+            box-shadow:var(--ec-shadow) !important;
+            display:flex; flex-direction:column; gap:12px;
+            position:relative; overflow:hidden;
+            transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+        }
+        .stats-grid .stat-card::before { display:none !important; content:none !important; }
+        .stats-grid .stat-card::after { display:none !important; }
+        .stats-grid .stat-card:hover {
+            transform:translateY(-2px);
+            box-shadow:var(--ec-shadow-hover) !important;
+            border-color:#DDE3F0 !important;
+        }
+        .stats-grid .stat-label {
+            display:flex; align-items:center; gap:9px;
+            font-size:12px !important; font-weight:600 !important; color:var(--ec-label) !important;
+            letter-spacing:0.005em; margin:0 !important; order:2;
+        }
+        .stats-grid .stat-label::before {
+            content:""; width:32px; height:32px; flex:none; border-radius:10px;
+            background-color:var(--ec-point-soft);
+            background-repeat:no-repeat; background-position:center; background-size:17px;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7' rx='1.5'/%3E%3Crect x='14' y='3' width='7' height='7' rx='1.5'/%3E%3Crect x='14' y='14' width='7' height='7' rx='1.5'/%3E%3Crect x='3' y='14' width='7' height='7' rx='1.5'/%3E%3C/svg%3E");
+        }
+        .stats-grid .stat-value {
+            font-size:26px !important; font-weight:750 !important; color:var(--ec-text) !important;
+            letter-spacing:-0.03em; line-height:1.05; margin:0 !important; order:1;
+            font-variant-numeric:tabular-nums;
+        }
+        /* 카드별 아이콘/포인트 컬러 (노랑 3색 신호등 제거 → 1:1 은은한 톤) */
+        .stats-grid .stat-card:nth-child(1) .stat-label::before {
+            background-color:#EEF0FF;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M23 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E");
+        }
+        .stats-grid .stat-card:nth-child(2) .stat-label::before {
+            background-color:#EAF2FF;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F6FE0' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E");
+        }
+        .stats-grid .stat-card:nth-child(3) .stat-label::before {
+            background-color:#E9F8F1;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E9F6E' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='5' width='20' height='14' rx='2.5'/%3E%3Cpath d='M2 10h20'/%3E%3C/svg%3E");
+        }
+        .stats-grid .stat-card:nth-child(4) .stat-label::before {
+            background-color:#F1EEFF;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5CE6' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E");
+        }
+
+        /* ── 수강강좌별 인원 (카드뉴스) ── */
+        .cat-news { margin-top:28px; }
+        .cat-news-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap }
+        .cat-news-head h3 { font-size:16px; font-weight:700; color:var(--text-primary); margin:0; display:flex; align-items:center; gap:8px }
+        .cat-news-head .cat-news-hint { font-size:12.5px; color:var(--text-tertiary) }
+        .cat-news-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px }
+        .cat-news-card { border:1px solid var(--border-subtle); border-radius:14px; padding:18px; background:var(--bg-surface); display:flex; flex-direction:column; gap:6px; transition:all .2s }
+        .cat-news-card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.06) }
+        .cat-news-emoji { font-size:26px; line-height:1 }
+        .cat-news-label { font-size:13.5px; font-weight:600; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+        .cat-news-count { font-size:26px; font-weight:800; color:var(--text-primary); line-height:1.1 }
+        .cat-news-count small { font-size:13px; font-weight:600; color:var(--text-tertiary); margin-left:2px }
+        .cat-news-empty { grid-column:1/-1; text-align:center; padding:36px 0; color:var(--text-tertiary); font-size:13.5px }
+
+        /* ── 반응형 세부 보정 ── */
+        @media (max-width:1000px) {
+            .director-sidebar-body { max-height:420px; }
+            .stats-grid { margin-top:16px !important; }
+        }
+    </style>
+<script src="/common/js/popup.js?v=20260911pub"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>운영</div>
+                <a class="active nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="employees.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">원장 관리</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">수강생 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>교육</div>
+                <a class="nav-item" href="studios.html" style="display:none"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">공부방 관리</span></a>
+                <a class="nav-item" href="schedule.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">일정 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>보고</div>
+                <a class="nav-item" href="branch-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg>소통</div>
+                <a class="nav-item" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">에듀케어 설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">에듀케어</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>에듀케어 대시보드</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+<!-- ===== 원장-학생 통합 뷰 ===== -->
+            <div class="edu-split-layout">
+
+                <!-- LEFT: 원장 목록 -->
+                <div class="director-sidebar">
+                    <div class="director-sidebar-header">
+                        <span>소속 원장</span>
+                        <span class="small-text" id="directorTotal">0명</span>
+                    </div>
+                    <div class="director-sidebar-body" id="directorList">
+                        <div class="empty-detail" style="padding:30px;"><div class="text">불러오는 중...</div></div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: 선택한 원장 상세 -->
+                <div class="right-panel-branch">
+                    <div class="right-panel-header">
+                        <h2 id="detailTitle" style="font-size:16px;font-weight:700;margin:0;">원장을 선택하세요</h2>
+                        <span id="detailStats" style="font-size:12px;color:#6B7280;"></span>
+                    </div>
+                    <div class="right-panel-body" id="detailBody">
+                        <div class="empty-detail" id="detailEmpty">
+                            <div class="big-icon"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
+                            <div class="text">왼쪽 목록에서 원장을 선택하세요</div>
+                        </div>
+                        <div id="detailContent" style="display:none;">
+                            <!-- 원장 기본 정보 -->
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    <span>원장 정보</span>
+                                </div>
+                                <div class="info-section-body">
+                                    <div id="directorInfo" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;">
+                                        <div><strong>이름:</strong> <span id="dirName"></span></div>
+                                        <div><strong>연락처:</strong> <span id="dirPhone"></span></div>
+                                        <div><strong>이메일:</strong> <span id="dirEmail"></span></div>
+                                        <div><strong>학원타입:</strong> <span id="dirAcademyType"></span></div>
+                                        <div><strong>지역:</strong> <span id="dirRegion"></span></div>
+                                        <div><strong>학생 수:</strong> <span id="dirStudentCount"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 원장 매출 현황 -->
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    <span>원장 매출 현황</span>
+                                </div>
+                                <div class="info-section-body">
+                                    <div class="payment-summary" id="directorPaymentSummary">
+                                        <div class="payment-stat-box"><div class="label">총 수강료</div><div class="value primary">₩0</div></div>
+                                        <div class="payment-stat-box"><div class="label">납부 완료</div><div class="value success">0건</div></div>
+                                        <div class="payment-stat-box"><div class="label">미납</div><div class="value" style="color:#EF4444">0건</div></div>
+                                        <div class="payment-stat-box"><div class="label">결제 금액</div><div class="value warning">₩0</div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 학생 목록 -->
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    <span>학생 목록</span>
+                                    <span class="small-text" id="studentCount">0명</span>
+                                </div>
+                                <div class="info-section-body" style="padding:0;">
+                                    <table class="student-mini-table" data-card-view>
+                                        <thead><tr><th>ID</th><th>이름</th><th>연락처</th><th>수강 과정</th><th>상태</th></tr></thead>
+                                        <tbody id="studentTableBody">
+                                            <tr><td colspan="5" style="text-align:center;padding:20px;color:#9CA3AF;">학생 정보가 없습니다</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== 통계 요약 (하단) ===== -->
+            <div class="stats-grid" style="margin-top:24px;">
+                <div class="stat-card stat-card-accent animate-fade-up delay-1">
+                    <div class="stat-label">전체 학생</div>
+                    <div class="stat-value" id="totalStudentsStat">-</div>
+                </div>
+                <div class="stat-card stat-card-accent info animate-fade-up delay-2">
+                    <div class="stat-label">전체 원장</div>
+                    <div class="stat-value" id="totalDirectorsStat">-</div>
+                </div>
+                <div class="stat-card stat-card-accent success animate-fade-up delay-3">
+                    <div class="stat-label">총 결제</div>
+                    <div class="stat-value" id="totalPaymentStat">-</div>
+                </div>
+                <div class="stat-card stat-card-accent warning animate-fade-up delay-4">
+                    <div class="stat-label">총 강좌</div>
+                    <div class="stat-value" id="totalCoursesStat">-</div>
+                </div>
+            </div>
+
+            <!-- ===== 수강강좌별 인원 (카드뉴스) ===== -->
+            <div class="cat-news">
+                <div class="cat-news-head">
+                    <h3>📊 수강강좌별 인원</h3>
+                    <span class="cat-news-hint">소속 원장이 관리하는 학생 기준 · 강좌 카테고리별 인원</span>
+                </div>
+                <div class="cat-news-grid" id="catNewsGrid">
+                    <div class="cat-news-empty">불러오는 중...</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="/common/js/api.js?v=20260911pub"></script>
+    <script src="/common/js/auth.js?v=20260911pub"></script>
+    <script src="/common/js/utils.js?v=20260911pub"></script>
+    <script>
+        let branchId = null;
+        let directors = [];
+        let directorStudents = {};
+        let directorPayments = {};
+        let selectedDirectorId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('sidebarUserName').textContent = user.name || user.username || '관리자';
+                document.getElementById('sidebarUserRole').textContent = '에듀케어';
+            }
+
+            const now = new Date();
+            document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', {
+                year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+            });
+
+            // Get branch ID from user
+            const u = getCurrentUser();
+            if (u && u.branch_id) {
+                branchId = u.branch_id;
+
+                // Load data
+                await loadBranchOverview();
+            } else {
+                document.getElementById('directorList').innerHTML = 
+                    '<div class="empty-detail" style="padding:30px;"><div class="big-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="text">에듀케어 정보를 불러올 수 없습니다</div></div>';
+            }
+        });
+
+        async function loadBranchOverview() {
+            if (!branchId) return;
+            try {
+                const res = await apiGet('/headquarters/branches/' + branchId + '/overview');
+                const data = res && res.data;
+                if (!data) throw new Error('No data');
+
+                directors = data.directors || [];
+                const students = data.students || [];
+                const payments = (data.payments && data.payments.list) || [];
+
+                // Group students by director
+                directorStudents = {};
+                directors.forEach(d => { directorStudents[d.id] = []; });
+                directorStudents['unassigned'] = [];
+                
+                students.forEach(s => {
+                    if (s.director_id && directorStudents[s.director_id]) {
+                        directorStudents[s.director_id].push(s);
+                    } else {
+                        directorStudents['unassigned'].push(s);
+                    }
+                });
+
+                // Payments는 이미 원장별로 백엔드에서 계산됨 (director.payment_list)
+                directorPayments = {};
+                directors.forEach(d => {
+                    directorPayments[d.id] = d.payment_list || [];
+                });
+                directorPayments['unassigned'] = [];
+
+                // Render left panel
+                renderDirectorList();
+
+                // Render stats
+                const totalStudents = students.length;
+                const totalDirectors = directors.length;
+                const totalPayment = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+                const courseSet = new Set();
+                students.forEach(s => {
+                    (s.enrollments || []).forEach(e => {
+                        if (e.course_id) courseSet.add(e.course_id);
+                    });
+                });
+
+                document.getElementById('totalStudentsStat').textContent = totalStudents + '명';
+                document.getElementById('totalDirectorsStat').textContent = totalDirectors + '명';
+                document.getElementById('totalPaymentStat').textContent = '₩' + Number(totalPayment).toLocaleString();
+                document.getElementById('totalCoursesStat').textContent = courseSet.size + '개';
+
+                // 수강강좌별 인원 카드뉴스
+                loadCatNews();
+
+                // Auto-select first director
+                if (directors.length > 0) {
+                    selectDirector(directors[0].id);
+                }
+            } catch(e) {
+                console.error('Overview load error:', e);
+                document.getElementById('directorList').innerHTML = 
+                    '<div class="empty-detail" style="padding:30px;"><div class="big-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="text">데이터를 불러올 수 없습니다</div></div>';
+            }
+        }
+
+        // ===== 수강강좌별 인원 카드뉴스 =====
+        async function loadCatNews() {
+            const grid = document.getElementById('catNewsGrid');
+            if (!grid) return;
+            try {
+                const res = await apiGet('/branch/students/course-category-stats');
+                const data = (res && res.data) || {};
+                const cats = data.categories || [];
+                if (!cats.length) {
+                    grid.innerHTML = '<div class="cat-news-empty">수강 중인 강좌가 없습니다.</div>';
+                    return;
+                }
+                grid.innerHTML = cats.map(c =>
+                    '<div class="cat-news-card">' +
+                    '<div class="cat-news-emoji">' + (c.emoji || '📦') + '</div>' +
+                    '<div class="cat-news-label" title="' + (c.label || '').replace(/"/g, '&quot;') + '">' + (c.label || '기타') + '</div>' +
+                    '<div class="cat-news-count">' + (c.count || 0) + '<small>명</small></div>' +
+                    '</div>'
+                ).join('');
+            } catch (e) {
+                console.error('cat news load error:', e);
+                grid.innerHTML = '<div class="cat-news-empty">강좌별 인원을 불러올 수 없습니다.</div>';
+            }
+        }
+
+        function renderDirectorList() {
+            const el = document.getElementById('directorList');
+            document.getElementById('directorTotal').textContent = directors.length + '명';
+            
+            if (directors.length === 0) {
+                el.innerHTML = '<div class="empty-detail" style="padding:30px;"><div class="text">소속 원장이 없습니다</div></div>';
+                return;
+            }
+
+            el.innerHTML = directors.map(d => {
+                const studentCount = (directorStudents[d.id] || []).length;
+                const isActive = selectedDirectorId === d.id;
+                return `<div class="dir-item ${isActive ? 'active' : ''}" onclick="selectDirector(${d.id})">
+                    <div class="di-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                    <div class="di-info">
+                        <div class="di-name">${esc(d.name)}</div>
+                        <div class="di-meta"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${esc(d.phone || '-')} · ${esc(d.academy_type || '-')}</div>
+                    </div>
+                    <div class="di-count"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${studentCount}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function selectDirector(directorId) {
+            selectedDirectorId = directorId;
+            
+            // Highlight
+            document.querySelectorAll('.dir-item').forEach(el => el.classList.remove('active'));
+            const items = document.querySelectorAll('.dir-item');
+            for (let i = 0; i < directors.length; i++) {
+                if (directors[i].id === directorId && items[i]) {
+                    items[i].classList.add('active');
+                    break;
+                }
+            }
+
+            // Show content
+            const emptyEl = document.getElementById('detailEmpty');
+            const contentEl = document.getElementById('detailContent');
+            if (emptyEl) emptyEl.style.display = 'none';
+            if (contentEl) contentEl.style.display = 'block';
+
+            const d = directors.find(x => x.id === directorId);
+            if (!d) return;
+
+            // Director info (요소 존재 시에만 설정)
+            const el = (id, fn) => { const e = document.getElementById(id); if (e) fn(e); };
+            el('detailTitle', e => e.textContent = d.name);
+            el('dirName', e => e.textContent = d.name);
+            el('dirPhone', e => e.textContent = d.phone || '-');
+            el('dirEmail', e => e.textContent = d.email || '-');
+            el('dirAcademyType', e => e.textContent = d.academy_type || '-');
+            el('dirRegion', e => e.textContent = d.region || '-');
+            
+            const studentCount = (directorStudents[directorId] || []).length;
+            el('dirStudentCount', e => e.textContent = studentCount + '명');
+            el('detailStats', e => e.textContent = '학생 ' + studentCount + '명');
+
+            // Payments (결제 현황 — Revenue 기준 원장 매출 현황)
+            const revTotal = (d.daily_revenue || 0) + (d.revenue_amount || 0);
+            const dailyRev = d.daily_revenue || 0;
+            const reportRev = d.revenue_amount || 0;
+
+            const summaryEl = document.getElementById('directorPaymentSummary');
+            if (summaryEl) {
+                summaryEl.innerHTML = `
+                    <div class="payment-stat-box"><div class="label">일별 매출</div><div class="value primary">₩${Number(dailyRev).toLocaleString()}</div></div>
+                    <div class="payment-stat-box"><div class="label">월 보고 매출</div><div class="value success">₩${Number(reportRev).toLocaleString()}</div></div>
+                    <div class="payment-stat-box"><div class="label">총 원장 매출</div><div class="value warning">₩${Number(revTotal).toLocaleString()}</div></div>
+                    <div class="payment-stat-box"><div class="label">매출 건수</div><div class="value" style="color:#EF4444">${d.revenue_count || 0}건</div></div>
+                `;
+            }
+
+            // Student list
+            const students = directorStudents[directorId] || [];
+            document.getElementById('studentCount').textContent = students.length + '명';
+            
+            const tbody = document.getElementById('studentTableBody');
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#9CA3AF;">학생이 없습니다</td></tr>';
+            } else {
+                tbody.innerHTML = students.map(s => {
+                    const courseNames = (s.enrollments || []).map(e => e.course_name).filter(Boolean).join(', ') || '-';
+                    return `<tr>
+                        <td>${s.id}</td>
+                        <td><strong>${esc(s.name || '')}</strong></td>
+                        <td>${esc(s.phone || '-')}</td>
+                        <td>${esc(courseNames)}</td>
+                        <td><span class="badge ${s.is_active ? 'badge-success' : 'badge-inactive'}">${s.is_active ? '활성' : '비활성'}</span></td>
+                    </tr>`;
+                }).join('');
+            }
+
+            // Update left list highlight
+            renderDirectorList();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+            window.location.href = '/pages/login.html';
+        }
+    </script>
+    <script src="/common/js/pages-branch.js?v=20260911pub"></script>
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

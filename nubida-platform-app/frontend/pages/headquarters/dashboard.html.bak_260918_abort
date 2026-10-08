@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>대시보드 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <style>
+        /* ── 대시보드 리디자인 v2 ── */
+        .greeting { font-size: 13px; color: #8B95A1; margin-bottom: 28px; letter-spacing: -0.2px; }
+        .greeting strong { color: #111827; font-weight: 600; }
+
+        /* 섹션 헤더 */
+        .dash-section { margin-bottom: 32px; }
+        .dash-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .dash-section-header h2 { font-size: 16px; font-weight: 700; color: #111827; margin: 0; letter-spacing: -0.3px; }
+        .dash-section-header .badge-count { font-size: 12px; color: #8B95A1; background: #F2F4F7; padding: 2px 10px; border-radius: 100px; }
+
+        /* 메인 통계 그리드 - 아일랜드 스타일 */
+        .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        @media (max-width: 1100px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 550px) { .metric-grid { grid-template-columns: 1fr; } }
+        .metric-card { background: #fff; border: 1px solid #EFF1F5; border-radius: 18px; padding: 24px 22px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .metric-card.is-blue::before { background: linear-gradient(90deg, #4F5EF8, #7B8AFF); }
+        .metric-card.is-purple::before { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+        .metric-card.is-green::before { background: linear-gradient(90deg, #10B981, #34D399); }
+        .metric-card.is-orange::before { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+        .metric-card.is-red::before { background: linear-gradient(90deg, #EF4444, #F87171); }
+        .metric-card.is-teal::before { background: linear-gradient(90deg, #14B8A6, #2DD4BF); }
+        .metric-card.is-pink::before { background: linear-gradient(90deg, #EC4899, #F472B6); }
+        .metric-card.is-amber::before { background: linear-gradient(90deg, #D97706, #F59E0B); }
+        .metric-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.06); transform: translateY(-3px); border-color: #E2E6ED; }
+        .metric-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .metric-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .metric-icon.bg1 { background: #EEF2FF; } .metric-icon.bg2 { background: #F5F3FF; }
+        .metric-icon.bg3 { background: #ECFDF5; } .metric-icon.bg4 { background: #FFF7ED; }
+        .metric-icon.bg5 { background: #FEF2F2; } .metric-icon.bg6 { background: #ECFEFF; }
+        .metric-icon.bg7 { background: #FDF2F8; } .metric-icon.bg8 { background: #FFFBEB; }
+        .metric-value { font-size: 28px; font-weight: 800; color: #111827; letter-spacing: -1px; line-height: 1; }
+        .metric-label { font-size: 13px; color: #8B95A1; margin-top: 6px; font-weight: 400; }
+        .metric-change { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; margin-top: 10px; display: inline-flex; align-items: center; gap: 3px; }
+
+        /* 링크 카드 */
+        .link-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        @media (max-width: 1100px) { .link-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 550px) { .link-grid { grid-template-columns: 1fr; } }
+        .link-card { display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: #fff; border: 1px solid #EFF1F5; border-radius: 14px; text-decoration: none; transition: all 0.2s ease; }
+        .link-card:hover { border-color: #D0D5DD; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .link-card .lc-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #F8F9FC; flex-shrink: 0; }
+        .link-card .lc-text { display: flex; flex-direction: column; }
+        .link-card .lc-title { font-size: 13px; font-weight: 600; color: #111827; }
+        .link-card .lc-arrow { margin-left: auto; font-size: 14px; color: #CBD5E1; transition: all 0.2s; }
+        .link-card:hover .lc-arrow { color: #4F5EF8; transform: translateX(3px); }
+
+        /* ===== 모바일 (≤768px): 본사 대시보드 정리 ===== */
+        @media (max-width: 768px) {
+            .dash-section { margin-bottom: 20px; }
+            .dash-section-header { margin-bottom: 10px; }
+            .dash-section-header h2 { font-size: 14px; }
+            .metric-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+            .metric-card { padding: 14px 12px; border-radius: 14px; }
+            .metric-top { gap: 8px; margin-bottom: 10px; }
+            .metric-icon { width: 32px; height: 32px; border-radius: 10px; font-size: 15px; }
+            .metric-value { font-size: 20px; }
+            .metric-label { font-size: 11px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .link-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+            .link-card { padding: 12px 12px; gap: 8px; border-radius: 12px; }
+            .link-card .lc-icon { width: 30px; height: 30px; border-radius: 8px; font-size: 14px; }
+            .link-card .lc-title { font-size: 11.5px; line-height: 1.3; word-break: keep-all; }
+            .link-card .lc-arrow { font-size: 12px; }
+        }
+        @media (max-width: 340px) {
+            .metric-grid, .link-grid { grid-template-columns: 1fr !important; }
+        }
+    </style>
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+        <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item active" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+<div class="sidebar-footer">
+    <div class="user-name" id="sidebarUserName">사용자</div>
+    <div class="user-role" id="sidebarUserRole">본사</div>
+    <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+</div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<main class="main-content">
+    <div class="top-nav">
+        <div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>📊 대시보드</h1></div>
+        <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+    </div>
+
+    <p class="greeting"><strong>대표님</strong>, 오늘도 누비다플랫폼과 함께 해주셔서 감사합니다 🙌</p>
+    <!-- 운영 현황 -->
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>📊 운영 현황</h2>
+            <span class="badge-count">실시간</span>
+        </div>
+        <div class="metric-grid">
+            <div class="metric-card is-blue">
+                <div class="metric-top">
+                    <div class="metric-icon bg1">🏢</div>
+                </div>
+                <div class="metric-value" id="statBranches">—</div>
+                <div class="metric-label">에듀케어</div>
+            </div>
+            <div class="metric-card is-purple">
+                <div class="metric-top">
+                    <div class="metric-icon bg2">📄</div>
+                </div>
+                <div class="metric-value" id="statContracts">—</div>
+                <div class="metric-label">전체 계약</div>
+            </div>
+            <div class="metric-card is-green">
+                <div class="metric-top">
+                    <div class="metric-icon bg3">🏫</div>
+                </div>
+                <div class="metric-value" id="statAcademies">—</div>
+                <div class="metric-label">운영 학원</div>
+            </div>
+            <div class="metric-card is-orange">
+                <div class="metric-top">
+                    <div class="metric-icon bg4">👑</div>
+                </div>
+                <div class="metric-value" id="statDirectors">—</div>
+                <div class="metric-label">원장</div>
+            </div>
+        </div>
+    </div>
+    <!-- 주의사항 -->
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>⚠️ 확인 필요</h2>
+        </div>
+        <div class="metric-grid">
+            <div class="metric-card is-red">
+                <div class="metric-top">
+                    <div class="metric-icon bg5">⏳</div>
+                </div>
+                <div class="metric-value" id="statExpiringContracts">—</div>
+                <div class="metric-label">만료 예정 계약</div>
+            </div>
+            <div class="metric-card is-amber">
+                <div class="metric-top">
+                    <div class="metric-icon bg8">🛑</div>
+                </div>
+                <div class="metric-value" id="statInactiveDirectors">—</div>
+                <div class="metric-label">정지/휴무 학원</div>
+            </div>
+            <div class="metric-card is-teal">
+                <div class="metric-top">
+                    <div class="metric-icon bg6">💳</div>
+                </div>
+                <div class="metric-value" id="statPendingPayments">—</div>
+                <div class="metric-label">미처리 결제</div>
+            </div>
+            <div class="metric-card is-pink">
+                <div class="metric-top">
+                    <div class="metric-icon bg7">🏆</div>
+                </div>
+                <div class="metric-value" id="statPointStudents">—</div>
+                <div class="metric-label">포인트 사용자</div>
+            </div>
+        </div>
+    </div>
+    <!-- 빠른 이동 -->
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>🚀 빠른 이동</h2>
+        </div>
+        <div class="link-grid">
+            <a href="branches.html" class="link-card">
+                <div class="lc-icon">🏢</div>
+                <div class="lc-text">
+                    <span class="lc-title">에듀케어 관리</span>
+                </div>
+                <span class="lc-arrow">→</span>
+            </a>
+            <a href="categories.html" class="link-card">
+                <div class="lc-icon">📚</div>
+                <div class="lc-text">
+                    <span class="lc-title">강좌 카테고리 권한</span>
+                </div>
+                <span class="lc-arrow">→</span>
+            </a>
+            <a href="academy-management.html" class="link-card">
+                <div class="lc-icon">🏫</div>
+                <div class="lc-text">
+                    <span class="lc-title">학원 관리</span>
+                </div>
+                <span class="lc-arrow">→</span>
+            </a>
+            <a href="courses.html" class="link-card">
+                <div class="lc-icon">📖</div>
+                <div class="lc-text">
+                    <span class="lc-title">강좌 관리</span>
+                </div>
+                <span class="lc-arrow">→</span>
+            </a>
+            <a href="payments.html" class="link-card">
+                <div class="lc-icon">💳</div>
+                <div class="lc-text">
+                    <span class="lc-title">결제 관리</span>
+                </div>
+                <span class="lc-arrow">→</span>
+            </a>
+            <a href="statistics.html" class="link-card">
+                <div class="lc-icon">📈</div>
+                <div class="lc-text">
+                    <span class="lc-title">통계</span>
+                </div>
+                <span class="lc-arrow">→</span>
+            </a>
+            <a href="director-reports.html" class="link-card">
+                <div class="lc-icon">📋</div>
+                <div class="lc-text">
+                    <span class="lc-title">에듀케어 보고서</span>
+                </div>
+                <span class="lc-arrow">→</span>
+            </a>
+        </div>
+    </div>
+</main>
+</div>
+
+<script src="/common/js/api.js?v=20260911nav"></script>
+<script src="/common/js/auth.js?v=20260911nav"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    requireAuth();
+    renderSidebarUser();
+    document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+    loadDashboardStats();
+});
+
+function showToast(msg, type) {
+    const t = document.createElement('div');
+    t.className = 'toast ' + (type || 'info');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { if(t.parentNode) t.parentNode.removeChild(t); }, 3000);
+}
+
+async function loadDashboardStats() {
+    try {
+        const res = await apiGet('/headquarters/branches?per_page=1');
+        document.getElementById('statBranches').textContent = (Number(res.total || 0)).toLocaleString();
+    } catch(e) {}
+    try {
+        const res = await apiGet('/headquarters/contracts?per_page=1');
+        document.getElementById('statContracts').textContent = (Number(res.total || 0)).toLocaleString();
+    } catch(e) {}
+    try {
+        const res = await apiGet('/headquarters/contracts?status=active&per_page=100');
+        const now = new Date();
+        const expiring = (res.data || []).filter(c => {
+            const end = new Date(c.end_date || '');
+            if (isNaN(end.getTime())) return false;
+            const diff = (end - now) / (1000 * 60 * 60 * 24);
+            return diff >= 0 && diff <= 30;
+        });
+        document.getElementById('statExpiringContracts').textContent = expiring.length.toLocaleString();
+    } catch(e) {}
+    try {
+        const res = await apiGet('/headquarters/directors/list?per_page=1');
+        const data = res.data || [];
+        document.getElementById('statDirectors').textContent = (data.length || res.pagination?.total || 0).toLocaleString();
+    } catch(e) {}
+    try {
+        const res = await apiGet('/headquarters/branches?per_page=100');
+        const branches = res.data || [];
+        document.getElementById('statAcademies').textContent = branches.filter(b => b.status === 'active').length.toLocaleString();
+        document.getElementById('statInactiveDirectors').textContent = branches.filter(b => b.status === 'inactive' || b.status === 'pending').length.toLocaleString();
+    } catch(e) {}
+    try {
+        const res = await apiGet('/headquarters/payments/consolidated?status=pending&per_page=1').catch(() => ({}));
+        const paymentData = res?.data || res || {};
+        document.getElementById('statPendingPayments').textContent = (Number(paymentData.total_count || paymentData.total || 0)).toLocaleString();
+    } catch(e) {}
+    try {
+        const [txnRes] = await Promise.all([
+            apiGet('/headquarters/point-transactions?per_page=100').catch(() => ({data:[]}))
+        ]);
+        const txns = txnRes.data || [];
+        document.getElementById('statPointStudents').textContent = new Set(txns.map(t => t.user_id)).size.toLocaleString();
+    } catch(e) {}
+}
+</script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

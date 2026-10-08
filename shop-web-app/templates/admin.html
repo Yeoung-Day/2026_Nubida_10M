@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="padding: 60px 0;">
+    <h1 style="text-align: center; font-weight: 200; font-size: 3rem; margin-bottom: 60px;">마켓 중앙 관제 시스템</h1>
+    
+    <section style="margin-bottom: 80px;">
+        <h3 style="border-left: 5px solid #000; padding-left: 15px; margin-bottom: 30px;">학생 자산 및 상태 현황</h3>
+        <table style="width: 100%; border-collapse: collapse; background: #fff;">
+            <thead style="background: #f9f9f9;">
+                <tr style="text-align: left; font-size: 0.85rem; color: #666;">
+                    <th style="padding: 15px;">이름(아이디)</th><th style="padding: 15px;">상점 명칭</th><th style="padding: 15px;">보유 포인트</th><th style="padding: 15px;">관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in data.users %}
+                <tr style="border-bottom: 1px solid #f2f2f2;">
+                    <td style="padding: 15px;">{{ u.name }} ({{ u.id }})</td>
+                    <td style="padding: 15px;">{{ u.shopName }}</td>
+                    <td style="padding: 15px; font-weight: 700;">{{ "{:,}".format(u.points) }} P</td>
+                    <td style="padding: 15px;">
+                        <a href="/admin/user/{{ u.id }}" class="btn btn-outline" style="padding: 5px 15px; font-size: 0.75rem; width: auto;">상세 감사</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3 style="border-left: 5px solid #000; padding-left: 15px; margin-bottom: 30px;">전체 상품 모니터링</h3>
+        <div class="grid">
+            {% for p in data.products %}
+            <div class="card" style="opacity: 0.8;">
+                <div class="img-container">
+                    <img src="{{p.img}}">
+                </div>
+                <div style="padding: 10px;">
+                    <p style="font-size: 0.8rem;">판매자: {{ p.sellerId }}</p>
+                    <h4 style="font-weight: 500;">{{ p.name }}</h4>
+                    <a href="/product/delete/{{ p.id }}" style="color: red; font-size: 0.75rem; text-decoration: underline;" onclick="return confirm('강제 삭제하시겠습니까?')">블랙리스트 삭제</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

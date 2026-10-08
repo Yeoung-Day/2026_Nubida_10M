@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비디오 관리 — 누비다플랫폼-본사</title>
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+    <link rel="manifest" href="/manifest.json?v=20260610a">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                        <nav class="sidebar-nav" id="sidebarNav">
+    <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon">📊</span><span class="nav-label">대시보드</span>
+    </a>
+
+    <div class="nav-section">메뉴</div>
+
+    <button class="nav-item nav-toggle" data-section="operations">
+        <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-operations">
+        <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="point">
+        <span class="icon">🏆</span><span class="nav-label">포인트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-point">
+        <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+        <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+        <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+        <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+        <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+        <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+        <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+        <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    // 섹션 매핑
+    const sectionMap = {
+        'branches.html': 'operations', 'academy-management.html': 'operations', 
+        'courses.html': 'operations', 'users.html': 'operations',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'point-management.html': 'point', 'point-settings.html': 'point', 
+        'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+        'director-reports.html': 'report', 'notices.html': 'report', 
+        'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+        'withdrawn-students.html': 'system', 'backups.html': 'system', 
+        'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+    };
+    
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) {
+            toggle.classList.add('open');
+            const sub = document.getElementById(`sub-${currentSection}`);
+            if (sub) sub.classList.add('open');
+        }
+    }
+    
+    // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            const isOpen = sub.classList.contains('open');
+            
+            if (isOpen) {
+                sub.classList.remove('open');
+                this.classList.remove('open');
+            } else {
+                // 다른 열린 섹션 모두 닫기
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                // 현재 섹션 열기
+                sub.classList.add('open');
+                this.classList.add('open');
+            }
+        });
+    });
+    
+    // active 표시
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+            item.classList.add('active');
+        }
+    });
+});
+</script>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">본사</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><h1>비디오 관리</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+
+            <div class="card mb-24 animate-fade-up">
+                <div class="card-header">
+                    <h2>🎥 영상 목록</h2>
+                    <div class="card-header-actions" style="display:flex;align-items:center;gap:8px">
+                        <input type="text" class="form-input" id="videoSearch" placeholder="제목/과목 검색..." style="width:200px">
+                        <button class="btn btn-primary" onclick="openUploadModal()">📤 업로드</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Filter Pill Tabs (AI Studio 스타일) -->
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all" onclick="filterVideos('all', this)">전체</button>
+                        <button class="filter-tab" data-filter="국어" onclick="filterVideos('국어', this)">📖 국어</button>
+                        <button class="filter-tab" data-filter="영어" onclick="filterVideos('영어', this)">🔤 영어</button>
+                        <button class="filter-tab" data-filter="수학" onclick="filterVideos('수학', this)">🔢 수학</button>
+                        <button class="filter-tab" data-filter="과학" onclick="filterVideos('과학', this)">🔬 과학</button>
+                        <button class="filter-tab" data-filter="사회" onclick="filterVideos('사회', this)">🌏 사회</button>
+                        <button class="filter-tab" data-filter="기타" onclick="filterVideos('기타', this)">📦 기타</button>
+                    </div>
+                    <!-- Gallery Grid View -->
+                    <div class="gallery-grid" id="videoGallery">
+                        <div class="loading-placeholder" style="grid-column:1/-1">⏳ 로딩 중...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 업로드 모달 -->
+    <div class="modal-overlay" id="uploadModal" style="display:none">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>영상 업로드</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>제목</label>
+                    <input type="text" class="input" id="videoTitle" placeholder="영상 제목 입력">
+                </div>
+                <div class="form-group">
+                    <label>과목</label>
+                    <select class="input" id="videoSubject">
+                        <option value="">선택</option>
+                        <option value="국어">국어</option>
+                        <option value="영어">영어</option>
+                        <option value="수학">수학</option>
+                        <option value="사회">사회</option>
+                        <option value="과학">과학</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>영상 파일</label>
+                    <input type="file" class="input" id="videoFile" accept="video/*">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="uploadVideo()">업로드</button>
+                <button class="btn btn-outline" onclick="closeUploadModal()">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260610a"></script>
+    <script src="/common/js/auth.js?v=20260610a"></script>
+    <script src="/common/js/utils.js?v=20260610a"></script>
+    <script src="/common/js/pages-headquarters.js?v=20260610a"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            requireAuth();
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('sidebarUserName').textContent = user.name || '관리자';
+                document.getElementById('sidebarUserRole').textContent = '본사';
+            }
+            const now = new Date();
+            document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', {
+                year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+            });
+
+            filterVideos('all', document.querySelector('.filter-tab[data-filter="all"]'));
+
+            let searchTimer;
+            document.getElementById('videoSearch').addEventListener('input', () => {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(() => loadVideos(currentFilter), 300);
+            });
+        });
+
+        async function loadVideos(filter) {
+            const gallery = document.getElementById('videoGallery');
+            try {
+                const search = document.getElementById('videoSearch').value.trim();
+                let url = '/videos?per_page=50';
+                if (search) url += '&q=' + encodeURIComponent(search);
+                const res = await apiGet(url);
+                let items = res.data?.items || res.data || [];
+
+                // Apply filter
+                if (filter && filter !== 'all') {
+                    items = items.filter(v => (v.subject || v.category) === filter);
+                }
+
+                if (!items.length) {
+                    gallery.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">🎥</div><p>등록된 영상이 없습니다</p></div>';
+                } else {
+                    gallery.innerHTML = items.map((v, i) => {
+                        const date = v.created_at ? new Date(v.created_at).toLocaleDateString('ko-KR') : '-';
+                        const subject = v.subject || v.category || '기타';
+                        const subjectIcons = {'국어':'📖','영어':'🔤','수학':'🔢','과학':'🔬','사회':'🌏','기타':'📦'};
+                        const icon = subjectIcons[subject] || '🎥';
+                        return `<div class="gallery-card animate-fade-up delay-${(i % 5) + 1}">
+                            <div class="card-thumb">
+                                <span>${icon}</span>
+                                <span class="badge badge-info badge-pos">${subject}</span>
+                            </div>
+                            <div class="card-body">
+                                <h4>${escHtml(v.title || v.name || '-')}</h4>
+                                <p>${date} · ${v.duration || '00:00'}</p>
+                                <div style="margin-top:12px;display:flex;gap:6px">
+                                    <button class="btn btn-sm btn-outline" onclick="alert('재생: ${escHtml(v.title || '')}')">▶ 재생</button>
+                                    <button class="btn btn-sm btn-ghost" onclick="deleteVideo(${v.id})">🗑️</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            } catch(e) {
+                gallery.innerHTML = '<div class="empty-state" style="grid-column:1/-1;color:var(--danger)"><div class="icon">⚠️</div><p>' + escHtml('로딩 실패: ' + (e.message || '오류')) + '</p></div>';
+            }
+        }
+
+        let currentFilter = 'all';
+        function filterVideos(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            loadVideos(filter);
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').style.display = 'flex';
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoSubject').value = '';
+            document.getElementById('videoFile').value = '';
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        async function uploadVideo() {
+            const title = document.getElementById('videoTitle').value.trim();
+            const subject = document.getElementById('videoSubject').value;
+            const fileInput = document.getElementById('videoFile');
+            
+            // 입력 검증: 각 필드별 안내
+            var errors = [];
+            if (!title) errors.push('제목');
+            if (!subject) errors.push('과목');
+            if (!fileInput.files.length) errors.push('영상 파일');
+            if (errors.length > 0) {
+                alert('다음 항목을 입력해주세요: ' + errors.join(', '));
+                return;
+            }
+            
+            // 로딩 상태 표시
+            var uploadBtn = document.querySelector('#uploadModal .btn-primary');
+            var origText = uploadBtn.textContent;
+            uploadBtn.textContent = '⏳ 업로드 중...';
+            uploadBtn.disabled = true;
+            
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('subject', subject);
+            formData.append('file', fileInput.files[0]);
+            try {
+                const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+                const res = await fetch('/api/v1/videos/upload', {
+                    method: 'POST',
+                    headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                    body: formData
+                });
+                const text = await res.text();
+                let json;
+                try { json = JSON.parse(text); } catch(e) { throw new Error(text || '업로드 실패'); }
+                if (!res.ok) throw new Error(json.message || json.detail || '업로드 실패');
+                closeUploadModal();
+                await loadVideos(currentFilter);
+            } catch(e) {
+                alert('업로드 실패: ' + (e.message || '오류'));
+                closeUploadModal();
+            } finally {
+                uploadBtn.textContent = origText;
+                uploadBtn.disabled = false;
+            }
+        }
+
+        async function deleteVideo(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            try {
+                await apiDelete('/videos/' + id);
+                await loadVideos();
+            } catch(e) {
+                alert('삭제 실패');
+            }
+        }
+
+        function escHtml(s) {
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260610a"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

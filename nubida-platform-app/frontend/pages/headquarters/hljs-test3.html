@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>highlight.js 진단 v3</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+</head>
+<body>
+    <h1>🔍 highlight.js 진단 v3</h1>
+    <p>브라우저 콘솔(F12)을 열고 결과를 확인하세요</p>
+
+    <h2>원본 코드 (하이라이팅 전)</h2>
+    <pre><code id="codeTarget">int touch1;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+}</code></pre>
+
+    <h2>상태</h2>
+    <pre id="statusLog" style="background:#f5f5f5;padding:16px;border:1px solid #ddd;border-radius:8px;"></pre>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        var log = document.getElementById('statusLog');
+        var msgs = [];
+
+        function add(msg) {
+            msgs.push('[' + new Date().toISOString().slice(11,19) + '] ' + msg);
+            log.textContent = msgs.join('\n');
+            console.log(msg);
+        }
+
+        add('1. 스크립트 시작됨');
+        add('2. typeof hljs = ' + (typeof hljs));
+        
+        if (typeof hljs !== 'undefined') {
+            add('3. hljs.version = ' + hljs.versionString);
+            add('4. listLanguages = ' + hljs.listLanguages().join(', '));
+            
+            var el = document.getElementById('codeTarget');
+            add('5. 대상 element: ' + el.tagName + ' (classes: ' + el.className + ')');
+            
+            hljs.highlightElement(el);
+            add('6. highlightElement() 호출 완료');
+            add('7. 적용 후 className: ' + el.className);
+            add('8. 적용 후 innerHTML (앞100자): ' + el.innerHTML.substring(0, 100));
+            add('9. computed color: ' + getComputedStyle(el).color);
+        } else {
+            add('❌ hljs가 undefined입니다!');
+            add('❌ CDN 로드 실패 또는 스크립트 순서 문제');
+        }
+    </script>
+</body>
+</html>

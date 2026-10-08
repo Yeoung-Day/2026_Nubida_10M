@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>공개 페이지 에디터 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260908e">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260908e">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260908e">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260908e">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260908e">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260908e">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260908e">
+    <link rel="stylesheet" href="/common/css/pages/site-blocks.css?v=20260908e">
+    <meta name="theme-color" content="#0891B2">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        /* ============================================================
+           공개 페이지 위지윅 에디터 — 자체 레이아웃 (.ed-*)
+           좌측 메타 폼 + 중앙 캔버스(블록 위지윅) 구조
+           ============================================================ */
+        .ed-body {
+            background: #eef1f6;
+            min-height: 100vh;
+            font-family: 'Outfit', 'Noto Sans KR', -apple-system, sans-serif;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---- 탑바 ---- */
+        .ed-topbar {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, .82);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(15, 23, 42, .07);
+        }
+        .ed-topbar .ed-tb-title {
+            font-size: 15px; font-weight: 700; letter-spacing: -.2px;
+            display: flex; align-items: center; gap: 10px; min-width: 0;
+        }
+        .ed-tb-slug {
+            font-size: 11px; font-weight: 600;
+            color: var(--primary); background: rgba(8, 145, 178, .1);
+            padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+        }
+        .ed-tb-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+        .ed-dirty-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, .2);
+            opacity: 0; transition: opacity .2s;
+        }
+        .ed-dirty-dot.on { opacity: 1; }
+        .ed-tb-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            border: 1px solid rgba(15, 23, 42, .1);
+            background: var(--bg-white);
+            border-radius: 10px; padding: 7px 14px;
+            font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-primary);
+            transition: all .15s;
+        }
+        .ed-tb-back:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* ---- 본문 레이아웃 ---- */
+        .ed-layout {
+            display: flex; flex: 1; min-height: 0;
+            align-items: flex-start;
+        }
+        .ed-side {
+            width: 292px; flex-shrink: 0;
+            padding: 20px 16px 40px;
+            position: sticky; top: 57px;
+            max-height: calc(100vh - 57px);
+            overflow-y: auto;
+            background: #f3f5fa;
+            border-right: 1px solid rgba(15, 23, 42, .06);
+        }
+        .ed-main { flex: 1; min-width: 0; padding: 26px 30px 80px; }
+
+        /* ---- 사이드 패널 카드 ---- */
+        .ed-panel {
+            background: var(--bg-white);
+            border: 1px solid rgba(15, 23, 42, .07);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+        }
+        .ed-panel h3 {
+            font-size: 11px; font-weight: 700; letter-spacing: .5px;
+            text-transform: uppercase; color: #64748b;
+            margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .ed-panel .form-group { margin-bottom: 10px; }
+        .ed-panel .form-group:last-child { margin-bottom: 0; }
+        .ed-panel label { font-size: 12px; font-weight: 600; margin-bottom: 5px; color: #334155; }
+        .ed-panel input[type="text"], .ed-panel textarea {
+            font-size: 13px; padding: 8px 10px; border-radius: 8px;
+        }
+
+        /* ---- 히어로 이미지 미리보기 ---- */
+        .ed-hero-mini {
+            position: relative; width: 100%; height: 74px;
+            border-radius: 10px; overflow: hidden;
+            background: linear-gradient(135deg, #0e7490, #0891b2);
+            display: flex; align-items: flex-end;
+            margin-top: 4px;
+        }
+        .ed-hero-mini img {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; display: none;
+        }
+        .ed-hero-mini.has-img img { display: block; }
+        .ed-hero-mini .ed-hero-ph {
+            position: relative; z-index: 1; color: #fff; font-size: 12px; font-weight: 600;
+            padding: 8px 12px; background: linear-gradient(transparent, rgba(2, 44, 66, .55));
+            width: 100%; text-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* ---- 블록 추가 버튼 그리드 ---- */
+        .ed-addgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .ed-addbtn {
+            display: flex; align-items: center; gap: 7px;
+            border: 1px dashed rgba(8, 145, 178, .45);
+            background: rgba(8, 145, 178, .04);
+            color: #0e7490;
+            border-radius: 10px; padding: 9px 8px;
+            font-size: 12.5px; font-weight: 600; cursor: pointer;
+            transition: all .15s; text-align: left;
+        }
+        .ed-addbtn:hover { background: rgba(8, 145, 178, .1); border-color: var(--primary); }
+        .ed-addbtn .ed-ic {
+            width: 22px; height: 22px; flex-shrink: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--bg-white); border-radius: 7px; border: 1px solid rgba(8, 145, 178, .25);
+            font-size: 13px;
+        }
+
+        /* ---- 캔버스 ---- */
+        .ed-canvas-wrap { max-width: 940px; margin: 0 auto; }
+        .ed-canvas {
+            background: var(--bg-white);
+            border: 1px solid rgba(15, 23, 42, .08);
+            border-radius: 18px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, .05), 0 18px 40px -24px rgba(15, 23, 42, .18);
+            padding: 44px 52px 66px;
+        }
+        /* 빈 캔버스 안내 */
+        .ed-empty {
+            border: 2px dashed rgba(15, 23, 42, .14);
+            border-radius: 14px;
+            padding: 52px 20px; text-align: center; color: #94a3b8;
+            font-size: 13.5px; line-height: 1.7;
+        }
+        .ed-empty b { color: #64748b; }
+
+        /* ---- 히어로 프리뷰 (메타 폼과 실시간 동기화) ---- */
+        .ed-hero-prev { margin-bottom: 30px; }
+        .ed-hero-prev .ed-hero-eyebrow {
+            display: inline-block; font-size: 12px; font-weight: 700;
+            color: var(--primary); background: rgba(8, 145, 178, .09);
+            padding: 4px 12px; border-radius: 999px; margin-bottom: 12px;
+            letter-spacing: .3px;
+        }
+        .ed-hero-prev h1 {
+            font-size: 32px; font-weight: 800; letter-spacing: -1px; line-height: 1.25;
+            color: var(--text-primary); margin: 0 0 16px;
+        }
+        .ed-hero-prev .ed-hero-img {
+            border-radius: 16px; overflow: hidden; display: none;
+            border: 1px solid rgba(15, 23, 42, .07);
+        }
+        .ed-hero-prev .ed-hero-img img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+        .ed-hero-prev .ed-hero-img.show { display: block; }
+
+        /* ---- 캔버스 내 블록 기본 여백 (공개 페이지와 유사) ---- */
+        .ed-canvas .site-sec + .site-sec { margin-top: 16px; }
+        .ed-canvas .site-fig { border-radius: 14px; }
+        .ed-canvas p { line-height: 1.85; color: #334155; }
+        .ed-canvas .site-fblock { margin: 4px 0 8px; }
+
+        /* ---- 편집 폼 헬퍼 ---- */
+        .ed-formtip {
+            font-size: 12.5px; color: #64748b; background: #f8fafc;
+            border: 1px dashed rgba(15, 23, 42, .12);
+            border-radius: 10px; padding: 10px 12px; line-height: 1.6; margin-bottom: 4px;
+        }
+        .ed-imgpick { border: 1px solid rgba(15, 23, 42, .09); border-radius: 10px; padding: 8px; background: #f8fafc; }
+        .ed-imgpick-prev {
+            width: 100%; height: 110px; border-radius: 8px; overflow: hidden;
+            background: #eef1f6 center/contain no-repeat;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 8px; color: #94a3b8; font-size: 12px;
+            border: 1px dashed rgba(15, 23, 42, .15);
+        }
+        .ed-imgpick-prev img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .ed-imgpick-prev.ph { background-image: none; }
+        .ed-imgpick .ed-imgpick-row { display: flex; gap: 6px; }
+        .ed-imgpick input[type="text"] { font-size: 12px; padding: 6px 8px; }
+
+        /* ---- 저장 버튼 활성 피드백 ---- */
+        .ed-btn-save { min-width: 108px; }
+
+        @media (max-width: 900px) {
+            .ed-layout { flex-direction: column; }
+            .ed-side { width: 100%; position: static; max-height: none; border-right: none; border-bottom: 1px solid rgba(15, 23, 42, .06); }
+            .ed-main { padding: 18px 12px 60px; }
+            .ed-canvas { padding: 28px 20px 44px; }
+        }
+    </style>
+    <script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body class="ed-body">
+    <!-- ===== 탑바 ===== -->
+    <header class="ed-topbar">
+        <button type="button" class="ed-tb-back" id="btnBack" title="에디터 닫기">← <span id="backLabel">닫기</span></button>
+        <div class="ed-tb-title">
+            <span>공개 페이지 에디터</span>
+            <span class="ed-tb-slug" id="tbSlug">company</span>
+        </div>
+        <div class="ed-tb-right">
+            <span class="ed-dirty-dot" id="dirtyDot" title="저장되지 않은 변경사항"></span>
+            <button type="button" class="btn btn-outline" id="btnPreview" style="border-radius:10px;font-size:13px;padding:7px 14px">↗ 미리보기</button>
+            <button type="button" class="btn btn-primary ed-btn-save" id="btnSave" style="border-radius:10px;font-size:13px;padding:7px 14px">💾 저장</button>
+        </div>
+    </header>
+
+    <div class="ed-layout">
+        <!-- ===== 좌측: 메타 폼 + 블록 추가 ===== -->
+        <aside class="ed-side">
+            <div class="ed-panel">
+                <h3>페이지 정보</h3>
+                <div class="form-group">
+                    <label for="metaTitle">페이지 제목</label>
+                    <input type="text" id="metaTitle" placeholder="예: 교육의 미래를 여는 기술">
+                </div>
+                <div class="form-group">
+                    <label for="metaEyebrow">상단 소제목 (eyebrow)</label>
+                    <input type="text" id="metaEyebrow" placeholder="예: 회사소개">
+                </div>
+                <div class="form-group">
+                    <label>히어로 이미지</label>
+                    <div class="ed-hero-mini" id="heroMini">
+                        <img id="heroMiniImg" alt="">
+                        <div class="ed-hero-ph" id="heroMiniPh">히어로 이미지 없음</div>
+                    </div>
+                    <input type="text" id="metaHeroUrl" placeholder="/uploads/site/… 또는 https://…" style="margin-top:8px">
+                    <div class="ed-imgpick-row" style="display:flex;gap:6px;margin-top:6px">
+                        <button type="button" class="btn btn-sm btn-outline" style="flex:1" id="btnHeroUpload">📁 업로드</button>
+                        <button type="button" class="btn btn-sm btn-ghost" style="flex:1" id="btnHeroClear">제거</button>
+                    </div>
+                    <input type="file" id="heroFile" accept="image/*" hidden>
+                </div>
+                <div class="form-group">
+                    <label for="metaHeroAlt">히어로 이미지 대체 텍스트</label>
+                    <input type="text" id="metaHeroAlt" placeholder="이미지 설명 (접근성)">
+                </div>
+            </div>
+
+            <div class="ed-panel">
+                <h3>본문 블록 추가</h3>
+                <div class="ed-addgrid" id="addGrid"></div>
+            </div>
+
+            <div class="ed-panel">
+                <h3>도움말</h3>
+                <div class="ed-formtip" style="margin:0">
+                    · 블록을 클릭하면 <b>편집/이동/삭제</b> 툴바가 나타납니다.<br>
+                    · <b>✎</b> 편집 → [적용]은 캔버스에만 반영되고,<br>
+                    · <b>💾 저장</b>을 눌러야 공개 페이지에 반영됩니다.<br>
+                    · 미리보기는 저장된 상태 기준입니다.
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== 중앙: 캔버스 ===== -->
+        <main class="ed-main">
+            <div class="ed-canvas-wrap">
+                <div class="ed-canvas" id="canvas">
+                    <div class="ed-hero-prev" id="heroPrev">
+                        <span class="ed-hero-eyebrow" id="pvEyebrow">회사소개</span>
+                        <h1 id="pvTitle">페이지 제목</h1>
+                        <div class="ed-hero-img" id="pvHeroImg"><img id="pvHeroImgEl" alt=""></div>
+                    </div>
+                    <div id="pageCanvas"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== 블록 편집 모달 ===== -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal" style="max-width:600px">
+            <h2 id="editModalTitle">블록 편집</h2>
+            <div id="editModalBody"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" onclick="closeModal('editModal')">취소</button>
+                <button type="button" class="btn btn-primary" id="btnApplyEdit">적용</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260908a"></script>
+    <script src="/common/js/site-blocks.js?v=20260918nl"></script>
+    <script>
+    // ============================================================
+    // 공개 페이지 위지윅 에디터
+    //  - GET /headquarters/site-content/pages/{slug} 로드
+    //  - PUT /headquarters/site-content/pages/{slug} 저장
+    //  - POST /headquarters/site-content/upload 이미지 업로드
+    //  - iframe 모드: 부모에 postMessage (saved/close)
+    // ============================================================
+    (function () {
+      'use strict';
+
+      var SLUG = 'company';
+      var PAGE = null;          // {title, eyebrow, hero_image, hero_alt, blocks[]}
+      var DIRTY = false;
+      var EDIT_ID = null;       // 현재 편집 중인 블록 id
+
+      var $ = function (id) { return document.getElementById(id); };
+
+      function isIframe() {
+        try { return window.parent !== window && window.parent.location.origin === window.location.origin; }
+        catch (e) { return false; }
+      }
+
+      function markDirty(on) {
+        DIRTY = on;
+        $('dirtyDot').classList.toggle('on', !!on);
+      }
+
+      // ===== 초기화 =====
+      onAuthReady(function () {
+        requireAuth();
+        var u = getCurrentUser();
+        if (!u || (u.role !== 'super_admin' && u.role !== 'admin')) {
+          window.location.href = '/pages/headquarters/dashboard.html';
+          return;
+        }
+        var qs = new URLSearchParams(window.location.search);
+        SLUG = qs.get('slug') || 'company';
+        $('tbSlug').textContent = SLUG;
+        $('backLabel').textContent = isIframe() ? '에디터 닫기' : '설정으로';
+        $('btnBack').addEventListener('click', closeEditor);
+        $('btnPreview').addEventListener('click', function () {
+          window.open('/pages/' + SLUG + '.html', '_blank');
+        });
+        $('btnSave').addEventListener('click', savePage);
+
+        bindMetaEvents();
+        bindHeroEvents();
+        buildAddGrid();
+        bindCanvasEvents();
+        bindModalEvents();
+
+        loadPage();
+      });
+
+      // ===== 데이터 로드/렌더 =====
+      async function loadPage() {
+        try {
+          var res = await apiGet('/headquarters/site-content/pages/' + encodeURIComponent(SLUG));
+          PAGE = res.data || { title: '', eyebrow: '', hero_image: '', hero_alt: '', blocks: [] };
+          PAGE.blocks = Array.isArray(PAGE.blocks) ? PAGE.blocks : [];
+          renderAll();
+        } catch (e) {
+          $('pageCanvas').innerHTML = '<div class="ed-empty">페이지를 불러오지 못했습니다.<br><b>' + (e.message || '오류') + '</b></div>';
+        }
+      }
+
+      function renderAll() {
+        renderMeta();
+        renderHero();
+        renderCanvas(null);
+        markDirty(false);
+      }
+
+      function renderMeta() {
+        $('metaTitle').value = PAGE.title || '';
+        $('metaEyebrow').value = PAGE.eyebrow || '';
+        $('metaHeroUrl').value = PAGE.hero_image || '';
+        $('metaHeroAlt').value = PAGE.hero_alt || '';
+      }
+
+      function renderHero() {
+        $('pvEyebrow').textContent = PAGE.eyebrow || '페이지';
+        $('pvTitle').textContent = PAGE.title || '(제목 없음)';
+        var imgBox = $('pvHeroImg'), imgEl = $('pvHeroImgEl');
+        if (PAGE.hero_image) {
+          imgEl.src = PAGE.hero_image;
+          imgBox.classList.add('show');
+        } else {
+          imgEl.removeAttribute('src');
+          imgBox.classList.remove('show');
+        }
+        // 사이드 미니 히어로
+        var mini = $('heroMini'), miniImg = $('heroMiniImg'), ph = $('heroMiniPh');
+        if (PAGE.hero_image) {
+          miniImg.src = PAGE.hero_image;
+          mini.classList.add('has-img');
+          ph.textContent = PAGE.title || '';
+        } else {
+          miniImg.removeAttribute('src');
+          mini.classList.remove('has-img');
+          ph.textContent = '히어로 이미지 없음';
+        }
+      }
+
+      function renderCanvas(selId) {
+        var box = $('pageCanvas');
+        if (!PAGE.blocks.length) {
+          box.innerHTML = '<div class="ed-empty">아직 본문 블록이 없습니다.<br>왼쪽에서 <b>블록 추가</b> 후 내용을 채워보세요.</div>';
+          return;
+        }
+        window.SiteBlocks.renderInto(box, PAGE.blocks, { editable: true });
+        if (selId) {
+          var wrap = box.querySelector('.ed-block[data-bid="' + selId + '"]');
+          if (wrap) wrap.classList.add('ed-active');
+        }
+      }
+
+      // ===== 블록 조작 =====
+      function selectBlock(bid) {
+        var box = $('pageCanvas');
+        var cur = box.querySelector('.ed-block.ed-active');
+        if (cur) cur.classList.remove('ed-active');
+        var wrap = box.querySelector('.ed-block[data-bid="' + bid + '"]');
+        if (wrap) wrap.classList.add('ed-active');
+      }
+
+      function indexOfBlock(bid) {
+        for (var i = 0; i < PAGE.blocks.length; i++) {
+          if ((PAGE.blocks[i].id || '') === bid) return i;
+        }
+        return -1;
+      }
+
+      function moveBlock(bid, dir) {
+        var i = indexOfBlock(bid);
+        if (i < 0) return;
+        var j = i + dir;
+        if (j < 0 || j >= PAGE.blocks.length) return;
+        var t = PAGE.blocks[i]; PAGE.blocks[i] = PAGE.blocks[j]; PAGE.blocks[j] = t;
+        renderCanvas(bid);
+        markDirty(true);
+      }
+
+      function removeBlock(bid) {
+        var i = indexOfBlock(bid);
+        if (i < 0) return;
+        PAGE.blocks.splice(i, 1);
+        renderCanvas(null);
+        markDirty(true);
+        showAlert('블록이 삭제되었습니다. 💾 저장을 눌러야 반영됩니다.', 'warning');
+      }
+
+      // ===== 블록 추가 =====
+      function addBlock(type) {
+        var b = window.SiteBlocks.newBlock(type, 'b' + Date.now().toString(36));
+        PAGE.blocks.push(b);
+        renderCanvas(b.id);
+        markDirty(true);
+        openEditor(b.id);
+      }
+
+      // ===== 편집 모달 =====
+      var FIELD_SPECS = {
+        section: [
+          { k: 'h', label: '카드 제목', type: 'input', ph: '예: 누비다플랫폼은' },
+          { k: 'img', label: '카드 이미지 (선택)', type: 'image' },
+          { k: 'alt', label: '이미지 대체 텍스트', type: 'input', ph: '이미지 설명' },
+          { k: 'p', label: '본문 (줄바꿈 = 새 문단)', type: 'area', rows: 7 }
+        ],
+        heading: [
+          { k: 'h', label: '제목 텍스트', type: 'input', ph: '예: 핵심 가치' },
+          { k: 'level', label: '제목 크기', type: 'select', options: [['2', 'H2 — 큰 제목'], ['3', 'H3 — 기본 제목'], ['4', 'H4 — 작은 제목']] }
+        ],
+        text: [
+          { k: 'p', label: '본문 (줄바꿈 = 새 문단)', type: 'area', rows: 8 }
+        ],
+        image: [
+          { k: 'img', label: '이미지', type: 'image' },
+          { k: 'alt', label: '대체 텍스트', type: 'input', ph: '이미지 설명 (접근성)' },
+          { k: 'caption', label: '캡션 (선택)', type: 'input', ph: '이미지 아래 설명' }
+        ],
+        divider: [],
+        button: [
+          { k: 'label', label: '버튼 문구', type: 'input', ph: '예: 파트너십 문의하기' },
+          { k: 'url', label: '이동 주소', type: 'input', ph: '/pages/contact.html 또는 https://…' },
+          { k: 'style', label: '버튼 스타일', type: 'select', options: [['primary', '진한(primary)'], ['outline', '테두리(outline)'], ['ghost', '연한(ghost)']] }
+        ]
+      };
+      var TYPE_LABEL = { section: '카드', heading: '제목', text: '텍스트', image: '이미지', divider: '구분선', button: '버튼' };
+
+      function openEditor(bid) {
+        var i = indexOfBlock(bid);
+        if (i < 0) return;
+        EDIT_ID = bid;
+        var blk = PAGE.blocks[i];
+        var specs = FIELD_SPECS[blk.type] || [];
+        $('editModalTitle').textContent = (TYPE_LABEL[blk.type] || blk.type) + ' 블록 편집';
+        var body = $('editModalBody');
+        body.innerHTML = '';
+        if (blk.type === 'divider') {
+          body.innerHTML = '<div class="ed-formtip">구분선은 별도 설정이 없습니다.<br>캔버스에서 위/아래 이동만 가능하며 [적용]을 누르면 그대로 유지됩니다.</div>';
+        }
+        specs.forEach(function (sp) {
+          var val = blk[sp.k];
+          if (sp.type === 'input') {
+            body.appendChild(fieldInput('ef_' + sp.k, sp.label, val, sp.ph));
+          } else if (sp.type === 'area') {
+            body.appendChild(fieldArea('ef_' + sp.k, sp.label, val, sp.rows));
+          } else if (sp.type === 'select') {
+            body.appendChild(fieldSelect('ef_' + sp.k, sp.label, val, sp.options));
+          } else if (sp.type === 'image') {
+            body.appendChild(fieldImage('ef_' + sp.k, sp.label, val));
+          }
+        });
+        openModal('editModal');
+        var first = body.querySelector('input[type="text"], textarea, select');
+        if (first) setTimeout(function () { first.focus(); }, 60);
+      }
+
+      function fieldInput(id, label, value, ph) {
+        var g = document.createElement('div'); g.className = 'form-group';
+        var lb = document.createElement('label'); lb.htmlFor = id; lb.textContent = label;
+        var inp = document.createElement('input'); inp.type = 'text'; inp.id = id; inp.value = value || '';
+        if (ph) inp.placeholder = ph;
+        g.appendChild(lb); g.appendChild(inp);
+        return g;
+      }
+      function fieldArea(id, label, value, rows) {
+        var g = document.createElement('div'); g.className = 'form-group';
+        var lb = document.createElement('label'); lb.htmlFor = id; lb.textContent = label;
+        var ta = document.createElement('textarea'); ta.id = id; ta.rows = rows || 6; ta.value = value || '';
+        g.appendChild(lb); g.appendChild(ta);
+        return g;
+      }
+      function fieldSelect(id, label, value, options) {
+        var g = document.createElement('div'); g.className = 'form-group';
+        var lb = document.createElement('label'); lb.htmlFor = id; lb.textContent = label;
+        var sel = document.createElement('select'); sel.id = id;
+        options.forEach(function (o) {
+          var op = document.createElement('option');
+          op.value = o[0]; op.textContent = o[1];
+          if (String(o[0]) === String(value)) op.selected = true;
+          sel.appendChild(op);
+        });
+        g.appendChild(lb); g.appendChild(sel);
+        return g;
+      }
+      function fieldImage(id, label, value) {
+        var g = document.createElement('div'); g.className = 'form-group';
+        var lb = document.createElement('label'); lb.textContent = label;
+        var box = document.createElement('div'); box.className = 'ed-imgpick';
+        var prev = document.createElement('div'); prev.className = 'ed-imgpick-prev';
+        prev.id = id + '_prev';
+        var img = document.createElement('img');
+        if (value) { img.src = value; prev.appendChild(img); }
+        else prev.textContent = '이미지 없음';
+        var url = document.createElement('input');
+        url.type = 'text'; url.id = id; url.value = value || ''; url.placeholder = '/uploads/site/… 또는 https://…';
+        url.style.width = '100%'; url.style.marginBottom = '6px';
+        var row = document.createElement('div'); row.className = 'ed-imgpick-row';
+        var btnUp = document.createElement('button'); btnUp.type = 'button'; btnUp.className = 'btn btn-sm btn-outline';
+        btnUp.style.flex = '1'; btnUp.textContent = '📁 파일 업로드';
+        var btnCl = document.createElement('button'); btnCl.type = 'button'; btnCl.className = 'btn btn-sm btn-ghost';
+        btnCl.style.flex = '1'; btnCl.textContent = 'URL 사용';
+        var file = document.createElement('input'); file.type = 'file'; file.accept = 'image/*'; file.style.display = 'none';
+        btnUp.addEventListener('click', function () { file.click(); });
+        btnCl.addEventListener('click', function () { url.focus(); });
+        file.addEventListener('change', function () {
+          if (!file.files || !file.files[0]) return;
+          uploadSiteImage(file.files[0]).then(function (u) {
+            url.value = u;
+            prev.innerHTML = '';
+            var im2 = document.createElement('img'); im2.src = u; prev.appendChild(im2);
+            showAlert('이미지가 업로드되었습니다.', 'success');
+          }).catch(function (e) {
+            showAlert('업로드 실패: ' + (e.message || '오류'), 'error');
+          }).finally(function () { file.value = ''; });
+        });
+        url.addEventListener('input', function () {
+          if (url.value) {
+            prev.innerHTML = '';
+            var im3 = document.createElement('img'); im3.src = url.value; prev.appendChild(im3);
+          } else {
+            prev.innerHTML = ''; prev.textContent = '이미지 없음';
+          }
+        });
+        row.appendChild(btnUp); row.appendChild(btnCl);
+        box.appendChild(prev); box.appendChild(url); box.appendChild(row); box.appendChild(file);
+        g.appendChild(lb); g.appendChild(box);
+        return g;
+      }
+
+      function applyBlockEdit() {
+        if (!EDIT_ID) return;
+        var i = indexOfBlock(EDIT_ID);
+        if (i < 0) return;
+        var blk = PAGE.blocks[i];
+        var specs = FIELD_SPECS[blk.type] || [];
+        specs.forEach(function (sp) {
+          var el = $('ef_' + sp.k);
+          if (!el) return;
+          var v = el.value;
+          if (sp.type === 'select') {
+            blk[sp.k] = v;
+          } else if (sp.type === 'image') {
+            blk[sp.k] = (v || '').trim();
+          } else {
+            blk[sp.k] = (v == null ? '' : String(v));
+          }
+        });
+        if (blk.type === 'section') {
+          if (!blk.img) blk.alt = '';
+        }
+        closeModal('editModal');
+        renderCanvas(EDIT_ID);
+        markDirty(true);
+        showAlert('캔버스에 반영되었습니다. 💾 저장을 눌러 공개 페이지에 적용하세요.', 'success');
+      }
+
+      // ===== 저장 =====
+      async function savePage() {
+        var payload = {
+          title: ($('metaTitle').value || '').trim(),
+          eyebrow: ($('metaEyebrow').value || '').trim(),
+          hero_image: ($('metaHeroUrl').value || '').trim(),
+          hero_alt: ($('metaHeroAlt').value || '').trim(),
+          blocks: PAGE.blocks
+        };
+        var btn = $('btnSave');
+        var orig = btn.textContent;
+        btn.disabled = true; btn.textContent = '저장 중…';
+        try {
+          var res = await apiPut('/headquarters/site-content/pages/' + encodeURIComponent(SLUG), payload);
+          markDirty(false);
+          showAlert((res && res.message) || '저장 완료 — 공개 페이지에 반영되었습니다.', 'success');
+          try { window.parent.postMessage({ type: 'nubida-site-editor-saved', slug: SLUG }, '*'); } catch (e) {}
+        } catch (e) {
+          showAlert('저장 실패: ' + (e.message || '오류'), 'error');
+        } finally {
+          btn.disabled = false; btn.textContent = orig;
+        }
+      }
+
+      // ===== 이미지 업로드 (api.js는 FormData 미지원 → fetch 직접) =====
+      function uploadSiteImage(file) {
+        var fd = new FormData();
+        fd.append('file', file);
+        var token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        return fetch(API_BASE + '/headquarters/site-content/upload', {
+          method: 'POST',
+          headers: token ? { Authorization: 'Bearer ' + token } : {},
+          body: fd
+        }).then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            if (!r.ok) throw new Error(j.message || '업로드 실패');
+            return j.data && j.data.url;
+          });
+        });
+      }
+
+      // ===== 닫기/이탈 =====
+      function closeEditor() {
+        if (DIRTY) {
+          if (!window.confirm('저장하지 않은 변경사항이 있습니다. 에디터를 닫을까요?')) return;
+        }
+        if (isIframe()) {
+          try { window.parent.postMessage({ type: 'nubida-site-editor-close' }, '*'); } catch (e) {}
+        } else {
+          window.location.href = '/pages/headquarters/site-manager.html';
+        }
+      }
+      window.addEventListener('beforeunload', function (e) {
+        if (DIRTY) { e.preventDefault(); e.returnValue = ''; }
+      });
+
+      // ===== 이벤트 바인딩 =====
+      function bindMetaEvents() {
+        ['metaTitle', 'metaEyebrow', 'metaHeroUrl', 'metaHeroAlt'].forEach(function (id) {
+          $(id).addEventListener('input', function () {
+            PAGE.title = $('metaTitle').value;
+            PAGE.eyebrow = $('metaEyebrow').value;
+            PAGE.hero_image = $('metaHeroUrl').value.trim();
+            PAGE.hero_alt = $('metaHeroAlt').value;
+            renderHero();
+            markDirty(true);
+          });
+        });
+      }
+
+      function bindHeroEvents() {
+        $('btnHeroUpload').addEventListener('click', function () { $('heroFile').click(); });
+        $('btnHeroClear').addEventListener('click', function () {
+          $('metaHeroUrl').value = '';
+          $('metaHeroAlt').value = '';
+          PAGE.hero_image = ''; PAGE.hero_alt = '';
+          renderHero(); markDirty(true);
+        });
+        $('heroFile').addEventListener('change', function () {
+          if (!$('heroFile').files || !$('heroFile').files[0]) return;
+          uploadSiteImage($('heroFile').files[0]).then(function (u) {
+            $('metaHeroUrl').value = u;
+            PAGE.hero_image = u;
+            renderHero(); markDirty(true);
+            showAlert('히어로 이미지가 업로드되었습니다.', 'success');
+          }).catch(function (e) {
+            showAlert('업로드 실패: ' + (e.message || '오류'), 'error');
+          }).finally(function () { $('heroFile').value = ''; });
+        });
+      }
+
+      function buildAddGrid() {
+        var grid = $('addGrid');
+        var items = [
+          ['section', '▤', '카드'], ['heading', 'H', '제목'],
+          ['text', '¶', '텍스트'], ['image', '🖼', '이미지'],
+          ['divider', '―', '구분선'], ['button', '⌗', '버튼']
+        ];
+        items.forEach(function (it) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'ed-addbtn';
+          var ic = document.createElement('span'); ic.className = 'ed-ic'; ic.textContent = it[1];
+          var tx = document.createTextNode(it[2]);
+          b.appendChild(ic); b.appendChild(tx);
+          b.addEventListener('click', function () { addBlock(it[0]); });
+          grid.appendChild(b);
+        });
+      }
+
+      function bindCanvasEvents() {
+        $('pageCanvas').addEventListener('click', function (e) {
+          var act = e.target.closest('.ed-act');
+          if (act) {
+            e.stopPropagation();
+            var wrap = act.closest('.ed-block');
+            if (!wrap) return;
+            var bid = wrap.getAttribute('data-bid');
+            selectBlock(bid);
+            var a = act.getAttribute('data-act');
+            if (a === 'up') moveBlock(bid, -1);
+            else if (a === 'down') moveBlock(bid, 1);
+            else if (a === 'edit') openEditor(bid);
+            else if (a === 'del') removeBlock(bid);
+            return;
+          }
+          var blk = e.target.closest('.ed-block');
+          if (blk) selectBlock(blk.getAttribute('data-bid'));
+        });
+      }
+
+      function bindModalEvents() {
+        $('btnApplyEdit').addEventListener('click', applyBlockEdit);
+        $('editModal').addEventListener('click', function (e) {
+          if (e.target === $('editModal')) closeModal('editModal');
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { var m = $('editModal'); if (m && m.classList.contains('active')) closeModal('editModal'); }
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

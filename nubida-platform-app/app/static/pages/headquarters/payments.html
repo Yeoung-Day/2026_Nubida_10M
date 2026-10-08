@@ -1,0 +1,453 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>결제 관리 — 누비다플랫폼-본사</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <link rel="manifest" href="/manifest.json?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    </head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+   document.addEventListener('DOMContentLoaded', function() {
+   const currentPage = window.location.pathname.split('/').pop();
+
+   // 섹션 매핑
+   const sectionMap = {
+   'branches.html': 'operations', 'academy-management.html': 'operations',
+   'courses.html': 'operations', 'users.html': 'operations',
+   'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>결제 관리</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span><button class="btn btn-ghost btn-xs" onclick="exportExcel('payments')" style="margin-left:8px">📥 엑셀</button>
+   </div>
+   </div>
+
+   <!-- Stats -->
+   <div class="stats-row" id="statsRow">
+   <div class="stat-card"><div class="stat-icon">&#x1F4B0;</div><div class="stat-value" id="statTotal">-</div><div class="stat-label">총 결제</div></div>
+   <div class="stat-card"><div class="stat-icon">&#x2705;</div><div class="stat-value" id="statCompleted">-</div><div class="stat-label">완료</div></div>
+   <div class="stat-card"><div class="stat-icon">&#x1F504;</div><div class="stat-value" id="statRefunded">-</div><div class="stat-label">대기</div></div>
+   <div class="stat-card"><div class="stat-icon">&#x1F4B5;</div><div class="stat-value" id="statAmount">-</div><div class="stat-label">총 금액</div></div>
+   </div>
+
+   <!-- Consolidated Branch Payment Summary -->
+   <div class="card card-premium" style="margin-bottom:var(--space-5)">
+   <div class="card-header"><h2>🏢 컨설턴트별 결제 현황</h2></div>
+   <div class="card-body" style="padding:0">
+   <div class="table-wrapper">
+   <table class="data-table">
+   <thead><tr><th>지사</th><th>결제 건수</th><th>완료</th><th>대기</th><th>총 금액</th><th>수강 납부</th><th>수강 미납</th></tr></thead>
+   <tbody id="consolidatedBody"><tr class="empty"><td colspan="7"><div class="empty-icon">&#x23F3;</div><h3>로딩 중...</h3></td></tr>
+   </table>
+   </div>
+   </div>
+   </div>
+
+   <!-- Toolbar -->
+   <div class="mgmt-toolbar">
+   <div class="mgmt-toolbar-left">
+   <div class="nav-search">
+   <span class="search-icon">&#x1F50D;</span>
+   <input class="form-input" type="text" placeholder="검색..." id="searchInput" oninput="debounceSearch()">
+   </div>
+   <select class="form-select" style="width:auto;min-width:110px" id="statusFilter" onchange="loadPayments()">
+   <option value="">전체 상태</option>
+   <option value="completed">완료</option>
+   <option value="pending">대기</option>
+   <option value="refunded">환불</option>
+   <option value="cancelled">취소</option>
+   </select>
+   <select class="form-select" style="width:auto;min-width:110px" id="methodFilter" onchange="loadPayments()">
+   <option value="">전체 수단</option>
+   <option value="card">카드</option>
+   <option value="kakao">카카오페이</option>
+   <option value="toss">토스페이</option>
+   <option value="naver">네이버페이</option>
+   <option value="virtual_account">가상계좌</option>
+   <option value="transfer">계좌이체</option>
+   </select>
+   </div>
+   <div class="mgmt-toolbar-right">
+   <button class="btn btn-filled" onclick="openCreateModal()">+ 결제 등록</button>
+   </div>
+   </div>
+
+   <!-- Filter Bar -->
+   <div class="mgmt-filter-bar">
+   <span class="small-text" id="paymentCount">로딩 중...</span>
+   </div>
+
+   <!-- Table -->
+   <div class="table-wrapper">
+   <table class="data-table">
+   <thead>
+   <tr><th>ID</th><th>학생명</th><th>금액</th><th>결제수단</th><th>상태</th><th>결제일</th><th>영수증번호</th><th>관리</th></tr>
+   </thead>
+   <tbody id="paymentTableBody">
+   <tr class="empty"><td colspan="8"><div class="empty-icon">&#x23F3;</div><h3>로딩 중...</h3></td></tr>
+   </tbody>
+   </table>
+   </div>
+
+   <!-- Pagination -->
+   <div class="pagination" id="pagination"></div>
+
+   </main>
+   </div>
+
+   <!-- Create Modal -->
+   <div class="modal-overlay" id="createModal" style="display:none">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header"><h2>결제 등록</h2></div>
+   <div class="modal-body">
+   <div class="form-grid">
+   <div class="form-group"><label>학생 ID</label><input class="form-input" id="createStudentId" placeholder="학생 ID 입력" value="7"></div>
+   <div class="form-group"><label>강좌 ID</label><input class="form-input" id="createCourseId" placeholder="강좌 ID 입력" value="2"></div>
+   <div class="form-group"><label>지사 ID</label><input class="form-input" id="createBranchId" placeholder="지사 ID 입력" value="1"></div>
+   <div class="form-group"><label>결제 금액</label><input class="form-input" id="createAmount" type="number" placeholder="금액 입력" value="150000"></div>
+   <div class="form-group full-width"><label>결제 수단</label>
+   <select class="form-select" id="createMethod">
+   <option value="card">카드 결제</option>
+   <option value="kakao">카카오페이</option>
+   <option value="toss">토스페이</option>
+   <option value="naver">네이버페이</option>
+   <option value="virtual_account">가상계좌</option>
+   <option value="transfer">계좌이체</option>
+   </select>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('createModal')">취소</button>
+   <button class="btn btn-filled" onclick="createPayment()">등록</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/utils.js?v=20260610a"></script>
+   <script>
+   let currentPage = 1;
+   let totalPages = 1;
+   let searchTimer = null;
+   const METHOD_LABELS = {card:'카드',kakao:'카카오페이',toss:'토스페이',naver:'네이버페이',virtual_account:'가상계좌',transfer:'계좌이체'};
+   const METHOD_ICONS = {card:'&#x1F4B3;',kakao:'&#x1F49B;',toss:'&#x1F4B3;',naver:'&#x1F49A;',virtual_account:'&#x1F3E6;',transfer:'&#x1F4B3;'};
+   const STATUS_LABELS = {completed:'완료',pending:'대기',refunded:'환불',cancelled:'취소'};
+
+   document.addEventListener('DOMContentLoaded', function() {
+   loadPayments();
+   loadConsolidatedPayments();
+   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+   const u = getCurrentUser();
+   if(u && u.name) document.getElementById('sidebarUserName').textContent = u.name;
+   if(u && u.role) document.getElementById('sidebarUserRole').textContent = u.role;
+   });
+
+   function showToast(msg, type) {
+   const t = document.createElement('div');
+   t.className = 'toast ' + type;
+   t.textContent = msg;
+   document.body.appendChild(t);
+   setTimeout(() => { if(t.parentNode) t.parentNode.removeChild(t); }, 3000);
+   }
+
+   function debounceSearch() {
+   clearTimeout(searchTimer);
+   searchTimer = setTimeout(() => { currentPage = 1; loadPayments(); }, 400);
+   }
+
+   async function loadPayments() {
+   const tbody = document.getElementById('paymentTableBody');
+   tbody.innerHTML = '<tr class="empty"><td colspan="8"><div class="empty-icon">&#x23F3;</div><h3>로딩 중...</h3></td></tr>';
+   try {
+   const params = {page: currentPage, per_page: 20};
+   const status = document.getElementById('statusFilter').value;
+   const method = document.getElementById('methodFilter').value;
+   const search = document.getElementById('searchInput').value.trim();
+   if(status) params.status = status;
+   if(method) params.method = method;
+   if(search) params.search = search;
+
+   const res = await apiGet('/payments?' + new URLSearchParams(params));
+   const data = res.data || [];
+   const total = res.total || 0;
+   totalPages = Math.max(1, Math.ceil(total / 20));
+
+   // Stats
+   const totalAmt = data.reduce((s,i) => s + (i.amount||0), 0);
+   const completed = data.filter(i => i.status === 'completed').length;
+   const refunded = data.filter(i => i.status === 'refunded'||i.status === 'cancelled').length;
+   document.getElementById('statTotal').textContent = total;
+   document.getElementById('statCompleted').textContent = completed;
+   document.getElementById('statRefunded').textContent = refunded;
+   document.getElementById('statAmount').textContent = totalAmt.toLocaleString()+'원';
+   document.getElementById('paymentCount').textContent = '총 ' + total + '건';
+
+   if(!data || data.length === 0) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="8"><div class="empty-icon">&#x1F4B0;</div><h3>등록된 결제 내역이 없습니다</h3><p>새 결제를 등록해주세요</p></td></tr>';
+   renderPagination();
+   return;
+   }
+
+   tbody.innerHTML = data.map(p => {
+   const methodIcon = METHOD_ICONS[p.method] || '&#x1F4B3;';
+   const methodLabel = METHOD_LABELS[p.method] || p.method;
+   const statusBadge = '<span class="badge badge-'+p.status+'">'+(STATUS_LABELS[p.status]||p.status)+'</span>';
+   const paidAt = p.paid_at ? new Date(p.paid_at).toLocaleDateString('ko-KR') : '-';
+   return '<tr><td>'+p.id+'</td><td>'+(p.student_name||'['+p.student_id+']')+'</td><td style="font-weight:600">'+Number(p.amount).toLocaleString()+'원</td>'
+   +'<td>'+methodIcon+' '+methodLabel+'</td><td>'+statusBadge+'</td><td>'+paidAt+'</td>'
+   +'<td style="font-size:11px;color:var(--text-tertiary)">'+(p.receipt_number||'-')+'</td>'
+   +'<td><button class="btn btn-outline" style="padding:4px 10px;font-size:11px" onclick="viewReceipt('+p.id+')">보기</button></td></tr>';
+   }).join('');
+   renderPagination();
+   } catch(e) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="8"><div class="empty-icon">&#x26A0;</div><h3>불러오기 실패</h3><p>'+(e.message||'')+'</p></td></tr>';
+   showToast('데이터를 불러올 수 없습니다', 'error');
+   }
+   }
+
+   function renderPagination() {
+   const el = document.getElementById('pagination');
+   if(totalPages <= 1) { el.innerHTML = ''; return; }
+   let html = '<button class="page-btn" onclick="goPage(1)" '+(currentPage<=1?'disabled':'')+'>&#xAB;</button>';
+   html += '<button class="page-btn" onclick="goPage('+(currentPage-1)+')" '+(currentPage<=1?'disabled':'')+'>&#x2039;</button>';
+   const start = Math.max(1, currentPage-2);
+   const end = Math.min(totalPages, currentPage+2);
+   for(let i=start; i<=end; i++) {
+   html += '<button class="page-btn'+(i===currentPage?' active':'')+'" onclick="goPage('+i+')">'+i+'</button>';
+   }
+   html += '<button class="page-btn" onclick="goPage('+(currentPage+1)+')" '+(currentPage>=totalPages?'disabled':'')+'>&#x203A;</button>';
+   html += '<button class="page-btn" onclick="goPage('+totalPages+')" '+(currentPage>=totalPages?'disabled':'')+'>&#xBB;</button>';
+   el.innerHTML = html;
+   }
+
+   function goPage(page) {
+   if(page < 1 || page > totalPages) return;
+   currentPage = page;
+   loadPayments();
+   }
+
+   function openCreateModal() {
+   document.getElementById('createModal').style.display = 'flex';
+   }
+
+   function closeModal(id) {
+   document.getElementById(id).style.display = 'none';
+   }
+
+   async function createPayment() {
+   const data = {
+   student_id: parseInt(document.getElementById('createStudentId').value),
+   course_id: parseInt(document.getElementById('createCourseId').value),
+   branch_id: parseInt(document.getElementById('createBranchId').value),
+   amount: parseInt(document.getElementById('createAmount').value),
+   method: document.getElementById('createMethod').value,
+   };
+   try {
+   const res = await apiPost('/payments/process', data);
+   showToast('결제가 등록되었습니다', 'success');
+   closeModal('createModal');
+   loadPayments();
+   } catch(e) {
+   showToast('결제 등록 실패: '+(e.message||''), 'error');
+   }
+   }
+
+   async function viewReceipt(id) {
+   try {
+   const res = await apiGet('/payments/receipt/'+id);
+   const d = res.data;
+   alert('[영수증]\n영수증번호: '+d.receipt_number+'\n금액: '+Number(d.amount).toLocaleString()+'원\n'
+   +'결제수단: '+(METHOD_LABELS[d.method]||d.method)+'\n상태: '+(STATUS_LABELS[d.status]||d.status));
+   } catch(e) {
+   showToast('영수증 조회 실패', 'error');
+   }
+   }
+
+   async function loadConsolidatedPayments() {
+   const tbody = document.getElementById('consolidatedBody');
+   if (!tbody) return;
+   try {
+   const res = await apiGet('/headquarters/payments/consolidated');
+   const data = res.data || {};
+   const branches = data.branches || [];
+
+   if (!branches || branches.length === 0) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="7"><div class="empty-icon">&#x1F4B0;</div><h3>지사 결제 정보가 없습니다</h3></td></tr>';
+   return;
+   }
+
+   tbody.innerHTML = branches.map(b => `
+   <tr>
+   <td><strong>${b.branch_name}</strong></td>
+   <td>${b.payment_count}</td>
+   <td><span class="badge badge-success">${b.completed_count}</span></td>
+   <td><span class="badge badge-warning">${b.pending_count}</span></td>
+   <td style="font-weight:600">${Number(b.total_amount).toLocaleString()}원</td>
+   <td style="font-weight:600;color:#4F5EF8">₩${Number(b.revenue_amount).toLocaleString()}</td>
+   <td style="font-weight:600;color:#D97706">₩${Number(b.hq_profit).toLocaleString()} (${b.profit_rate}%)</td>
+   <td><span class="badge badge-success">${b.enrollment_paid}</span></td>
+   <td><span class="badge badge-danger">${b.enrollment_unpaid}</span></td>
+   </tr>
+   `).join('');
+  } catch(e) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="7"><div class="empty-icon">&#x26A0;</div><h3>불러오기 실패</h3></td></tr>';
+   }
+   }
+  </script>
+
+  <script src="/common/js/nav.js?v=20260618a"></script>
+  <script>
+  // 누비다플랫폼— Service Worker 강제 갱신
+   </script>
+
+   </body>
+   </html>

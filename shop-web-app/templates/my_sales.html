@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="padding: 60px 0;">
+    <h2 style="text-align: center; font-weight: 200; font-size: 2.5rem; margin-bottom: 50px;">판매 및 재무 관리</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 60px;">
+        <div style="background: #fafafa; padding: 35px; border-radius: 20px; border: 1px solid #f0f0f0;">
+            <p style="color: #888; font-size: 0.8rem; margin-bottom: 5px;">누적 총 매출액</p>
+            <p style="font-size: 2.2rem; font-weight: 800;">₩ {{ "{:,}".format(revenue) }}</p>
+            <div style="margin-top: 25px; border-top: 1px dashed #ddd; padding-top: 20px; font-size: 0.85rem; color: #666; line-height: 2;">
+                <p>부가가치세 (10%): <strong style="color:#e74c3c;">{{ (revenue*0.1)|int }} P</strong></p>
+                <p>종합소득세 (5%): <strong style="color:#e74c3c;">{{ (revenue*0.05)|int }} P</strong></p>
+            </div>
+        </div>
+
+        <div style="background: #fff; border: 1px solid #000; padding: 35px; border-radius: 20px;">
+            <h4 style="margin-bottom: 20px; font-weight: 600;">🏛️ 국세청 세금 납부</h4>
+            <form action="/pay_tax" method="POST">
+                <select name="tax_type" class="input-style" style="margin-bottom: 15px;">
+                    <option value="부가가치세">부가가치세 납부</option>
+                    <option value="종합소득세">종합소득세 납부</option>
+                </select>
+                <input type="number" name="tax_amount" placeholder="납부할 포인트 금액" class="input-style" required>
+                <button type="submit" class="btn btn-black" style="margin-top: 10px;">지금 납부하기</button>
+            </form>
+        </div>
+    </div>
+
+    <h3 style="margin-bottom: 20px; border-left: 5px solid #000; padding-left: 15px; font-size: 1.2rem;">세금 납부 내역</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 60px;">
+        <tr style="border-bottom: 2px solid #eee; text-align: left; font-size: 0.8rem; color: #999;">
+            <th style="padding: 15px;">납부 일시</th><th style="padding: 15px;">항목</th><th style="padding: 15px; text-align: right;">금액</th>
+        </tr>
+        {% for t in taxes | reverse %}
+        <tr style="border-bottom: 1px solid #f9f9f9;">
+            <td style="padding: 15px; color:#888;">{{ t.date }}</td>
+            <td style="padding: 15px;">{{ t.type }}</td>
+            <td style="padding: 15px; text-align: right; color:#e74c3c; font-weight:700;">- {{ "{:,}".format(t.amount) }} P</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3 style="margin-bottom: 20px; border-left: 5px solid #000; padding-left: 15px; font-size: 1.2rem;">상세 판매 장부</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr style="border-bottom: 2px solid #000; text-align: left; font-size: 0.8rem; color: #999;">
+            <th style="padding: 15px;">거래일시</th><th style="padding: 15px;">상품명</th><th style="padding: 15px;">구매자</th><th style="padding: 15px; text-align: right;">금액</th>
+        </tr>
+        {% for s in sales | reverse %}
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 15px; font-size: 0.8rem; color:#999;">{{ s.date }}</td>
+            <td style="padding: 15px; font-weight:500;">{{ s.prod_name  }}</td>
+            <td style="padding: 15px;">{{ s.buyer_name  }} ({{ s.buyer_id  }})</td>
+            <td style="padding: 15px; text-align: right; font-weight: 700;">₩ {{ "{:,}".format(s.price) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

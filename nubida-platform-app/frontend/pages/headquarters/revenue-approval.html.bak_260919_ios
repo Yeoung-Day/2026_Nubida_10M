@@ -1,0 +1,464 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>수익금 승인 처리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+    <body>
+        <div class="app-layout">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub active" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>수익금 승인 처리</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+   <div class="section-divider"></div>
+
+   <!-- Stats Row -->
+   <div class="stats-row" id="statsRow">
+   <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="statTotal">-</div><div class="stat-label">전체 요청</div></div>
+   <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value" id="statPending">-</div><div class="stat-label">승인 대기</div></div>
+   <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statApproved">-</div><div class="stat-label">승인 완료</div></div>
+   <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="statAmount">-</div><div class="stat-label">총 청구 금액</div></div>
+   </div>
+
+   <!-- Toolbar -->
+   <div class="mgmt-toolbar">
+   <div class="mgmt-toolbar-left">
+   <select class="form-select" style="width:auto;min-width:130px" id="statusFilter" onchange="loadApprovals()">
+   <option value="">전체 상태</option>
+   <option value="pending">⏳ 승인 대기</option>
+   <option value="approved">✅ 승인 완료</option>
+   <option value="rejected">❌ 거절</option>
+   </select>
+   </div>
+   <div class="mgmt-toolbar-right">
+   <button class="btn btn-ghost btn-sm" onclick="loadApprovals()">🔄 새로고침</button>
+   </div>
+   </div>
+
+   <!-- Filter Bar -->
+   <div class="mgmt-filter-bar">
+   <span class="small-text" id="approvalCount">로딩 중...</span>
+   </div>
+
+   <!-- Table -->
+   <div class="card">
+   <div class="card-body" style="padding:0;">
+   <div class="table-wrapper">
+   <table class="data-table" data-card-view>
+   <thead>
+   <tr>
+   <th>원장명</th>
+   <th>에듀케어</th>
+   <th>기간</th>
+   <th>청구금액</th>
+   <th>상태</th>
+   <th>요청일</th>
+   <th>관리</th>
+   </tr>
+   </thead>
+   <tbody id="approvalTableBody">
+   <tr class="empty"><td colspan="7"><div class="empty-icon">⏳</div><h3>로딩 중...</h3></td></tr>
+   </tbody>
+   </table>
+   </div>
+   </div>
+   </div>
+
+   <!-- Pagination -->
+   <div class="pagination" id="pagination"></div>
+
+   <!-- Info Card -->
+   <div class="card animate-fade-up delay-2">
+   <div class="card-header">
+   <h2>📋 정산 안내</h2>
+   </div>
+   <div class="card-body">
+   <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;">
+   <p style="margin-bottom:12px;">
+   <strong>💰 본사 정산</strong>: 원장이 보낸 <strong>매출의 45%</strong>에 해당하는 금액이
+   본사 계좌로 입금되었는지 확인 후 승인 처리합니다.
+   </p>
+   <p style="margin-bottom:12px;padding:12px 16px;background:var(--bg-warning, #FFFBEB);border-radius:8px;border:1px solid #FDE68A;">
+   <strong>✅ 승인 절차:</strong><br>
+   ① 원장이 본사 계좌로 <strong>매출 45% 금액</strong> 송금<br>
+   ② 원장이 시스템에서 "송금 완료 — 승인 요청" 버튼 클릭<br>
+   ③ 본사 관리자가 실제 입금 확인 후 <strong>✅ 승인</strong> 처리<br>
+   ④ 승인 완료 시 원장에게 자동 알림 전송
+   </p>
+   <p>
+   <strong>❌ 거절</strong>: 입금 확인이 되지 않은 경우 거절 처리합니다.
+   거절 사유를 입력할 수 있습니다.
+   </p>
+   </div>
+   </div>
+   </div>
+
+   </main>
+   </div>
+
+   <!-- Reject Modal -->
+   <div class="modal-overlay" id="rejectModal" style="display:none">
+   <div class="modal" style="max-width:460px">
+   <div class="modal-header"><h3>❌ 거절 사유</h3></div>
+   <div class="modal-body">
+   <p style="margin-bottom:12px;font-size:13px;color:var(--text-secondary);">이 수익금 청구를 거절하시겠습니까? 거절 사유를 입력해주세요.</p>
+   <textarea class="form-input" id="rejectReason" rows="4" placeholder="거절 사유를 입력하세요..." style="width:100%;resize:vertical;"></textarea>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('rejectModal')">취소</button>
+   <button class="btn btn-danger" id="rejectConfirmBtn" onclick="confirmReject()">거절 확인</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260918abort"></script>
+   <script src="/common/js/auth.js?v=20260911nav"></script>
+   <script src="/common/js/utils.js?v=20260911nav"></script>
+   <script>
+   let currentPage = 1;
+   let totalPages = 1;
+   let selectedApprovalId = null;
+
+   const STATUS_LABELS = {
+   'pending': '승인 대기',
+   'approved': '승인 완료',
+   'rejected': '거절'
+   };
+
+   const STATUS_BADGES = {
+   'pending': '<span class="badge badge-warning">⏳ 승인 대기</span>',
+   'approved': '<span class="badge badge-success">✅ 승인 완료</span>',
+   'rejected': '<span class="badge badge-danger">❌ 거절</span>'
+   };
+
+   function formatDate(str) {
+   if (!str) return '-';
+   try {
+   const d = new Date(str);
+   if (isNaN(d.getTime())) return str;
+   return d.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' });
+   } catch(e) {
+   return str;
+   }
+   }
+
+   function formatDateTime(str) {
+   if (!str) return '-';
+   try {
+   const d = new Date(str);
+   if (isNaN(d.getTime())) return str;
+   return d.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' }) + ' ' +
+   d.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
+   } catch(e) {
+   return str;
+   }
+   }
+
+   function formatAmount(amount) {
+   if (amount == null) return '-';
+   return '₩' + Number(amount).toLocaleString();
+   }
+
+   function esc(s) {
+   if (s == null) return '';
+   const d = document.createElement('div');
+   d.textContent = s;
+   return d.innerHTML;
+   }
+
+   document.addEventListener('DOMContentLoaded', function() {
+   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+   const u = getCurrentUser();
+   if (u && u.name) document.getElementById('sidebarUserName').textContent = u.name;
+   if (u && u.role) document.getElementById('sidebarUserRole').textContent = u.role;
+   loadApprovals();
+   });
+
+   function showToast(msg, type) {
+   const existing = document.getElementById('pageToast');
+   if (existing) existing.remove();
+   const t = document.createElement('div');
+   t.id = 'pageToast';
+   t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:400px;';
+   const colors = { success:'#10B981', error:'#EF4444', warning:'#F59E0B', info:'#4F5EF8' };
+   const bgColors = { success:'#F0FDF4', error:'#FEF2F2', warning:'#FFFBEB', info:'#EFF6FF' };
+   t.style.background = bgColors[type] || '#F0FDF4';
+   t.style.color = colors[type] || '#10B981';
+   t.style.border = '1px solid ' + (colors[type] || '#10B981');
+   t.textContent = msg;
+   document.body.appendChild(t);
+   setTimeout(() => { if (t.parentNode) t.remove(); }, 3000);
+   }
+
+   async function loadApprovals() {
+   const tbody = document.getElementById('approvalTableBody');
+   tbody.innerHTML = '<tr class="empty"><td colspan="7"><div class="empty-icon">⏳</div><h3>로딩 중...</h3></td></tr>';
+   try {
+   const params = { page: currentPage, per_page: 20 };
+   const status = document.getElementById('statusFilter').value;
+   if (status) params.status = status;
+
+   const res = await apiGet('/headquarters/revenue-approvals?' + new URLSearchParams(params));
+   const data = res.data || [];
+   const total = res.total || 0;
+   totalPages = Math.max(1, Math.ceil(total / 20));
+
+   // Stats
+   const pending = data.filter(i => i.status === 'pending').length;
+   const approved = data.filter(i => i.status === 'approved').length;
+   const totalAmount = data.reduce((s, i) => s + (i.amount || 0), 0);
+   document.getElementById('statTotal').textContent = total;
+   document.getElementById('statPending').textContent = pending;
+   document.getElementById('statApproved').textContent = approved;
+   document.getElementById('statAmount').textContent = totalAmount.toLocaleString() + '원';
+   document.getElementById('approvalCount').textContent = '총 ' + total + '건';
+
+   if (!data || data.length === 0) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="7"><div class="empty-icon">✅</div><h3>수익금 승인 요청이 없습니다</h3></td></tr>';
+   renderPagination();
+   return;
+   }
+
+   tbody.innerHTML = data.map(item => {
+   const statusBadge = STATUS_BADGES[item.status] || '<span class="badge">' + (item.status || '-') + '</span>';
+   const period = item.period || (item.year && item.month ? item.year + '년 ' + item.month + '월' : '-');
+   const requestDate = formatDateTime(item.requested_at || item.created_at);
+   const isPending = item.status === 'pending';
+
+   let actions = '';
+   if (isPending) {
+   actions = '<div style="display:flex;gap:4px;">' +
+   '<button class="btn btn-approve btn-sm" onclick="approveRevenue(' + item.id + ')">✅ 승인</button>' +
+   '<button class="btn btn-reject btn-sm" onclick="openRejectModal(' + item.id + ')">❌ 거절</button>' +
+   '</div>';
+   } else {
+   actions = '<span style="font-size:11px;color:var(--text-tertiary);">처리 완료</span>';
+   }
+
+   return '<tr>' +
+   '<td><strong>' + esc(item.director_name || item.directorName || '-') + '</strong></td>' +
+   '<td>' + esc(item.branch_name || item.branchName || '-') + '</td>' +
+   '<td>' + esc(period) + '</td>' +
+   '<td style="font-weight:600;color:var(--text-primary);">' + formatAmount(item.amount) + '</td>' +
+   '<td>' + statusBadge + '</td>' +
+   '<td style="font-size:12px;color:var(--text-secondary);">' + requestDate + '</td>' +
+   '<td>' + actions + '</td>' +
+   '</tr>';
+   }).join('');
+   renderPagination();
+   } catch (e) {
+   tbody.innerHTML = '<tr class="empty"><td colspan="7"><div class="empty-icon">⚠️</div><h3>불러오기 실패</h3><p>' + esc(e.message || '') + '</p></td></tr>';
+   showToast('데이터를 불러올 수 없습니다: ' + (e.message || ''), 'error');
+   }
+   }
+
+   function renderPagination() {
+   const el = document.getElementById('pagination');
+   if (totalPages <= 1) { el.innerHTML = ''; return; }
+   let html = '<button class="page-btn" onclick="goPage(1)" ' + (currentPage <= 1 ? 'disabled' : '') + '>«</button>';
+   html += '<button class="page-btn" onclick="goPage(' + (currentPage - 1) + ')" ' + (currentPage <= 1 ? 'disabled' : '') + '>‹</button>';
+   const start = Math.max(1, currentPage - 2);
+   const end = Math.min(totalPages, currentPage + 2);
+   for (let i = start; i <= end; i++) {
+   html += '<button class="page-btn' + (i === currentPage ? ' active' : '') + '" onclick="goPage(' + i + ')">' + i + '</button>';
+   }
+   html += '<button class="page-btn" onclick="goPage(' + (currentPage + 1) + ')" ' + (currentPage >= totalPages ? 'disabled' : '') + '>›</button>';
+   html += '<button class="page-btn" onclick="goPage(' + totalPages + ')" ' + (currentPage >= totalPages ? 'disabled' : '') + '>»</button>';
+   el.innerHTML = html;
+   }
+
+   function goPage(page) {
+   if (page < 1 || page > totalPages) return;
+   currentPage = page;
+   loadApprovals();
+   }
+
+   async function approveRevenue(id) {
+   if (!confirm('이 수익금 청구를 승인하시겠습니까?')) return;
+   try {
+   const btn = event?.target;
+   if (btn) { btn.disabled = true; btn.textContent = '⏳ 처리 중...'; }
+   const res = await apiPost('/headquarters/revenue-approvals/' + id + '/approve');
+   showToast(res.message || '✅ 승인 완료', 'success');
+   setTimeout(loadApprovals, 300);
+   } catch (e) {
+   showToast('승인 실패: ' + (e.message || '오류'), 'error');
+   }
+   }
+
+   function openRejectModal(id) {
+   selectedApprovalId = id;
+   document.getElementById('rejectReason').value = '';
+   document.getElementById('rejectConfirmBtn').disabled = false;
+   document.getElementById('rejectConfirmBtn').textContent = '거절 확인';
+   openModal('rejectModal');
+   }
+
+   async function confirmReject() {
+   if (!selectedApprovalId) return;
+   const reason = document.getElementById('rejectReason').value.trim();
+   if (!confirm('⚠️ 정말 이 수익금 청구를 거절하시겠습니까?')) return;
+   const btn = document.getElementById('rejectConfirmBtn');
+   btn.disabled = true;
+   btn.textContent = '⏳ 처리 중...';
+   try {
+   const res = await apiPost('/headquarters/revenue-approvals/' + selectedApprovalId + '/reject', { reason: reason });
+   showToast(res.message || '❌ 거절 완료', 'success');
+   closeModal('rejectModal');
+   setTimeout(loadApprovals, 300);
+   } catch (e) {
+   showToast('거절 실패: ' + (e.message || '오류'), 'error');
+   btn.disabled = false;
+   btn.textContent = '거절 확인';
+   }
+   }
+
+   function openModal(id) {
+   document.getElementById(id).style.display = 'flex';
+   }
+
+   function closeModal(id) {
+   document.getElementById(id).style.display = 'none';
+   }
+   </script>
+
+   <script src="/common/js/nav.js?v=20260913nav"></script>
+   <script>
+   // 누비다플랫폼 — Service Worker 강제 갱신
+   </script>
+   </body>
+   </html>

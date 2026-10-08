@@ -1,0 +1,74 @@
+/* ============================================================
+   테이블 컴포넌트 스타일 (Modern Clean Data Tables)
+   Linear/Notion Inspired — Clean borders, subtle row styling
+   ============================================================ */
+
+/* 테이블 래퍼 */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  background: var(--bg-white);
+}
+
+/* 데이터 테이블 */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+/* 테이블 헤더 */
+.data-table thead th {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-default);
+  white-space: nowrap;
+}
+
+.data-table thead th:first-child { border-radius: var(--radius-xl) 0 0 0; }
+.data-table thead th:last-child { border-radius: 0 var(--radius-xl) 0 0; }
+
+/* 테이블 바디 행 */
+.data-table tbody tr {
+  transition: background var(--transition-fast);
+  background: var(--bg-white);
+}
+
+/* 짝수 행 스트라이프 */
+.data-table tbody tr:nth-child(even) {
+  background: var(--bg-canvas);
+}
+
+/* 테이블 행 호버 */
+.data-table tbody tr:hover {
+  background: var(--accent-bg) !important;
+}
+
+/* 테이블 바디 셀 */
+.data-table tbody td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  vertical-align: middle;
+  line-height: var(--leading-normal);
+}
+
+/* 마지막 행 하단 테두리 제거 */
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 테이블 셀 내 버튼 */
+.data-table td .btn {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: var(--text-xs);
+}

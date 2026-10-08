@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>내 쇼핑몰 - 학생 창업 마켓</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <script src="js/common.js"></script>
+    <script>
+        if(!currentUser) { alert("로그인이 필요합니다."); location.href='login.html'; }
+        renderNavbar();
+    </script>
+
+    <div class="container mx-auto p-6">
+        <div class="flex justify-between items-center border-b-2 border-blue-600 pb-4 mb-8">
+            <div>
+                <h2 id="shop-name-display" class="text-3xl font-bold text-blue-800">쇼핑몰 로딩중...</h2>
+                <p class="text-gray-600">판매자: <span id="seller-name"></span></p>
+            </div>
+            <button onclick="location.href='upload.html'" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold hover:bg-purple-700 shadow-md">
+                + 새 상품 등록
+            </button>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">진열된 상품 목록</h3>
+        <div id="my-product-list" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- 내 상품이 여기에 표시됨 -->
+        </div>
+    </div>
+
+    <script>
+        // 현재 사용자의 쇼핑몰 정보 표시
+        document.getElementById('shop-name-display').innerText = `🏪 ${currentUser.shopName}`;
+        document.getElementById('seller-name').innerText = currentUser.name;
+
+        // 내 상품만 필터링
+        const myProducts = products.filter(p => p.sellerId === currentUser.id);
+        const listDiv = document.getElementById('my-product-list');
+
+        if(myProducts.length === 0) {
+            listDiv.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400">아직 등록된 상품이 없습니다. 상품을 등록해보세요!</div>`;
+        } else {
+            listDiv.innerHTML = myProducts.map(p => `
+                <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
+                    <img src="${p.img}" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h4 class="font-bold text-lg mb-1">${p.name}</h4>
+                    <p class="text-blue-600 font-bold mb-2">${p.price.toLocaleString()}원</p>
+                    <button onclick="location.href='detail.html?id=${p.id}'" class="w-full text-sm text-gray-500 border py-1 rounded">상세보기</button>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

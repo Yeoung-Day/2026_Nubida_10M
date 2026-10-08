@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>탈퇴 학생 히스토리 — 누비다플랫폼-본사</title>
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+    <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+    <link rel="manifest" href="/manifest.json?v=20260610a">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                        <nav class="sidebar-nav" id="sidebarNav">
+    <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon">📊</span><span class="nav-label">대시보드</span>
+    </a>
+
+    <div class="nav-section">메뉴</div>
+
+    <button class="nav-item nav-toggle" data-section="operations">
+        <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-operations">
+        <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="point">
+        <span class="icon">🏆</span><span class="nav-label">포인트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-point">
+        <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+        <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+        <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+        <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+        <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+        <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+        <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+        <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    // 섹션 매핑
+    const sectionMap = {
+        'branches.html': 'operations', 'academy-management.html': 'operations', 
+        'courses.html': 'operations', 'users.html': 'operations',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'point-management.html': 'point', 'point-settings.html': 'point', 
+        'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+        'director-reports.html': 'report', 'notices.html': 'report', 
+        'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+        'withdrawn-students.html': 'system', 'backups.html': 'system', 
+        'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+    };
+    
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) {
+            toggle.classList.add('open');
+            const sub = document.getElementById(`sub-${currentSection}`);
+            if (sub) sub.classList.add('open');
+        }
+    }
+    
+    // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            const isOpen = sub.classList.contains('open');
+            
+            if (isOpen) {
+                sub.classList.remove('open');
+                this.classList.remove('open');
+            } else {
+                // 다른 열린 섹션 모두 닫기
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                // 현재 섹션 열기
+                sub.classList.add('open');
+                this.classList.add('open');
+            }
+        });
+    });
+    
+    // active 표시
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+            item.classList.add('active');
+        }
+    });
+});
+</script>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">본사</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><h1>탈퇴 학생 히스토리</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span><button class="btn btn-ghost btn-xs" onclick="exportExcel('withdrawn-students')" style="margin-left:8px">📥 엑셀</button>
+                </div>
+            </div>
+
+            <!-- 툴바 -->
+            <div class="users-toolbar">
+                <div class="users-toolbar-left">
+                    <input type="text" class="form-input" id="searchInput" placeholder="학생명/아이디/이메일 검색..." oninput="filterStudents()" style="width:240px">
+                    <span class="small-text" id="studentCount">0명</span>
+                </div>
+                <div class="users-toolbar-right">
+                    <!-- additional actions if needed -->
+                </div>
+            </div>
+
+            <!-- 탈퇴 학생 목록 -->
+            <div class="users-card">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>학생명</th>
+                            <th>아이디</th>
+                            <th>이메일</th>
+                            <th>강좌명</th>
+                            <th>컨설턴트명</th>
+                            <th>원장명</th>
+                            <th style="width:110px">종료일</th>
+                            <th style="width:160px">사유</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <tr class="user-empty">
+                            <td colspan="8">탈퇴 학생 정보를 불러오는 중...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination-wrap" id="paginationWrap"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/api.js?v=20260610a"></script>
+    <script src="/common/js/auth.js?v=20260610a"></script>
+    <script src="/common/js/utils.js?v=20260610a"></script>
+    <script>
+    // ===== XSS 방지 헬퍼 =====
+    if (typeof esc !== 'function') {
+        window.esc = function(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        };
+    }
+
+    // ===== State =====
+    let allStudents = [];
+    let filteredStudents = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    const PER_PAGE = 20;
+
+    // ===== Initialization =====
+    document.addEventListener('DOMContentLoaded', async function() {
+        requireAuth();
+        renderSidebarUser();
+        await loadStudents(1);
+    });
+
+    // ===== Load Withdrawn Students =====
+    async function loadStudents(page) {
+        currentPage = page || 1;
+
+        try {
+            let url = '/headquarters/withdrawn-students?page=' + currentPage + '&per_page=' + PER_PAGE;
+
+            const res = await apiGet(url);
+            allStudents = res.data || [];
+            totalPages = res.total_pages || 1;
+            filteredStudents = [...allStudents];
+            renderStudents();
+            renderPaginationUI();
+            document.getElementById('studentCount').textContent = (res.total || 0) + '명';
+        } catch (err) {
+            console.error('Failed to load withdrawn students:', err);
+            showAlert('탈퇴 학생 목록을 불러오는데 실패했습니다.', 'error');
+        }
+    }
+
+    // ===== Render Students =====
+    function renderStudents() {
+        const tbody = document.getElementById('studentTableBody');
+
+        if (filteredStudents.length === 0) {
+            tbody.innerHTML = '<tr class="user-empty"><td colspan="8">👤 탈퇴한 학생 기록이 없습니다.</td></tr>';
+            return;
+        }
+
+        let html = '';
+        filteredStudents.forEach(s => {
+            const name = s.student_name || s.name || '-';
+            const username = s.username || '-';
+            const email = s.email || '-';
+            const courseName = s.course_name || s.course_title || '-';
+            const branchName = s.branch_name || '-';
+            const directorName = s.director_name || '-';
+            const endDate = s.ended_at || s.withdrawn_at || s.end_date || '-';
+            const reason = s.reason || s.withdrawal_reason || '-';
+
+            // Format end date
+            const formattedDate = endDate !== '-' ? endDate.split('T')[0] : '-';
+
+            html += '<tr>';
+            html += '<td><strong>' + esc(name) + '</strong></td>';
+            html += '<td>' + esc(username) + '</td>';
+            html += '<td style="font-size:12px">' + esc(email) + '</td>';
+            html += '<td>' + esc(courseName) + '</td>';
+            html += '<td>' + esc(branchName) + '</td>';
+            html += '<td>' + esc(directorName) + '</td>';
+            html += '<td style="font-size:12px;color:var(--text-tertiary)">' + formattedDate + '</td>';
+            html += '<td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(reason) + '">' + esc(reason) + '</td>';
+            html += '</tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    // ===== Filter (client-side search) =====
+    function filterStudents() {
+        const q = document.getElementById('searchInput').value.toLowerCase().trim();
+        if (!q) {
+            filteredStudents = [...allStudents];
+        } else {
+            filteredStudents = allStudents.filter(s =>
+                (s.student_name && s.student_name.toLowerCase().includes(q)) ||
+                (s.name && s.name.toLowerCase().includes(q)) ||
+                (s.username && s.username.toLowerCase().includes(q)) ||
+                (s.email && s.email.toLowerCase().includes(q)) ||
+                (s.course_name && s.course_name.toLowerCase().includes(q)) ||
+                (s.course_title && s.course_title.toLowerCase().includes(q)) ||
+                (s.branch_name && s.branch_name.toLowerCase().includes(q)) ||
+                (s.director_name && s.director_name.toLowerCase().includes(q)) ||
+                (s.reason && s.reason.toLowerCase().includes(q)) ||
+                (s.withdrawal_reason && s.withdrawal_reason.toLowerCase().includes(q))
+            );
+        }
+        renderStudents();
+    }
+
+    // ===== Pagination =====
+    function renderPaginationUI() {
+        const wrap = document.getElementById('paginationWrap');
+        let html = '';
+
+        if (currentPage > 1) {
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(1)">«</button>';
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(' + (currentPage - 1) + ')">‹</button>';
+        } else {
+            html += '<button class="btn btn-ghost btn-sm" disabled>«</button><button class="btn btn-ghost btn-sm" disabled>‹</button>';
+        }
+
+        const start = Math.max(1, currentPage - 2);
+        const end = Math.min(totalPages, currentPage + 2);
+        for (let i = start; i <= end; i++) {
+            html += '<button class="btn btn-sm ' + (i === currentPage ? 'btn-primary' : 'btn-ghost') + '" onclick="loadStudents(' + i + ')">' + i + '</button>';
+        }
+
+        if (currentPage < totalPages) {
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(' + (currentPage + 1) + ')">›</button>';
+            html += '<button class="btn btn-ghost btn-sm" onclick="loadStudents(' + totalPages + ')">»</button>';
+        } else {
+            html += '<button class="btn btn-ghost btn-sm" disabled>›</button><button class="btn btn-ghost btn-sm" disabled>»</button>';
+        }
+
+        wrap.innerHTML = html;
+    }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260610a"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

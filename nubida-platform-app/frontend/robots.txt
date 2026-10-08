@@ -1,0 +1,36 @@
+# 누비다플랫폼 (Nubida Platform) — 메인 사이트
+User-agent: *
+Allow: /
+Disallow: /pages/headquarters/
+Disallow: /pages/director/
+Disallow: /pages/branch/
+Disallow: /pages/student/
+Disallow: /pages/parent/
+Disallow: /pages/register.html
+Disallow: /pages/find-id.html
+Disallow: /pages/find-password.html
+
+# AI 크롤러 (AEO/GEO) — 공개 페이지만 허용
+User-agent: GPTBot
+Allow: /
+Disallow: /pages/headquarters/
+Disallow: /pages/director/
+Disallow: /pages/branch/
+Disallow: /pages/student/
+Disallow: /pages/parent/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /pages/headquarters/
+Disallow: /pages/director/
+Disallow: /pages/branch/
+Disallow: /pages/student/
+Disallow: /pages/parent/
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://xn--od1bqqv8i85hml3aulb.kr/sitemap.xml

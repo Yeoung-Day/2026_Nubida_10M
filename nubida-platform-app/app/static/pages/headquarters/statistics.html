@@ -1,0 +1,500 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>통계 — 누비다플랫폼-본사</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <link rel="manifest" href="/manifest.json?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    </head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        
+   // 섹션 매핑
+   const sectionMap = {
+   'branches.html': 'operations', 'academy-management.html': 'operations',
+   'courses.html': 'operations', 'users.html': 'operations',
+   'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>📈 통계</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span><button class="btn btn-ghost btn-xs" onclick="exportExcel('statistics')" style="margin-left:8px">📥 엑셀</button>
+   </div>
+   </div>
+
+   <!-- ===== 핵심 지표 (Main Stats Cards) ===== -->
+   <div class="section-title">핵심 지표</div>
+   <div class="stats-grid" id="statsGrid">
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">👥</div>
+   <span class="stat-badge info">총계</span>
+   </div>
+   <div class="stat-value" id="statUsers">—</div>
+   <div class="stat-label">전체 사용자</div>
+   <div class="stat-change" id="statUsersChange"></div>
+   </div>
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">🏢</div>
+   <span class="stat-badge success">운영 중</span>
+   </div>
+   <div class="stat-value" id="statBranches">—</div>
+   <div class="stat-label">운영 지사</div>
+   <div class="stat-change" id="statBranchesChange"></div>
+   </div>
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">📖</div>
+   <span class="stat-badge info">누적</span>
+   </div>
+   <div class="stat-value" id="statEnrollments">—</div>
+   <div class="stat-label">수강 등록</div>
+   <div class="stat-change" id="statEnrollmentsChange"></div>
+   </div>
+   <div class="stat-card anim-fade">
+   <div class="stat-top">
+   <div class="stat-icon">💰</div>
+   <span class="stat-badge warning">총 매출</span>
+   </div>
+   <div class="stat-value" id="statRevenue">—</div>
+   <div class="stat-label">총 매출</div>
+   <div class="stat-change" id="statRevenueChange"></div>
+   </div>
+   </div>
+
+   <!-- ===== 퀵 스탯 (Quick Stats Row) ===== -->
+   <div class="section-title">오늘 현황</div>
+   <div class="quick-stats" id="quickStats">
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot gold">📋</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsTodaySignups">—</div>
+   <div class="qs-label">오늘 가입</div>
+   </div>
+   </div>
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot teal">💳</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsRevenueToday">—</div>
+   <div class="qs-label">오늘 매출</div>
+   </div>
+   </div>
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot success">🏫</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsActiveBranches">—</div>
+   <div class="qs-label">활성 지사</div>
+   </div>
+   </div>
+   <div class="quick-stat anim-fade">
+   <div class="qs-dot info">📈</div>
+   <div class="qs-info">
+   <div class="qs-value" id="qsTodayEnrollments">—</div>
+   <div class="qs-label">오늘 등록</div>
+   </div>
+   </div>
+   </div>
+
+   <!-- ===== 일일 / 월간 보고 + 매출 비교 ===== -->
+   <div class="reports-row">
+   <div class="report-card" id="dailyReport">
+   <h3>📋 일일 보고</h3>
+   <div id="dailyContent">
+   <div class="report-row">
+   <span class="label"><span class="dot gold"></span> 신규 수강 등록</span>
+   <span class="value" id="dailyEnrollments">—</span>
+   </div>
+   <div class="report-row">
+   <span class="label"><span class="dot teal"></span> 일 매출</span>
+   <span class="value" id="dailyRevenue">—</span>
+   </div>
+   </div>
+   </div>
+   <div class="report-card" id="monthlyReport">
+   <h3>📊 월간 보고</h3>
+   <div id="monthlyContent">
+   <div class="report-row">
+   <span class="label"><span class="dot gold"></span> 월간 매출</span>
+   <span class="value" id="monthlyRevenue">—</span>
+   </div>
+   <div class="report-row">
+   <span class="label"><span class="dot teal"></span> 오늘 가입</span>
+   <span class="value" id="todaySignups">—</span>
+   </div>
+   <!-- Revenue comparison mini section -->
+   <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-subtle)">
+   <div style="font-size:var(--text-2xs);color:var(--text-tertiary);font-weight:var(--weight-semibold);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em">매출 비교</div>
+   <div class="comparison-grid">
+   <div class="comparison-item">
+   <div class="cmp-label">오늘</div>
+   <div class="cmp-value" id="cmpToday">₩0</div>
+   <div class="cmp-sub" id="cmpTodayDetail"></div>
+   </div>
+   <div class="comparison-item">
+   <div class="cmp-label">이번 달</div>
+   <div class="cmp-value" id="cmpMonthly">₩0</div>
+   <div class="cmp-sub" id="cmpMonthlyDetail"></div>
+   </div>
+   </div>
+   </div>
+   </div>
+   </div>
+   </div>
+
+   <!-- ===== 월별 강좌 통계 (Bar Chart) ===== -->
+   <div class="chart-container" id="courseChart">
+   <div class="chart-header">
+   <h3>📈 월별 강좌 통계</h3>
+   <span class="chart-total" id="chartTotal">총 <strong>0</strong>개</span>
+   </div>
+   <div class="chart-bar-wrap" id="chartBars">
+   <div class="chart-loading">📊 차트를 불러오는 중...</div>
+   </div>
+   </div>
+
+   <!-- ===== 지사별 통계 (Branch Mini Table) ===== -->
+   <div class="branch-table-wrap" id="branchStats">
+   <h3>🏢 컨설턴트별 현황</h3>
+   <div id="branchContent">
+   <div class="branch-empty">로딩 중...</div>
+   </div>
+   </div>
+
+   <!-- ===== 최근 활동 (Recent Activity) ===== -->
+   <div class="activity-card" id="recentActivity">
+   <h3>🕐 최근 활동</h3>
+   <ul class="activity-list" id="activityList">
+   <li class="activity-empty">로딩 중...</li>
+   </ul>
+   </div>
+
+   </main>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/utils.js?v=20260610a"></script>
+
+   <script>
+   const MONTH_LABELS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+   // ---- Helpers ----
+   function fmtNum(n) { return (n || 0).toLocaleString(); }
+   function fmtWon(n) { return '₩' + ((n || 0)).toLocaleString(); }
+   function timeAgo(dateStr) {
+   if (!dateStr) return '';
+   const d = new Date(dateStr);
+   if (isNaN(d.getTime())) return dateStr;
+   const now = new Date();
+   const diff = Math.floor((now - d) / 1000);
+   if (diff < 60) return '방금 전';
+   if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+   if (diff < 86400) return Math.floor(diff / 3600) + '시간 전';
+   if (diff < 604800) return Math.floor(diff / 86400) + '일 전';
+   return d.toLocaleDateString('ko-KR', { month:'short', day:'numeric' });
+   }
+   function getDotClass(type) {
+   if (type === 'enrollment' || type === 'signup') return 'success';
+   if (type === 'revenue' || type === 'payment') return 'gold';
+   if (type === 'warning' || type === 'alert') return 'warning';
+   return 'info';
+   }
+   function getActivityIcon(type) {
+   if (type === 'enrollment') return '📖';
+   if (type === 'signup') return '👤';
+   if (type === 'revenue' || type === 'payment') return '💰';
+   if (type === 'warning' || type === 'alert') return '⚠️';
+   return '📌';
+   }
+
+   // ---- Main ----
+   document.addEventListener('DOMContentLoaded', async () => {
+   requireAuth();
+   const user = getCurrentUser();
+   if (user) document.getElementById('sidebarUserName').textContent = user.name || '관리자';
+   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+   // --- 1. Load Dashboard Stats ---
+   try {
+   const stats = await apiGet('/headquarters/dashboard/stats');
+   const d = stats.data || {};
+
+   // Main stat cards
+   const totalUsers = d.total_users || 0;
+   const activeBranches = d.active_branches || 0;
+   const totalBranches = d.total_branches || 0;
+   const totalEnrollments = d.total_enrollments || 0;
+   const totalRevenue = d.total_revenue || 0;
+   const monthlyRevenue = d.monthly_revenue || 0;
+   const todaySignups = d.today_signups || 0;
+   const revenueToday = d.revenue_today || 0;
+
+   document.getElementById('statUsers').textContent = fmtNum(totalUsers);
+   document.getElementById('statBranches').textContent = fmtNum(activeBranches) + '/' + fmtNum(totalBranches);
+   document.getElementById('statEnrollments').textContent = fmtNum(totalEnrollments);
+   document.getElementById('statRevenue').textContent = fmtWon(totalRevenue);
+
+   // Change indicators (subtle delta if we can compute — placeholder with today signups)
+   const uChange = document.getElementById('statUsersChange');
+   if (todaySignups > 0) {
+   uChange.textContent = '↑ 오늘 +' + fmtNum(todaySignups) + '명';
+   uChange.className = 'stat-change up';
+   }
+   const bChange = document.getElementById('statBranchesChange');
+   const inactiveBranches = (totalBranches || 0) - activeBranches;
+   if (inactiveBranches > 0) {
+   bChange.textContent = inactiveBranches + '개 지사 미운영';
+   bChange.className = 'stat-change down';
+   } else {
+   bChange.textContent = '전 지사 운영 중';
+   bChange.className = 'stat-change up';
+   }
+   const eChange = document.getElementById('statEnrollmentsChange');
+   if (d.today_enrollments) {
+   eChange.textContent = '↑ 오늘 +' + fmtNum(d.today_enrollments) + '건';
+   eChange.className = 'stat-change up';
+   }
+   const rChange = document.getElementById('statRevenueChange');
+   if (revenueToday > 0) {
+   const pct = monthlyRevenue > 0 ? Math.round((revenueToday / (monthlyRevenue / 30)) * 100) : 0;
+   rChange.textContent = '오늘 ₩' + fmtNum(revenueToday) + ' (일평균 ' + pct + '%)';
+   rChange.className = 'stat-change up';
+   }
+
+   // Quick Stats row
+   document.getElementById('qsTodaySignups').textContent = fmtNum(todaySignups) + '명';
+   document.getElementById('qsRevenueToday').textContent = fmtWon(revenueToday);
+   document.getElementById('qsActiveBranches').textContent = fmtNum(activeBranches) + '/' + fmtNum(totalBranches);
+   document.getElementById('qsTodayEnrollments').textContent = fmtNum(d.today_enrollments || todaySignups);
+
+   // Daily report
+   document.getElementById('dailyEnrollments').textContent = fmtNum(todaySignups);
+   document.getElementById('dailyRevenue').textContent = fmtWon(revenueToday);
+
+   // Monthly report
+   document.getElementById('monthlyRevenue').textContent = fmtWon(monthlyRevenue);
+   document.getElementById('todaySignups').textContent = fmtNum(todaySignups) + '명';
+
+   // Revenue comparison
+   document.getElementById('cmpToday').textContent = fmtWon(revenueToday);
+   document.getElementById('cmpMonthly').textContent = fmtWon(monthlyRevenue);
+   const avgDaily = monthlyRevenue > 0 ? Math.round(monthlyRevenue / 30) : 0;
+   const vsAvg = avgDaily > 0 ? Math.round((revenueToday / avgDaily) * 100) : 0;
+   document.getElementById('cmpTodayDetail').textContent = '일평균 대비 ' + vsAvg + '%';
+   document.getElementById('cmpMonthlyDetail').textContent = '월 누적 매출';
+
+   // --- Recent Activity ---
+   const activities = d.recent_activities || [];
+   const activityList = document.getElementById('activityList');
+   if (activities.length > 0) {
+   activityList.innerHTML = activities.slice(0, 10).map(a => {
+   const type = a.type || 'info';
+   const dotClass = getDotClass(type);
+   const icon = getActivityIcon(type);
+   const label = a.label || a.message || a.description || '';
+   const time = timeAgo(a.created_at || a.timestamp || a.date);
+   return `<li class="activity-item">
+   <span class="activity-dot ${dotClass}"></span>
+   <span class="activity-text">${icon} ${escHtml(label)}</span>
+   <span class="activity-time">${escHtml(time)}</span>
+   </li>`;
+   }).join('');
+   } else {
+   activityList.innerHTML = '<li class="activity-empty">📭 최근 활동이 없습니다</li>';
+   }
+
+   // --- Branch Mini Table ---
+   const branches = d.branches || [];
+   const branchContent = document.getElementById('branchContent');
+   if (branches.length > 0) {
+   let rows = branches.slice(0, 8).map(b => {
+   const name = b.name || b.branch_name || '—';
+   const status = (b.status === 'active' || b.active === true) ? 'active' : 'inactive';
+   const statusLabel = status === 'active' ? '운영중' : '미운영';
+   const enrollments = fmtNum(b.enrollment_count || b.enrollments || b.total_enrollments || 0);
+   const revenue = b.revenue || b.monthly_revenue || 0;
+   return `<tr>
+   <td class="branch-name">${escHtml(name)}</td>
+   <td><span class="branch-status ${status}">${statusLabel}</span></td>
+   <td>${enrollments}</td>
+   <td>${fmtWon(revenue)}</td>
+   </tr>`;
+   }).join('');
+   branchContent.innerHTML = `<table class="branch-table">
+   <thead><tr>
+   <th>지사</th>
+   <th>상태</th>
+   <th>수강생</th>
+   <th>매출</th>
+   </tr></thead>
+   <tbody>${rows}</tbody>
+   </table>`;
+   } else {
+   branchContent.innerHTML = '<div class="branch-empty">📊 지사 데이터가 없습니다</div>';
+   }
+
+   } catch(e) {
+   console.error('Stats load error:', e);
+   // Show fallback "—" on all values
+   ['statUsers','statBranches','statEnrollments','statRevenue',
+   'qsTodaySignups','qsRevenueToday','qsActiveBranches','qsTodayEnrollments',
+   'dailyEnrollments','dailyRevenue','monthlyRevenue','todaySignups',
+   'cmpToday','cmpMonthly'].forEach(id => {
+   const el = document.getElementById(id);
+   if (el) el.textContent = '—';
+   });
+   }
+
+   // --- 2. Load Course Monthly Stats Chart ---
+   try {
+   const monthsRes = await apiGet('/headquarters/courses/stats/months');
+   const months = monthsRes.data || [];
+   const barsContainer = document.getElementById('chartBars');
+
+   if (months.length === 0) {
+   barsContainer.innerHTML = '<div class="chart-loading">📊 통계 데이터가 없습니다</div>';

@@ -1,0 +1,666 @@
+/* ===========================================================================
+ *  도리도리 로봇 v8  (블루투스가 끊기지 않는 판)
+ *  ---------------------------------------------------------------------------
+ *  누비다플랫폼 / 아두이노 나노 CH340
+ *
+ *  ★★★ 이 파일만 보시면 됩니다 ★★★
+ *      - 동작을 고치고 싶다 -> 【동작 만들기】 부분
+ *      - 각도/속도를 바꾸고 싶다 -> 【설정】 부분
+ *      - 새 번호를 추가하고 싶다 -> runCommand() 안의 안내 참고
+ *
+ *  나머지는 3개의 외부 파일로 빠졌습니다. (건드리지 않으셔도 됩니다)
+ *      ① nubida_decode.h  - 암호문(난독화) 풀기
+ *      ② nubida_ai.h      - AI 명령 13종
+ *      ③ nubida_bt.h      - 블루투스 연결 + 수신
+ *
+ *  ┌────────────────────────────────────────────────────────────────────┐
+ *  │  1NubidaAi  ->  도리도리   (9번 서보 · 좌우로 흔들기)              │
+ *  │  2NubidaAi  ->  삐졌어     (9번 서보 · 고개 푹 떨구기)             │
+ *  │  3NubidaAi  ->  안녕       (7번 서보 · 끄덕끄덕 인사)              │
+ *  │  4~99번     ->  무시       (정의되지 않은 번호 · 움직이지 않음)    │
+ *  └────────────────────────────────────────────────────────────────────┘
+ *
+ *  ⚠️ 2번 / 3번 핀은 블루투스 통신 전용입니다. 다른 부품을 꽂지 마세요.
+ * =========================================================================== */
+
+#include <SoftwareSerial.h>
+#include <Servo.h>
+#include <EEPROM.h>
+
+/* ===========================================================================
+ *  【설정】 - 여기 숫자만 바꾸시면 됩니다
+ * =========================================================================== */
+
+/* 서보가 꽂힌 핀 */
+#define PIN_HEAD    9      /* 도리도리 · 삐졌어 서보 */
+#define PIN_ARM     7      /* 안녕 서보 */
+/* 부저가 꽂힌 핀 - 서보(9 · 7)와 절대 겹치면 안 됩니다 */
+#define PIN_BUZZ    8      /* 부저 */
+
+/* 도리도리 각도 */
+#define DORI_LEFT   140    /* 왼쪽으로 */
+#define DORI_RIGHT   40    /* 오른쪽으로 */
+
+/* 삐졌어 각도 */
+#define SAD_DOWN     25    /* 고개 푹 떨군 각도 */
+
+/* 안녕 각도 */
+#define HI_UP       135    /* 위로 들기 */
+#define HI_DOWN      25    /* 아래로 숙이기 */
+
+/* 가운데(정면) */
+#define CENTER       90
+
+/* 움직이는 속도 - 숫자가 클수록 천천히 */
+#define MS_FAST     300
+#define MS_NORMAL   500
+#define MS_SLOW     800
+
+/* ===========================================================================
+ *  외부 파일 불러오기 (순서 중요)
+ *    ⓐ 난독화 풀기
+ *    ⓑ 블루투스 연결 객체 선언 + 수신 (runCommand 가 정의된 "뒤"에 다시 옵니다)
+ *    ⓒ AI 명령 13종  ← runCommand() 와 servoTo() 를 쓰므로 그 뒤에 옵니다
+ * =========================================================================== */
+#include "nubida_decode.h"
+
+/* 블루투스 연결 (RX = 2번 핀, TX = 3번 핀)
+ *   AI 명령(nubida_ai.h)이 BTSerial.println() 을 쓰기 때문에 여기서 먼저 만듭니다 */
+SoftwareSerial BTSerial(2, 3);
+
+/* ===========================================================================
+ *  서보 2개 기억장치
+ *    ※ 함수 밖에 있어야 합니다 (안에 만들면 각도가 풀립니다)
+ * =========================================================================== */
+Servo srv[2];
+int   srvPin[2] = { PIN_HEAD, PIN_ARM };
+int   srvCur[2] = { CENTER,   CENTER   };
+
+/* ★ 서보에 "마지막으로 실제 보낸" 각도 (-1 = 아직 한 번도 안 보냄)
+ *   같은 각도를 반복 write() 하면 Servo 라이브러리가 매번 인터럽트를 막아
+ *   블루투스(SoftwareSerial) 수신 바이트를 놓칩니다. 그래서 바뀔 때만 보냅니다. */
+int   srvSent[2] = { -1, -1 };
+
+/* ★★★ EEPROM 에 저장하는 "서보가 실제로 있을 각도" ★★★
+ *   왜?  서보는 전원이 꺼지면(또는 보드가 리셋되면) 자기 위치를 잊습니다.
+ *        실제 서보는 리셋 전 위치 그대로 멈춰 있는데, 코드는 90도라고
+ *        착각하고 write(90) 을 하면 큰 각도차를 최대 전력으로 메꾸려다
+ *        전류 폭증 -> 또 리셋 (무한 반복).
+ *
+ *   그래서 "마지막으로 보낸 각도"를 EEPROM 에 남겨두고, 리셋 후 복원합니다.
+ *   그러면 서보가 어디 있는지 정확히 알 수 있어 중앙까지 1도씩만 가면 됩니다.
+ *
+ *   ⚠️ 주소 10번지부터 씁니다!
+ *     예전 진단판(doridori_v8_diag.ino)이 주소 0~1 에 "부팅횟수"를 저장했기
+ *     때문에, 그 값을 서보 각도로 잘못 읽는 사고가 있었습니다.
+ *     (예: 부팅횟수 4 -> "9번 서보가 4도에 있다"고 오독 -> 4도로 내려가려다 리셋)
+ *     그래서 아예 다른 구역으로 옮기고 MAGIC 도 새 값으로 바꿉니다. */
+#define EE_ADDR_BASE  10     /* 서보 각도 저장 시작 주소 (0~9 는 옛날 데이터) */
+#define EE_ADDR_MAGIC 20     /* "이 보드가 새 코드로 한 번이라도 돌았나" 표시 */
+#define EE_MAGIC      0x5A   /* 새 MAGIC (옛날 0xA5 와 겹치지 않게) */
+
+int   pwmAct[2] = { -1, -1 };   /* EEPROM 에서 복원한 실제 서보 각도 (-1 = 모름) */
+
+/* 서보 각도를 EEPROM 에 저장 (값이 바뀔 때만) */
+inline void eeSaveServo(int i) {
+  if (i < 0 || i > 1) return;
+  int v = pwmAct[i];
+  if (v < 0 || v > 180) return;
+  int addr = EE_ADDR_BASE + i;
+  if (EEPROM.read(addr) != v) EEPROM.write(addr, (uint8_t)v);
+}
+
+/* EEPROM 에서 서보 각도 복원 */
+inline void eeLoadServo(int i) {
+  if (i < 0 || i > 1) return;
+  if (EEPROM.read(EE_ADDR_MAGIC) != EE_MAGIC) {   /* 처음 돌리는 보드 */
+    pwmAct[i] = -1;
+    return;
+  }
+  int v = EEPROM.read(EE_ADDR_BASE + i);
+  /* ★ 값이 0~180 밖이면 신뢰하지 않고 "모름" 처리 (안전) */
+  pwmAct[i] = (v <= 180) ? v : -1;
+}
+
+/* ★ EEPROM 을 새 구역으로 초기화 (옛날 데이터 청소)
+ *   setup() 에서 한 번만 부릅니다. */
+inline void eeInitIfNeeded() {
+  if (EEPROM.read(EE_ADDR_MAGIC) == EE_MAGIC) return;   /* 이미 이전에 초기화됨 */
+
+  /* 옛날 데이터가 서보 각도로 오독되지 않도록 새 구역을 "모름(-1)" 으로 */
+  EEPROM.write(EE_ADDR_BASE + 0, 255);
+  EEPROM.write(EE_ADDR_BASE + 1, 255);
+  EEPROM.write(EE_ADDR_MAGIC, EE_MAGIC);
+  pwmAct[0] = -1;
+  pwmAct[1] = -1;
+}
+
+/* ★ 부팅 중앙정렬 상태 - loop() 안에서 천천히 진행 (X+Y 융합) */
+bool  bootAligning = true;
+int   bootAlignDeg = 90;
+
+/* ===========================================================================
+ *  【논블로킹 서보 시퀀스 엔진】 - 만들어진 코드 (건드리지 않으셔도 됩니다)
+ * ---------------------------------------------------------------------------
+ *  왜 필요한가?
+ *    예전 servoTo() 는 delay() 로 기다리는 동안 블루투스 수신이 완전히 멈춰서
+ *    "명령을 한 번만 읽고 그 다음부터 못 읽는" 문제가 있었습니다.
+ *    (도리도리 동작 하나가 약 2.5초 동안 loop() 를 붙잡았습니다)
+ *
+ *  어떻게 해결하나?
+ *    움직일 목록을 "예약"만 해두고, loop() 에서 매번 조금씩 진행합니다.
+ *    -> delay() 가 없으므로 블루투스는 언제나 살아 있습니다.
+ *
+ *  사용법 (아래 【동작 만들기】 에서 쓰는 함수 3개)
+ *      seqAdd(핀, 각도, 걸리는시간);   <- "이 각도로 이만큼에 걸쳐 가라" 예약
+ *      seqWait(밀리초);                <- "여기서 잠깐 쉬어라" 예약
+ *      (예약은 자동으로 순서대로 실행됩니다)
+ * =========================================================================== */
+
+/* 예약할 수 있는 최대 개수 - 동작 하나가 이보다 길면 늘리세요 */
+#define SEQ_MAX 24
+
+/* 예약 한 칸 */
+struct seqStep {
+  int      kind;    /* 0 = 서보이동, 1 = 기다리기, 2 = 끝 */
+  int      pin;     /* 서보 핀 */
+  int      deg;     /* 목표 각도 */
+  int      ms;      /* 걸리는 시간 / 기다리는 시간 */
+  /* 아래는 실행 중에 쓰는 값 */
+  int      from;    /* 시작 각도 */
+  int      cur;     /* 현재 각도 */
+  int      dir;     /* +3 또는 -3 */
+  int      steps;   /* 총 스텝 수 */
+  int      done;    /* 지금까지 진행한 스텝 수 */
+  int      tick;    /* 스텝 사이 간격(ms) */
+  unsigned long nextAt;   /* 다음에 움직일 시각 */
+  unsigned long endAt;    /* 기다리기 종료 시각 */
+  bool     started; /* 실행을 시작했나 */
+};
+
+seqStep seqList[SEQ_MAX];
+int     seqCount = 0;    /* 예약된 총 개수 */
+int     seqIdx   = 0;    /* 지금 실행 중인 번호 */
+bool    seqBusy  = false;/* 동작이 진행 중인가 */
+
+/* 서보 배열 인덱스 찾기 (없으면 -1) */
+inline int seqServoIndex(int pin) {
+  for (int k = 0; k < 2; k++) if (srvPin[k] == pin) return k;
+  return -1;
+}
+
+/* 각도 자르기 */
+inline int seqClamp(int deg) {
+  if (deg < 0)   return 0;
+  if (deg > 180) return 180;
+  return deg;
+}
+
+/* ★ 한 스텝에 움직이는 각도 (서보 부드러움 <-> 블루투스 수신 안정성 교환)
+ *   - 작을수록 부드럽지만 Servo.write() 호출이 늘어납니다.
+ *   - Servo.write() 는 매번 1~2ms 인터럽트를 막아서 블루투스 수신을 놓칩니다.
+ *   - SoftwareSerial 버퍼 64바이트 ÷ 9600bps ≈ 66ms 만큼만 저장 가능.
+ *
+ *     step  3도 -> 도리도리 136회 write -> 204ms 차단 (프레임 잘림 사고)
+ *     step  6도 -> 도리도리  68회 write -> 102ms 차단 (아직 위험)
+ *     step 10도 -> 도리도리  40회 write ->  60ms 차단 (안전)
+ *
+ *   10도씩이어도 이동 속도는 초당 100도 이하라 서보에 무리가 없습니다. */
+#define SERVO_STEP_DEG 10
+
+/* ---- 예약 함수 1 : 서보를 deg 로 ms 동안 부드럽게 ---- */
+inline void seqAdd(int pin, int deg, int ms) {
+  if (seqCount >= SEQ_MAX) return;
+
+  int i = seqServoIndex(pin);
+  if (i < 0) return;                    /* 그런 서보 없음 */
+
+  deg = seqClamp(deg);
+  int from = srvCur[i];
+  if (from == deg) return;              /* 이미 그 자리면 예약 안 함 */
+
+  seqStep& s = seqList[seqCount++];
+  s.kind    = 0;
+  s.pin     = pin;
+  s.deg     = deg;
+  s.ms      = ms;
+  s.from    = from;
+  s.cur     = from;
+  /* ★ SERVO_STEP_DEG 만큼씩 끊어서 이동합니다 (위 설명 참고) */
+  s.dir     = (deg > from) ? SERVO_STEP_DEG : -SERVO_STEP_DEG;
+  int total = abs(deg - from);
+  s.steps   = total / SERVO_STEP_DEG; if (s.steps < 1) s.steps = 1;
+  s.tick    = ms / s.steps; if (s.tick < 5) s.tick = 5;
+  s.done    = 0;
+  s.nextAt  = 0;
+  s.endAt   = 0;
+  s.started = false;
+
+  /* 예약하는 순간 srvCur 를 목표로 미리 옮겨둡니다.
+   *   -> 같은 동작 안에서 다음 예약이 "내가 어디서 출발하는지" 를 알 수 있습니다 */
+  srvCur[i] = deg;
+}
+
+/* ---- 예약 함수 2 : ms 동안 아무것도 하지 않고 대기 ---- */
+inline void seqWait(int ms) {
+  if (ms <= 0) return;
+  if (seqCount >= SEQ_MAX) return;
+
+  seqStep& s = seqList[seqCount++];
+  s.kind    = 1;
+  s.pin     = -1;
+  s.deg     = 0;
+  s.ms      = ms;
+  s.from    = 0;
+  s.cur     = 0;
+  s.dir     = 0;
+  s.steps   = 0;
+  s.tick    = 0;
+  s.done    = 0;
+  s.nextAt  = 0;
+  s.endAt   = 0;
+  s.started = false;
+}
+
+/* 새 동작을 시작할 수 있나? (진행 중이면 false) */
+inline bool seqFree() {
+  return !seqBusy;
+}
+
+/* 지금 진행 중인 동작을 끝까지 마무리 (동작 함수 끝에서 자동 호출됨) */
+inline void seqCommit() {
+  if (seqCount > 0) seqBusy = true;
+  seqIdx = 0;
+}
+
+/* ===========================================================================
+ *  servoTo() - 예전 이름 그대로 쓰는 호환 함수
+ *    ★ nubida_ai.h(공통 파일)가 servoTo() 를 쓰기 때문에 남겨둡니다.
+ *    움직임을 "예약"하고 바로 돌아옵니다 -> delay() 가 없어 블루투스가 끊기지 않습니다.
+ *    ★ 여러 동작을 이어서 만들 때는 seqAdd() 를 쓰고 맨 끝에 seqCommit() 하세요.
+ * =========================================================================== */
+inline void servoTo(int pin, int deg, int ms) {
+  seqAdd(pin, deg, ms);
+  if (!seqBusy) seqCommit();   /* 이미 실행 중이면 건드리지 않음 (진행 보존) */
+}
+
+/* ---- loop() 에서 매번 부르는 진행 함수 ---- */
+inline void seqUpdate() {
+  if (!seqBusy) return;
+  if (seqIdx >= seqCount) {          /* 전부 끝났다 */
+    seqBusy  = false;
+    seqCount = 0;
+    seqIdx   = 0;
+    /* ★ 동작이 끝났으니 서보 위치를 EEPROM 에 저장합니다.
+     *   (1도마다 저장하면 EEPROM 수명이 며칠 만에 끝나므로 여기서만) */
+    eeSaveServo(0);
+    eeSaveServo(1);
+    return;
+  }
+
+  seqStep& s = seqList[seqIdx];
+  unsigned long now = millis();
+
+  /* ---------- 기다리기 ---------- */
+  if (s.kind == 1) {
+    if (!s.started) {
+      s.started = true;
+      s.endAt   = now + (unsigned long)s.ms;
+      return;
+    }
+    if (now >= s.endAt) { seqIdx++; }
+    return;
+  }
+
+  /* ---------- 서보 이동 ---------- */
+  if (s.kind == 0) {
+    int i = seqServoIndex(s.pin);
+    if (i < 0) { seqIdx++; return; }
+
+    if (!s.started) {
+      s.started = true;
+      s.nextAt  = now;
+    }
+
+    /* 시간이 안 됐으면 다음 기회에 */
+    if (now < s.nextAt) return;
+
+    s.cur += s.dir;
+    if (s.dir > 0 && s.cur > s.deg) s.cur = s.deg;
+    if (s.dir < 0 && s.cur < s.deg) s.cur = s.deg;
+
+    /* ★ 실제로 각도가 바뀐 때만 보냅니다.
+     *   같은 값을 반복 write() 하면 Servo 라이브러리가 그때마다 인터럽트를
+     *   막아서 SoftwareSerial(블루투스) 수신 바이트를 놓칩니다.
+     *
+     *   ※ EEPROM 저장은 여기서 하지 않습니다!
+     *     EEPROM 은 약 10만 번만 쓸 수 있어서, 1도마다 저장하면 며칠 만에
+     *     수명이 끝납니다. 저장은 "동작이 끝났을 때" 한 번만 합니다. */
+    if (srvSent[i] != s.cur) {
+      srv[i].write(s.cur);
+      srvSent[i] = s.cur;
+      pwmAct[i]  = s.cur;      /* 메모리상의 실제 서보 위치 갱신 */
+    }
+    s.done++;
+    s.nextAt = now + (unsigned long)s.tick;
+
+    if (s.done >= s.steps || s.cur == s.deg) {
+      if (srvSent[i] != s.deg) {
+        srv[i].write(s.deg);
+        srvSent[i] = s.deg;
+        pwmAct[i]  = s.deg;
+      }
+      seqIdx++;
+    }
+    return;
+  }
+
+  seqIdx++;   /* 알 수 없는 종류 -> 건너뜀 */
+}
+
+/* ===========================================================================
+ *  【동작 만들기】 - 새 동작은 여기에 함수를 하나 만드시면 됩니다
+ * =========================================================================== */
+
+/* -- 도리도리 -- 좌우로 흔들기 (9번 서보) */
+void doDoriDori() {
+  seqAdd(PIN_HEAD, DORI_LEFT,  MS_NORMAL);
+  seqAdd(PIN_HEAD, DORI_RIGHT, MS_NORMAL);
+  seqAdd(PIN_HEAD, DORI_LEFT,  MS_NORMAL);
+  seqAdd(PIN_HEAD, DORI_RIGHT, MS_NORMAL);
+  seqAdd(PIN_HEAD, CENTER,     MS_FAST);
+  seqCommit();
+}
+
+/* -- 삐졌어 -- 고개 푹 떨구기 (9번 서보) */
+void doSajin() {
+  seqAdd(PIN_HEAD, CENTER,   MS_FAST);
+  seqAdd(PIN_HEAD, SAD_DOWN, MS_SLOW);
+  seqWait(800);                    /* 잠깐 쉬기 (블루투스는 계속 살아있음) */
+  seqAdd(PIN_HEAD, CENTER,   MS_NORMAL);
+  seqCommit();
+}
+
+/* -- 안녕 -- 끄덕끄덕 인사 (7번 서보) */
+void doHello() {
+  seqAdd(PIN_ARM, HI_UP,   MS_FAST);
+  seqAdd(PIN_ARM, HI_DOWN, MS_NORMAL);
+  seqAdd(PIN_ARM, HI_UP,   MS_NORMAL);
+  seqAdd(PIN_ARM, HI_DOWN, MS_NORMAL);
+  seqAdd(PIN_ARM, CENTER,  MS_FAST);
+  seqCommit();
+}
+
+/* ===========================================================================
+ *  함수 미리 알리기 (전방 선언)
+ *    C++ 는 위에서 아래로 읽기 때문에, 아래에 정의된 함수를 위에서 쓰려면
+ *    "이런 함수가 있다"고 미리 알려줘야 합니다.
+ *
+ *    handleAiCommand : nubida_ai.h 에 정의되어 있습니다 (아래에서 include)
+ *    runCommand      : nubida_bt.h 가 이 함수를 씁니다
+ * =========================================================================== */
+bool handleAiCommand(String cmd);
+bool runCommand(String cmd);
+
+/* ===========================================================================
+ *  【명령 처리】 - 한 줄을 받아서 알맞은 동작 실행
+ *
+ *  ★ 오동작 방지 3원칙
+ *    ① 두 자릿수 번호를 한 자리로 오인하지 않습니다.
+ *         "11NubidaAi" -> "Nubida" 가 2번째 -> 무시
+ *    ② 번호 뒤에는 반드시 "Nubida" 가 와야 합니다.
+ *         BLE 는 긴 명령을 잘라 보냅니다. "1" 조각만으로는 움직이지 않습니다.
+ *    ③ AI 명령 구역에 들어오면 무조건 그 안에서 끝냅니다.
+ *         아래 평문 검사로 흘러가지 않습니다.
+ * =========================================================================== */
+bool runCommand(String cmd) {
+
+  /* ---------------------------------------------------------------------
+   *  ★ 1단계 - AI 명령(난독화를 푼 명령)인지 먼저 확인
+   *     "Nubida" 라는 글자가 있으면 AI 명령으로 봅니다.
+   * ------------------------------------------------------------------- */
+  int np = cmd.indexOf("Nubida");
+
+  if (np >= 0) {
+
+    /* (1) 번호는 반드시 맨 앞 한 글자여야 합니다. */
+    if (np != 1) {
+      Serial.print(F("[무시] 번호 자릿수가 맞지 않습니다 -> "));
+      Serial.println(cmd);
+      return true;      /* 여기서 끝. 아래로 흘러가지 않습니다. */
+    }
+
+    char n = cmd.charAt(0);
+
+    /* (2) 맨 앞이 숫자가 아니면 무시 */
+    if (n < '0' || n > '9') {
+      Serial.print(F("[무시] 번호가 아닙니다 -> "));
+      Serial.println(cmd);
+      return true;
+    }
+
+    /* (3) 1~3번 - 정해진 동작 실행 */
+    if (n == '1') {
+      Serial.println(F("[동작] 도리도리"));
+      doDoriDori();
+      return true;
+    }
+    if (n == '2') {
+      Serial.println(F("[동작] 삐졌어"));
+      doSajin();
+      return true;
+    }
+    if (n == '3') {
+      Serial.println(F("[동작] 안녕"));
+      doHello();
+      return true;
+    }
+
+    /* ==================================================================
+     *  ★★ 새 번호에 동작을 추가하려면 여기에 넣으시면 됩니다 ★★
+     *
+     *      6번에 "춤추기" 를 넣고 싶다면 아래를 복사해 // 를 지우세요.
+   *
+   *      ★ 동작 함수 안에서는 servoTo 대신 seqAdd 를 쓰세요.
+   *         seqAdd(핀, 각도, 걸리는시간);   <- 예약만 하고 바로 돌아옴
+   *         seqWait(밀리초);                <- 잠깐 쉬기
+   *         맨 끝에 seqCommit();            <- 반드시 넣어야 실행됩니다
+     *
+     *      if (n == '6') {
+     *        Serial.println(F("[동작] 춤추기"));
+     *        doHello();          // <- 원하는 동작 함수 이름으로 바꾸세요
+     *        return true;
+     *      }
+     *
+     *  ⚠️ return true; 를 꼭 남겨두세요. 빼면 아래 평문 검사로
+     *     흘러가서 엉뚱한 동작이 실행될 수 있습니다.
+     * ================================================================ */
+
+    /* (4) 그 외 번호(0, 4~9) - 이 로봇에 정의되지 않은 번호입니다. */
+    Serial.print(F("[무시] "));
+    Serial.print(n);
+    Serial.println(F("번 - 이 로봇에 정의되지 않은 번호입니다 (움직이지 않습니다)"));
+    return true;        /* 여기서 끝. 평문 검사로 흘러가지 않습니다. */
+  }
+
+  /* ---------------------------------------------------------------------
+   *  ★ 2단계 - AI 가 만들어 준 코드 명령 (digitalWrite, tone 등)
+   * ------------------------------------------------------------------- */
+  if (handleAiCommand(cmd)) return true;
+
+  /* ---------------------------------------------------------------------
+   *  ★ 3단계 - 그 밖의 평문 명령
+   *     ⚠️ 숫자 한 글자("1","2","3")는 절대 여기에 넣지 마세요.
+   *        블루투스가 명령을 잘라 보낼 때 그 조각만 도착해서
+   *        로봇이 저절로 움직이는 원인이 됩니다.
+   * ------------------------------------------------------------------- */
+
+  return false;    /* 모르는 명령 */
+}
+
+/* ===========================================================================
+ *  블루투스 + AI 명령 불러오기
+ *    ⚠️ 둘 다 runCommand() / servoTo() 가 정의된 "뒤"에 와야 합니다.
+ *       (이 파일들 안에서 그 함수들을 쓰기 때문입니다)
+ * =========================================================================== */
+#include "nubida_ai.h"
+#include "nubida_bt.h"
+
+/* ===========================================================================
+ *  setup / loop
+ * =========================================================================== */
+void setup() {
+  Serial.begin(9600);
+  delay(300);              /* ★ CH340(USB칩) 초기화 대기 - 첫 출력이 깨지는 것 방지 */
+  nubidaBtBegin();
+
+  /* ★★★ 부팅 시 서보를 "한 번에" 움직이지 않습니다 ★★★
+   *   서보는 전원이 꺼지면(보드가 리셋되면) 자기 위치를 잊습니다.
+   *   리셋 직후 실제로는 140도에 있는데 여기서 write(90) 을 하면
+   *     -> 50도 차이를 최대 전력으로 메꾸려 이동 -> 전류 폭증 -> 또 리셋 (무한반복)
+   *
+   *   그래서:
+   *     ① EEPROM 에서 "마지막으로 보냈던 각도"를 복원하고 (리셋 전 위치 추정)
+   *     ② 중앙 맞추기는 loop() 안의 prepareServos() 가 1도씩 천천히 합니다. */
+  /* ★ 먼저 EEPROM 구역을 확인/청소합니다.
+   *   (예전 진단판이 주소 0~1 에 남긴 "부팅횟수" 를 서보 각도로 오독하는 사고 방지)
+   *   여기서 pwmAct[] 를 -1(모름) 로 만들거나, 정상이면 그대로 둡니다. */
+  eeInitIfNeeded();
+
+  for (int i = 0; i < 2; i++) {
+    srv[i].attach(srvPin[i]);
+    eeLoadServo(i);                  /* ★ EEPROM 에서 실제 위치 복원 */
+    srvCur[i]  = (pwmAct[i] >= 0) ? pwmAct[i] : CENTER;  /* 코드 기준점 */
+    srvSent[i] = -1;                 /* 아직 이번 부팅에서는 안 보냄 */
+  }
+
+  /* ★ 배너는 짧게! (9600bps 는 1초에 한글 480자 정도라 길면 깨집니다)
+   *   각 줄 사이 delay(8) 로 시리얼이 따라올 시간을 줍니다. */
+  Serial.println(F(""));
+  Serial.println(F("===== 도리도리 v8 (EEPROM 위치복원) ====="));
+  delay(8);
+  Serial.print(F("[빌드] ")); Serial.print(F(__DATE__));
+  Serial.print(F(" "));      Serial.println(F(__TIME__));
+  delay(8);
+  Serial.print(F("[서보] "));
+  Serial.print(PIN_HEAD); Serial.print(F("번=도리도리/삐졌어  "));
+  Serial.print(PIN_ARM);  Serial.println(F("번=안녕"));
+  delay(8);
+  /* ★ 진단: EEPROM 에 기억된 서보 위치 (리셋 후에도 남아 있음) */
+  Serial.print(F("[기억된 위치] "));
+  for (int i = 0; i < 2; i++) {
+    Serial.print(srvPin[i]); Serial.print(F("번="));
+    if (pwmAct[i] < 0) Serial.print(F("모름"));
+    else { Serial.print(pwmAct[i]); Serial.print(F("도")); }
+    Serial.print(F("  "));
+  }
+  Serial.println(F(""));
+  delay(8);
+  Serial.println(F("  (90도가 아니면 중앙으로 천천히 맞춥니다)"));
+  delay(8);
+  Serial.println(F("[명령] 1=도리도리 2=삐졌어 3=안녕"));
+  delay(8);
+  Serial.println(F("========================================"));
+  delay(8);
+}
+
+/* ===========================================================================
+ *  prepareServos() - 부팅 후 서보를 "1도씩 아주 천천히" 중앙으로 (Y 해결)
+ * ---------------------------------------------------------------------------
+ *  왜?
+ *    서보는 전원이 꺼지면 자기 위치를 잊습니다. 그래서 리셋 직후 실제로는
+ *    많이 돌아가 있는데 코드는 90도라고 착각합니다.
+ *    그 상태로 write(90) 을 한 번에 하면 서보가 그 큰 차이를 최대 전력으로
+ *    메꾸려다 전류가 폭증 -> 보드 리셋 -> 또 처음부터 (무한 반복).
+ *
+ *  어떻게?
+ *    ★ 한 번에 큰 각도를 주지 않고 1도씩만 줍니다.
+ *      그러면 서보가 매 순간 "1도만 따라오면 되는" 상태가 되어
+ *      전류가 아주 조금만 듭니다. (= 전류 폭증 원천 차단)
+ *
+ *    속도: 20ms 마다 1도 -> 180도를 약 3.6초에 걸쳐 지나갑니다.
+ *    이 속도면 서보가 어디에 있든 무리 없이 중앙까지 따라옵니다.
+ *
+ *    이동 중에도 nubidaBtUpdate() 가 계속 돌아 블루투스는 살아 있습니다.
+ *    만약 명령이 먼저 들어오면 중앙정렬은 즉시 포기하고 명령을 실행합니다.
+ * =========================================================================== */
+void prepareServos() {
+  if (!bootAligning) return;
+  if (seqBusy) { bootAligning = false; return; }   /* 명령이 우선 */
+
+  static unsigned long lastStep = 0;
+  unsigned long now = millis();
+  if (now - lastStep < 20) return;      /* 20ms 마다 1도씩 */
+  lastStep = now;
+
+  bool allDone = true;
+  for (int i = 0; i < 2; i++) {
+    /* ★★★ pwmAct[i] = EEPROM 에서 복원한 "서보가 실제로 있을 각도" ★★★
+     *   리셋 전에 마지막으로 보냈던 각도이므로 정확합니다.
+     *   여기서부터 중앙(90)까지 1도씩만 옮기면 서보는 매 순간
+     *   1도만 따라오면 되어 전류가 거의 들지 않습니다. */
+    if (pwmAct[i] < 0) continue;       /* 아직 한 번도 움직인 적 없는 보드 */
+
+    /* ★★★ 안전장치: 복원값이 너무 동떨어져 있으면 믿지 않습니다 ★★★
+     *
+     *   EEPROM 값이 맞다면 서보는 그 위치에 있습니다 (정상 리셋).
+     *   그런데 아래 경우에는 EEPROM 값이 틀릴 수 있습니다.
+     *     - 서보를 손으로 돌린 경우
+     *     - 옛날 다른 프로그램이 EEPROM 을 쓴 경우
+     *     - 전원을 완전히 껐다 켜서 서보가 힘을 잃은 경우
+     *
+     *   이때 큰 값(예: 140)을 그대로 믿고 1도씩 가면, 서보가 실제로는
+     *   반대편에 있어서 결과적으로 큰 이동이 되어 전류가 폭증합니다.
+     *
+     *   그래서 중앙(90)에서 60도 넘게 떨어진 값은 신뢰하지 않고
+     *   "모름(-1)" 으로 바꿔서 중앙정렬을 건너뜁니다.
+     *   -> 서보는 지금 위치에 그대로 있고, 다음 명령 때 천천히 움직입니다. */
+    if (abs(pwmAct[i] - bootAlignDeg) > 60) {
+      pwmAct[i] = -1;
+      continue;
+    }
+
+    if (pwmAct[i] < bootAlignDeg) {
+      pwmAct[i] += 1;
+      if (pwmAct[i] > bootAlignDeg) pwmAct[i] = bootAlignDeg;
+      srv[i].write(pwmAct[i]);
+      srvCur[i] = pwmAct[i];
+      allDone = false;
+    } else if (pwmAct[i] > bootAlignDeg) {
+      pwmAct[i] -= 1;
+      if (pwmAct[i] < bootAlignDeg) pwmAct[i] = bootAlignDeg;
+      srv[i].write(pwmAct[i]);
+      srvCur[i] = pwmAct[i];
+      allDone = false;
+    }
+  }
+  if (allDone) {
+    bootAligning = false;
+    eeSaveServo(0);                  /* ★ 중앙 도달 -> EEPROM 저장 */
+    eeSaveServo(1);
+  }
+}
+
+void loop() {
+  nubidaBtUpdate();   /* 블루투스 수신 - 항상 최우선 */
+  seqUpdate();        /* 서보 움직임 - 조금씩 진행 (delay 없음) */
+
+  /* ★ 부팅 중앙정렬: 3초 동안만 상태를 알려주고 그 뒤엔 조용히 */
+  static unsigned long lastReport = 0;
+  static bool reported = false;
+  if (!reported) {
+    if (bootAligning) {
+      if (millis() - lastReport > 500) {
+        lastReport = millis();
+        Serial.print(F("[정렬중] "));
+        Serial.print(pwmAct[0] < 0 ? -1 : pwmAct[0]); Serial.print(F(" / "));
+        Serial.println(pwmAct[1] < 0 ? -1 : pwmAct[1]);
+      }
+    } else {
+      reported = true;
+      Serial.println(F("[준비완료] 명령을 보내세요"));
+    }
+  }
+
+  prepareServos();    /* 부팅 중앙정렬 - 천천히, 논블로킹 (Y) */
+}

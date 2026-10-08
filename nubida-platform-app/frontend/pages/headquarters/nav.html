@@ -1,0 +1,193 @@
+<nav class="sidebar-nav" id="sidebarNav">
+    <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon">📊</span><span class="nav-label">대시보드</span>
+    </a>
+    <a class="nav-item top-item" data-section="qa" href="inquiries.html">
+        <span class="icon">❓</span><span class="nav-label">Q&A</span>
+    </a>
+
+    <div class="nav-section">메뉴</div>
+
+    <button class="nav-item nav-toggle" data-section="operations">
+        <span class="icon">🏢</span><span class="nav-label">에듀케어</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-operations">
+        <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">에듀케어 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon">📚</span><span class="nav-label">강좌 카테고리 권한</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon">🏫</span><span class="nav-label">교육 운영</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="/pages/firmware.html"><span class="icon">🤖</span><span class="nav-label">교구 자료실</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle active-toggle" data-section="point">
+        <span class="icon">🏆</span><span class="nav-label">포인트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-point" style="display:block;">
+        <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+        <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+        <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+        <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon">📑</span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+        </div>
+
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="security.html"><span class="icon">🔐</span><span class="nav-label">보안 설정</span></a>
+        <a class="nav-item sub" href="access-control.html"><span class="icon">🎵</span><span class="nav-label">노래 AI 이용 관리</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+    </div>
+</nav>
+
+<style>
+/* ── 토글 메뉴 스타일 ── */
+.nav-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    color: var(--sidebar-text);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    margin-bottom: 1px;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    font-family: inherit;
+}
+.nav-toggle:hover {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-text);
+}
+.nav-toggle .toggle-arrow {
+    margin-left: auto;
+    transition: transform var(--transition-fast);
+    font-size: 12px;
+    color: var(--sidebar-text-secondary);
+}
+.nav-toggle.open .toggle-arrow {
+    transform: rotate(90deg);
+}
+.nav-submenu {
+    display: none;
+    overflow: hidden;
+}
+.nav-submenu.open {
+    display: block;
+}
+.nav-submenu .nav-item.sub {
+    padding-left: 48px !important;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-normal);
+}
+.nav-submenu .nav-item.sub .icon {
+    font-size: var(--text-base);
+    width: 18px;
+}
+.nav-item.top-item {
+    font-weight: var(--weight-semibold);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 현재 페이지 확인하여 해당 섹션 열기
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    // 섹션 매핑
+    const sectionMap = {
+        'branches.html': 'operations', 'categories.html': 'operations',
+        'academy-management.html': 'eduops', 
+        'courses.html': 'eduops', 'users.html': 'eduops',
+        '/pages/firmware.html': 'eduops',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'point-management.html': 'point', 'point-settings.html': 'point', 
+        'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+        'director-reports.html': 'report', 'notices.html': 'report', 
+        'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+    };
+    
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) {
+            toggle.classList.add('open');
+            const sub = document.getElementById(`sub-${currentSection}`);
+            if (sub) sub.classList.add('open');
+        }
+    }
+
+    // 토글 버튼 클릭 이벤트
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            const isOpen = sub.classList.contains('open');
+            
+            // 닫기
+            if (isOpen) {
+                sub.classList.remove('open');
+                this.classList.remove('open');
+            } else {
+                // 열기 (다른 열린 섹션은 자동으로 닫힘 - 선택사항)
+                // 모든 섹션 닫기
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                // 현재 섹션 열기
+                sub.classList.add('open');
+                this.classList.add('open');
+            }
+        });
+    });
+
+    // active 표시
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+            item.classList.add('active');
+        }
+    });
+});
+</script>

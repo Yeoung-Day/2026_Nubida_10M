@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="padding: 80px 0;">
+    <h2 style="font-size: 2.2rem; font-weight: 200; text-align: center; margin-bottom: 60px;">나의 구매 내역</h2>
+    <div style="max-width: 900px; margin: 0 auto;">
+        {% if not orders %}
+            <p style="text-align: center; color: #ccc; padding: 100px 0;">아직 구매한 내역이 없습니다.</p>
+        {% else %}
+            {% for o in orders | reverse %}
+            <div style="display: flex; align-items: center; padding: 30px 0; border-bottom: 1px solid #f5f5f5; gap: 30px;">
+                <div class="img-container" style="width: 120px;">
+                    <img src="{{ o.prod_img }}" alt="상품사진">
+                </div>
+                <div style="flex: 1;">
+                    <p style="font-size: 0.75rem; color: #999; margin-bottom: 5px;">{{ o.date }}</p>
+                    <h3 style="font-size: 1.2rem; font-weight: 500;">{{ o.prodName }}</h3>
+                    <p style="font-size: 0.85rem; color: #888;">판매처: {{ o.sellerShop }}</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="font-weight: 800; font-size: 1.2rem;">₩ {{ "{:,}".format(o.price) }}</p>
+                    <span style="font-size: 0.7rem; color: #2ecc71; font-weight: 700;">결제 완료</span>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

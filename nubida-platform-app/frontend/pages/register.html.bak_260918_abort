@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>회원가입 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260805c">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/pages/login.css?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        .register-steps { display:flex; gap:0; margin-bottom:28px; position:relative; }
+        .step { flex:1; text-align:center; padding:12px 0; font-size:13px; font-weight:500; color:var(--text-tertiary); border-bottom:3px solid var(--border); position:relative; transition:all .3s; }
+        .step.active { color:var(--accent); border-bottom-color:var(--accent); }
+        .step.done { color:var(--success); border-bottom-color:var(--success); }
+        .step .step-num { display:inline-block; width:24px; height:24px; line-height:24px; border-radius:50%; background:var(--bg-subtle); margin-right:6px; font-size:12px; text-align:center; }
+        .step.active .step-num { background:var(--accent); color:#fff; }
+        .step.done .step-num { background:var(--success); color:#fff; }
+        .step-content { display:none; }
+        .step-content.active { display:block; animation:fadeIn .3s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .code-display { background:linear-gradient(135deg,#EEF2FF,#E0E7FF); border:2px dashed #4F5EF8; border-radius:12px; padding:20px; text-align:center; margin:16px 0; }
+        .code-display .code { font-size:28px; font-weight:700; font-family:monospace; color:#4F5EF8; letter-spacing:4px; }
+        .register-success { text-align:center; padding:32px 0; }
+        .register-success .icon { font-size:64px; margin-bottom:16px; }
+        .register-success h2 { font-size:22px; margin-bottom:8px; }
+        .register-success p { color:var(--text-secondary); font-size:14px; line-height:1.7; }
+        .role-selector { display:flex; gap:12px; margin:16px 0 24px; flex-wrap:wrap; }
+        .role-card { flex:1; min-width:130px; border:2px solid var(--border); border-radius:12px; padding:24px; text-align:center; cursor:pointer; transition:all .2s; }
+        .role-card:hover { border-color:var(--accent); background:#F8FAFF; }
+        .role-card.selected { border-color:var(--accent); background:#EEF2FF; box-shadow:0 0 0 3px rgba(79,94,248,.15); }
+        .role-card .icon { font-size:36px; margin-bottom:8px; }
+        .role-card .label { font-size:15px; font-weight:600; }
+        .role-card .desc { font-size:12px; color:var(--text-secondary); margin-top:4px; }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-wrapper" style="max-width:480px">
+            <div class="login-header">
+                <a href="/" class="login-logo" aria-label="누비다플랫폼 홈으로" style="margin-bottom:16px;display:block;"><img src="/common/assets/brand/nubida-logo-light.png" alt="누비다플랫폼" style="height:34px;width:auto;display:block;margin:0 auto;"></a>
+                <h1>누비다플랫폼</h1>
+                <p>회원가입</p>
+            </div>
+            <div class="login-card">
+                <!-- Steps -->
+                <div class="register-steps" id="stepIndicator">
+                    <div class="step active" data-step="1"><span class="step-num">1</span>역할 선택</div>
+                    <div class="step" data-step="2"><span class="step-num">2</span>등록 코드</div>
+                    <div class="step" data-step="3"><span class="step-num">3</span>정보 입력</div>
+                    <div class="step" data-step="4"><span class="step-num">4</span>완료</div>
+                </div>
+
+                <!-- Error -->
+                <div class="login-error" id="registerError" style="display:none"></div>
+
+                <!-- Step 1: Role Selection -->
+                <div class="step-content active" id="step1Content">
+                    <h2 style="font-size:18px;margin-bottom:4px">가입할 역할을 선택해주세요</h2>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px" id="step1Desc">역할을 선택하고 다음 단계로 진행하세요.</p>
+                    <div class="role-selector">
+                        <div class="role-card" onclick="selectRole('student')" id="roleCardStudent">
+                            <div class="icon">🎒</div>
+                            <div class="label">학생</div>
+                            <div class="desc">수업 수강 및 학습</div>
+                        </div>
+                        <div class="role-card" onclick="selectRole('parent')" id="roleCardParent">
+                            <div class="icon">👨‍👩‍👧</div>
+                            <div class="label">학부모</div>
+                            <div class="desc">자녀 학습 모니터링</div>
+                        </div>
+                        <div class="role-card" onclick="selectRole('director')" id="roleCardDirector">
+                            <div class="icon">🏫</div>
+                            <div class="label">원장</div>
+                            <div class="desc">학원 관리 및 운영</div>
+                        </div>
+                        <div class="role-card" onclick="selectRole('branch_admin')" id="roleCardBranchAdmin">
+                            <div class="icon">⚙️</div>
+                            <div class="label">에듀케어</div>
+                            <div class="desc">에듀케어 관리</div>
+                        </div>
+                    </div>
+                    <button class="login-btn" onclick="goStep(2)" id="step1Btn" disabled>
+                        <span class="btn-text">다음</span>
+                    </button>
+                    <div style="text-align:center;margin-top:14px">
+                        <a href="/pages/login.html" style="font-size:13px;color:var(--text-secondary);">이미 계정이 있으신가요? <strong style="color:var(--accent)">로그인</strong></a>
+                    </div>
+                </div>
+
+                <!-- Step 2: Registration Code -->
+                <div class="step-content" id="step2Content">
+                    <!-- 학생/학부모: 코드 입력 -->
+                    <div id="codeInputStep">
+                        <h2 style="font-size:18px;margin-bottom:4px" id="step2Title">등록 코드 입력</h2>
+                        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px" id="step2Desc">원장님에게 받은 등록 코드를 입력해주세요.</p>
+                        <div class="form-group" id="codeInputGroup">
+                            <label>등록 코드</label>
+                            <div style="display:flex;gap:8px">
+                                <input type="text" class="form-input" id="regCode" placeholder="#000000" style="flex:1;font-family:monospace;font-size:20px;letter-spacing:3px;text-align:center" maxlength="7" oninput="autoHash(this)">
+                                <button class="btn btn-primary" onclick="verifyCode()" id="verifyCodeBtn" style="white-space:nowrap">확인</button>
+                            </div>
+                            <div id="codeResult" style="margin-top:8px;font-size:13px"></div>
+                        </div>
+                        <div id="codeInfoSection" style="display:none;margin-bottom:16px">
+                            <div class="code-display">
+                                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">✓ 코드 확인 완료</div>
+                                <div id="codeInfoDetail"></div>
+                            </div>
+                        </div>
+                        <button class="login-btn" onclick="goStep(3)" id="step2Btn" disabled>
+                            <span class="btn-text">다음</span>
+                        </button>
+                    </div>
+                    <!-- 에듀케어: 코드 불필요 안내 -->
+                    <div id="branchAdminDirectStep" style="display:none">
+                        <h2 style="font-size:18px;margin-bottom:4px">에듀케어 가입 안내</h2>
+                        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">에듀케어는 등록 코드 없이 가입 후 본사 승인을 받습니다.</p>
+                        <div style="background:#FFF7ED;border:2px solid #FED7AA;border-radius:12px;padding:20px;margin:16px 0;text-align:center">
+                            <div style="font-size:36px;margin-bottom:8px">📋</div>
+                            <div style="font-size:14px;font-weight:600;color:#9A3412">본사 승인 필요</div>
+                            <div style="font-size:13px;color:#92400E;margin-top:4px">회원가입 후 본사 관리자가 승인하면 이용 가능합니다.</div>
+                        </div>
+                        <button class="login-btn" onclick="goStep(3)" id="branchAdminNextBtn">
+                            <span class="btn-text">정보 입력하기 →</span>
+                        </button>
+                    </div>
+                    <div style="text-align:center;margin-top:14px">
+                        <a href="#" onclick="goStep(1);return false" style="font-size:13px;color:var(--text-secondary);">← 이전 단계</a>
+                    </div>
+                </div>
+
+                <!-- Step 3: User Info -->
+                <div class="step-content" id="step3Content">
+                    <h2 style="font-size:18px;margin-bottom:4px">회원 정보 입력</h2>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">기본 정보를 입력해주세요.</p>
+                    <form id="registerForm" onsubmit="return false;">
+                        <div class="form-group">
+                            <label>이름</label>
+                            <input type="text" class="form-input" id="regName" placeholder="실명을 입력하세요" required>
+                        </div>
+                        <div class="form-group">
+                            <label>아이디</label>
+                            <div style="display:flex;gap:6px">
+                                <input type="text" class="form-input" id="regUsername" placeholder="아이디 (4~20자, 영문+숫자)" required style="flex:1" oninput="resetUsernameCheck()">
+                                <button type="button" class="btn btn-outline" onclick="checkUsername()" id="checkUsernameBtn" style="white-space:nowrap;padding:8px 12px;font-size:12px">중복확인</button>
+                            </div>
+                            <div id="usernameResult" style="margin-top:4px;font-size:12px;min-height:18px"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>비밀번호</label>
+                            <input type="password" class="form-input" id="regPassword" placeholder="비밀번호 (6자 이상)" required>
+                        </div>
+                        <div class="form-group">
+                            <label>비밀번호 확인</label>
+                            <input type="password" class="form-input" id="regPasswordConfirm" placeholder="비밀번호 재입력" required>
+                        </div>
+                        <div class="form-group">
+                            <label>이메일</label>
+                            <input type="email" class="form-input" id="regEmail" placeholder="이메일 주소">
+                        </div>
+                        <div class="form-group">
+                            <label>연락처</label>
+                            <input type="tel" class="form-input" id="regPhone" placeholder="010-0000-0000">
+                        </div>
+                        <!-- 원장 전용 필드 (학원명 + 학원 유형 + 지역) -->
+                        <div id="directorFields" style="display:none">
+                            <div class="form-group">
+                                <label>학원명</label>
+                                <input type="text" class="form-input" id="regBranchName" placeholder="학원명을 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <label>지역</label>
+                                <input type="text" class="form-input" id="regRegion" placeholder="예: 서울시 강남구">
+                            </div>
+                            <div class="form-group">
+                                <label>학원 유형</label>
+                                <select class="form-input" id="regAcademyType">
+                                    <option value="">선택해주세요</option>
+                                    <option value="어학원">어학원</option>
+                                    <option value="수학학원">수학학원</option>
+                                    <option value="예체능">예체능</option>
+                                    <option value="입시학원">입시학원</option>
+                                    <option value="보습학원">보습학원</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- 에듀케어 전용 필드 (소속명 + 지역) -->
+                        <div id="branchFields" style="display:none">
+                            <div class="form-group">
+                                <label>에듀케어명</label>
+                                <input type="text" class="form-input" id="regBranchName" placeholder="에듀케어명을 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <label>지역</label>
+                                <input type="text" class="form-input" id="regRegion" placeholder="예: 서울시 강남구">
+                            </div>
+                        </div>
+                        <button type="submit" class="login-btn" id="registerBtn">
+                            <span class="spinner"></span>
+                            <span class="btn-text">회원가입</span>
+                        </button>
+                    </form>
+                    <div style="text-align:center;margin-top:14px">
+                        <a href="#" onclick="goStep(2);return false" style="font-size:13px;color:var(--text-secondary);">← 이전 단계</a>
+                    </div>
+                </div>
+
+                <!-- Step 4: Complete -->
+                <div class="step-content" id="step4Content">
+                    <div class="register-success">
+                        <div class="icon">🎉</div>
+                        <h2>회원가입이 완료되었습니다!</h2>
+                        <p id="completeMessage">원장님의 승인 후 이용 가능합니다.</p>
+                        <div style="margin-top:8px;padding:12px;background:var(--bg-subtle);border-radius:8px;font-size:13px;color:var(--text-secondary)">
+                            <div>아이디: <strong id="completeUsername" style="color:var(--text-primary)"></strong></div>
+                            <div>역할: <strong id="completeRole" style="color:var(--text-primary)"></strong></div>
+                            <div>발급 코드: <strong id="completeCode" style="color:var(--accent);font-family:monospace"></strong></div>
+                        </div>
+                        <button class="login-btn" onclick="location.href='/pages/login.html'" style="margin-top:20px">
+                            <span class="btn-text">로그인하러 가기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260910login"></script>
+    <script>
+    let _selectedRole = '';
+    let _verifiedCode = '';
+    let _verifiedDirector = null;
+    let _usernameChecked = false;
+
+    function esc(s) {
+        if (s == null) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function selectRole(role) {
+        _selectedRole = role;
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+        // Map internal role name to DOM element ID
+        const roleMap = {
+            'student': 'Student',
+            'parent': 'Parent',
+            'director': 'Director',
+            'branch_admin': 'BranchAdmin'
+        };
+        const el = document.getElementById('roleCard' + (roleMap[role] || role.charAt(0).toUpperCase() + role.slice(1)));
+        if (el) el.classList.add('selected');
+        document.getElementById('step1Btn').disabled = false;
+        
+        // 역할별 설명 업데이트
+        const descMap = {
+            'student': '원장님에게 받은 등록 코드가 필요합니다.',
+            'parent': '자녀가 속한 원장님의 등록 코드가 필요합니다.',
+            'director': '소속 에듀케어의 등록 코드가 필요합니다.',
+            'branch_admin': '등록 코드 없이 가입 후 본사 승인을 받습니다.'
+        };
+        document.getElementById('step1Desc').textContent = descMap[role] || '역할을 선택하고 다음 단계로 진행하세요.';
+        
+        // Reset step 3 conditional fields
+        toggleAcademyFields(role);
+    }
+
+    function autoHash(input) {
+        let v = input.value.replace(/[^0-9]/g, '');
+        if (v.length > 0 && !input.value.startsWith('#')) {
+            input.value = '#' + v.slice(0, 6);
+        } else if (input.value.startsWith('#')) {
+            input.value = '#' + v.slice(0, 6);
+        }
+        // Reset verification when code changes
+        _verifiedCode = '';
+        _verifiedDirector = null;
+        document.getElementById('codeInfoSection').style.display = 'none';
+        document.getElementById('step2Btn').disabled = true;
+        document.getElementById('codeResult').textContent = '';
+    }
+
+    async function verifyCode() {
+        const code = document.getElementById('regCode').value.trim();
+        if (!code || code.length < 2) {
+            document.getElementById('codeResult').innerHTML = '<span style="color:var(--danger)">코드를 입력해주세요.</span>';
+            return;
+        }
+
+        const btn = document.getElementById('verifyCodeBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ 확인 중...';
+        document.getElementById('codeResult').innerHTML = '';
+
+        try {
+            const codeOnly = code.replace('#', '');
+            const res = await apiGet('/auth/verify-code?code=' + encodeURIComponent(codeOnly));
+            const data = res.data || {};
+            if (data && data.name) {
+                _verifiedCode = code;
+                _verifiedDirector = data;
+                document.getElementById('codeResult').innerHTML = '<span style="color:var(--success)">✅ 유효한 코드입니다.</span>';
+                
+                if (_selectedRole === 'director') {
+                    // 원장: 에듀케어 코드 확인
+                    document.getElementById('codeInfoDetail').innerHTML =
+                        '<div style="font-size:15px;font-weight:600">' + esc(data.name) + ' 에듀케어</div>' +
+                        '<div style="font-size:12px;color:var(--text-secondary)">' + esc(data.branch_name || '-') + '</div>';
+                } else {
+                    // 학생/학부모: 원장 코드 확인
+                    document.getElementById('codeInfoDetail').innerHTML =
+                        '<div style="font-size:15px;font-weight:600">' + esc(data.name) + ' 원장</div>' +
+                        '<div style="font-size:12px;color:var(--text-secondary)">' + esc(data.branch_name || '') + '</div>';
+                }
+                
+                document.getElementById('codeInfoSection').style.display = 'block';
+                document.getElementById('step2Btn').disabled = false;
+            } else {
+                document.getElementById('codeResult').innerHTML = '<span style="color:var(--danger)">❌ 유효하지 않은 코드입니다. 확인 후 다시 입력해주세요.</span>';
+            }
+        } catch(e) {
+            document.getElementById('codeResult').innerHTML = '<span style="color:var(--danger)">❌ 코드 확인 실패: ' + esc(e.message) + '</span>';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '확인';
+        }
+    }
+
+    function goStep(step) {
+        document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active', 'done'));
+
+        document.getElementById('step' + step + 'Content').classList.add('active');
+        document.querySelectorAll('.step').forEach(el => {
+            const s = parseInt(el.dataset.step);
+            if (s < step) el.classList.add('done');
+            if (s === step) el.classList.add('active');
+        });
+
+        // step2: 역할별 화면 전환
+        if (step === 2) {
+            if (_selectedRole === 'branch_admin') {
+                // 에듀케어: 코드 입력 스킵, 안내 화면 표시
+                document.getElementById('codeInputStep').style.display = 'none';
+                document.getElementById('branchAdminDirectStep').style.display = 'block';
+            } else if (_selectedRole === 'director') {
+                // 원장: 에듀케어 코드 입력 안내
+                document.getElementById('codeInputStep').style.display = 'block';
+                document.getElementById('codeInputGroup').style.display = 'block';
+                document.getElementById('branchAdminDirectStep').style.display = 'none';
+                document.getElementById('step2Title').textContent = '에듀케어 등록 코드 입력';
+                document.getElementById('step2Desc').textContent = '소속된 에듀케어의 등록 코드를 입력해주세요.';
+            } else {
+                // 학생/학부모: 원장 코드 입력
+                document.getElementById('codeInputStep').style.display = 'block';
+                document.getElementById('codeInputGroup').style.display = 'block';
+                document.getElementById('branchAdminDirectStep').style.display = 'none';
+                document.getElementById('step2Title').textContent = '등록 코드 입력';
+                document.getElementById('step2Desc').textContent = '원장님에게 받은 등록 코드를 입력해주세요.';
+            }
+        }
+    }
+
+    function toggleAcademyFields(role) {
+        const directorEl = document.getElementById('directorFields');
+        const branchEl = document.getElementById('branchFields');
+        directorEl.style.display = 'none';
+        branchEl.style.display = 'none';
+        if (role === 'director') {
+            directorEl.style.display = 'block';
+        } else if (role === 'branch_admin') {
+            branchEl.style.display = 'block';
+        }
+    }
+
+    // ===== 아이디 중복확인 =====
+    async function checkUsername() {
+        const username = document.getElementById('regUsername').value.trim();
+        const resultEl = document.getElementById('usernameResult');
+        const btn = document.getElementById('checkUsernameBtn');
+
+        if (!username || username.length < 4) {
+            resultEl.innerHTML = '<span style="color:var(--danger)">아이디는 4자 이상 입력해주세요.</span>';
+            return;
+        }
+        if (!/^[a-zA-Z0-9]+$/.test(username)) {
+            resultEl.innerHTML = '<span style="color:var(--danger)">영문과 숫자만 입력 가능합니다.</span>';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = '⏳';
+        resultEl.innerHTML = '<span style="color:var(--text-secondary)">확인 중...</span>';
+
+        try {
+            const res = await apiGet('/auth/check-username?username=' + encodeURIComponent(username));
+            if (res && res.status === 'success') {
+                _usernameChecked = true;
+                resultEl.innerHTML = '<span style="color:var(--success)">✅ 사용 가능한 아이디입니다.</span>';
+                btn.textContent = '✅ 확인완료';
+                btn.style.borderColor = '#22C55E';
+                btn.style.color = '#166534';
+            }
+        } catch(e) {
+            _usernameChecked = false;
+            resultEl.innerHTML = '<span style="color:var(--danger)">❌ ' + (e.message || '이미 사용 중인 아이디입니다.') + '</span>';
+            btn.textContent = '중복확인';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    function resetUsernameCheck() {
+        if (_usernameChecked) {
+            _usernameChecked = false;
+            document.getElementById('usernameResult').innerHTML = '';
+            const btn = document.getElementById('checkUsernameBtn');
+            btn.textContent = '중복확인';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+        }
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const username = document.getElementById('regUsername').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+        const email = document.getElementById('regEmail').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+
+        // Validation
+        if (!name || !username || !password) {
+            document.getElementById('registerError').style.display = 'block';
+            document.getElementById('registerError').textContent = '필수 항목을 입력해주세요.';
+            return;
+        }
+        if (password.length < 6) {
+            document.getElementById('registerError').style.display = 'block';
+            document.getElementById('registerError').textContent = '비밀번호는 6자 이상이어야 합니다.';
+            return;
+        }
+        if (password !== passwordConfirm) {
+            document.getElementById('registerError').style.display = 'block';
+            document.getElementById('registerError').textContent = '비밀번호가 일치하지 않습니다.';
+            return;
+        }
+        if (!_verifiedCode && _selectedRole !== 'branch_admin') {
+            document.getElementById('registerError').style.display = 'block';
+            document.getElementById('registerError').textContent = '등록 코드 인증이 필요합니다.';
+            return;
+        }
+        if (!_usernameChecked) {
+            document.getElementById('registerError').style.display = 'block';
+            document.getElementById('registerError').textContent = '아이디 중복확인이 필요합니다.';
+            return;
+        }
+
+        document.getElementById('registerError').style.display = 'none';
+        const btn = document.getElementById('registerBtn');
+        btn.disabled = true;
+        btn.querySelector('.btn-text').textContent = '⏳ 가입 중...';
+
+        try {
+            const payload = {
+                username: username,
+                password: password,
+                name: name,
+                email: email || username + '@nubida.app',
+                phone: phone || '',
+                role: _selectedRole,
+                registration_code: _verifiedCode.replace('#', ''),
+            };
+
+            // 원장 추가 필드
+            if (_selectedRole === 'director') {
+                payload.branch_name = document.getElementById('regBranchName').value.trim();
+                payload.region = document.getElementById('regRegion').value.trim();
+                payload.academy_type = document.getElementById('regAcademyType').value;
+            }
+            // 에듀케어 추가 필드
+            if (_selectedRole === 'branch_admin') {
+                payload.branch_name = document.getElementById('regBranchName').value.trim();
+                payload.region = document.getElementById('regRegion').value.trim();
+            }
+
+            const res = await apiPost('/auth/register', payload);
+            const data = res.data || {};
+
+            document.getElementById('completeUsername').textContent = data.username || username;
+            const roleLabels = {
+                'student': '학생',
+                'parent': '학부모',
+                'director': '원장',
+                'branch_admin': '에듀케어'
+            };
+            document.getElementById('completeRole').textContent = roleLabels[_selectedRole] || _selectedRole;
+            document.getElementById('completeCode').textContent = data.registration_code || '-';
+            const roleMessages = {
+                'student': '원장님의 승인 후 수강이 가능합니다.',
+                'parent': '자녀의 계정과 연결 후 이용 가능합니다.',
+                'director': '본사 관리자의 승인 후 학원 운영이 가능합니다.',
+                'branch_admin': '본사 관리자의 승인 후 에듀케어 관리가 가능합니다.'
+            };
+            document.getElementById('completeMessage').textContent = roleMessages[_selectedRole] || '원장님의 승인 후 이용 가능합니다.';
+
+            goStep(4);
+        } catch(e) {
+            document.getElementById('registerError').style.display = 'block';
+            const msg = e.message || '알 수 없는 오류';
+            if (msg.includes('password') && msg.includes('min_length')) {
+                document.getElementById('registerError').textContent = '비밀번호는 6자 이상이어야 합니다.';
+            } else if (msg.includes('email') && (msg.includes('already exists') || msg.includes('exists'))) {
+                document.getElementById('registerError').textContent = '이미 존재하는 이메일입니다.';
+            } else if (msg.includes('username') && msg.includes('min_length')) {
+                document.getElementById('registerError').textContent = '아이디는 6자 이상이어야 합니다.';
+            } else {
+                document.getElementById('registerError').textContent = msg;
+            }
+        } finally {
+            btn.disabled = false;
+            btn.querySelector('.btn-text').textContent = '회원가입';
+        }
+    });
+    </script>
+</body>
+</html>

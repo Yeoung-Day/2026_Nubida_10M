@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>highlight.js 테스트 v2</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <!-- CDN에서 직접 로드 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .section { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+</head>
+<body>
+    <h1>🔍 highlight.js 진단 테스트</h1>
+
+    <div class="section">
+        <h2>1️⃣ 정적 HTML + CDN highlight.js</h2>
+        <pre><code class="language-arduino hljs">int touch1;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+}
+
+void loop() {
+  pinMode(11, INPUT);
+  touch1 = digitalRead(11);
+  delay(10);
+
+  if (touch1 > 0) {
+    digitalWrite(4, 150);
+  } else {
+    digitalWrite(4, LOW);
+  }
+  delay(1000);
+}</code></pre>
+    </div>
+
+    <div class="section">
+        <h2>2️⃣ JS 동적 생성 + highlight.js</h2>
+        <div id="dynamicArea"></div>
+    </div>
+
+    <div class="section">
+        <h2>3️⃣ 라이브러리 로드 상태</h2>
+        <div id="statusArea"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+    <script>
+        // 상태 확인
+        var statusHtml = '<ul>';
+        statusHtml += '<li>hljs 라이브러리: ' + (typeof hljs !== 'undefined' ? '✅ 로드됨' : '❌ 없음') + '</li>';
+        statusHtml += '<li>hljs.highlightElement: ' + (typeof hljs?.highlightElement === 'function' ? '✅ 사용 가능' : '❌ 없음') + '</li>';
+        statusHtml += '<li>listLanguages(): ' + (hljs?.listLanguages ? hljs.listLanguages().join(', ') : 'N/A') + '</li>';
+        statusHtml += '</ul>';
+        document.getElementById('statusArea').innerHTML = statusHtml;
+
+        // 정적 HTML에 highlight 적용
+        document.querySelectorAll('pre code').forEach(function(el) {
+            if (el.id !== 'dynamicCode') {
+                hljs.highlightElement(el);
+            }
+        });
+
+        // 동적 생성
+        var code = `int touch1;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+}
+
+void loop() {
+  pinMode(11, INPUT);
+  touch1 = digitalRead(11);
+  delay(10);
+
+  if (touch1 > 0) {
+    digitalWrite(4, 150);
+  } else {
+    digitalWrite(4, LOW);
+  }
+  delay(1000);
+}`;
+        var escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        var html = '<pre><code id="dynamicCode" class="language-arduino">' + escaped + '</code></pre>';
+        document.getElementById('dynamicArea').innerHTML = html;
+        hljs.highlightElement(document.getElementById('dynamicCode'));
+    </script>
+</body>
+</html>

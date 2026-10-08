@@ -1,0 +1,525 @@
+"""
+🤖 아두이노 업로드 API — arduino-cli 컴파일 + WebSerial 업로드 지원
+"""
+import os
+import re
+import json
+import shutil
+import tempfile
+import subprocess
+from pathlib import Path
+from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import FileResponse
+from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, desc
+
+from app.core.database import get_db
+from app.core.security import get_current_user, require_role
+from app.models import ArduinoCode
+from app.schemas import ApiResponse
+
+router = APIRouter(prefix="/arduino", tags=["아두이노 업로드"])
+
+UPLOAD_DIR = Path("/root/shared/arduino-builds")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+
+# ============================================================
+# 컴파일 전용 API — .hex 파일 생성
+# ============================================================
+
+@router.post("/compile")
+async def compile_code(
+    data: dict,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """아두이노 코드를 컴파일하여 .hex 파일 생성 (인증 필요)"""
+    code = data.get("code", "")
+    board = data.get("board", "arduino:avr:nano")
+    code_id = data.get("code_id")
+    
+    if not code.strip():
+        raise HTTPException(status_code=400, detail="코드가 비어 있습니다.")
+    
+    user_id = current_user.get("id", 0)
+    build_id = f"user_{user_id}_{code_id or 'new'}"
+    build_dir = UPLOAD_DIR / build_id
+    build_dir.mkdir(parents=True, exist_ok=True)
+    
+    # arduino-cli: 스케치 디렉토리명 == .ino 파일명 이어야 함
+    sketch_name = "nubida_sketch"
+    sketch_dir = build_dir / sketch_name
+    sketch_dir.mkdir(parents=True, exist_ok=True)
+    
+    ino_file = sketch_dir / f"{sketch_name}.ino"
+    ino_file.write_text(code, encoding="utf-8")
+    
+    # arduino-cli 컴파일
+    result = subprocess.run(
+        ["arduino-cli", "compile", "--fqbn", board, "--output-dir", str(build_dir), str(sketch_dir)],
+        capture_output=True, text=True, timeout=120
+    )
+    
+    hex_file = build_dir / f"{sketch_name}.ino.hex"
+    
+    if result.returncode != 0 or not hex_file.exists():
+        # 에러 메시지 추출
+        error_msg = result.stderr or result.stdout or "컴파일 실패"
+        # 불필요한 상세 로그 제거
+        lines = error_msg.split('\n')
+        filtered = [l for l in lines if 'Error' in l or 'error' in l or 'warning' in l or 'undefined' in l]
+        return ApiResponse(
+            status="error",
+            message="컴파일 실패",
+            data={"error": filtered[:5] if filtered else error_msg[:500]}
+        )
+    
+    # 컴파일 성공
+    hex_size = hex_file.stat().st_size
+    
+    # .hex 파일 읽어서 base64로 반환 (WebSerial 업로드용)
+    hex_content = hex_file.read_bytes()
+    import base64
+    hex_b64 = base64.b64encode(hex_content).decode()
+    
+    return ApiResponse(
+        message="컴파일 성공",
+        data={
+            "hex": hex_b64,
+            "hex_size": hex_size,
+            "board": board,
+            "build_id": build_id,
+            "partno": board_to_partno(board),
+            "avrdude_cmd": (
+                f"avrdude -p {board_to_partno(board)} -c arduino "
+                f"-P /dev/ttyUSB0 -b 115200 -U flash:w:{sketch_name}.ino.hex:i"
+            ),
+            "avrdude_cmd_old_bootloader": (
+                f"avrdude -p {board_to_partno(board)} -c arduino "
+                f"-P /dev/ttyUSB0 -b 115200 -U flash:w:{sketch_name}.ino.hex:i"
+            ),
+        }
+    )
+
+
+def board_to_partno(board: str) -> str:
+    """arduino-cli FQBN을 avrdude partno로 변환"""
+    mapping = {
+        "arduino:avr:nano": "atmega328p",
+        "arduino:avr:nano:cpu=atmega328old": "atmega328p",
+        "arduino:avr:uno": "atmega328p",
+        "arduino:avr:mega:cpu=atmega2560": "atmega2560",
+        "arduino:avr:leonardo": "atmega32u4",
+        "arduino:avr:micro": "atmega32u4",
+    }
+    return mapping.get(board, "atmega328p")
+# ============================================================
+
+@router.post("/upload-script")
+async def generate_upload_script(
+    data: dict,
+    current_user: dict = Depends(get_current_user),
+):
+    """컴파일 후 .hex + 업로드 스크립트(.bat) 생성하여 zip으로 반환"""
+    hex_b64 = data.get("hex", "")
+    board = data.get("board", "arduino:avr:nano")
+    port = data.get("port", "COM3")
+    baud = data.get("baud", 115200)
+
+    if not hex_b64:
+        raise HTTPException(status_code=400, detail="hex 데이터가 없습니다.")
+
+    import base64, tempfile, zipfile
+
+    user_id = current_user["id"]
+    build_id = f"user_{user_id}_{int(__import__('time').time())}"
+    build_dir = UPLOAD_DIR / build_id
+    build_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. hex 파일 저장
+    hex_bytes = base64.b64decode(hex_b64)
+    hex_path = build_dir / "nubida_sketch.ino.hex"
+    hex_path.write_bytes(hex_bytes)
+
+    # 2. 배치 파일 생성 (CP949/ANSI 인코딩 — 한글 깨짐 방지)
+    partno = board_to_partno(board)
+    is_old = "old" in board.lower()
+    default_baud = 57600 if is_old else 115200
+
+    bat_content = f"""@echo off
+chcp 65001 >nul
+title Arduino Uploader
+echo ========================================
+echo   Nubida Platform Arduino Uploader
+echo ========================================
+echo.
+
+:: check avrdude
+set AVRDUDE=avrdude
+where avrdude >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [ERROR] avrdude not found.
+    echo.
+    echo Install avrdude:
+    echo   Option 1: Install Arduino IDE (includes avrdude)
+    echo   Option 2: choco install avrdude
+    echo   Option 3: https://github.com/avrdudes/avrdude/releases
+    echo.
+    echo Run this file again after installing.
+    echo.
+    pause
+    exit /b 1
+)
+
+:: port config
+set PORT={port}
+echo [INFO] Board: Arduino Nano ({partno})
+echo [INFO] Port: %PORT%
+echo [INFO] Baud: {default_baud}
+echo.
+
+:: execute upload
+echo [UPLOADING...]
+echo.
+echo %AVRDUDE% -p {partno} -c arduino -P %PORT% -b {default_baud} -U flash:w:"%~dp0nubida_sketch.ino.hex":i
+echo.
+
+%AVRDUDE% -p {partno} -c arduino -P %PORT% -b {default_baud} -U flash:w:"%~dp0nubida_sketch.ino.hex":i
+
+if %errorlevel% equ 0 (
+    echo.
+    echo ========================================
+    echo   [SUCCESS] Upload complete!
+    echo ========================================
+) else (
+    echo.
+    echo ========================================
+    echo   [FAILED] Upload error
+    echo ========================================
+    echo.
+    echo Troubleshooting:
+    echo   1. Is Arduino connected via USB?
+    echo   2. Wrong port? Edit PORT={port} in this file
+    echo   3. Try 'Nano (Old Bootloader)' - change board
+    echo   4. Press reset button on Arduino and retry
+)
+
+echo.
+pause
+"""
+
+    bat_path = build_dir / "upload.bat"
+    # BOM(UTF-8 with BOM) = CMD가 UTF-8 인식 가능
+    bom = b'\xef\xbb\xbf'
+    bat_path.write_bytes(bom + bat_content.encode('utf-8'))
+
+    # 3. hex 파일도 UTF-8로 한 번 더 저장 (배치파일과 같은 폴더)
+    hex_utf8_path = build_dir / "nubida_sketch.ino.hex"
+    hex_utf8_path.write_bytes(hex_bytes)
+
+    # 4. zip 파일 생성
+    zip_path = build_dir / "arduino_upload.zip"
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.write(bat_path, "upload.bat")
+        zf.write(hex_utf8_path, "nubida_sketch.ino.hex")
+
+    import base64 as b64mod
+    zip_b64 = b64mod.b64encode(zip_path.read_bytes()).decode()
+
+    return ApiResponse(
+        message="업로드 패키지 생성 완료",
+        data={
+            "zip": zip_b64,
+            "filename": "arduino_upload.zip",
+            "instructions": (
+                "1. 다운로드된 .zip 파일을 아무 폴더에 압축 풀기\n"
+                "2. upload.bat 파일을 더블클릭 (관리자 권한 불필요)\n"
+                "3. avrdude가 자동으로 업로드 실행"
+            ),
+        }
+    )
+
+
+# ============================================================
+# avrdude를 통한 직접 업로드 API (서버→USB)
+# ============================================================
+
+@router.post("/upload")
+async def upload_to_board(
+    data: dict,
+    current_user: dict = Depends(get_current_user),
+):
+    """avrdude로 아두이노 보드에 직접 업로드 (서버 USB 필요)"""
+    hex_b64 = data.get("hex", "")
+    board = data.get("board", "arduino:avr:nano")
+    port = data.get("port", "/dev/ttyUSB0")
+    baud = data.get("baud", 115200)
+
+    if not hex_b64:
+        raise HTTPException(status_code=400, detail="hex 데이터가 없습니다.")
+
+    import base64, tempfile
+
+    hex_bytes = base64.b64decode(hex_b64)
+    
+    with tempfile.NamedTemporaryFile(suffix=".hex", delete=False) as f:
+        f.write(hex_bytes)
+        hex_path = f.name
+
+    partno = board_to_partno(board)
+    
+    try:
+        result = subprocess.run(
+            ["avrdude", "-p", partno, "-c", "arduino", "-P", port, "-b", str(baud),
+             "-U", f"flash:w:{hex_path}:i"],
+            capture_output=True, text=True, timeout=60
+        )
+        
+        if result.returncode == 0:
+            return ApiResponse(
+                message=f"업로드 성공! ({port})",
+                data={
+                    "output": result.stdout[-500:] if result.stdout else "",
+                    "port": port,
+                    "board": board,
+                }
+            )
+        else:
+            error_msg = result.stderr or result.stdout or "알 수 없는 오류"
+            # 주요 오류만 추출
+            lines = error_msg.split('\n')
+            filtered = [l for l in lines if any(k in l for k in [
+                'Error', 'error', 'stk500', 'timeout', 'not in sync',
+                'permission denied', 'No such file'])][:5]
+            return ApiResponse(
+                status="error",
+                message="업로드 실패",
+                data={"error": filtered if filtered else error_msg[:300]}
+            )
+    except FileNotFoundError:
+        return ApiResponse(status="error", message="avrdude가 설치되지 않았습니다.", data={})
+    except subprocess.TimeoutExpired:
+        return ApiResponse(status="error", message="업로드 시간 초과 (60초)", data={})
+    finally:
+        os.unlink(hex_path)
+
+
+# ============================================================
+# avrdude 명령어 생성 (WebSerial 가이드)
+# ============================================================
+
+@router.post("/avrdude-command")
+async def get_avrdude_command(
+    data: dict,
+    current_user: dict = Depends(get_current_user),
+):
+    """사용자 환경에 맞는 avrdude 업로드 명령어 생성"""
+    board = data.get("board", "arduino:avr:nano")
+    port = data.get("port", "/dev/ttyUSB0")
+    baud = data.get("baud", 115200)
+    hex_b64 = data.get("hex", "")
+
+    if not hex_b64:
+        # 재컴파일 필요
+        return ApiResponse(status="error", message="먼저 컴파일을 실행해주세요.", data={})
+
+    import base64, tempfile
+    hex_bytes = base64.b64decode(hex_b64)
+
+    download_path = f"/tmp/arduino_sketch_{current_user['id']}.hex"
+    with open(download_path, "wb") as f:
+        f.write(hex_bytes)
+
+    partno = board_to_partno(board)
+
+    return ApiResponse(data={
+        "port_hint": (
+            "macOS: /dev/cu.usbserial-XXXX 또는 /dev/cu.wchusbserialXXXX\n"
+            "Linux: /dev/ttyUSB0 또는 /dev/ttyACM0\n"
+            "Windows: COM3 (장치 관리자에서 확인)"
+        ),
+        "commands": [
+            {
+                "label": "⚠️ 기본 (115200 baud)",
+                "cmd": f"avrdude -p {partno} -c arduino -P {port} -b 115200 -U flash:w:{download_path}:i"
+            },
+            {
+                "label": "⚠️ 올드 부트로더 (57600 baud)",
+                "cmd": f"avrdude -p {partno} -c arduino -P {port} -b 115200 -U flash:w:{download_path}:i"
+            },
+            {
+                "label": "⚠️ Arduino as ISP",
+                "cmd": f"avrdude -p {partno} -c stk500v1 -P {port} -b 19200 -U flash:w:{download_path}:i"
+            },
+            {
+                "label": "USBasp",
+                "cmd": f"avrdude -p {partno} -c usbasp -U flash:w:{download_path}:i"
+            },
+        ]
+    })
+
+@router.get("/compile/download/{build_id}")
+async def download_hex(
+    build_id: str,
+    current_user: dict = Depends(get_current_user),
+):
+    """컴파일된 .hex 파일 다운로드"""
+    build_dir = UPLOAD_DIR / build_id
+    
+    # 보안: build_id가 user_로 시작하는지 확인
+    if not build_id.startswith(f"user_{current_user['id']}_"):
+        raise HTTPException(status_code=403, detail="접근 권한이 없습니다.")
+    
+    hex_file = build_dir / "nubida_sketch.ino.hex"
+    if not hex_file.exists():
+        raise HTTPException(status_code=404, detail="컴파일된 파일이 없습니다.")
+    
+    return FileResponse(
+        path=str(hex_file),
+        media_type="application/octet-stream",
+        filename="sketch.ino.hex"
+    )
+
+
+# ============================================================
+# 지원 보드 목록
+# ============================================================
+
+@router.get("/boards")
+async def list_boards(
+    current_user: dict = Depends(get_current_user),
+):
+    """지원하는 아두이노 보드 목록"""
+    return ApiResponse(data=[
+        {"id": "arduino:avr:nano", "name": "Arduino Nano", "cpu": "ATmega328P"},
+        {"id": "arduino:avr:nano:cpu=atmega328old", "name": "Arduino Nano (Old Bootloader)", "cpu": "ATmega328P"},
+        {"id": "arduino:avr:uno", "name": "Arduino Uno", "cpu": "ATmega328P"},
+        {"id": "arduino:avr:mega:cpu=atmega2560", "name": "Arduino Mega 2560", "cpu": "ATmega2560"},
+        {"id": "arduino:avr:leonardo", "name": "Arduino Leonardo", "cpu": "ATmega32U4"},
+        {"id": "arduino:avr:micro", "name": "Arduino Micro", "cpu": "ATmega32U4"},
+        {"id": "esp32:esp32:esp32", "name": "ESP32 Dev Module", "cpu": "ESP32"},
+        {"id": "esp8266:esp8266:nodemcuv2", "name": "NodeMCU 1.0 (ESP-12E)", "cpu": "ESP8266"},
+    ])
+
+
+# ============================================================
+# 라이브러리 관리 API
+# ============================================================
+
+@router.get("/libraries")
+async def list_libraries(
+    current_user: dict = Depends(get_current_user),
+):
+    """설치된 아두이노 라이브러리 목록"""
+    result = subprocess.run(
+        ["arduino-cli", "lib", "list", "--format", "json"],
+        capture_output=True, text=True, timeout=30
+    )
+    try:
+        data = json.loads(result.stdout) if result.stdout else {}
+        libraries = data.get("installed_libraries", [])
+        libs = []
+        for item in libraries:
+            lib_info = item.get("library", {})
+            libs.append({
+                "name": lib_info.get("name", ""),
+                "version": lib_info.get("version", ""),
+                "installed": True,
+                "sentence": lib_info.get("sentence", ""),
+            })
+        return ApiResponse(data=libs)
+    except Exception as e:
+        print(f"list_libraries error: {e}")
+        return ApiResponse(data=[])
+
+
+@router.post("/libraries/search")
+async def search_libraries(
+    data: dict,
+    current_user: dict = Depends(get_current_user),
+):
+    """Arduino 라이브러리 검색"""
+    query = data.get("query", "servo").strip()
+    if not query:
+        return ApiResponse(data=[])
+    
+    result = subprocess.run(
+        ["arduino-cli", "lib", "search", query, "--format", "json"],
+        capture_output=True, text=True, timeout=30
+    )
+    try:
+        data = json.loads(result.stdout) if result.stdout else {"libraries": []}
+        libs = []
+        for item in data.get("libraries", []):
+            # releases에서 최신 버전의 정보 가져오기
+            releases = item.get("releases", {})
+            versions = sorted(releases.keys()) if releases else []
+            latest = releases.get(versions[-1], {}) if versions else {}
+            libs.append({
+                "name": item.get("name", ""),
+                "sentence": latest.get("sentence", ""),
+                "paragraph": latest.get("paragraph", ""),
+                "versions": versions,
+                "latest_version": versions[-1] if versions else "",
+                "architecture": ", ".join(latest.get("architectures", [])) if latest else "avr",
+                "types": latest.get("types", []),
+            })
+        return ApiResponse(data=libs)
+    except Exception as e:
+        print(f"search_libraries error: {e}")
+        return ApiResponse(data=[])
+
+
+@router.post("/libraries/install")
+async def install_library(
+    data: dict,
+    current_user: dict = Depends(require_role("super_admin", "admin", "hq_admin")),
+):
+    """라이브러리 설치"""
+    name = data.get("name", "").strip()
+    version = data.get("version", "")
+    if not name:
+        raise HTTPException(status_code=400, detail="라이브러리 이름이 필요합니다.")
+    
+    cmd = ["arduino-cli", "lib", "install", name]
+    if version:
+        cmd.append(f"@{version}")
+    
+    result = subprocess.run(
+        cmd,
+        capture_output=True, text=True, timeout=120
+    )
+    
+    if result.returncode != 0:
+        error_msg = result.stderr or result.stdout or "설치 실패"
+        return ApiResponse(
+            status="error",
+            message="라이브러리 설치 실패",
+            data={"error": error_msg[:500]}
+        )
+    
+    return ApiResponse(message=f"✅ {name} 라이브러리 설치 완료")
+
+
+@router.delete("/libraries/{name}")
+async def uninstall_library(
+    name: str,
+    current_user: dict = Depends(require_role("super_admin", "admin", "hq_admin")),
+):
+    """라이브러리 제거"""
+    result = subprocess.run(
+        ["arduino-cli", "lib", "uninstall", name],
+        capture_output=True, text=True, timeout=60
+    )
+    
+    if result.returncode != 0:
+        error_msg = result.stderr or result.stdout or "제거 실패"
+        return ApiResponse(
+            status="error",
+            message="라이브러리 제거 실패",
+            data={"error": error_msg[:500]}
+        )
+    
+    return ApiResponse(message=f"🗑️ {name} 라이브러리 제거 완료")

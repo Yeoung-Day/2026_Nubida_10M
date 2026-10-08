@@ -1,0 +1,380 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>카테고리 설정 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+            .color-preview { width:24px;height:24px;border-radius:50%;display:inline-block;border:2px solid rgba(0,0,0,0.1);vertical-align:middle }
+            .cat-table td { vertical-align:middle }
+            .cat-table .actions { white-space:nowrap;text-align:right }
+            .cat-empty { padding:60px 0;text-align:center;color:var(--text-tertiary) }
+            .sort-btn { cursor:pointer;font-size:13px;padding:4px 8px;border:1px solid var(--border-subtle);border-radius:6px;background:var(--bg-surface);transition:all 0.2s }
+            .sort-btn:hover { border-color:var(--accent);color:var(--accent) }
+        </style>
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>⚙️ 카테고리 설정</h1></div>
+   <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+   </div>
+
+   <div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+   <p style="font-size:14px;color:var(--text-secondary);margin:0">
+   카테고리를 추가·수정·삭제할 수 있습니다.
+   카테고리 삭제 시 연결된 강좌가 있으면 삭제할 수 없습니다.
+   </p>
+   <button class="btn btn-primary btn-sm" onclick="openCreateModal()">+ 카테고리 추가</button>
+   </div>
+
+   <div class="courses-card">
+   <table class="courses-table cat-table" id="catTable" data-card-view>
+   <thead>
+   <tr>
+   <th style="width:40px">#</th>
+   <th style="width:40px"></th>
+   <th>이름</th>
+   <th style="width:120px">키 (key)</th>
+   <th style="width:80px">색상</th>
+   <th style="width:60px">강좌</th>
+   <th style="width:60px">폴더</th>
+   <th style="width:100px">상태</th>
+   <th style="width:120px">작업</th>
+   </tr>
+   </thead>
+   <tbody id="catTableBody">
+   <tr><td colspan="9" class="cat-empty">⏳ 카테고리 정보를 불러오는 중...</td></tr>
+   </tbody>
+   </table>
+   </div>
+   </main>
+   </div>
+
+   <!-- Create/Edit Modal -->
+   <div class="modal-overlay" id="categoryModal">
+   <div class="modal" style="max-width:500px">
+   <div class="modal-header"><h3 id="categoryModalTitle">✏️ 카테고리 정보</h3></div>
+   <div class="modal-body">
+   <input type="hidden" id="editCategoryId" value="">
+   <div class="form-row">
+   <div class="form-group" style="flex:1">
+   <label class="form-label">이름 *</label>
+   <input type="text" class="form-input" id="catName" placeholder="예: 메이커 코딩">
+   </div>
+   <div class="form-group" style="flex:1">
+   <label class="form-label">키 (key) *</label>
+   <input type="text" class="form-input" id="catKey" placeholder="예: maker_coding">
+   </div>
+   </div>
+   <div class="form-row">
+   <div class="form-group" style="flex:1">
+   <label class="form-label">글자색 (hex)</label>
+   <div style="display:flex;gap:8px;align-items:center">
+   <input type="color" class="form-input" id="catColor" value="#2563EB" style="width:50px;height:38px;padding:2px">
+   <input type="text" class="form-input" id="catColorHex" value="#2563EB" style="flex:1" placeholder="#2563EB" maxlength="7">
+   </div>
+   </div>
+   <div class="form-group" style="flex:1">
+   <label class="form-label">배경색 (hex)</label>
+   <div style="display:flex;gap:8px;align-items:center">
+   <input type="color" class="form-input" id="catBgColor" value="#EFF6FF" style="width:50px;height:38px;padding:2px">
+   <input type="text" class="form-input" id="catBgColorHex" value="#EFF6FF" style="flex:1" placeholder="#EFF6FF" maxlength="7">
+   </div>
+   </div>
+   </div>
+   <div class="form-group">
+   <label class="form-label">정렬 순서</label>
+   <input type="number" class="form-input" id="catSortOrder" value="1" min="0" style="width:100px">
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('categoryModal')">취소</button>
+   <button class="btn btn-primary" onclick="saveCategory()">저장</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260918abort"></script>
+   <script src="/common/js/auth.js?v=20260911nav"></script>
+   <script>
+   function esc(s) { if (typeof s !== 'string') s = String(s || ''); return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+   let allCats = [];
+
+   document.addEventListener('DOMContentLoaded', function() {
+   requireAuth(); renderSidebarUser();
+   loadNav();
+   loadCategories();
+   });
+
+   function loadNav() {
+   var container = document.getElementById('navContainer');
+   if (!container) return;
+   fetch('/pages/headquarters/nav.html')
+   .then(function(r) { return r.text(); })
+   .then(function(html) {
+   container.innerHTML = html;
+   container.querySelectorAll('.nav-item').forEach(function(a) {
+   if (a.getAttribute('href') === 'category-manager.html') a.classList.add('active');
+   });
+   })
+   .catch(function() {});
+   }
+
+   async function loadCategories() {
+   try {
+   var res = await apiGet('/headquarters/categories');
+   allCats = res.data || [];
+   renderCategories();
+   } catch (err) {
+   document.getElementById('catTableBody').innerHTML = '<tr><td colspan="9" class="cat-empty">❌ 로딩 실패: ' + esc(err.message) + '</td></tr>';
+   }
+   }
+
+   function renderCategories() {
+   var tbody = document.getElementById('catTableBody');
+   if (allCats.length === 0) {
+   tbody.innerHTML = '<tr><td colspan="9" class="cat-empty">📭 등록된 카테고리가 없습니다.</td></tr>';
+   return;
+   }
+   var html = '';
+   allCats.forEach(function(c, idx) {
+   var isActive = c.is_active !== false;
+   var iconMap = {
+   'ai_art': '🎨', 'ai_robot': '🤖'
+   };
+   var icon = iconMap[c.key] || '📁';
+   html += '<tr>';
+   html += '<td style="font-size:12px;color:var(--text-tertiary)">' + (idx + 1) + '</td>';
+   html += '<td><span style="font-size:18px">' + icon + '</span></td>';
+   html += '<td><strong>' + esc(c.name) + '</strong></td>';
+   html += '<td style="font-size:12px;color:var(--text-tertiary)">' + esc(c.key) + '</td>';
+   var color = c.color || '#4F5EF8';
+   var bgColor = c.bg_color || 'rgba(8,145,178,0.08)';
+   html += '<td><span class="color-preview" style="background:' + color + '"></span></td>';
+   html += '<td style="text-align:center;font-weight:600">' + (c.course_count || 0) + '</td>';
+   html += '<td style="text-align:center">' + (c.folder_count || 0) + '</td>';
+   html += '<td><span class="badge badge-' + (isActive ? 'success' : 'default') + '">' + (isActive ? '활성' : '비활성') + '</span></td>';
+   html += '<td class="actions">';
+   html += '<button class="btn btn-ghost btn-xs" onclick="openEditModal(' + c.id + ')">✏️</button>';
+   html += '<button class="btn btn-ghost btn-xs" style="color:var(--danger)" onclick="deleteCategory(' + c.id + ',\'' + esc(c.name) + '\',' + (c.course_count || 0) + ')">🗑️</button>';
+   html += '</td></tr>';
+   });
+   tbody.innerHTML = html;
+   }
+
+   function openCreateModal() {
+   document.getElementById('editCategoryId').value = '';
+   document.getElementById('categoryModalTitle').textContent = '➕ 새 카테고리';
+   document.getElementById('catName').value = '';
+   document.getElementById('catKey').value = '';
+   document.getElementById('catColor').value = '#2563EB';
+   document.getElementById('catColorHex').value = '#2563EB';
+   document.getElementById('catBgColor').value = '#EFF6FF';
+   document.getElementById('catBgColorHex').value = '#EFF6FF';
+   document.getElementById('catSortOrder').value = allCats.length + 1;
+   openModal('categoryModal');
+   setTimeout(function() { document.getElementById('catName').focus(); }, 100);
+   }
+
+   function openEditModal(id) {
+   var c = allCats.find(function(x) { return x.id === id; });
+   if (!c) { showAlert('카테고리 정보 없음', 'error'); return; }
+   document.getElementById('editCategoryId').value = c.id;
+   document.getElementById('categoryModalTitle').textContent = '✏️ ' + c.name + ' 수정';
+   document.getElementById('catName').value = c.name || '';
+   document.getElementById('catKey').value = c.key || '';
+   document.getElementById('catColor').value = c.color || '#2563EB';
+   document.getElementById('catColorHex').value = c.color || '#2563EB';
+   document.getElementById('catBgColor').value = c.bg_color || '#EFF6FF';
+   document.getElementById('catBgColorHex').value = c.bg_color || '#EFF6FF';
+   document.getElementById('catSortOrder').value = c.sort_order || 0;
+   openModal('categoryModal');
+   }
+
+   // Sync color picker ↔ hex input
+   document.addEventListener('DOMContentLoaded', function() {
+   document.getElementById('catColor').addEventListener('input', function() {
+   document.getElementById('catColorHex').value = this.value;
+   });
+   document.getElementById('catColorHex').addEventListener('input', function() {
+   if (/^#[0-9a-fA-F]{6}$/.test(this.value)) {
+   document.getElementById('catColor').value = this.value;
+   }
+   });
+   document.getElementById('catBgColor').addEventListener('input', function() {
+   document.getElementById('catBgColorHex').value = this.value;
+   });
+   document.getElementById('catBgColorHex').addEventListener('input', function() {
+   if (/^#[0-9a-fA-F]{6}$/.test(this.value)) {
+   document.getElementById('catBgColor').value = this.value;
+   }
+   });
+   });
+
+   async function saveCategory() {
+   var editId = document.getElementById('editCategoryId').value;
+   var name = document.getElementById('catName').value.trim();
+   var key = document.getElementById('catKey').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+   var color = document.getElementById('catColorHex').value.trim() || null;
+   var bgColor = document.getElementById('catBgColorHex').value.trim() || null;
+   var sortOrder = parseInt(document.getElementById('catSortOrder').value) || 0;
+   if (!name || !key) { showAlert('이름과 키는 필수입니다.', 'error'); return; }
+   try {
+   if (editId) {
+   await apiPut('/headquarters/categories/' + editId, {
+   name: name, key: key, color: color, bg_color: bgColor, sort_order: sortOrder
+   });
+   showAlert('카테고리가 수정되었습니다.', 'success');
+   } else {
+   await apiPost('/headquarters/categories', {
+   key: key, name: name, color: color, bg_color: bgColor, sort_order: sortOrder
+   });
+   showAlert('카테고리가 생성되었습니다.', 'success');
+   }
+   closeModal('categoryModal');
+   await loadCategories();
+   } catch (err) { showAlert(err.message || '저장 실패', 'error'); }
+   }
+
+   async function deleteCategory(id, name, courseCount) {
+   if (courseCount > 0) {
+   showAlert('"' + name + '" 카테고리에 ' + courseCount + '개의 강좌가 연결되어 있어 삭제할 수 없습니다. 먼저 강좌를 다른 카테고리로 이동해주세요.', 'error');
+   return;
+   }
+   if (!confirm('"' + name + '" 카테고리를 삭제하시겠습니까?\n연결된 폴더는 자동으로 전체공용으로 변경됩니다.')) return;
+   try {
+   await apiDelete('/headquarters/categories/' + id);
+   showAlert('"' + name + '" 카테고리가 삭제되었습니다.', 'success');
+   await loadCategories();
+   } catch (err) { showAlert(err.message || '삭제 실패', 'error'); }
+   }
+   </script>
+
+   <script src="/common/js/nav.js?v=20260913nav"></script>
+   </body>
+   </html>

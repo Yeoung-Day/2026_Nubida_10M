@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>가이드 영상 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <meta name="description" content="누비다플랫폼 회원가입 가이드 영상 — 학생, 학부모, 원장, 에듀케어별 맞춤 안내">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAFAFA;
+            --surface: #FFFFFF;
+            --border: #E4E4E7;
+            --text: #18181B;
+            --text-secondary: #71717A;
+            --primary: #4F5EF8;
+            --primary-light: #EEF0FF;
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        /* Navigation - matches index.html */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 48px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-left { display: flex; align-items: center; gap: 32px; }
+        .nav-logo-text { font-family:'Inter', sans-serif; font-weight:800; font-size:20px; color:var(--text); text-decoration:none; letter-spacing:-0.03em; }
+        .nav-logo-text span { color:var(--primary); margin-left:1px; }
+        .nav-center { display: flex; align-items: center; gap: 8px; }
+        .nav-link {
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover { background: #F4F4F5; color: var(--text); }
+        .nav-link.active { color: var(--primary); background: var(--primary-light); font-weight: 600; }
+        .nav-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-start { background: #18181B; color: #fff; box-shadow: 0 2px 10px rgba(24,24,27,0.22); }
+        .nav-start:hover { background: #27272A; transform: translateY(-1px); }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+
+        /* ── 교육앱 드롭다운 (landing.css 와 동일 규칙) ── */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > .nav-link { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; background: none; border: none; font-family: inherit; }
+        .nav-dropdown > .nav-link .nav-caret { width: 10px; height: 10px; flex-shrink: 0; transition: transform .22s ease; }
+        .nav-dropdown.open > .nav-link .nav-caret { transform: rotate(180deg); }
+        .nav-dropdown.open > .nav-link { background: #F1F5F9; color: #0F172A; }
+        .nav-dropdown-menu {
+            position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(-6px);
+            min-width: 276px; background: #FFFFFF; border: 1px solid #E8EAF0; border-radius: 16px;
+            box-shadow: 0 18px 44px rgba(15,23,42,0.13), 0 2px 6px rgba(15,23,42,0.05);
+            padding: 8px; opacity: 0; visibility: hidden; transition: opacity .2s ease, transform .2s ease, visibility .2s;
+            z-index: 1200;
+        }
+        .nav-dropdown-menu::before { content: ''; position: absolute; top: -10px; left: 0; right: 0; height: 10px; }
+        .nav-dropdown.open .nav-dropdown-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .nav-dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px;
+            text-decoration: none; transition: background .16s ease;
+        }
+        .nav-dropdown-item:hover { background: #F6F8FC; }
+        .nav-dropdown-icon {
+            width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1;
+            background: #EEF2FF;
+        }
+        .nav-dropdown-icon.bg-ai      { background: #EEF2FF; }
+        .nav-dropdown-icon.bg-chat    { background: #ECFDF5; }
+        .nav-dropdown-icon.bg-startup { background: #FFF7ED; }
+        .nav-dropdown-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .nav-dropdown-title { font-size: 13.5px; font-weight: 600; color: #0F172A; letter-spacing: -0.1px; }
+        .nav-dropdown-desc { font-size: 11.5px; color: #8A93A5; font-weight: 400; }
+        .nav-dropdown-sep { height: 1px; background: #F1F3F8; margin: 6px 8px; }
+
+
+        /* Mobile Nav: 햄버거 토글 (공개 페이지 공통 반응형) */
+        .nav-burger { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 0; border: none; border-radius: 10px; background: transparent; cursor: pointer; flex-shrink: 0; margin-left: 2px; }
+        .nav-burger span { display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--text); transition: transform .25s, opacity .25s; }
+        .nav-burger:hover { background: #F4F4F5; }
+        .nav-burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-burger.active span:nth-child(2) { opacity: 0; }
+        .nav-burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        @media (max-width: 900px) {
+            .nav { height: 60px; padding: 0 16px; }
+            .nav-burger { display: flex; }
+            .nav-center { position: absolute; top: 100%; left: 0; right: 0; display: none; flex-direction: column; align-items: stretch; gap: 2px; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 16px 32px rgba(24,24,27,0.10); padding: 10px 14px; z-index: 999; }
+            .nav.menu-open .nav-center { display: flex; }
+            .nav.menu-open .nav-center .nav-link { padding: 13px 16px; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; }
+            .nav.menu-open .nav-center .nav-link.active { background: #F4F4F5; }
+            .nav-dropdown { width: 100%; }
+            .nav-dropdown > .nav-link { width: 100%; justify-content: space-between; }
+            .nav-dropdown-menu {
+                position: static; transform: none; opacity: 1; visibility: visible; display: none;
+                box-shadow: none; border: none; border-radius: 10px; background: #F8FAFC;
+                min-width: 0; padding: 6px; margin: 2px 0 4px;
+            }
+            .nav-dropdown.open .nav-dropdown-menu { display: block; transform: none; }
+            .nav-dropdown-item { padding: 9px 10px; }
+            .nav-dropdown-icon { width: 32px; height: 32px; border-radius: 9px; font-size: 15px; }
+            .nav-dropdown-title { font-size: 13px; }
+            .nav-dropdown-desc { font-size: 11px; }
+
+        }
+
+        /* Page Header */
+        .page-header { text-align: center; padding: 100px 24px 32px; }
+        .page-header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .page-header p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 12px;
+            background: #F4F4F5;
+            border-radius: 12px;
+            padding: 4px;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cat-btn {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #71717A;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cat-btn:hover { color: var(--text); background: #E8E8EC; }
+        .cat-btn.active {
+            background: white;
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: 700;
+        }
+
+        /* Role Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin: 0 auto 28px;
+            background: #F4F4F5;
+            border-radius: 12px;
+            padding: 4px;
+            max-width: 640px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #71717A;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: var(--text); background: #F4F4F5; }
+        .tab-btn.active {
+            background: white;
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
+        /* Video Section */
+        .video-section {
+            padding: 0 48px 48px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .video-container {
+            display: none;
+            gap: 24px;
+            align-items: flex-start;
+        }
+        .video-container.active { display: flex; }
+        .video-player { flex: 0 0 720px; max-width: 100%; }
+        .video-player video {
+            width: 100%;
+            max-width: 720px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            background: #000;
+        }
+        .video-info { flex: 0 0 340px; min-width: 280px; max-width: 380px; }
+        .video-info h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+        .video-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .role-student { background: #EFF6FF; color: #2563EB; }
+        .role-parent { background: #F0FDF4; color: #16A34A; }
+        .role-director { background: #FEF3C7; color: #D97706; }
+        .role-educare { background: #F5F3FF; color: #7C3AED; }
+
+        .step-list { list-style: none; padding: 0; }
+        .step-list li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        .step-list li:last-child { border-bottom: none; }
+        .step-list li strong { color: var(--text); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav { padding: 0 16px; }
+            .page-header { padding: 80px 16px 24px; }
+            .page-header h1 { font-size: 24px; }
+            .category-tabs { margin: 0 16px 10px; max-width: none; }
+            .tabs { margin: 0 16px 20px; overflow-x: auto; }
+            .tab-btn { padding: 10px 16px; font-size: 13px; white-space: nowrap; }
+            .video-section { padding: 0 16px 24px; }
+            .video-container.active { flex-direction: column; }
+            .video-player { flex: none; width: 100%; }
+            .video-info { flex: none; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="/" class="nav-logo-text"><img src="/common/assets/brand/nubida-logo-light.png" alt="누비다플랫폼" style="height:16px;width:auto;display:block;"></a>
+        </div>
+        <div class="nav-center" id="navCenter">
+            <a href="/pages/company.html" class="nav-link">회사소개</a>
+            <a href="/pages/find-academy.html" class="nav-link">교육기관 찾기</a>
+            <a href="/pages/guide-videos.html" class="nav-link active">가이드 영상</a>
+            <a href="/pages/partnership.html" class="nav-link">파트너십</a>
+            <a href="/pages/contact.html" class="nav-link">문의하기</a>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn nav-start" onclick="location.href='/pages/login.html'">시작하기</button>
+            <button class="nav-burger" id="navBurger" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>가이드 영상</h1>
+        <p>누비다플랫폼의 회원가입 방법과 역할별 기능을 가이드 영상으로 확인하세요.<br>회원가입 없이 누구나 시청할 수 있습니다.</p>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs" role="tablist">
+        <button class="cat-btn active" data-cat="register" onclick="switchCategory('register')">📝 회원가입</button>
+        <button class="cat-btn" data-cat="features" onclick="switchCategory('features')">🚀 기능 소개</button>
+    </div>
+
+    <!-- Role Tabs (Register) -->
+    <div class="tabs role-tabs-register" role="tablist">
+        <button class="tab-btn active" data-role="student" onclick="switchTab('register','student')">🎓 학생</button>
+        <button class="tab-btn" data-role="parent" onclick="switchTab('register','parent')">👨‍👩‍👧 학부모</button>
+        <button class="tab-btn" data-role="director" onclick="switchTab('register','director')">👔 원장</button>
+        <button class="tab-btn" data-role="educare" onclick="switchTab('register','educare')">🏫 에듀케어</button>
+    </div>
+
+    <!-- Role Tabs (Features) -->
+    <div class="tabs role-tabs-features" role="tablist" style="display:none">
+        <button class="tab-btn active" data-role="student" onclick="switchTab('features','student')">🎓 학생</button>
+        <button class="tab-btn" data-role="parent" onclick="switchTab('features','parent')">👨‍👩‍👧 학부모</button>
+        <button class="tab-btn" data-role="director" onclick="switchTab('features','director')">👔 원장</button>
+        <button class="tab-btn" data-role="educare" onclick="switchTab('features','educare')">🏫 에듀케어</button>
+    </div>
+
+    <!-- REGISTER VIDEOS -->
+    <div class="video-section video-section-register">
+        <div class="video-container active" id="reg-student">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/student.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-student">🎓 학생</span>
+                <h3>학생 회원가입 가이드</h3>
+                <p>학생 권한으로 누비다플랫폼에 가입하는 전체 과정을 안내합니다.<br><br>✅ <strong>등록 코드 필요</strong> (기관 발급)<br>✅ 별도 승인 불필요 — 정보 입력 후 즉시 가입 완료</p>
+                <ul class="step-list">
+                    <li>STEP 01 · 로그인 페이지 접속</li>
+                    <li>STEP 02 · 역할 선택 (학생)</li>
+                    <li>STEP 03 · 등록 코드 인증</li>
+                    <li>STEP 04 · 개인 정보 입력</li>
+                    <li>STEP 05 · <strong>가입 완료</strong> (바로 이용 가능)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="video-container" id="reg-parent">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/parent.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-parent">👨‍👩‍👧 학부모</span>
+                <h3>학부모 회원가입 가이드</h3>
+                <p>학부모 권한으로 누비다플랫폼에 가입하는 전체 과정을 안내합니다.<br><br>✅ <strong>등록 코드 필요</strong> (자녀 교육 기관 발급)<br>✅ 별도 승인 불필요 — 정보 입력 후 즉시 가입 완료</p>
+                <ul class="step-list">
+                    <li>STEP 01 · 로그인 페이지 접속</li>
+                    <li>STEP 02 · 역할 선택 (학부모)</li>
+                    <li>STEP 03 · 등록 코드 인증</li>
+                    <li>STEP 04 · 개인 정보 입력</li>
+                    <li>STEP 05 · <strong>가입 완료</strong> (바로 이용 가능)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="video-container" id="reg-director">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/director.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-director">👔 원장</span>
+                <h3>원장 회원가입 가이드</h3>
+                <p>원장 권한으로 누비다플랫폼에 가입하는 전체 과정을 안내합니다.<br><br>✅ <strong>등록 코드 필요</strong> (본사 발급)<br>⏳ <strong>본사 승인 필요</strong> — 학원 정보 추가 입력 후 승인 대기</p>
+                <ul class="step-list">
+                    <li>STEP 01 · 로그인 페이지 접속</li>
+                    <li>STEP 02 · 역할 선택 (원장)</li>
+                    <li>STEP 03 · 등록 코드 인증</li>
+                    <li>STEP 04 · 개인 정보 + <strong>학원 정보 입력</strong></li>
+                    <li>STEP 05 · <strong>본사 승인 대기</strong></li>
+                </ul>
+            </div>
+        </div>
+        <div class="video-container" id="reg-educare">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/educare.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-educare">🏫 에듀케어</span>
+                <h3>에듀케어 회원가입 가이드</h3>
+                <p>에듀케어 권한으로 누비다플랫폼에 가입하는 전체 과정을 안내합니다.<br><br>🚫 <strong>등록 코드 불필요</strong><br>⏳ <strong>본사 승인 필요</strong> — 정보 입력 후 본사 관리자 승인 대기</p>
+                <ul class="step-list">
+                    <li>STEP 01 · 로그인 페이지 접속</li>
+                    <li>STEP 02 · 역할 선택 (에듀케어)</li>
+                    <li>STEP 03 · <strong>코드 불필요</strong> → 정보 입력 바로 진행</li>
+                    <li>STEP 04 · 에듀케어 정보 입력</li>
+                    <li>STEP 05 · <strong>본사 승인 대기</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES VIDEOS -->
+    <div class="video-section video-section-features" style="display:none">
+        <div class="video-container active" id="feat-student">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/features_student.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-student">🎓 학생</span>
+                <h3>학생 기능 소개</h3>
+                <p>학생이 누비다플랫폼에서 사용할 수 있는 주요 기능을 소개합니다.</p>
+                <ul class="step-list">
+                    <li>📊 대시보드 — 학습 현황 한눈에 확인</li>
+                    <li>📚 강좌 탐색 및 수강 신청</li>
+                    <li>🤖 AI 튜터와 함께하는 스마트 학습</li>
+                    <li>📖 포트폴리오 작성 및 관리</li>
+                    <li>🎁 포인트로 기프티콘 교환</li>
+                </ul>
+            </div>
+        </div>
+        <div class="video-container" id="feat-parent">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/features_parent.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-parent">👨‍👩‍👧 학부모</span>
+                <h3>학부모 기능 소개</h3>
+                <p>학부모가 누비다플랫폼에서 사용할 수 있는 주요 기능을 소개합니다.</p>
+                <ul class="step-list">
+                    <li>📊 대시보드 — 자녀 학습 현황 확인</li>
+                    <li>👨‍👩‍👧 자녀 관리 및 모니터링</li>
+                    <li>📈 학습 진도 및 성적 조회</li>
+                    <li>💳 수강료 결제 및 내역 관리</li>
+                    <li>💬 상담 신청 및 채팅</li>
+                </ul>
+            </div>
+        </div>
+        <div class="video-container" id="feat-director">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/features_director.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-director">👔 원장</span>
+                <h3>원장 기능 소개</h3>
+                <p>원장이 누비다플랫폼에서 사용할 수 있는 주요 기능을 소개합니다.</p>
+                <ul class="step-list">
+                    <li>📊 대시보드 — 학원 운영 현황</li>
+                    <li>👥 학생 명단 및 학급 관리</li>
+                    <li>📋 출결 및 성적 관리</li>
+                    <li>💰 매출 관리 및 보고서</li>
+                    <li>✅ 회원 가입 승인</li>
+                </ul>
+            </div>
+        </div>
+        <div class="video-container" id="feat-educare">
+            <div class="video-player">
+                <video controls playsinline preload="metadata" poster="">
+                    <source src="/common/assets/guide-videos/features_educare.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-info">
+                <span class="role-badge role-educare">🏫 에듀케어</span>
+                <h3>에듀케어 기능 소개</h3>
+                <p>에듀케어가 누비다플랫폼에서 사용할 수 있는 주요 기능을 소개합니다.</p>
+                <ul class="step-list">
+                    <li>📊 대시보드 — 전사 지표 확인</li>
+                    <li>🏫 지점 및 원장 관리</li>
+                    <li>👥 전체 사용자 관리</li>
+                    <li>✅ 승인 및 통계 분석</li>
+                    <li>📄 계약 관리</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let _currentCategory = 'register';
+
+    function switchCategory(cat) {
+        _currentCategory = cat;
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.cat === cat);
+        });
+        document.querySelector('.role-tabs-register').style.display = cat === 'register' ? '' : 'none';
+        document.querySelector('.role-tabs-features').style.display = cat === 'features' ? '' : 'none';
+        document.querySelector('.video-section-register').style.display = cat === 'register' ? '' : 'none';
+        document.querySelector('.video-section-features').style.display = cat === 'features' ? '' : 'none';
+        switchTab(cat, 'student');
+    }
+
+    function switchTab(cat, role) {
+        const prefix = cat === 'register' ? 'reg-' : 'feat-';
+        const tabSelector = cat === 'register' ? '.role-tabs-register' : '.role-tabs-features';
+        const sectionSelector = cat === 'register' ? '.video-section-register' : '.video-section-features';
+        
+        document.querySelectorAll(tabSelector + ' .tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.role === role);
+        });
+        document.querySelectorAll(sectionSelector + ' .video-container').forEach(container => {
+            container.classList.toggle('active', container.id === prefix + role);
+        });
+        document.querySelectorAll('video').forEach(v => v.pause());
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash) {
+            const parts = hash.split('-');
+            if (parts.length === 2 && ['register','features'].includes(parts[0]) && ['student','parent','director','educare'].includes(parts[1])) {
+                switchCategory(parts[0]);
+                switchTab(parts[0], parts[1]);
+            }
+        }
+    });
+    </script>
+    <script src="/common/js/site-blocks.js?v=20260918nl"></script>
+    <script src="/common/js/public-site.js?v=20260914nav"></script>
+</body>
+</html>

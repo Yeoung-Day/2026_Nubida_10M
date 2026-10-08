@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>과제 — 누비다플랫폼</title>
+<link rel="icon" type="image/png" href="/favicon.ico">
+
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260910nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/pages/student/style.css?v=20260804c">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:24px; }
+        .stat-card { background:var(--bg-surface,#fff); border:1px solid var(--border-subtle,#e2e8f0); border-radius:12px; padding:20px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+        .stat-card .stat-value { font-size:24px; font-weight:700; color:var(--text-primary,#1e293b); }
+        .stat-card .stat-label { font-size:12px; color:var(--text-secondary,#64748b); margin-top:4px; }
+        .assignment-item { display:flex; align-items:center; gap:12px; padding:16px; border-bottom:1px solid var(--border-subtle,#e2e8f0); transition:background 0.15s; }
+        .assignment-item:last-child { border-bottom:none; }
+        .assignment-item:hover { background:var(--bg-accent-light,#f5f6ff); }
+        .assignment-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:#f1f5f9; }
+        .assignment-info { flex:1; min-width:0; }
+        .assignment-title { font-size:15px; font-weight:600; color:var(--text-primary,#1e293b); }
+        .assignment-meta { font-size:12px; color:var(--text-tertiary,#94a3b8); margin-top:2px; }
+        .assignment-status { flex-shrink:0; }
+        .progress-ring { width:32px; height:32px; }
+        .empty-state { text-align:center; padding:60px 20px; color:var(--text-tertiary,#94a3b8); }
+        .empty-state .empty-icon { font-size:48px; margin-bottom:16px; opacity:0.4; }
+    </style>
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+                <a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+                <a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+                <a class="nav-item" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+                <a class="nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+                <a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">학생</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>📝 과제</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+
+            <div class="stats-row" id="statsRow">
+                <div class="stat-card"><div class="stat-value" id="statTotal">-</div><div class="stat-label">전체 과제</div></div>
+                <div class="stat-card"><div class="stat-value" id="statSubmitted">-</div><div class="stat-label">제출 완료</div></div>
+                <div class="stat-card"><div class="stat-value" id="statPending">-</div><div class="stat-label">미제출</div></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2>과제 목록</h2></div>
+                <div id="assignmentList" class="card-body" style="padding:0">
+                    <div class="empty-state"><div class="empty-icon">📝</div><p>과제가 없습니다</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260908a"></script>
+    <script src="/common/js/utils.js?v=20260804b"></script>
+    <script src="/common/js/pages-student.js?v=20260804b"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+            requireAuth();
+            renderSidebarUser();
+            loadAssignments();
+        });
+
+        async function loadAssignments() {
+            try {
+                const res = await apiGet('/student/assignments');
+                const list = res?.data || res || [];
+                renderAssignments(list);
+            } catch(e) {
+                document.getElementById('assignmentList').innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><p>과제를 불러올 수 없습니다</p></div>';
+            }
+        }
+
+        function renderAssignments(list) {
+            const container = document.getElementById('assignmentList');
+            const total = list.length;
+            const submitted = list.filter(a => a.status === 'submitted' || a.status === 'graded').length;
+            const pending = list.filter(a => a.status === 'pending' || !a.status).length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statSubmitted').textContent = submitted;
+            document.getElementById('statPending').textContent = pending;
+
+            if (!list || list.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>과제가 없습니다</p></div>';
+                return;
+            }
+
+            container.innerHTML = list.map(a => {
+                const isDone = a.status === 'submitted' || a.status === 'graded';
+                const statusText = isDone ? '✅ 제출 완료' : '⏳ 미제출';
+                const dateText = a.due_date ? '마감: ' + new Date(a.due_date).toLocaleDateString('ko-KR') : '';
+                return '<div class="assignment-item">'
+                    + '<div class="assignment-icon">📄</div>'
+                    + '<div class="assignment-info">'
+                    + '<div class="assignment-title">' + esc(a.title || '과제') + '</div>'
+                    + '<div class="assignment-meta">' + esc(a.course_name || '') + (dateText ? ' · ' + dateText : '') + '</div>'
+                    + '</div>'
+                    + '<div class="assignment-status"><span class="badge badge-' + (isDone ? 'success' : 'warning') + '">' + statusText + '</span></div>'
+                    + '</div>';
+            }).join('');
+        }
+    </script>
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

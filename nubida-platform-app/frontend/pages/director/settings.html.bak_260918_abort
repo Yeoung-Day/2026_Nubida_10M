@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>설정 — 누비다플랫폼-원장</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="active nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>설정</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+
+            <div class="settings-grid">
+
+                <!-- ===== LEFT COLUMN ===== -->
+
+                <!-- ===== 계정 정보 ===== -->
+                <div class="card mb-24">
+                    <div class="card-header"><h2>👤 계정 정보</h2></div>
+                    <div class="card-body" style="padding:0">
+                        <div style="padding:var(--space-5)">
+                            <div class="info-row">
+                                <span class="info-label">아이디</span>
+                                <span class="info-value" id="displayUsername">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">이름</span>
+                                <span class="info-value" id="displayName">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">이메일</span>
+                                <span class="info-value" id="displayEmail">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">전화번호</span>
+                                <span class="info-value" id="displayPhone">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">권한</span>
+                                <span class="info-value"><span class="badge-director">👑 원장</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== 프로필 수정 ===== -->
+                <div class="card mb-24">
+                    <div class="card-header"><h2>✏️ 프로필 수정</h2></div>
+                    <div class="card-body">
+                        <div class="form-group"><label>이름</label><input type="text" class="form-input" id="profileName" placeholder="이름 입력"></div>
+                        <div class="form-group"><label>이메일</label><input type="email" class="form-input" id="profileEmail" placeholder="email@example.com"></div>
+                        <div class="form-group"><label>전화번호</label><input type="text" class="form-input" id="profilePhone" placeholder="010-0000-0000"></div>
+                        <div style="margin-top:16px">
+                            <button class="btn btn-primary" onclick="saveProfile()">💾 정보 저장</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== RIGHT COLUMN ===== -->
+
+                <!-- ===== 비밀번호 변경 ===== -->
+                <div class="card mb-24">
+                    <div class="card-header"><h2>🔑 비밀번호 변경</h2></div>
+                    <div class="card-body">
+                        <div class="form-group"><label>현재 비밀번호</label><input type="password" class="form-input" id="pwCurrent" placeholder="현재 비밀번호 입력"></div>
+                        <div class="form-group"><label>새 비밀번호</label><input type="password" class="form-input" id="pwNew" placeholder="새 비밀번호 입력 (4자 이상)"></div>
+                        <div class="form-group"><label>새 비밀번호 확인</label><input type="password" class="form-input" id="pwConfirm" placeholder="새 비밀번호 다시 입력"></div>
+                        <div style="margin-top:16px">
+                            <button class="btn btn-primary" onclick="changePassword()">🔑 비밀번호 변경</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== 알림 설정 ===== -->
+                <div class="card mb-24">
+                    <div class="card-header"><h2>🔔 알림 설정</h2></div>
+                    <div class="card-body" style="padding:0">
+                        <div style="padding:var(--space-5)">
+                            <div class="toggle-setting">
+                                <div class="toggle-setting-label">
+                                    <span class="title">📧 이메일 알림</span>
+                                    <span class="desc">중요 공지 및 보고서 알림을 이메일로 받습니다</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifyEmail" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-setting">
+                                <div class="toggle-setting-label">
+                                    <span class="title">📱 SMS 알림</span>
+                                    <span class="desc">긴급 공지 및 출석 이상 알림을 문자로 받습니다</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifySms">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-setting">
+                                <div class="toggle-setting-label">
+                                    <span class="title">📊 보고서 알림</span>
+                                    <span class="desc">주간/월간 보고서가 생성되면 알림을 받습니다</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifyReport" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-setting">
+                                <div class="toggle-setting-label">
+                                    <span class="title">✅ 출결 이상 알림</span>
+                                    <span class="desc">학생 출결에 이상이 있을 때 알림을 받습니다</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifyAttendance" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-footer" style="border-top:1px solid var(--border-subtle);padding:var(--space-4) var(--space-5)">
+                            <button class="btn btn-primary" onclick="saveNotificationSettings()">💾 알림 설정 저장</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/api.js?v=20260911nav"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requireAuth();
+            renderSidebarUser();
+            loadProfile();
+            loadNotificationSettings();
+            const now = new Date();
+            const el = document.getElementById('todayDate');
+            if (el) el.textContent = now.toLocaleDateString('ko-KR', {
+                year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+            });
+        });
+
+        /* ===== 프로필 로드 ===== */
+        async function loadProfile() {
+            try {
+                const res = await apiGet('/auth/me');
+                const u = res?.data || res;
+                if (u.name) {
+                    document.getElementById('profileName').value = u.name;
+                    document.getElementById('displayName').textContent = u.name;
+                }
+                if (u.username) {
+                    document.getElementById('displayUsername').textContent = u.username;
+                } else if (u.email) {
+                    document.getElementById('displayUsername').textContent = u.email.split('@')[0];
+                }
+                if (u.email) {
+                    document.getElementById('profileEmail').value = u.email;
+                    document.getElementById('displayEmail').textContent = u.email;
+                }
+                if (u.phone) {
+                    document.getElementById('profilePhone').value = u.phone;
+                    document.getElementById('displayPhone').textContent = u.phone;
+                }
+            } catch(e) { console.warn('프로필 로드 실패', e); }
+        }
+
+        /* ===== 프로필 저장 ===== */
+        async function saveProfile() {
+            const data = {
+                name: document.getElementById('profileName').value,
+                email: document.getElementById('profileEmail').value,
+                phone: document.getElementById('profilePhone').value,
+            };
+            try {
+                const res = await apiPut('/auth/me', data);
+                showAlert(res?.message || '정보가 수정되었습니다.', 'success');
+                const fresh = await apiGet('/auth/me');
+                if (fresh?.data) localStorage.setItem('user', JSON.stringify(fresh.data));
+                renderSidebarUser();
+                loadProfile(); // Refresh display
+            } catch(e) {
+                showAlert(e?.message || '저장 실패', 'error');
+            }
+        }
+
+        /* ===== 비밀번호 변경 ===== */
+        async function changePassword() {
+            const oldPw = document.getElementById('pwCurrent').value;
+            const newPw = document.getElementById('pwNew').value;
+            const confirmPw = document.getElementById('pwConfirm').value;
+            if (!oldPw || !newPw || !confirmPw) { showAlert('모든 필드를 입력해주세요.', 'error'); return; }
+            if (newPw !== confirmPw) { showAlert('새 비밀번호가 일치하지 않습니다.', 'error'); return; }
+            if (newPw.length < 4) { showAlert('비밀번호는 4자 이상이어야 합니다.', 'error'); return; }
+            try {
+                const res = await apiPut('/auth/password', { old_password: oldPw, new_password: newPw });
+                showAlert(res?.message || '비밀번호가 변경되었습니다.', 'success');
+                document.getElementById('pwCurrent').value = '';
+                document.getElementById('pwNew').value = '';
+                document.getElementById('pwConfirm').value = '';
+            } catch(e) {
+                showAlert(e?.message || '비밀번호 변경 실패', 'error');
+            }
+        }
+
+        /* ===== 알림 설정 로드 ===== */
+        async function loadNotificationSettings() {
+            try {
+                const res = await apiGet('/auth/me/notifications');
+                const s = res?.data || res || {};
+                if (s.email_notifications !== undefined) document.getElementById('notifyEmail').checked = s.email_notifications;
+                if (s.sms_notifications !== undefined) document.getElementById('notifySms').checked = s.sms_notifications;
+                if (s.report_notifications !== undefined) document.getElementById('notifyReport').checked = s.report_notifications;
+                if (s.attendance_alerts !== undefined) document.getElementById('notifyAttendance').checked = s.attendance_alerts;
+            } catch(e) {
+                // Use defaults silently
+            }
+        }
+
+        /* ===== 알림 설정 저장 ===== */
+        async function saveNotificationSettings() {
+            const payload = {
+                email_notifications: document.getElementById('notifyEmail').checked,
+                sms_notifications: document.getElementById('notifySms').checked,
+                report_notifications: document.getElementById('notifyReport').checked,
+                attendance_alerts: document.getElementById('notifyAttendance').checked,
+            };
+            try {
+                const res = await apiPut('/auth/me/notifications', payload);
+                showAlert(res?.message || '알림 설정이 저장되었습니다.', 'success');
+            } catch(e) {
+                console.error('알림 저장 실패:', e);
+                showAlert('알림 설정 저장 실패: ' + (e?.message || '알 수 없는 오류'), 'error');
+            }
+        }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

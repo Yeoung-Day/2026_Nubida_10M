@@ -1,0 +1,257 @@
+/* ============================================================
+   누비다플랫폼 v6.0 — 계약 관리 페이지 전용 스타일
+   ============================================================ */
+
+/* ---- 툴바 ---- */
+.contracts-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.contracts-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.contracts-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- 상태 탭 ---- */
+.contracts-tabs {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+.contracts-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  user-select: none;
+  white-space: nowrap;
+  line-height: 1;
+  height: 38px;
+}
+.contracts-tab:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+.contracts-tab.active {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- 통계 바 ---- */
+.contracts-stats {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+}
+.contracts-stats .stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.contracts-stats .stat-label {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  font-weight: var(--weight-medium);
+}
+.contracts-stats .stat-value {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+.contracts-stats .stat-divider {
+  width: 1px;
+  background: var(--border-subtle);
+  align-self: stretch;
+}
+
+/* ---- 카드 테이블 ---- */
+.contracts-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+.contracts-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-white);
+}
+.contracts-table th {
+  background: var(--bg-muted);
+  padding: 10px 14px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+.contracts-table td {
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+.contracts-table tr:last-child td {
+  border-bottom: none;
+}
+.contracts-table tr:hover td {
+  background: var(--bg-muted);
+}
+.contracts-table .ctr-empty {
+  padding: 40px 0 !important;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
+/* ---- 상태 배지 ---- */
+.contract-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+.contract-status.active {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.contract-status.expired {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.contract-status.terminated {
+  background: var(--bg-subtle);
+  color: var(--text-tertiary);
+}
+.contract-status.pending {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+/* ---- 계약 타입 배지 ---- */
+.contract-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+.contract-type-badge.direct {
+  background: var(--secondary-bg);
+  color: var(--secondary);
+}
+.contract-type-badge.franchise {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+/* ---- 계약 폼 ---- */
+.contract-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+.contract-form-row .full {
+  grid-column: 1 / -1;
+}
+.contract-form-row .form-group {
+  margin-bottom: var(--space-4);
+}
+.contract-form-row .form-group label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+.contract-form-row .form-group .form-input {
+  width: 100%;
+}
+
+/* ---- 라디오 그룹 ---- */
+.radio-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.radio-group input[type="radio"] {
+  accent-color: var(--secondary);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* ---- 상태 변경 드롭다운 ---- */
+.status-change-select {
+  padding: 4px 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: var(--text-2xs);
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: var(--bg-white);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+.status-change-select:hover {
+  border-color: var(--border-strong);
+}
+.status-change-select:focus {
+  border-color: var(--secondary);
+}
+
+/* ---- 페이지네이션 ---- */
+.contracts-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 0;
+  margin-top: 8px;
+}

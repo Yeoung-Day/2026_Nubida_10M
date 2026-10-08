@@ -1,0 +1,525 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>공지사항 — 누비다플랫폼-본사</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <link rel="manifest" href="/manifest.json?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    </head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        
+   // 섹션 매핑
+   const sectionMap = {
+   'branches.html': 'operations', 'academy-management.html': 'operations',
+   'courses.html': 'operations', 'users.html': 'operations',
+   'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>공지사항</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+   <!-- 툴바 -->
+   <div class="notices-toolbar">
+   <div class="notices-toolbar-left">
+   <select class="form-input" id="statusFilter" onchange="loadNotices(1)" style="width:150px">
+   <option value="">전체 상태</option>
+   <option value="published">발행</option>
+   <option value="draft">임시저장</option>
+   </select>
+   <span class="small-text" id="noticeCount">0개</span>
+   </div>
+   <div class="notices-toolbar-right">
+   <button class="btn btn-primary btn-sm" onclick="openModal('createNoticeModal')">+ 새 공지사항</button>
+   </div>
+   </div>
+
+   <!-- 공지사항 목록 -->
+   <div class="notices-card">
+   <table class="notices-table">
+   <thead>
+   <tr>
+   <th style="width:50px">ID</th>
+   <th>제목</th>
+   <th style="width:90px">작성자</th>
+   <th style="width:80px">상태</th>
+   <th style="width:70px">고정</th>
+   <th style="width:60px">조회</th>
+   <th style="width:110px">작성일</th>
+   <th style="width:120px">작업</th>
+   </tr>
+   </thead>
+   <tbody id="noticeTableBody">
+   <tr class="notice-empty">
+   <td colspan="8">공지사항을 불러오는 중...</td>
+   </tr>
+   </tbody>
+   </table>
+   <div class="pagination-wrap" id="paginationWrap"></div>
+   </div>
+   </main>
+   </div>
+
+   <!-- 공지사항 생성 모달 -->
+   <div class="modal-overlay" id="createNoticeModal">
+   <div class="modal" style="max-width:640px">
+   <div class="modal-header">
+   <h3>📢 새 공지사항 작성</h3>
+   </div>
+   <div class="modal-body">
+   <div class="form-row">
+   <div class="full form-group">
+   <label class="form-label">제목 *</label>
+   <input type="text" class="form-input" id="newTitle" placeholder="공지사항 제목을 입력하세요">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">내용 *</label>
+   <textarea class="form-textarea" id="newContent" placeholder="공지사항 내용을 입력하세요"></textarea>
+   </div>
+   <div class="form-group">
+   <label class="form-label">작성자 *</label>
+   <input type="text" class="form-input" id="newAuthor" placeholder="작성자 이름">
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="newStatus">
+   <option value="published">발행</option>
+   <option value="draft">임시저장</option>
+   </select>
+   </div>
+   <div class="full checkbox-inline">
+   <input type="checkbox" id="newIsPinned">
+   <label for="newIsPinned">📌 상단 고정 (목록 최상단에 표시)</label>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('createNoticeModal')">취소</button>
+   <button class="btn btn-primary" onclick="createNotice()">등록</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 공지사항 수정 모달 -->
+   <div class="modal-overlay" id="editNoticeModal">
+   <div class="modal" style="max-width:640px">
+   <div class="modal-header">
+   <h3>✏️ 공지사항 수정</h3>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="editNoticeId">
+   <div class="form-row">
+   <div class="full form-group">
+   <label class="form-label">제목</label>
+   <input type="text" class="form-input" id="editTitle" placeholder="공지사항 제목을 입력하세요">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">내용</label>
+   <textarea class="form-textarea" id="editContent" placeholder="공지사항 내용을 입력하세요"></textarea>
+   </div>
+   <div class="form-group">
+   <label class="form-label">작성자</label>
+   <input type="text" class="form-input" id="editAuthor" placeholder="작성자 이름">
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="editStatus">
+   <option value="published">발행</option>
+   <option value="draft">임시저장</option>
+   </select>
+   </div>
+   <div class="full checkbox-inline">
+   <input type="checkbox" id="editIsPinned">
+   <label for="editIsPinned">📌 상단 고정 (목록 최상단에 표시)</label>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('editNoticeModal')">취소</button>
+   <button class="btn btn-primary" onclick="updateNotice()">저장</button>
+   </div>
+   </div>
+   </div>
+
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/utils.js?v=20260610a"></script>
+  <script>
+  // ===== XSS Helper =====
+  function escHtml(s) {
+    if (s == null) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // formatDate fallback: utils.js 로드 실패 시 대비
+  if (typeof formatDate !== 'function') {
+    window.formatDate = function(d) {
+      if (!d) return '-';
+      try {
+        const date = new Date(d);
+        if (isNaN(date.getTime())) return d;
+        return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      } catch(e) { return d; }
+    };
+  }
+
+  // ===== State =====
+  let allNotices = [];
+  let currentPage = 1;
+  let totalPages = 1;
+  const PER_PAGE = 20;
+
+  // ===== Status Labels =====
+  const statusLabels = {
+    'published': '발행',
+    'draft': '임시저장',
+  };
+
+  // ===== Initialization =====
+  document.addEventListener('DOMContentLoaded', function() {
+    requireAuth();
+    renderSidebarUser();
+    onAuthReady(function() { loadNotices(1); });
+  });
+
+  // ===== Load Notices =====
+  async function loadNotices(page) {
+    currentPage = page || 1;
+    const status = document.getElementById('statusFilter').value;
+
+    try {
+      let url = '/headquarters/notices?page=' + currentPage + '&per_page=' + PER_PAGE;
+      if (status) url += '&status=' + encodeURIComponent(status);
+
+      const res = await apiGet(url);
+      allNotices = res.data || [];
+      totalPages = res.total_pages || 1;
+      renderNotices();
+      renderPaginationUI();
+      document.getElementById('noticeCount').textContent = (res.total || 0) + '개';
+    } catch (err) {
+      console.error('Failed to load notices:', err);
+      showAlert('공지사항 목록을 불러오는데 실패했습니다.', 'error');
+    }
+  }
+
+  // ===== Filter Notices =====
+  function filterNotices() {
+    loadNotices(1);
+  }
+
+  // ===== Render Notices =====
+  function renderNotices() {
+    const tbody = document.getElementById('noticeTableBody');
+
+    if (allNotices.length === 0) {
+      tbody.innerHTML = '<tr class="notice-empty"><td colspan="8">📢 등록된 공지사항이 없습니다.</td></tr>';
+      return;
+    }
+
+    // Pinned notices first, then by created_at desc
+    const sorted = [...allNotices].sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1;
+      if (!a.is_pinned && b.is_pinned) return 1;
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+
+    let html = '';
+    sorted.forEach(n => {
+      const statusLabel = statusLabels[n.status] || n.status || '-';
+      const statusClass = n.status || 'draft';
+      const pinnedIcon = n.is_pinned ? '📌' : '·';
+      const pinnedClass = n.is_pinned ? 'yes' : 'no';
+      const rowClass = n.is_pinned ? 'notice-pinned' : '';
+      const createdDate = n.created_at ? formatDate(n.created_at) : '-';
+      // Truncate title for display
+      const title = n.title || '-';
+      const titleDisplay = title.length > 50 ? escHtml(title.substring(0, 50)) + '…' : escHtml(title);
+
+      html += '<tr class="' + rowClass + '">';
+      html += '<td style="font-size:12px;color:var(--text-tertiary)">' + escHtml('' + n.id) + '</td>';
+      html += '<td><strong title="' + escHtml(title) + '">' + titleDisplay + '</strong></td>';
+      html += '<td style="font-size:12px">' + escHtml(n.author || '-') + '</td>';
+      html += '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>';
+      html += '<td style="text-align:center"><span class="pinned-badge ' + pinnedClass + '">' + pinnedIcon + '</span></td>';
+      html += '<td style="text-align:center;font-size:12px;color:var(--text-tertiary)">' + (n.view_count != null ? escHtml('' + n.view_count) : '0') + '</td>';
+      html += '<td style="font-size:12px;color:var(--text-tertiary)">' + createdDate + '</td>';
+      html += '<td>';
+      html += '<div class="action-cell">';
+      html += '<button class="btn btn-ghost btn-xs" onclick="openEditModal(' + n.id + ')">✏️ 수정</button>';
+      html += '<button class="btn btn-ghost btn-xs" style="color:var(--danger)" onclick="confirmDeleteNotice(' + n.id + ',\'' + escHtml(n.title || '') + '\')">🗑️ 삭제</button>';
+      html += '</div>';
+      html += '</td>';
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  // ===== Pagination =====
+  function renderPaginationUI() {
+    const wrap = document.getElementById('paginationWrap');
+    let html = '';
+
+    if (currentPage > 1) {
+      html += '<button onclick="loadNotices(1)">«</button>';
+      html += '<button onclick="loadNotices(' + (currentPage - 1) + ')">‹</button>';
+    } else {
+      html += '<button disabled>«</button><button disabled>‹</button>';
+    }
+
+    const start = Math.max(1, currentPage - 2);
+    const end = Math.min(totalPages, currentPage + 2);
+    for (let i = start; i <= end; i++) {
+      html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="loadNotices(' + i + ')">' + i + '</button>';
+    }
+
+    if (currentPage < totalPages) {
+      html += '<button onclick="loadNotices(' + (currentPage + 1) + ')">›</button>';
+      html += '<button onclick="loadNotices(' + totalPages + ')">»</button>';
+    } else {
+      html += '<button disabled>›</button><button disabled>»</button>';
+    }
+
+    wrap.innerHTML = html;
+  }
+
+  // ===== Create Notice =====
+  async function createNotice() {
+    const title = document.getElementById('newTitle').value.trim();
+    const content = document.getElementById('newContent').value.trim();
+    const author = document.getElementById('newAuthor').value.trim();
+    const status = document.getElementById('newStatus').value;
+    const is_pinned = document.getElementById('newIsPinned').checked;
+
+    if (!title || !content || !author) {
+      showAlert('제목, 내용, 작성자는 필수 항목입니다.', 'error');
+      return;
+    }
+
+    try {
+      await apiPost('/headquarters/notices', { title, content, author, status, is_pinned });
+      showAlert('공지사항이 등록되었습니다.', 'success');
+      closeModal('createNoticeModal');
+      // 폼 초기화
+      document.getElementById('newTitle').value = '';
+      document.getElementById('newContent').value = '';
+      document.getElementById('newAuthor').value = '';
+      document.getElementById('newStatus').value = 'published';
+      document.getElementById('newIsPinned').checked = false;
+      await loadNotices(1);
+    } catch (err) {
+      showAlert(err.message || '공지사항 등록에 실패했습니다.', 'error');
+    }
+  }
+
+  // ===== Open Edit Modal =====
+  function openEditModal(noticeId) {
+    const notice = allNotices.find(n => n.id === noticeId);
+    if (!notice) {
+      showAlert('공지사항 정보를 찾을 수 없습니다.', 'error');
+      return;
+    }
+
+    document.getElementById('editNoticeId').value = notice.id;
+    document.getElementById('editTitle').value = notice.title || '';
+    document.getElementById('editContent').value = notice.content || '';
+    document.getElementById('editAuthor').value = notice.author || '';
+    document.getElementById('editStatus').value = notice.status || 'published';
+    document.getElementById('editIsPinned').checked = notice.is_pinned || false;
+
+    openModal('editNoticeModal');
+  }
+
+  // ===== Update Notice =====
+  async function updateNotice() {
+    const id = parseInt(document.getElementById('editNoticeId').value);
+    const title = document.getElementById('editTitle').value.trim();
+    const content = document.getElementById('editContent').value.trim();
+    const author = document.getElementById('editAuthor').value.trim();
+    const status = document.getElementById('editStatus').value;
+    const is_pinned = document.getElementById('editIsPinned').checked;
+
+    if (!title || !content || !author) {
+      showAlert('제목, 내용, 작성자는 필수 항목입니다.', 'error');
+      return;
+    }
+
+    try {
+      await apiPut('/headquarters/notices/' + id, { title, content, author, status, is_pinned });
+      showAlert('공지사항이 수정되었습니다.', 'success');
+      closeModal('editNoticeModal');
+      await loadNotices(currentPage);
+    } catch (err) {
+      showAlert(err.message || '공지사항 수정에 실패했습니다.', 'error');
+    }
+  }
+
+  // ===== Delete Notice =====
+  function confirmDeleteNotice(id, title) {
+    if (confirm('"' + (title || '') + '" 공지사항을 삭제하시겠습니까?')) {
+      deleteNotice(id);
+    }
+  }
+
+  async function deleteNotice(id) {
+    try {
+      await apiDelete('/headquarters/notices/' + id);
+      showAlert('공지사항이 삭제되었습니다.', 'success');
+      await loadNotices(currentPage);
+    } catch (err) {
+      showAlert(err.message || '공지사항 삭제에 실패했습니다.', 'error');
+    }
+  }
+  </script>
+     </body>
+     </html>

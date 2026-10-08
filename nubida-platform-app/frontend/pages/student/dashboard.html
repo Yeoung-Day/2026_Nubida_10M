@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>학생 대시보드 — 누비다플랫폼</title>
+<link rel="icon" type="image/png" href="/favicon.ico">
+
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260910nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/print.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/pages/student/style.css?v=20260804c">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260805a"></script>
+
+<!-- ===== 학생 대시보드 전용 디자인 레이어 (미니멀/프로페셔널) ===== -->
+<style id="stu-dashboard-design">
+/* ---- 디자인 토큰 ---- */
+.app-layout{
+    --d-point:#4F5EF8;
+    --d-point-soft:#EEF0FE;
+    --d-point-line:#DDE1FB;
+    --d-bg:#FBFCFE;
+    --d-surface:#FFFFFF;
+    --d-border:#E8ECF5;
+    --d-border-soft:#EFF2F8;
+    --d-label:#98A1B2;
+    --d-body:#1F2437;
+    --d-muted:#6B7488;
+    --d-shadow:0 1px 2px rgba(31,36,55,.04), 0 6px 20px rgba(31,36,55,.05);
+    --d-shadow-hover:0 2px 6px rgba(31,36,55,.06), 0 14px 34px rgba(31,36,55,.09);
+    --d-radius:16px;
+    --d-radius-sm:14px;
+    --d-gap:10px;
+}
+body{background:var(--d-bg);color:var(--d-body);-webkit-font-smoothing:antialiased;
+    font-feature-settings:"tnum" 1,"cv02" 1,"cv03" 1;}
+
+/* ---- 메인 영역 리듬 ---- */
+.main-content{padding:var(--space-6,18px);}
+.main-content .mb-24{margin-bottom:18px !important;}
+.main-content .mt-24{margin-top:18px !important;}
+.top-nav{padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid var(--d-border);}
+.top-nav h1{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--d-body);}
+.top-nav .small-text,#todayDate{color:var(--d-label);font-size:13px;font-weight:500;letter-spacing:.01em;}
+
+/* ---- 통계 카드 4개 : 아이콘 배지 + 라벨 + 큰 숫자 ---- */
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--d-gap);}
+.stat-card{
+    position:relative;display:flex;flex-direction:column;justify-content:space-between;
+    padding:18px 18px 16px;background:var(--d-surface);
+    border:1px solid var(--d-border);border-radius:var(--d-radius);
+    box-shadow:var(--d-shadow);overflow:hidden;transition:box-shadow .22s ease,transform .22s ease,border-color .22s ease;
+}
+.stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--d-point);opacity:.9;}
+.stat-card::after{ /* 아이콘 배지 (배경 없이 라벨 앞에 SVG가 들어감) */
+    content:"";display:none;}
+.stat-card:hover{box-shadow:var(--d-shadow-hover);transform:translateY(-2px);border-color:var(--d-point-line);}
+.stat-card .stat-label{
+    display:flex;align-items:center;gap:8px;
+    font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--d-label);
+    text-transform:none;margin:0 0 12px;
+}
+.stat-card .stat-label svg{width:15px;height:15px;flex:0 0 auto;color:var(--d-point);opacity:.9;}
+.stat-card .stat-label .badge-ico{
+    width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--d-point-soft);color:var(--d-point);
+}
+.stat-card .stat-label .badge-ico svg{width:15px;height:15px;}
+.stat-card .stat-value{
+    font-size:30px;line-height:1;font-weight:700;letter-spacing:-.03em;color:var(--d-body);
+    font-variant-numeric:tabular-nums;
+}
+.stat-card .stat-value small,.stat-card .stat-value .unit{font-size:13px;font-weight:600;color:var(--d-label);margin-left:3px;}
+/* 상태색(기존 success/info/warning) → 포인트 컬러로 통일, 좌측 액센트만 미세 조정 */
+.stat-card.success{--d-point:#12B886;}
+.stat-card.success .stat-label svg,.stat-card.success .badge-ico{color:#0E9C74;}
+.stat-card.success .badge-ico{background:#E7F7F1;}
+.stat-card.info{--d-point:#4F5EF8;}
+.stat-card.warning{--d-point:#F59E0B;}
+.stat-card.warning .stat-label svg,.stat-card.warning .badge-ico{color:#D98A06;}
+.stat-card.warning .badge-ico{background:#FDF3E3;}
+
+/* ---- 카드 기본 ---- */
+.card{border-radius:var(--d-radius) !important;border:1px solid var(--d-border) !important;
+    background:var(--d-surface);box-shadow:var(--d-shadow) !important;transition:box-shadow .22s ease,border-color .22s ease;}
+.card:hover{border-color:var(--d-border);}
+.card-premium{box-shadow:var(--d-shadow) !important;}
+.card-header{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:16px 18px !important;border-bottom:1px solid var(--d-border-soft) !important;
+}
+.card-header h2,.card-header h3{
+    display:flex;align-items:center;gap:9px;
+    font-size:14.5px !important;font-weight:700 !important;letter-spacing:-.01em;color:var(--d-body) !important;margin:0;
+}
+.card-header h2 svg,.card-header h3 svg{width:16px;height:16px;color:var(--d-point);opacity:.95;}
+.card-header .badge-ico{
+    width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--d-point-soft);color:var(--d-point);flex:0 0 auto;
+}
+.card-header .badge-ico svg{width:15px;height:15px;}
+.card-body{padding:18px !important;}
+
+/* ---- 2열 그리드 ---- */
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--d-gap);align-items:start;}
+
+/* ---- '내 강좌' : 강좌 카드형 그리드 + 진행률 바 ---- */
+#myCourses{display:grid;grid-template-columns:1fr;gap:10px;}
+#myCourses .course-item,#myCourses .course-card,#myCourses .course{
+    position:relative;padding:14px 15px;border:1px solid var(--d-border);border-radius:var(--d-radius-sm);
+    background:linear-gradient(180deg,#fff, #FCFDFF);transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease;
+}
+#myCourses .course-item:hover,#myCourses .course-card:hover,#myCourses .course:hover{
+    border-color:var(--d-point-line);box-shadow:var(--d-shadow);transform:translateY(-1px);
+}
+#myCourses h4,#myCourses .course-title{font-size:13.5px;font-weight:650;letter-spacing:-.01em;color:var(--d-body);margin:0 0 8px;}
+#myCourses .course-meta,#myCourses .small-text{font-size:12px;color:var(--d-label);}
+/* 진행률 바 */
+#myCourses .progress,#myCourses .progress-bar,#myCourses .course-progress{
+    height:6px;border-radius:999px;background:#EEF1F7;overflow:hidden;margin-top:9px;
+}
+#myCourses .progress > span,#myCourses .progress-bar > span,#myCourses .progress-fill,
+#myCourses .bar > span,#myCourses .bar-fill{
+    display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#6B78FF,#4F5EF8);
+}
+#myCourses .course-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+
+/* ---- 오늘 시간표 ---- */
+#todaySchedule .schedule-item,#todaySchedule .schedule-row,#todaySchedule .schedule{
+    display:flex;align-items:center;gap:12px;padding:12px 4px;
+    border-bottom:1px solid var(--d-border-soft);
+}
+#todaySchedule .schedule-item:last-child,#todaySchedule .schedule-row:last-child,#todaySchedule .schedule:last-child{border-bottom:0;}
+#todaySchedule .schedule-time,#todaySchedule .time{
+    min-width:52px;font-size:12px;font-weight:700;color:var(--d-point);
+    background:var(--d-point-soft);border-radius:8px;padding:4px 8px;text-align:center;font-variant-numeric:tabular-nums;
+}
+#todaySchedule .schedule-title,#todaySchedule h4{font-size:13.5px;font-weight:600;color:var(--d-body);}
+#todaySchedule .schedule-meta{font-size:12px;color:var(--d-label);}
+
+/* ---- 테이블(최근 성적) ---- */
+.table-wrapper{border-radius:0 0 var(--d-radius) var(--d-radius);overflow:hidden;}
+.data-table{width:100%;border-collapse:separate;border-spacing:0;}
+.data-table thead th{
+    padding:12px 18px !important;background:#F7F9FC !important;
+    font-size:11.5px !important;font-weight:700 !important;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--d-label) !important;border-bottom:1px solid var(--d-border) !important;
+    text-align:left;white-space:nowrap;
+}
+.data-table tbody td{
+    padding:13px 18px !important;font-size:13px;color:var(--d-body);
+    border-bottom:1px solid var(--d-border-soft) !important;background:transparent;
+}
+.data-table tbody tr{transition:background .16s ease;}
+.data-table tbody tr:hover td{background:#F7F9FE !important;}
+.data-table tbody tr:last-child td{border-bottom:0 !important;}
+/* 성적 강조 뱃지(등급 열) */
+.data-table tbody td .badge,.data-table tbody td .grade-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:34px;padding:3px 9px;border-radius:999px;
+    font-size:12px;font-weight:700;background:var(--d-point-soft);color:var(--d-point);
+}
+
+/* ---- 포트폴리오 카드 ---- */
+#recentPortfolios .portfolio-item,#recentPortfolios .portfolio-card,#recentPortfolios .portfolio{
+    padding:14px 15px;border:1px solid var(--d-border);border-radius:var(--d-radius-sm);
+    background:#fff;transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease;margin-bottom:10px;
+}
+#recentPortfolios .portfolio-item:last-child,#recentPortfolios .portfolio-card:last-child{margin-bottom:0;}
+#recentPortfolios .portfolio-item:hover,#recentPortfolios .portfolio-card:hover,#recentPortfolios .portfolio:hover{
+    border-color:var(--d-point-line);box-shadow:var(--d-shadow);transform:translateY(-1px);
+}
+#recentPortfolios h4,#recentPortfolios .portfolio-title{font-size:13.5px;font-weight:650;color:var(--d-body);margin:0 0 5px;}
+
+/* ---- 빈 상태 / 로딩 ---- */
+.empty-state{padding:34px 16px;text-align:center;color:var(--d-label);}
+.empty-state .icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border-radius:14px;background:#F4F6FB;color:var(--d-label);
+    font-size:0;margin-bottom:10px;
+}
+.empty-state .icon svg{width:20px;height:20px;}
+.empty-state p{font-size:13px;color:var(--d-label);margin:0;}
+
+/* ---- 버튼 정돈 ---- */
+.card-header .btn{border-radius:10px !important;font-weight:600;box-shadow:none !important;}
+.card-header .btn-ghost{color:var(--d-muted) !important;}
+.card-header .btn-ghost:hover{color:var(--d-point) !important;background:var(--d-point-soft) !important;}
+.card-header .btn svg{width:14px;height:14px;}
+
+/* ---- 사이드바 (공통 다크 네이비 배경 기준) ---- */
+.sidebar .nav-section{
+    font-size:11px !important;font-weight:700 !important;letter-spacing:.06em;text-transform:uppercase;
+    color:#8A92A6 !important;padding:16px 18px 7px !important;
+    display:flex;align-items:center;gap:7px;
+}
+.sidebar .nav-section svg{width:13px;height:13px;opacity:.85;}
+.sidebar .nav-item{
+    display:flex;align-items:center;gap:11px;margin:2px 10px;padding:9px 11px !important;
+    border-radius:11px;font-size:13.5px;font-weight:550;color:#B7BDCC !important;
+    transition:background .16s ease,color .16s ease;
+}
+.sidebar .nav-item .icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;font-size:0;opacity:.85;}
+.sidebar .nav-item .icon svg{width:17px;height:17px;}
+.sidebar .nav-item:hover{background:rgba(255,255,255,.07) !important;color:#FFFFFF !important;}
+.sidebar .nav-item.active{background:rgba(79,94,248,.18) !important;color:#FFFFFF !important;}
+.sidebar .nav-item.active .icon{opacity:1;}
+.sidebar-footer{border-top:1px solid rgba(255,255,255,.07) !important;padding:16px 18px !important;}
+.sidebar-footer .user-name{font-size:13.5px;font-weight:650;color:#FFFFFF;}
+.sidebar-footer .user-role{font-size:12px;color:#8A92A6;}
+.sidebar-footer .logout-btn{
+    width:100%;margin-top:12px;padding:9px;border-radius:10px;
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#C7CCD9;
+    font-size:12.5px;font-weight:600;cursor:pointer;transition:all .16s ease;
+}
+.sidebar-footer .logout-btn:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#FFFFFF;}
+.hamburger-btn{border-radius:10px !important;}
+
+/* ---- 반응형 ---- */
+@media (max-width:1024px){
+    .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .grid-2{grid-template-columns:1fr;}
+}
+@media (max-width:560px){
+    .main-content{padding:14px;}
+    .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .stat-card{padding:15px;}
+    .stat-card .stat-value{font-size:25px;}
+    .data-table thead th,.data-table tbody td{padding:11px 13px !important;}
+}
+</style>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+                <a class="active nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+                <a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+                <a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+                <a class="nav-item" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+                <a class="nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+                <a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">학생</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><h1>내 대시보드</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+<div class="stats-grid mb-24">
+                <div class="stat-card stat-card-accent"><div class="stat-label"><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span>수강 강좌</div><div class="stat-value" id="totalCourses">-</div></div>
+                <div class="stat-card stat-card-accent success"><div class="stat-label"><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>완료 수업</div><div class="stat-value" id="completedLessons">-</div></div>
+                <div class="stat-card stat-card-accent info"><div class="stat-label"><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 6-8"/><path d="M14 7h5v5"/></svg></span>평균 성적</div><div class="stat-value" id="avgGrade">-</div></div>
+                <div class="stat-card stat-card-accent warning"><div class="stat-label"><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>출석률</div><div class="stat-value" id="attendanceRate">-</div></div>
+            </div>
+
+            <div class="grid-2 mb-24">
+                <div class="card card-premium">
+                    <div class="card-header"><h2><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span>내 강좌</h2></div>
+                    <div class="card-body" id="myCourses">
+                        <div class="empty-state"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 1-9 9"/><path d="M3 12V7M3 12h5"/></svg></div><p>로딩 중...</p></div>
+                    </div>
+                </div>
+                <div class="card card-premium">
+                    <div class="card-header"><h2><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>오늘 시간표</h2></div>
+                    <div class="card-body" id="todaySchedule">
+                        <div class="empty-state"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 1-9 9"/><path d="M3 12V7M3 12h5"/></svg></div><p>로딩 중...</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-premium">
+                <div class="card-header"><h2><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 6-8"/><path d="M14 7h5v5"/></svg></span>최근 성적</h2></div>
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table" data-card-view>
+                            <thead><tr><th>시험</th><th>과목</th><th>점수</th><th>등급</th><th>일시</th></tr></thead>
+                            <tbody id="recentGradeBody"><tr><td colspan="5" class="small-text" style="text-align:center;padding:24px">로딩 중...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-premium mt-24">
+                <div class="card-header">
+                    <h2><span class="badge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span>최근 포트폴리오</h2>
+                    <div style="display:flex;gap:8px">
+                        <a href="portfolio.html" class="btn btn-filled btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-3px"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14.5 5.5l4 4"/></svg>작성하기</a>
+                        <a href="portfolio.html" class="btn btn-ghost btn-sm">더보기 →</a>
+                    </div>
+                </div>
+                <div class="card-body" id="recentPortfolios">
+                    <div class="empty-state"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 1-9 9"/><path d="M3 12V7M3 12h5"/></svg></div><p>로딩 중...</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260908a"></script>
+    <script src="/common/js/utils.js?v=20260804b"></script>
+    <script src="/common/js/pages-student.js?v=20260804b"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const dateEl = document.getElementById('todayDate');
+            if (dateEl) {
+                dateEl.textContent = now.toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                });
+            }
+        });
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+    <script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

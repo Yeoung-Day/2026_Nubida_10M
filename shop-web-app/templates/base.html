@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Nubida Atelier</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="/" class="logo">NUBIDA ATELIER</a>
+            <div class="nav-links">
+                <a href="/">마켓</a>
+                {% if user %}
+                    <span class="point-badge">{{ "{:,}".format(user.points) }} P</span>
+                    <a href="/my_orders">구매내역</a>
+                    <a href="/my_sales">판매관리</a>
+                    <a href="/shop/{{ user.id }}">나의상점</a>
+                    <a href="/logout">로그아웃</a>
+                    {% if user.id == 'admin' %}<a href="/admin" style="color:red">관리자</a>{% endif %}
+                {% else %}
+                    <a href="/login">로그인</a>
+                    <a href="/signup" style="font-weight:800; color:#000;">시작하기</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {% with msgs = get_flashed_messages() %}{% if msgs %}{% for m in msgs %}
+            <p style="text-align:center; padding:15px; color:red; font-size:0.8rem;">{{ m }}</p>
+        {% endfor %}{% endif %}{% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

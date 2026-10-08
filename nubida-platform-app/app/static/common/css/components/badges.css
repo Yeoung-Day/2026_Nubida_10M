@@ -1,0 +1,63 @@
+/* ===== 뱃지 기본 스타일 (Badge Base Styles) ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 2px var(--space-3);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-full);
+  letter-spacing: var(--tracking-wide);
+  white-space: nowrap;
+}
+
+/* ===== 뱃지 변형 (Badge Variants) ===== */
+
+/* 활성 / 성공 — 녹색 계열 */
+.badge-active,
+.badge-success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+/* 비활성 / 위험 — 빨간색 계열 */
+.badge-inactive,
+.badge-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* 보류 / 경고 — 노란색/주황 계열 */
+.badge-pending,
+.badge-warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+/* 정보 — 파란색 계열 */
+.badge-info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+/* 중립 — 회색 계열 */
+.badge-neutral {
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+}
+
+/* ===== 펄스 도트 (알림 표시기) ===== */
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ===== 펄스 애니메이션 키프레임 ===== */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

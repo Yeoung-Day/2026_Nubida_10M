@@ -1,0 +1,185 @@
+/* ============================================================
+   누비다플랫폼 v6.0 — 학부모(Parent) 페이지 스타일
+   ============================================================ */
+
+/* ===== 학부모 페이지 전용 ===== */
+
+/* ---- 자녀 선택기 (portfolio.html, grades.html) ---- */
+.child-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- 결제 수단 선택 그리드 (pay-tuition.html) ---- */
+.pay-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.pay-method-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.pay-method-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.pay-method-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}
+
+.method-icon {
+  font-size: 32px;
+  margin-bottom: var(--space-2);
+}
+
+.method-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.method-desc {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+}
+
+/* ---- 결제 버튼 영역 (pay-tuition.html) ---- */
+.pay-btn-container {
+  text-align: center;
+  margin-top: var(--space-6);
+}
+
+.btn-pay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-4) var(--space-7);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  font-family: var(--font-sans);
+  color: var(--on-accent);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-2xl);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+}
+.btn-pay:hover {
+  background: var(--accent-dark);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+}
+.btn-pay:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ---- 결제 요약 (pay-tuition.html) ---- */
+.payment-summary {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5) var(--space-6);
+  margin-top: var(--space-4);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+  font-size: var(--text-sm);
+}
+.summary-row.total {
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-base);
+}
+
+.amount {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--accent);
+}
+
+/* ---- 영수증 그리드 (payments.html, pay-tuition.html) ---- */
+.receipt-grid {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.receipt-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+}
+.receipt-item .label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+.receipt-item .value {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.receipt-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--space-2) 0;
+}
+
+/* ---- 결제 성공 체크 (pay-tuition.html) ---- */
+.success-check {
+  font-size: 48px;
+  margin-bottom: var(--space-4);
+  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---- 타이포그래피 유틸리티 ---- */
+/** 중간 두께 폰트 (pay-tuition.html) */
+.fw-medium {
+  font-weight: var(--weight-medium);
+}
+
+/** 보조 텍스트 색상 (pay-tuition.html) */
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+/* ---- 상단 마진 (dashboard.html) ---- */
+.mt-24 {
+  margin-top: var(--space-7);
+}
+
+/* ---- 페이지 진입 애니메이션 ---- */
+.page-animate { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }

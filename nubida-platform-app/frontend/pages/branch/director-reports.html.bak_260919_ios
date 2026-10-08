@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>에듀케어 보고서 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/branch/style.css?v=20260911nav">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+<style id="br-reports-design">
+/* ============================================================
+   [260910] 에듀케어 — 에듀케어 보고서 페이지 전문 리디자인
+   기존 클래스 오버라이드 방식 (HTML/ID/onclick/script 무변경)
+   ============================================================ */
+.app-layout {
+  --ec-point: #4F5EF8;
+  --ec-point-soft: #EEF2FF;
+  --ec-bg: #FBFCFE;
+  --ec-bg-2: #F6F8FC;
+  --ec-border: #E8ECF5;
+  --ec-label: #98A1B2;
+  --ec-text: #1F2437;
+  --ec-text-2: #5A6478;
+  --ec-shadow-sm: 0 1px 2px rgba(31,36,55,.04), 0 1px 3px rgba(31,36,55,.03);
+  --ec-shadow-md: 0 4px 14px rgba(31,36,55,.06), 0 1px 3px rgba(31,36,55,.04);
+}
+
+/* ============================================================
+   페이지 배경 / 상단 타이틀
+   ============================================================ */
+.main-content { background: linear-gradient(180deg, var(--ec-bg) 0%, var(--ec-bg-2) 100%); }
+.main-content .top-nav h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ec-text);
+}
+.main-content .top-nav h1::before {
+  content: "";
+  display: inline-block;
+  width: 20px; height: 20px;
+  margin-right: 9px;
+  vertical-align: -4px;
+  border-radius: 6px;
+  background: var(--ec-point-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3Cpath d='M8 13h8M8 17h5'/%3E%3C/svg%3E") center/13px no-repeat;
+}
+/* 상단 타이틀 이모지 숨김 (SVG 배지로 대체) */
+.main-content .top-nav h1 { text-indent: 0; }
+.main-content .section-divider { display: none; }
+.main-content .small-text { font-size: 12.5px; color: var(--ec-label); }
+
+/* ============================================================
+   카드
+   ============================================================ */
+.main-content .card {
+  background: #fff;
+  border: 1px solid var(--ec-border);
+  border-radius: 16px;
+  box-shadow: var(--ec-shadow-sm);
+  overflow: hidden;
+}
+.main-content .card.mb-24 { margin-bottom: 18px; }
+.main-content .card-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--ec-border);
+  background: #fff;
+}
+.main-content .card-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ec-text);
+  margin: 0;
+}
+.main-content .card-header h2::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ec-point);
+  box-shadow: 0 0 0 4px var(--ec-point-soft);
+}
+.main-content .card-header h2 span { font-weight: 500 !important; color: var(--ec-label) !important; font-size: 12.5px !important; }
+.main-content .card-body { padding: 20px 22px; }
+.main-content .card-footer {
+  padding: 15px 22px;
+  border-top: 1px solid var(--ec-border);
+  background: #FCFDFF;
+}
+
+/* ============================================================
+   필터 바
+   ============================================================ */
+.main-content .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid var(--ec-border);
+  border-radius: 16px;
+  box-shadow: var(--ec-shadow-sm);
+}
+.main-content .filter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.main-content .filter-item >div { align-items: flex-end !important; }
+.main-content .filter-item label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--ec-label);
+  white-space: nowrap;
+}
+/* 마지막 두 필터 아이템(버튼 그룹)은 하단 정렬 유지 */
+.main-content .filter-bar > .filter-item:last-child,
+.main-content .filter-bar > .filter-item:nth-last-child(2) { justify-content: flex-end; }
+.main-content .filter-bar select,
+.main-content .filter-bar input { height: 38px; box-sizing: border-box; }
+.main-content .filter-bar .btn { height: 38px; }
+
+/* ============================================================
+   폼 입력 / 셀렉트
+   ============================================================ */
+.main-content .form-input,
+.main-content .form-select {
+  width: 100%;
+  border: 1px solid var(--ec-border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  color: var(--ec-text);
+  background: #fff;
+  box-sizing: border-box;
+  transition: border-color .15s, box-shadow .15s;
+}
+.main-content .form-input:focus,
+.main-content .form-select:focus {
+  outline: none;
+  border-color: var(--ec-point);
+  box-shadow: 0 0 0 3px rgba(79,94,248,.12);
+}
+.main-content .form-input::placeholder { color: #B6BDCB; }
+.main-content .form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ec-label);
+  letter-spacing: .01em;
+  margin-bottom: 7px;
+}
+.main-content .form-group.full label { display: block; }
+.main-content .form-grid { gap: 14px 16px; }
+
+/* 자동 계산 필드 */
+.main-content .form-input.auto-calc {
+  background: var(--ec-bg-2) !important;
+  color: var(--ec-text-2) !important;
+  border-color: #EDF1F8 !important;
+  font-weight: 600;
+}
+.main-content .auto-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ec-point);
+  background: var(--ec-point-soft);
+  border-radius: 5px;
+  padding: 1px 6px;
+  margin-left: 5px;
+  letter-spacing: .02em;
+  vertical-align: 1px;
+}
+
+/* ============================================================
+   버튼
+   ============================================================ */
+.main-content .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 9px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .1s, box-shadow .15s;
+}
+.main-content .btn:active { transform: translateY(1px); }
+.main-content .btn-primary { background: var(--ec-point); color: #fff; box-shadow: 0 1px 2px rgba(79,94,248,.25); }
+.main-content .btn-primary:hover { background: #4351E8; }
+.main-content .btn-ghost { background: #fff; border-color: var(--ec-border); color: var(--ec-text-2); }
+.main-content .btn-ghost:hover { background: var(--ec-bg-2); }
+.main-content .btn-outline { background: #fff; border: 1px solid var(--ec-border) !important; color: var(--ec-text-2); }
+.main-content .btn-outline:hover { background: var(--ec-bg-2); border-color: #D6DCEA !important; }
+.main-content .btn-outline:disabled,
+.main-content .btn:disabled { opacity: .5; cursor: not-allowed; }
+.main-content .btn-sm { padding: 7px 13px; font-size: 12.5px; border-radius: 9px; }
+.main-content .btn-xs { padding: 5px 11px; font-size: 11.5px; border-radius: 8px; }
+
+/* ============================================================
+   보고서 카드 (JS 생성 — .report-card / .rc-*)
+   ============================================================ */
+.main-content .report-card {
+  background: #fff;
+  border: 1px solid var(--ec-border);
+  border-radius: 14px;
+  padding: 0;
+  box-shadow: var(--ec-shadow-sm);
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+  cursor: pointer;
+  overflow: hidden;
+}
+.main-content .report-card:hover {
+  border-color: #D8DFF0;
+  box-shadow: var(--ec-shadow-md);
+  transform: translateY(-1px);
+}
+.main-content .report-card + .report-card { margin-top: 10px; }
+.main-content .rc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 15px 18px 12px;
+}
+.main-content .rc-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ec-text);
+  line-height: 1.35;
+}
+.main-content .rc-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 0 18px 15px;
+  margin-top: -2px;
+  font-size: 12.5px;
+  color: var(--ec-text-2);
+}
+.main-content .rc-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ec-text-2);
+  font-variant-numeric: tabular-nums;
+}
+.main-content .rc-actions {
+  padding: 10px 18px !important;
+  border-top: 1px solid #F1F4F9;
+  background: #FCFDFF;
+}
+
+/* ============================================================
+   배지 (pill + dot)
+   ============================================================ */
+.main-content .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 999px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.main-content .badge::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.main-content .badge-success { background: #ECFDF5; color: #0F9D6B; }
+.main-content .badge-warning { background: #FFF7ED; color: #D97706; }
+.main-content .badge-danger { background: #FEF2F2; color: #DC2626; }
+.main-content .badge-primary { background: var(--ec-point-soft) !important; color: var(--ec-point) !important; border: none !important; }
+
+/* ============================================================
+   상세 모달 — 섹션/테이블
+   ============================================================ */
+.modal-overlay { background: rgba(31,36,55,.42); backdrop-filter: blur(2px); }
+.main-content .modal,
+.modal {
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(31,36,55,.18), 0 2px 8px rgba(31,36,55,.06);
+  border: 1px solid var(--ec-border);
+  overflow: hidden;
+}
+.modal-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--ec-border);
+}
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ec-text);
+}
+.modal-body { padding: 22px 24px; }
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--ec-border);
+  background: #FCFDFF;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* 상세 본문 가독성 */
+#detailBody .section-block {
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #F1F4F9;
+}
+#detailBody .section-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+#detailBody .section-block h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  color: var(--ec-point);
+  margin: 0 0 10px;
+}
+#detailBody .section-block h4::before {
+  content: "";
+  width: 3px; height: 13px;
+  border-radius: 2px;
+  background: var(--ec-point);
+}
+#detailBody .section-block p {
+  font-size: 13.5px !important;
+  color: var(--ec-text-2) !important;
+  line-height: 1.75 !important;
+  margin: 0;
+}
+#detailBody >div:first-child { font-size: 13px; color: var(--ec-text-2); }
+
+/* 상세 테이블 */
+.detail-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--ec-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.detail-table tr { border-bottom: 1px solid #F1F4F9; }
+.detail-table tr:last-child { border-bottom: none; }
+.detail-table tr:nth-child(even) { background: #FCFDFF; }
+.detail-table td {
+  padding: 11px 16px;
+  font-size: 13px;
+  color: var(--ec-text);
+  vertical-align: top;
+  line-height: 1.6;
+}
+.detail-table td:first-child {
+  width: 38%;
+  font-weight: 600;
+  color: var(--ec-label);
+  white-space: nowrap;
+  background: #FAFBFE;
+}
+.detail-table td:last-child { font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   빈 상태
+   ============================================================ */
+.main-content .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 44px 20px;
+  color: var(--ec-label);
+}
+.main-content .empty-state .icon {
+  font-size: 26px;
+  opacity: .9;
+  width: 52px; height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--ec-bg-2);
+  border: 1px solid var(--ec-border);
+}
+.main-content .empty-state p { margin: 0; font-size: 13px; color: var(--ec-label); }
+
+/* ============================================================
+   작성/수정 모달 — 폼 섹션 정돈
+   ============================================================ */
+#formModal .modal-header { border-bottom: none; }
+#formModal .modal-body { background: #fff; }
+
+/* ============================================================
+   반응형
+   ============================================================ */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .filter-bar { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 820px) {
+  .filter-bar { grid-template-columns: 1fr !important; }
+  .main-content .card-body { padding: 16px; }
+}
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: 1fr !important; gap: 10px; }
+  .detail-table { font-size: 13px; }
+}
+
+/* ============================================================
+   [통합 260911] 수신함 강화 — 요약 카드 / 세그먼트 툴바 / 상태 강조
+   (사이드바·top-nav 구조 및 배경색은 건드리지 않는다)
+   ============================================================ */
+.ec-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.ec-stat {
+  background: #fff;
+  border: 1px solid var(--ec-border);
+  border-radius: 16px;
+  box-shadow: var(--ec-shadow-sm);
+  padding: 16px 18px;
+}
+.ec-stat-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--ec-label);
+  margin-bottom: 8px;
+}
+.ec-stat-val {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ec-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.ec-stat-sub { margin-top: 6px; font-size: 11.5px; color: var(--ec-label); }
+.ec-dot {
+  flex: 0 0 auto;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ec-label);
+}
+.ec-dot-warn { background: #D97706; box-shadow: 0 0 0 3px #FFF7ED; }
+.ec-dot-ok { background: #0F9D6B; box-shadow: 0 0 0 3px #ECFDF5; }
+.ec-dot-muted { background: #98A1B2; box-shadow: 0 0 0 3px #F1F4F9; }
+.ec-dot-point { background: var(--ec-point); box-shadow: 0 0 0 3px var(--ec-point-soft); }
+
+/* 수신함 툴바 */
+.ec-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--ec-border);
+  background: #FCFDFF;
+}
+.ec-toolbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ec-toolbar-right .form-input { height: 36px; }
+.ec-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--ec-bg-2);
+  border: 1px solid var(--ec-border);
+  border-radius: 11px;
+}
+.ec-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ec-text-2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.ec-seg-btn:hover { color: var(--ec-text); }
+.ec-seg-btn.active {
+  background: #fff;
+  color: var(--ec-point);
+  box-shadow: 0 1px 2px rgba(31,36,55,.06);
+}
+.ec-seg-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #EFF2F8;
+  color: var(--ec-label);
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ec-seg-btn.active .ec-seg-num { background: var(--ec-point-soft); color: var(--ec-point); }
+
+/* 상태별 카드 강조 */
+.main-content .report-card.is-pending { border-left: 3px solid #D97706; }
+.main-content .report-card.is-confirmed { border-left: 3px solid #0F9D6B; }
+.main-content .report-card.is-draft { border-left: 3px solid #D8DFF0; }
+.main-content .report-card.is-selected {
+  border-color: var(--ec-point);
+  box-shadow: 0 0 0 3px rgba(79,94,248,.12), var(--ec-shadow-md);
+}
+.main-content .rc-sep { color: #C6CCD8; font-weight: 400; }
+
+/* 상세 확인 패널 */
+#detailPanelBody .ec-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #F1F4F9;
+}
+#detailPanelBody .ec-panel-name { font-size: 15px; font-weight: 700; color: var(--ec-text); letter-spacing: -0.01em; }
+#detailPanelBody .ec-panel-actions { margin-left: auto; display: flex; gap: 8px; }
+
+@media (max-width: 1100px) {
+  .ec-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 820px) {
+  .ec-stats { grid-template-columns: 1fr; }
+  .ec-toolbar { flex-direction: column; align-items: stretch; }
+  .ec-toolbar-right { width: 100%; }
+  .ec-toolbar-right .form-input { flex: 1 1 auto; width: auto !important; }
+}
+</style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>운영</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="employees.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">원장 관리</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">수강생 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>교육</div>
+                <a class="nav-item" href="studios.html" style="display:none"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">공부방 관리</span></a>
+                <a class="nav-item" href="schedule.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">일정 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>보고</div>
+                <a class="active nav-item" href="branch-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg>소통</div>
+                <a class="nav-item" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">에듀케어 설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">에듀케어</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>에듀케어 보고서</h1></div>
+                <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+            </div>
+            <div class="section-divider"></div>
+
+            <!-- ====== 요약 ====== -->
+            <div class="ec-stats">
+                <div class="ec-stat">
+                    <div class="ec-stat-top"><span class="ec-dot ec-dot-warn"></span>확인 대기</div>
+                    <div class="ec-stat-val" id="statPending">0</div>
+                    <div class="ec-stat-sub">원장 제출 후 미확인</div>
+                </div>
+                <div class="ec-stat">
+                    <div class="ec-stat-top"><span class="ec-dot ec-dot-ok"></span>확인 완료</div>
+                    <div class="ec-stat-val" id="statConfirmed">0</div>
+                    <div class="ec-stat-sub">에듀케어 확인 처리</div>
+                </div>
+                <div class="ec-stat">
+                    <div class="ec-stat-top"><span class="ec-dot ec-dot-muted"></span>임시 저장</div>
+                    <div class="ec-stat-val" id="statDraft">0</div>
+                    <div class="ec-stat-sub">원장 작성 중</div>
+                </div>
+                <div class="ec-stat">
+                    <div class="ec-stat-top"><span class="ec-dot ec-dot-point"></span>전체 수신</div>
+                    <div class="ec-stat-val" id="statTotal">0</div>
+                    <div class="ec-stat-sub">필터 기준 합계</div>
+                </div>
+            </div>
+
+            <!-- ====== 수신한 원장 보고서 (단일 창구) ====== -->
+            <div class="card mb-24">
+                <div class="card-header">
+                    <h2>수신한 원장 보고서 <span id="directorReportCount"></span>
+                        <button class="btn btn-ghost btn-xs" onclick="loadDirectorReports()" style="margin-left:auto">새로고침</button>
+                    </h2>
+                </div>
+                <div class="ec-toolbar">
+                    <div class="ec-seg" id="statusSeg">
+                        <button class="ec-seg-btn active" data-status="" onclick="setStatusFilter('')">전체</button>
+                        <button class="ec-seg-btn" data-status="submitted" onclick="setStatusFilter('submitted')">확인 대기 <span class="ec-seg-num" id="segPending">0</span></button>
+                        <button class="ec-seg-btn" data-status="confirmed_by_branch" onclick="setStatusFilter('confirmed_by_branch')">확인 완료 <span class="ec-seg-num" id="segConfirmed">0</span></button>
+                        <button class="ec-seg-btn" data-status="draft" onclick="setStatusFilter('draft')">임시 저장 <span class="ec-seg-num" id="segDraft">0</span></button>
+                    </div>
+                    <div class="ec-toolbar-right">
+                        <select class="form-input" id="dFilterYear" onchange="loadDirectorReports()" style="width:110px">
+                            <option value="">전체 연도</option>
+                        </select>
+                        <select class="form-input" id="dFilterMonth" onchange="loadDirectorReports()" style="width:96px">
+                            <option value="">전체 월</option>
+                            <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
+                            <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
+                            <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
+                            <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+                        </select>
+                        <input class="form-input" type="search" id="dSearch" placeholder="원장명 / 공부방명 검색" oninput="renderDirectorReports()" style="width:200px">
+                    </div>
+                </div>
+                <div class="card-body" id="directorReportContainer">
+                    <div class="empty-state"><div class="icon"></div><p>조회 중...</p></div>
+                </div>
+            </div>
+
+            <!-- ====== 상세 확인 패널 ====== -->
+            <div class="card mb-24" id="detailPanelCard" style="display:none">
+                <div class="card-header"><h2>보고서 상세 확인 <span id="detailPanelSub"></span></h2></div>
+                <div class="card-body" id="detailPanelBody"></div>
+            </div>
+
+            <!-- ====== 에듀케어 자체 보고서 ====== -->
+            <div class="filter-bar">
+                <div class="filter-item">
+                    <label>연도</label>
+                    <select class="form-input" id="filterYear" onchange="loadReports()" style="width:100px">
+                        <option value="">전체</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label>월</label>
+                    <select class="form-input" id="filterMonth" onchange="loadReports()" style="width:80px">
+                        <option value="">전체</option>
+                        <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
+                        <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
+                        <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
+                        <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label>상태</label>
+                    <select class="form-input" id="filterStatus" onchange="loadReports()" style="width:130px">
+                        <option value="">전체</option>
+                        <option value="submitted">제출 완료</option>
+                        <option value="draft">임시 저장</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <div style="display:flex;gap:6px;flex-wrap:nowrap;white-space:nowrap;align-items:center">
+                        <button class="btn btn-primary" onclick="loadReports()">조회</button>
+                        <button class="btn btn-outline" style="border:1px solid #D1D5DB" onclick="resetFilters()">초기화</button>
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <button class="btn btn-primary" onclick="openCreateForm()">새 보고서 작성</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h2>에듀케어 보고서 목록 <span id="reportCount"></span></h2></div>
+                <div class="card-body" id="reportListContainer">
+                    <div class="empty-state"><div class="icon"></div><p>조회 버튼을 눌러 보고서 목록을 불러오세요.</p></div>
+                </div>
+                <div class="card-footer" id="paginationArea" style="display:none">
+                    <div class="flex gap-8" style="justify-content:center;align-items:center">
+                        <button class="btn btn-outline btn-sm" id="prevPage" onclick="changePage(-1)">◀ 이전</button>
+                        <span id="pageInfo" style="font-size:13px;color:var(--text-tertiary)"></span>
+                        <button class="btn btn-outline btn-sm" id="nextPage" onclick="changePage(1)">다음 ▶</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal" style="max-width:700px">
+            <div class="modal-header"><h3 id="detailTitle">보고서 상세</h3></div>
+            <div class="modal-body" id="detailBody"></div>
+            <div class="modal-footer" id="detailFooter">
+                <button class="btn btn-ghost" onclick="closeModal('detailModal')">닫기</button>
+            </div>
+        </div>
+    </div>
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script>let allReports = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    let directorReports = [];
+    document.addEventListener('DOMContentLoaded', () => {
+        requireAuth();
+        renderSidebarUser();
+        const now = new Date();
+        document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+        // Fill year options
+        const yearSelect = document.getElementById('filterYear');
+        const formYearSelect = document.getElementById('formYear');
+        const dYearSelect = document.getElementById('dFilterYear');
+        for (let y = now.getFullYear(); y >= 2024; y--) {
+            const opt1 = document.createElement('option');
+            opt1.value = y; opt1.textContent = y + '년';
+            yearSelect.appendChild(opt1);
+            if (dYearSelect) dYearSelect.appendChild(opt1.cloneNode(true));
+            if (formYearSelect) {
+                const opt2 = document.createElement('option');
+                opt2.value = y; opt2.textContent = y + '년';
+                formYearSelect.appendChild(opt2);
+            }
+        }
+        // 수신함 기본 필터: 전체 (미확인 건이 바로 보이도록)
+        if (dYearSelect) dYearSelect.value = now.getFullYear();
+        // Default to current year, month: 전체
+        document.getElementById('filterYear').value = '';
+        document.getElementById('filterMonth').value = '';
+        loadReports();
+        loadDirectorReports();
+        // % 항목 자동 계산 바인딩
+        bindAutoCalcBranch();
+    });
+    function getStatusBadge(status) {
+        if (status === 'draft') return '<span class="badge badge-warning">임시 저장</span>';
+        if (status === 'submitted') return '<span class="badge badge-success">제출 완료</span>';
+        if (status === 'confirmed_by_branch') return '<span class="badge badge-primary" style="background:#EEF2FF;color:#4F5EF8;border:1px solid #C7D2FE;">에듀케어 확인</span>';
+        return '<span class="badge">' + (status || '-') + '</span>';
+    }
+    async function loadDirectorReports() {
+        const container = document.getElementById('directorReportContainer');
+        const countEl = document.getElementById('directorReportCount');
+        if (container) container.innerHTML = '<div style="text-align:center;padding:24px"><div class="loading-spinner" style="margin:10px auto"></div>불러오는 중...</div>';
+        try {
+            const year = (document.getElementById('dFilterYear') || {}).value || '';
+            const month = (document.getElementById('dFilterMonth') || {}).value || '';
+            let url = '/branch/director-reports?per_page=200';
+            if (year) url += '&year=' + year;
+            if (month) url += '&month=' + month;
+            const res = await apiGet(url);
+            directorReports = res?.data || [];
+            if (countEl) countEl.textContent = '(총 ' + directorReports.length + '건)';
+            if (!directorReports.length) {
+                renderDirectorStats();
+                container.innerHTML = '<div class="empty-state"><div class="icon"></div><p>수신한 원장 보고서가 없습니다.</p></div>';
+                return;
+            }
+            renderDirectorReports();
+        } catch (e) {
+            if (container) container.innerHTML = '<div class="empty-state"><div class="icon"></div><p>불러오기 실패</p></div>';
+        }
+    }
+    async function confirmDirectorReport(reportId) {
+        if (!confirm('이 보고서를 확인하시겠습니까? 확인 후 상태가 "에듀케어 확인"으로 변경됩니다.')) return;
+        try {
+            const res = await apiPut('/branch/director-reports/' + reportId + '/confirm');
+            if (res && res.status === 'success') {
+                showAlert(' 보고서가 확인되었습니다.', 'success');
+                loadDirectorReports();
+            } else {
+                showAlert(res?.message || '확인 처리 실패', 'error');
+            }
+        } catch (e) {
+            showAlert('확인 중 오류가 발생했습니다: ' + e.message, 'error');
+        }
+    }
+    async function openDirectorDetail(reportId) {
+        selectedReportId = reportId;
+        const panelCard = document.getElementById('detailPanelCard');
+        const panelBody = document.getElementById('detailPanelBody');
+        const panelSub = document.getElementById('detailPanelSub');
+        // 목록에서 선택 상태 반영
+        if (typeof renderDirectorReports === 'function') renderDirectorReports();
+        if (panelBody) panelBody.innerHTML = '<div style="text-align:center;padding:20px"><div class="loading-spinner" style="margin:10px auto"></div>불러오는 중...</div>';
+        if (panelCard) panelCard.style.display = '';
+        try {
+            const res = await apiGet('/branch/director-reports/' + reportId);
+            if (!res || res.status !== 'success' || !res.data) {
+                showAlert('보고서를 불러올 수 없습니다.', 'error');
+                if (panelCard) panelCard.style.display = 'none';
+                return;
+            }
+            const r = res.data;
+            if (panelSub) panelSub.textContent = '(총 ' + r.year + '년 ' + r.month + '월)';
+            // -------- 인라인 확인 패널 --------
+            if (panelBody) {
+                let p = '<div class="ec-panel-head">' +
+                    '<span class="ec-panel-name">' + esc(r.director_name || '원장') + ' <span class="rc-sep">·</span> ' + r.year + '년 ' + r.month + '월</span>' +
+                    getStatusBadge(r.status) +
+                    '<span class="ec-panel-actions">' +
+                    '<button class="btn btn-outline btn-xs" onclick="scrollToDetailPanelClose()">접기</button>' +
+                    (r.status === 'submitted' ? '<button class="btn btn-primary btn-xs" onclick="confirmDirectorReport(' + r.id + ')">확인 처리</button>' : '') +
+                    '</span>' +
+                    '</div>';
+                p += '<div class="section-block"><h4>기본 정보</h4><table class="detail-table">' +
+                    '<tr><td>공부방명</td><td>' + esc(r.branch_name || '-') + '</td></tr>' +
+                    '<tr><td>원장명</td><td>' + esc(r.director_name || '-') + '</td></tr>' +
+                    '<tr><td>연락처</td><td>' + esc(r.contact || '-') + '</td></tr>' +
+                    '<tr><td>제출월</td><td>' + r.year + '년 ' + r.month + '월</td></tr>' +
+                    '<tr><td>상태</td><td>' + getStatusBadge(r.status) + '</td></tr>' +
+                    '</table></div>';
+                p += '<div class="section-block"><h4>수강생 현황</h4><table class="detail-table">' +
+                    '<tr><td>총 수강생</td><td>' + (r.total_students || 0) + '명</td></tr>' +
+                    '<tr><td>신규 등록</td><td>' + (r.new_registrations || 0) + '명</td></tr>' +
+                    '<tr><td>퇴원</td><td>' + (r.withdrawals || 0) + '명</td></tr>' +
+                    '<tr><td>유지율</td><td>' + (r.retention_rate || 0) + '%</td></tr>' +
+                    '</table></div>';
+                p += '<div class="section-block"><h4>이번 달 목표</h4><table class="detail-table">' +
+                    '<tr><td>신규 목표</td><td>' + (r.target_new_students || 0) + '명</td></tr>' +
+                    '<tr><td>월 매출 목표</td><td>' + ((r.target_monthly_revenue || 0)).toLocaleString() + '원</td></tr>' +
+                    '<tr><td>기타 목표</td><td>' + esc(r.target_other || '-') + '</td></tr>' +
+                    '</table></div>';
+                var issues = ['facility', 'education', 'admin', 'other'];
+                var anyIssue = false;
+                var issueHtml = '';
+                var labels = { facility: '시설', education: '교육', admin: '행정', other: '기타' };
+                issues.forEach(function (k) {
+                    var content = r['issue_' + k + '_content'];
+                    var request = r['issue_' + k + '_request'];
+                    if (content || request) {
+                        anyIssue = true;
+                        issueHtml += '<tr><td>' + labels[k] + '</td><td>' + esc(nl2br(content) || '-') +
+                            (request ? '<br><span style="font-size:11px;color:var(--text-tertiary)">요청: ' + esc(nl2br(request)) + '</span>' : '') + '</td></tr>';
+                    }
+                });
+                if (anyIssue) {
+                    p += '<div class="section-block"><h4>이슈 및 건의사항</h4><table class="detail-table">' + issueHtml + '</table></div>';
+                }
+                p += '<div class="section-block"><h4>전월 실적</h4><table class="detail-table">' +
+                    '<tr><td>신규 실적</td><td>' + (r.result_new_students || 0) + '명 (달성률 ' + (r.result_new_students_rate || 0) + '%)</td></tr>' +
+                    '<tr><td>매출 실적</td><td>' + ((r.result_monthly_revenue || 0)).toLocaleString() + '원 (달성률 ' + (r.result_monthly_revenue_rate || 0) + '%)</td></tr>' +
+                    '<tr><td>유지율 실적</td><td>' + (r.result_retention_rate || 0) + '% (달성률 ' + (r.result_retention_rate_achieved || 0) + '%)</td></tr>' +
+                    '</table></div>';
+                if (r.notes) {
+                    p += '<div class="section-block"><h4>특이사항</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6">' + esc(nl2br(r.notes)) + '</p></div>';
+                }
+                p += '<div class="section-block" style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px;background:var(--bg-canvas)">' +
+                    '<span style="font-size:13px;font-weight:600">원장 확인: </span>' +
+                    (r.is_agreed ? '<span style="color:#065F46">서명 완료</span>' : '<span style="color:#92400E">미서명</span>') +
+                    (r.confirmed_date ? ' · 확인일: ' + r.confirmed_date : '') +
+                    '</div>';
+                p += '<div style="display:flex;justify-content:flex-end;margin-top:14px">' +
+                    '<button class="btn btn-primary btn-sm" onclick="openDetailModalFromPanel()">텍스트 다운로드 / 크게 보기</button>' +
+                    '</div>';
+                panelBody.innerHTML = p;
+            }
+            // -------- 기존 상세 모달 (함수/ID 유지) --------
+            window._detailData = r;
+            document.getElementById('detailTitle').textContent = (r.director_name || '원장') + ' — ' + r.year + '년 ' + r.month + '월 보고서';
+            document.getElementById('detailBody').innerHTML = panelBody ? panelBody.innerHTML : '';
+            const footer = document.getElementById('detailFooter');
+            footer.innerHTML = '<button class="btn btn-primary btn-sm" onclick="downloadAsText()">텍스트 다운로드</button>' +
+                (r.status === 'submitted' ? '<button class="btn btn-success btn-sm" onclick="confirmDirectorReport(' + r.id + ')">확인 처리</button>' : '') +
+                '<button class="btn btn-ghost" onclick="closeModal(\'detailModal\')">닫기</button>';
+            // 모달은 열지 않고 패널로 스크롤 (목록/상세 한 화면)
+            if (panelCard && panelCard.scrollIntoView) panelCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } catch (e) {
+            showAlert('보고서 상세를 불러올 수 없습니다.', 'error');
+        }
+    }
+    function scrollToDetailPanelClose() {
+        const c = document.getElementById('detailPanelCard');
+        if (c) c.style.display = 'none';
+        selectedReportId = null;
+        if (typeof renderDirectorReports === 'function') renderDirectorReports();
+    }
+    function openDetailModalFromPanel() {
+        if (window._detailData) {
+            document.getElementById('detailBody').innerHTML = document.getElementById('detailPanelBody').innerHTML;
+            openModal('detailModal');
+        }
+    }
+    async function loadReports() {
+        const year = document.getElementById('filterYear').value;
+        const month = document.getElementById('filterMonth').value;
+        const status = document.getElementById('filterStatus').value;
+        let url = '/branch/reports?per_page=50&page=' + currentPage;
+        if (year) url += '&year=' + year;
+        if (month) url += '&month=' + month;
+        if (status) url += '&status=' + status;
+        try {
+            const res = await apiGet(url);
+            allReports = res?.data || [];
+            totalPages = res?.total_pages || 1;
+            currentPage = res?.page || 1;
+            renderReports();
+            renderPagination();
+        } catch (e) {
+            document.getElementById('reportListContainer').innerHTML = '<div class="empty-state"><div class="icon"></div><p>불러오기 실패</p></div>';
+        }
+        // 수신한 보고서도 동일 필터 적용
+        loadDirectorReports();
+    }
+    function renderReports() {
+        const container = document.getElementById('reportListContainer');
+        const countEl = document.getElementById('reportCount');
+        if (!allReports.length) {
+            container.innerHTML = '<div class="empty-state"><div class="icon"></div><p>작성된 보고서가 없습니다. 새 보고서를 작성해보세요.</p></div>';
+            countEl.textContent = '';
+            return;
+        }
+        countEl.textContent = '(총 ' + allReports.length + '건)';
+        container.innerHTML = allReports.map(r => {
+            const badge = r.status === 'submitted'
+                ? '<span class="badge badge-success">제출 완료</span>'
+                : '<span class="badge badge-warning">임시 저장</span>';
+            return '<div class="report-card" onclick="openDetail(' + r.id + ')">' +
+                '<div class="rc-header">' +
+                '<div class="rc-title">' + r.year + '년 ' + r.month + '월 에듀케어 보고서</div>' +
+                '<div>' + badge + '</div>' +
+                '</div>' +
+                '<div class="rc-meta">' +
+                '<span> ' + (r.created_at ? r.created_at.split('T')[0] : '-') + '</span>' +
+                '<span> ' + esc(r.author_name || '-') + '</span>' +
+                (r.branch_name ? '<span> ' + esc(r.branch_name) + '</span>' : '') +
+                (r.new_registrations ? '<span>신규 ' + r.new_registrations + '명</span>' : '') +
+                (r.result_monthly_revenue ? '<span>₩' + Number(r.result_monthly_revenue).toLocaleString() + '</span>' : '') +
+                '</div>' +
+                '</div>';
+        }).join('');
+    }
+    function renderPagination() {
+        const area = document.getElementById('paginationArea');
+        if (totalPages <= 1) { area.style.display = 'none'; return; }
+        area.style.display = 'block';
+        document.getElementById('pageInfo').textContent = currentPage + ' / ' + totalPages + '페이지';
+        document.getElementById('prevPage').disabled = currentPage <= 1;
+        document.getElementById('nextPage').disabled = currentPage >= totalPages;
+    }
+    function changePage(delta) {
+        const newPage = currentPage + delta;
+        if (newPage < 1 || newPage >totalPages) return;
+        currentPage = newPage;
+        loadReports();
+    }
+    function resetFilters() {
+        const now = new Date();
+        document.getElementById('filterYear').value = now.getFullYear();
+        document.getElementById('filterMonth').value = now.getMonth() + 1;
+        document.getElementById('filterStatus').value = '';
+        currentPage = 1;
+        loadReports();
+    }
+    async function openDetail(reportId) {
+        try {
+            const res = await apiGet('/branch/reports/' + reportId);
+            if (!res || res.status !== 'success' || !res.data) {
+                showAlert('보고서를 불러올 수 없습니다.', 'error');
+                return;
+            }
+            const r = res.data;
+            document.getElementById('detailTitle').textContent = ' ' + r.year + '년 ' + r.month + '월 에듀케어 보고서';
+            const badge = r.status === 'submitted'
+                ? '<span class="badge badge-success">제출 완료</span>'
+                : '<span class="badge badge-warning">임시 저장</span>';
+            let html = '<div style="margin-bottom:16px;font-size:13px;color:var(--text-secondary);display:flex;gap:12px;align-items:center">' +
+                ' ' + esc(r.author_name || '작성자') + ' ' + badge + '</div>';
+            html += '<div class="section-block"><h4>기본 정보</h4><table class="detail-table">' +
+                '<tr><td>보고서명</td><td>' + r.year + '년 ' + r.month + '월 에듀케어 보고서</td></tr>' +
+                '<tr><td>작성자</td><td>' + esc(r.author_name || '-') + '</td></tr>' +
+                '<tr><td>작성일</td><td>' + (r.created_at ? r.created_at.split('T')[0] : '-') + '</td></tr>' +
+                '<tr><td>상태</td><td>' + badge + '</td></tr>' +
+                (r.branch_name ? '<tr><td>에듀케어명</td><td>' + esc(r.branch_name) + '</td></tr>' : '') +
+                (r.contact ? '<tr><td>연락처</td><td>' + esc(r.contact) + '</td></tr>' : '') +
+                '</table></div>';
+            // Student metrics
+            if (r.total_students != null || r.new_registrations != null || r.withdrawals != null || r.retention_rate != null) {
+                html += '<div class="section-block"><h4>수강생 현황</h4><table class="detail-table">' +
+                    (r.total_students != null ? '<tr><td>총 수강생</td><td>' + r.total_students + '명</td></tr>' : '') +
+                    (r.new_registrations != null ? '<tr><td>신규 등록</td><td>' + r.new_registrations + '명</td></tr>' : '') +
+                    (r.withdrawals != null ? '<tr><td>탈퇴</td><td>' + r.withdrawals + '명</td></tr>' : '') +
+                    (r.retention_rate != null ? '<tr><td>유지율</td><td>' + r.retention_rate + '%</td></tr>' : '') +
+                    '</table></div>';
+            }
+            // Target metrics
+            if (r.target_new_students != null || r.target_monthly_revenue != null || r.target_other) {
+                html += '<div class="section-block"><h4>목표</h4><table class="detail-table">' +
+                    (r.target_new_students != null ? '<tr><td>목표 신규 수강생</td><td>' + r.target_new_students + '명</td></tr>' : '') +
+                    (r.target_monthly_revenue != null ? '<tr><td>목표 월 매출</td><td>₩' + Number(r.target_monthly_revenue).toLocaleString() + '</td></tr>' : '') +
+                    (r.target_other ? '<tr><td>기타 목표</td><td style="white-space:pre-wrap">' + esc(r.target_other) + '</td></tr>' : '') +
+                    '</table></div>';
+            }
+            // Issue blocks
+            let issueSections = '';
+            if (r.issue_facility_content) issueSections += '<div class="section-block"><h4>시설 관련 내용</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_facility_content) + '</p></div>';
+            if (r.issue_facility_request) issueSections += '<div class="section-block"><h4>시설 관련 요청</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_facility_request) + '</p></div>';
+            if (r.issue_education_content) issueSections += '<div class="section-block"><h4>교육 관련 내용</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_education_content) + '</p></div>';
+            if (r.issue_education_request) issueSections += '<div class="section-block"><h4>교육 관련 요청</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_education_request) + '</p></div>';
+            if (r.issue_admin_content) issueSections += '<div class="section-block"><h4>운영 관련 내용</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_admin_content) + '</p></div>';
+            if (r.issue_admin_request) issueSections += '<div class="section-block"><h4>운영 관련 요청</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_admin_request) + '</p></div>';
+            if (r.issue_other_content) issueSections += '<div class="section-block"><h4>기타 내용</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_other_content) + '</p></div>';
+            if (r.issue_other_request) issueSections += '<div class="section-block"><h4>기타 요청</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.issue_other_request) + '</p></div>';
+            if (issueSections) {
+                html += '<div class="section-block"><h4>이슈 및 요청</h4></div>' + issueSections;
+            }
+            // Result metrics
+            if (r.result_new_students != null || r.result_monthly_revenue != null || r.result_retention_rate != null) {
+                html += '<div class="section-block"><h4>실적</h4><table class="detail-table">' +
+                    (r.result_new_students != null ? '<tr><td>실적 - 신규 수강생</td><td>' + r.result_new_students + '명</td></tr>' : '') +
+                    (r.result_monthly_revenue != null ? '<tr><td>실적 - 월 매출</td><td>₩' + Number(r.result_monthly_revenue).toLocaleString() + '</td></tr>' : '') +
+                    (r.result_retention_rate != null ? '<tr><td>실적 - 유지율</td><td>' + r.result_retention_rate + '%</td></tr>' : '') +
+                    '</table></div>';
+            }
+            if (r.confirmed_date) {
+                html += '<div class=\"section-block\"><h4>확정일</h4><p style=\"font-size:13px;color:var(--text-secondary)\">' + r.confirmed_date + '</p></div>';
+            }
+            if (r.is_agreed != null) {
+                html += '<div class=\"section-block\"><h4>동의 여부</h4><p style=\"font-size:13px;color:var(--text-secondary)\">' + (r.is_agreed ? '동의함' : '동의하지 않음') + '</p></div>';
+            }
+            if (r.notes) {
+                html += '<div class="section-block"><h4>특이사항</h4><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">' + esc(r.notes) + '</p></div>';
+            }
+            window._detailData = r;
+            document.getElementById('detailBody').innerHTML = html;
+            // Show only close button in footer
+            const footer = document.getElementById('detailFooter');
+            footer.innerHTML = '<button class="btn btn-ghost" onclick="closeModal(\'detailModal\')">닫기</button>';
+            openModal('detailModal');
+        } catch (e) {
+            showAlert('보고서 상세를 불러올 수 없습니다.', 'error');
+        }
+    }
+    function openCreateForm() {
+        document.getElementById('formModalTitle').textContent = ' 새 에듀케어 보고서 작성';
+        document.getElementById('formId').value = '';
+        document.getElementById('formYear').value = new Date().getFullYear();
+        document.getElementById('formMonth').value = new Date().getMonth() + 1;
+        document.getElementById('formBranchName').value = '';
+        document.getElementById('formContact').value = '';
+        document.getElementById('formTotalStudents').value = 0;
+        document.getElementById('formNewRegistrations').value = 0;
+        document.getElementById('formWithdrawals').value = 0;
+        document.getElementById('formRetentionRate').value = 0;
+        document.getElementById('formTargetNewStudents').value = 0;
+        document.getElementById('formTargetRevenue').value = 0;
+        document.getElementById('formTargetOther').value = '';
+        document.getElementById('formIssueFacilityContent').value = '';
+        document.getElementById('formIssueFacilityRequest').value = '';
+        document.getElementById('formIssueEducationContent').value = '';
+        document.getElementById('formIssueEducationRequest').value = '';
+        document.getElementById('formIssueAdminContent').value = '';
+        document.getElementById('formIssueAdminRequest').value = '';
+        document.getElementById('formIssueOtherContent').value = '';
+        document.getElementById('formIssueOtherRequest').value = '';
+        document.getElementById('formResultNewStudents').value = 0;
+        document.getElementById('formResultRevenue').value = 0;
+        document.getElementById('formResultRetentionRate').value = 0;
+        document.getElementById('formNotes').value = '';
+        document.getElementById('formConfirmedDate').value = '';
+        document.getElementById('formIsAgreed').checked = false;
+        openModal('formModal');
+    }
+    function editReport(r) {
+        if (!r) return;
+        closeModal('detailModal');
+        document.getElementById('formModalTitle').textContent = ' 에듀케어 보고서 수정';
+        document.getElementById('formId').value = r.id;
+        document.getElementById('formYear').value = r.year;
+        document.getElementById('formMonth').value = r.month;
+        document.getElementById('formBranchName').value = r.branch_name || '';
+        document.getElementById('formContact').value = r.contact || '';
+        document.getElementById('formTotalStudents').value = r.total_students || 0;
+        document.getElementById('formNewRegistrations').value = r.new_registrations || 0;
+        document.getElementById('formWithdrawals').value = r.withdrawals || 0;
+        document.getElementById('formRetentionRate').value = r.retention_rate || 0;
+        document.getElementById('formTargetNewStudents').value = r.target_new_students || 0;
+        document.getElementById('formTargetRevenue').value = r.target_monthly_revenue || 0;
+        document.getElementById('formTargetOther').value = r.target_other || '';
+        document.getElementById('formIssueFacilityContent').value = r.issue_facility_content || '';
+        document.getElementById('formIssueFacilityRequest').value = r.issue_facility_request || '';
+        document.getElementById('formIssueEducationContent').value = r.issue_education_content || '';
+        document.getElementById('formIssueEducationRequest').value = r.issue_education_request || '';
+        document.getElementById('formIssueAdminContent').value = r.issue_admin_content || '';
+        document.getElementById('formIssueAdminRequest').value = r.issue_admin_request || '';
+        document.getElementById('formIssueOtherContent').value = r.issue_other_content || '';
+        document.getElementById('formIssueOtherRequest').value = r.issue_other_request || '';
+        document.getElementById('formResultNewStudents').value = r.result_new_students || 0;
+        document.getElementById('formResultRevenue').value = r.result_monthly_revenue || 0;
+        document.getElementById('formResultRetentionRate').value = r.result_retention_rate || 0;
+        document.getElementById('formNotes').value = r.notes || '';
+        document.getElementById('formConfirmedDate').value = r.confirmed_date || '';
+        document.getElementById('formIsAgreed').checked = r.is_agreed === true;
+        openModal('formModal');
+        recalcBranch();
+    }
+    // ============================================================
+    // 자동 계산 — % 항목은 입력값에서 자동 산출 (에듀케어 수동 입력 불필요)
+    //   유지율         = (총수강생 − 탈퇴) ÷ 총수강생 × 100
+    //   신규 달성률    = 실적 신규 ÷ 목표 신규 × 100
+    //   매출 달성률    = 실적 매출 ÷ 목표 매출 × 100
+    //   유지율 실적    = (전월 총수강생 − 탈퇴) ÷ 전월 총수강생 × 100
+    //   유지율 달성률  = 유지율 실적 ÷ 목표 유지율 × 100
+    // ============================================================
+    function _pct(numer, denom) {
+        numer = Number(numer) || 0;
+        denom = Number(denom) || 0;
+        if (denom <= 0) return 0;
+        return Math.round((numer / denom) * 100);
+    }
+    function _num(id) {
+        const el = document.getElementById(id);
+        return el ? (parseInt(el.value) || 0) : 0;
+    }
+    function _setv(id, v) {
+        const el = document.getElementById(id);
+        if (el) el.value = v;
+    }
+    function recalcBranch() {
+        const total = _num('formTotalStudents');
+        const withdrawals = _num('formWithdrawals');
+        const retention = total >0 ? _pct(total - withdrawals, total) : 0;
+        _setv('formRetentionRate', retention);
+
+        _setv('formResultNewStudentsRate',
+              _pct(_num('formResultNewStudents'), _num('formTargetNewStudents')));
+        _setv('formResultRevenueRate',
+              _pct(_num('formResultRevenue'), _num('formTargetRevenue')));
+
+        const prevTotal = _num('formPrevTotalStudents') || total;
+        const resultRetention = prevTotal >0 ? _pct(prevTotal - withdrawals, prevTotal) : 0;
+        _setv('formResultRetentionRate', resultRetention);
+        _setv('formResultRetentionRateAchieved', _pct(resultRetention, retention));
+    }
+    function bindAutoCalcBranch() {
+        ['formTotalStudents', 'formWithdrawals', 'formNewRegistrations',
+         'formTargetNewStudents', 'formTargetRevenue',
+         'formResultNewStudents', 'formResultRevenue', 'formPrevTotalStudents'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', recalcBranch);
+                el.addEventListener('change', recalcBranch);
+            }
+        });
+        recalcBranch();
+    }
+
+    async function saveReport(status) {
+        const year = document.getElementById('formYear').value;
+        const month = document.getElementById('formMonth').value;
+        if (!year || !month) { showAlert('년/월을 선택해주세요.', 'warning'); return; }
+        recalcBranch();
+        const data = {
+            year: parseInt(year), month: parseInt(month),
+            branch_name: document.getElementById('formBranchName').value.trim(),
+            contact: document.getElementById('formContact').value.trim(),
+            total_students: parseInt(document.getElementById('formTotalStudents').value) || 0,
+            new_registrations: parseInt(document.getElementById('formNewRegistrations').value) || 0,
+            withdrawals: parseInt(document.getElementById('formWithdrawals').value) || 0,
+            retention_rate: parseInt(document.getElementById('formRetentionRate').value) || 0,
+            target_new_students: parseInt(document.getElementById('formTargetNewStudents').value) || 0,
+            target_monthly_revenue: parseInt(document.getElementById('formTargetRevenue').value) || 0,
+            target_other: document.getElementById('formTargetOther').value.trim(),
+            issue_facility_content: document.getElementById('formIssueFacilityContent').value.trim(),
+            issue_facility_request: document.getElementById('formIssueFacilityRequest').value.trim(),
+            issue_education_content: document.getElementById('formIssueEducationContent').value.trim(),
+            issue_education_request: document.getElementById('formIssueEducationRequest').value.trim(),
+            issue_admin_content: document.getElementById('formIssueAdminContent').value.trim(),
+            issue_admin_request: document.getElementById('formIssueAdminRequest').value.trim(),
+            issue_other_content: document.getElementById('formIssueOtherContent').value.trim(),
+            issue_other_request: document.getElementById('formIssueOtherRequest').value.trim(),
+            result_new_students: parseInt(document.getElementById('formResultNewStudents').value) || 0,
+            result_new_students_rate: parseInt(document.getElementById('formResultNewStudentsRate').value) || 0,
+            result_monthly_revenue: parseInt(document.getElementById('formResultRevenue').value) || 0,
+            result_monthly_revenue_rate: parseInt(document.getElementById('formResultRevenueRate').value) || 0,
+            result_retention_rate: parseInt(document.getElementById('formResultRetentionRate').value) || 0,
+            result_retention_rate_achieved: parseInt(document.getElementById('formResultRetentionRateAchieved').value) || 0,
+            notes: document.getElementById('formNotes').value.trim(),
+            confirmed_date: document.getElementById('formConfirmedDate').value,
+            is_agreed: document.getElementById('formIsAgreed').checked,
+            status: status,
+        };
+        const reportId = document.getElementById('formId').value;
+        try {
+            let res;
+            if (reportId) { res = await apiPut('/branch/reports/' + reportId, data); }
+            else { res = await apiPost('/branch/reports', data); }
+            if (res && res.status === 'success') {
+                showAlert(status === 'submitted' ? ' 보고서가 제출되었습니다.' : ' 임시 저장되었습니다.', 'success');
+                closeModal('formModal');
+                loadReports();
+            } else { showAlert(res?.message || '저장 실패', 'error'); }
+        } catch (e) { showAlert('저장 중 오류가 발생했습니다.', 'error'); console.error(e); }
+    }
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function showAlert(msg, type) {
+        const existing = document.getElementById('pageAlert');
+        if (existing) existing.remove();
+        const colors = { success:'#10B981', error:'#EF4444', warning:'#F59E0B', info:'#4F5EF8' };
+        const bgColors = { success:'#F0FDF4', error:'#FEF2F2', warning:'#FFFBEB', info:'#EFF6FF' };
+        const el = document.createElement('div');
+        el.id = 'pageAlert';
+        el.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1);background:' + (bgColors[type] || '#F0FDF4') + ';color:' + (colors[type] || '#10B981') + ';border:1px solid ' + (colors[type] || '#10B981') + ';max-width:400px;';
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() =>el.remove(), 3000);
+    }
+    // ============================================================
+    // [통합 260911] 수신함 강화 — 요약/필터/검색/상세 패널
+    //   기존 API 호출 함수(loadDirectorReports/confirmDirectorReport/
+    //   openDirectorDetail/loadReports/renderReports...)는 그대로 유지하고
+    //   렌더링만 보강한다.
+    // ============================================================
+    let statusFilter = '';
+    let selectedReportId = null;
+
+    function setStatusFilter(v) {
+        statusFilter = v || '';
+        document.querySelectorAll('#statusSeg .ec-seg-btn').forEach(function (b) {
+            b.classList.toggle('active', (b.getAttribute('data-status') || '') === statusFilter);
+        });
+        renderDirectorReports();
+    }
+
+    // 상태별 카운트(서버 필터링 없이 현재 수신분 기준)
+    function computeStatusCounts() {
+        const c = { draft: 0, submitted: 0, confirmed_by_branch: 0, total: directorReports.length };
+        directorReports.forEach(function (r) {
+            if (c[r.status] !== undefined) c[r.status]++;
+        });
+        return c;
+    }
+
+    function renderDirectorStats() {
+        const c = computeStatusCounts();
+        setText('statPending', c.submitted);
+        setText('statConfirmed', c.confirmed_by_branch);
+        setText('statDraft', c.draft);
+        setText('statTotal', c.total);
+        setText('segPending', c.submitted);
+        setText('segConfirmed', c.confirmed_by_branch);
+        setText('segDraft', c.draft);
+    }
+    function setText(id, v) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = v;
+    }
+
+    // 상태별 좌측 보더 강조 — 미확인(submitted)을 가장 눈에 띄게
+    function reportCardClass(status) {
+        if (status === 'confirmed_by_branch') return 'report-card is-confirmed';
+        if (status === 'submitted') return 'report-card is-pending';
+        return 'report-card is-draft';
+    }
+    function relativeTime(s) {
+        if (!s) return '-';
+        const d = new Date(String(s).replace(' ', 'T'));
+        if (isNaN(d.getTime())) return String(s).split(' ')[0];
+        const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+        if (diff < 60) return '방금 전';
+        if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+        if (diff < 86400) return Math.floor(diff / 3600) + '시간 전';
+        if (diff < 86400 * 7) return Math.floor(diff / 86400) + '일 전';
+        return d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
+    }
+
+    // 검색 필터 적용 후 렌더
+    function renderDirectorReports() {
+        const container = document.getElementById('directorReportContainer');
+        if (!container) return;
+        const search = (document.getElementById('dSearch')?.value || '').trim().toLowerCase();
+        let rows = directorReports.slice();
+        if (statusFilter) rows = rows.filter(function (r) { return r.status === statusFilter; });
+        if (search) {
+            rows = rows.filter(function (r) {
+                const hay = ((r.director_name || '') + ' ' + (r.branch_name || '')).toLowerCase();
+                return hay.indexOf(search) !== -1;
+            });
+        }
+        renderDirectorStats();
+        if (!rows.length) {
+            const msg = directorReports.length ? '조건에 맞는 보고서가 없습니다.' : '수신한 원장 보고서가 없습니다.';
+            container.innerHTML = '<div class="empty-state"><div class="icon"></div><p>' + msg + '</p></div>';
+            return;
+        }
+        container.innerHTML = rows.map(function (r) {
+            const isSel = selectedReportId === r.id;
+            return '<div class="' + reportCardClass(r.status) + (isSel ? ' is-selected' : '') + '" onclick="openDirectorDetail(' + r.id + ')">' +
+                '<div class="rc-header">' +
+                '<div class="rc-title">' + esc(r.director_name || '원장') + ' <span class="rc-sep">·</span> ' + r.year + '년 ' + r.month + '월</div>' +
+                '<div>' + getStatusBadge(r.status) + '</div>' +
+                '</div>' +
+                '<div class="rc-meta">' +
+                '<span>' + esc(r.branch_name || '-') + '</span>' +
+                '<span>' + (r.total_students || 0) + '명</span>' +
+                '<span>신규 +' + (r.new_registrations || 0) + '</span>' +
+                '<span>유지율 ' + (r.retention_rate || 0) + '%</span>' +
+                '<span>' + relativeTime(r.created_at) + ' 제출</span>' +
+                '</div>' +
+                '<div class="rc-actions" style="display:flex;gap:6px;justify-content:flex-end">' +
+                '<button class="btn btn-outline btn-xs" onclick="event.stopPropagation();openDirectorDetail(' + r.id + ')">상세</button>' +
+                (r.status === 'submitted' ? '<button class="btn btn-primary btn-xs" onclick="event.stopPropagation();confirmDirectorReport(' + r.id + ')">확인 처리</button>' : '') +
+                '</div>' +
+                '</div>';
+        }).join('');
+    }
+    </script>
+    
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

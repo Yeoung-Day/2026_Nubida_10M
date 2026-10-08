@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>일정 관리 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/branch/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+<style id="br-schedule-design">
+/* ============================================================
+   [260910] 에듀케어 — 일정 관리 페이지 전문 리디자인
+   기존 클래스 오버라이드 방식 (HTML/ID/JS 무변경)
+   ============================================================ */
+.app-layout {
+  --ec-point: #4F5EF8;
+  --ec-point-soft: #EEF2FF;
+  --ec-bg: #FBFCFE;
+  --ec-bg-2: #F6F8FC;
+  --ec-border: #E8ECF5;
+  --ec-label: #98A1B2;
+  --ec-text: #1F2437;
+  --ec-text-2: #5A6478;
+  --ec-shadow-sm: 0 1px 2px rgba(31,36,55,.04), 0 1px 3px rgba(31,36,55,.03);
+  --ec-shadow-md: 0 4px 14px rgba(31,36,55,.06), 0 1px 3px rgba(31,36,55,.04);
+}
+.main-content { background: linear-gradient(180deg, var(--ec-bg) 0%, var(--ec-bg-2) 100%); }
+
+/* ===== 상단 타이틀 ===== */
+.top-nav h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--ec-text); margin: 0; }
+.top-nav-left { display: flex; align-items: center; gap: 12px; }
+.hamburger-btn {
+  background: transparent;
+  border: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--ec-text-2);
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 9px;
+  transition: background .15s;
+}
+.hamburger-btn:hover { background: var(--ec-bg-2); }
+
+/* ===== 카드 ===== */
+.main-content .card {
+  background: #fff;
+  border: 1px solid var(--ec-border);
+  border-radius: 16px;
+  box-shadow: var(--ec-shadow-sm);
+  overflow: hidden;
+}
+.main-content .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px;
+  border-bottom: 1px solid #F1F4F9;
+}
+.main-content .card-header h2 {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ec-text);
+  margin: 0;
+}
+.main-content .card-body { padding: 20px 22px; }
+.main-content .card-body.p-0 { padding: 0; }
+
+/* 주간 범위 라벨 (weekLabel) */
+#weekLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ec-point);
+  background: var(--ec-point-soft);
+  border-radius: 999px;
+  padding: 5px 12px;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.small-text { font-size: 12px; color: var(--ec-label); }
+
+/* ===== 테이블 ===== */
+.table-wrapper { overflow-x: auto; }
+.main-content .data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.main-content .data-table thead th {
+  background: #F7F9FC;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--ec-label);
+  padding: 12px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--ec-border);
+  white-space: nowrap;
+}
+.main-content .data-table tbody td {
+  padding: 14px 18px;
+  font-size: 13.5px;
+  color: var(--ec-text);
+  border-bottom: 1px solid #F1F4F9;
+  vertical-align: middle;
+}
+.main-content .data-table tbody tr:hover { background: #F9FAFE; }
+.main-content .data-table tbody tr:last-child td { border-bottom: none; }
+/* 요일 컬럼 강조 (JS가 <strong> 렌더) */
+.main-content .data-table tbody td strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: var(--ec-point-soft);
+  color: var(--ec-point);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.main-content .data-table tbody td .action-buttons { display: flex; gap: 6px; }
+
+/* ===== 배지 (pill + dot) ===== */
+.main-content .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: -0.01em;
+}
+.main-content .badge::before {
+  content: "";
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.main-content .badge-success { background: #F0FDF4; color: #16A34A; }
+.main-content .badge-warning { background: #FFF7ED; color: #D97706; }
+.main-content .badge-danger { background: #FEF2F2; color: #DC2626; }
+.main-content .badge-info { background: var(--ec-point-soft); color: var(--ec-point); }
+.main-content .badge-primary { background: var(--ec-point-soft); color: var(--ec-point); }
+
+/* ===== 버튼 ===== */
+.main-content .btn,
+.modal .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+  white-space: nowrap;
+}
+.main-content .btn:active,
+.modal .btn:active { transform: translateY(1px); }
+.main-content .btn-primary,
+.modal .btn-primary { background: var(--ec-point); color: #fff; }
+.main-content .btn-primary:hover,
+.modal .btn-primary:hover { background: #4351E8; }
+.main-content .btn-ghost,
+.modal .btn-ghost { background: #fff; border-color: var(--ec-border); color: var(--ec-text-2); }
+.main-content .btn-ghost:hover,
+.modal .btn-ghost:hover { background: var(--ec-bg-2); }
+.main-content .btn-danger,
+.modal .btn-danger { background: #DC2626; color: #fff; }
+.main-content .btn-danger:hover,
+.modal .btn-danger:hover { background: #B91C1C; }
+.main-content .btn-sm,
+.modal .btn-sm { padding: 6px 12px; font-size: 12.5px; border-radius: 8px; }
+.main-content .btn-outline {
+  background: #fff;
+  border-color: var(--ec-border);
+  color: var(--ec-text-2);
+}
+.main-content .btn-outline:hover { background: var(--ec-bg-2); border-color: #D8DFEC; color: var(--ec-text); }
+.main-content .btn-danger.btn-sm {
+  background: #fff;
+  color: #DC2626;
+  border-color: #FBD5D5;
+}
+.main-content .btn-danger.btn-sm:hover { background: #FEF2F2; }
+
+/* ===== 입력 / 셀렉트 ===== */
+.main-content .form-group { margin-bottom: 14px; }
+.main-content .form-group label,
+.modal .form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ec-label);
+  letter-spacing: .02em;
+  margin-bottom: 7px;
+}
+.main-content .form-input,
+.main-content .form-select,
+.main-content .form-textarea,
+.modal .form-input,
+.modal .form-select,
+.modal .form-textarea {
+  width: 100%;
+  border: 1px solid var(--ec-border);
+  border-radius: 10px;
+  padding: 10px 13px;
+  font-size: 13.5px;
+  color: var(--ec-text);
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+  font-family: inherit;
+}
+.main-content .form-input::placeholder,
+.main-content .form-textarea::placeholder,
+.modal .form-input::placeholder,
+.modal .form-textarea::placeholder { color: var(--ec-label); }
+.main-content .form-input:focus,
+.main-content .form-select:focus,
+.main-content .form-textarea:focus,
+.modal .form-input:focus,
+.modal .form-select:focus,
+.modal .form-textarea:focus {
+  outline: none;
+  border-color: var(--ec-point);
+  box-shadow: 0 0 0 3px rgba(79,94,248,.12);
+}
+.form-row { display: flex; gap: 14px; }
+.form-row .form-group { flex: 1 1 0; margin-bottom: 14px; }
+
+/* ===== 하단 2단 그리드 ===== */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.mt-24 { margin-top: 18px; }
+
+/* ===== 오늘의 일정 ===== */
+#todaySchedule.card-body.flex-center {
+  min-height: 120px;
+  color: var(--ec-label);
+  font-size: 13.5px;
+}
+#todaySchedule.card-body { padding: 8px 22px; }
+#todaySchedule .schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  font-size: 13.5px;
+  color: var(--ec-text);
+  border-bottom: 1px solid #F1F4F9;
+}
+#todaySchedule .schedule-item:last-child { border-bottom: 0; }
+#todaySchedule .schedule-item::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 28px; height: 28px;
+  border-radius: 9px;
+  background: var(--ec-point-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%234F5EF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E") center/15px no-repeat;
+}
+
+/* ===== 모달 ===== */
+.modal-overlay { background: rgba(31,36,55,.42); backdrop-filter: blur(2px); }
+.modal {
+  border-radius: 16px;
+  border: 1px solid var(--ec-border);
+  box-shadow: 0 20px 48px rgba(31,36,55,.18);
+  padding: 24px;
+  background: #fff;
+}
+.modal h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ec-text);
+  letter-spacing: -0.02em;
+  margin: 0 0 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F1F4F9;
+}
+.modal .form-group { margin-bottom: 14px; }
+.modal p { font-size: 14px; line-height: 1.6; color: var(--ec-text-2); }
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #F1F4F9;
+}
+
+/* 로딩/빈 상태 텍스트 */
+.main-content .data-table tbody td[colspan] { color: var(--ec-label); }
+
+/* ===== 반응형 ===== */
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .form-row { flex-direction: column; gap: 0; }
+  .main-content .card-header { padding: 16px 18px; flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  .main-content .card-body { padding: 16px; }
+  .main-content .card-body.p-0 { padding: 0; }
+  .main-content .data-table thead th,
+  .main-content .data-table tbody td { padding: 12px 14px; }
+}
+</style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>운영</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="employees.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">원장 관리</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">수강생 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>교육</div>
+                <a class="nav-item" href="studios.html" style="display:none"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">공부방 관리</span></a>
+                <a class="active nav-item" href="schedule.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">일정 관리</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>보고</div>
+                <a class="nav-item" href="branch-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg>소통</div>
+                <a class="nav-item" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+                
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">에듀케어 설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">에듀케어</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>일정 관리</h1></div>
+                <div class="top-nav-right">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>이번 주 수업 일정</h2>
+                    <span class="small-text" id="weekLabel"></span>
+                </div>
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table" data-card-view>
+                            <thead><tr><th>요일</th><th>시간</th><th>강좌명</th><th>강사</th><th>강의실</th><th>수강생</th><th style="width:100px">관리</th></tr></thead>
+                            <tbody id="scheduleBody"><tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:40px">로딩 중...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-2 mt-24">
+                <div class="card">
+                    <div class="card-header"><h2>오늘의 일정</h2></div>
+                    <div class="card-body flex-center" style="min-height:120px;color:var(--text-tertiary)" id="todaySchedule">
+                        오늘은 수업이 없습니다
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h2>일정 추가</h2></div>
+                    <div class="card-body">
+                        <form id="quickScheduleForm" onsubmit="return false;">
+                            <div class="form-group">
+                                <label>제목</label>
+                                <input type="text" class="form-input" id="qsTitle" placeholder="예: 학부모 상담">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>날짜</label>
+                                    <input type="date" class="form-input" id="qsDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>시간</label>
+                                    <input type="time" class="form-input" id="qsTime">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">등록</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Schedule Modal (Create/Edit) -->
+    <div class="modal-overlay" id="scheduleModal">
+        <div class="modal">
+            <h2 id="scheduleModalTitle">일정 등록</h2>
+            <form id="scheduleForm" onsubmit="return false;">
+                <input type="hidden" id="editScheduleId">
+                <div class="form-group"><label>제목</label><input type="text" class="form-input" id="modalSchedTitle" required></div>
+                <div class="form-row">
+                    <div class="form-group"><label>날짜</label><input type="date" class="form-input" id="modalSchedDate"></div>
+                    <div class="form-group"><label>시간</label><input type="time" class="form-input" id="modalSchedTime"></div>
+                </div>
+                <div class="form-group"><label>내용</label><textarea class="form-textarea" id="modalSchedDesc" rows="3"></textarea></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('scheduleModal')">취소</button>
+                    <button type="submit" class="btn btn-primary" id="scheduleSubmitBtn">등록</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Delete Schedule Modal -->
+    <div class="modal-overlay" id="deleteScheduleModal">
+        <div class="modal modal-sm">
+            <h2>일정 삭제</h2>
+            <p style="margin:16px 0;color:var(--text-secondary)">정말 이 일정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+            <input type="hidden" id="deleteScheduleId">
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('deleteScheduleModal')">취소</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteSchedule()">삭제</button>
+            </div>
+        </div>
+    </div>
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script src="/common/js/pages-branch.js?v=20260911nav"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requireAuth();
+            renderSidebarUser();
+            initPage();
+        });
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

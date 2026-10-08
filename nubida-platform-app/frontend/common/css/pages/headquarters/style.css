@@ -1,0 +1,2017 @@
+/* ============================================================
+   누비다플랫폼 v6.0 — 본사(Headquarters) 페이지 스타일
+   ============================================================ */
+/* ============================================================
+   컴포넌트 CSS @import — 공통 UI 컴포넌트 자동 로드
+   ============================================================ */
+
+/* ===== 사이드바 트리 오버라이드 ===== */
+.nav-section {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  padding: 12px 16px 4px 16px;
+  margin-top: 4px;
+}
+.nav-item {
+  padding-left: 24px !important;
+}
+.nav-section + .nav-item {
+  padding-left: 24px;
+}
+
+/* ===== HQ 전용 UI ===== */
+.hq-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+.hq-stat-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+.hq-stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.hq-table-wrapper {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+.hq-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-muted);
+}
+.hq-table-header h2,
+.hq-table-header h3 {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  margin: 0;
+}
+
+.hq-filter-bar {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.hq-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+}
+.hq-badge.approved { background: var(--success-bg); color: var(--success); }
+.hq-badge.pending { background: var(--warning-bg); color: var(--warning); }
+.hq-badge.rejected { background: var(--danger-bg); color: var(--danger); }
+
+.hq-payment-summary {
+  display: flex;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+}
+.hq-payment-summary .summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hq-payment-summary .summary-label {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  font-weight: var(--weight-medium);
+}
+.hq-payment-summary .summary-value {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.hq-notice-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition-base);
+}
+.hq-notice-item:last-child {
+  border-bottom: none;
+}
+.hq-notice-item:hover {
+  background: var(--bg-muted);
+}
+.hq-notice-item .notice-title {
+  flex: 1;
+  font-weight: var(--weight-medium);
+  font-size: var(--text-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hq-notice-item .notice-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.page-animate {
+  animation: fadeIn 0.5s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   강좌 관리 (courses.html) — 툴바 / 폴더 트리 / 토글
+   ============================================================ */
+
+/* ---- 상단 툴바 ---- */
+.courses-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.courses-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.courses-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- 폴더 바 ---- */
+.folder-bar {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.folder-bar-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.folder-bar-row:last-child {
+  margin-bottom: 0;
+}
+
+/* 폴더 아이템 (➕폴더 추가 버튼) */
+.folder-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: 1px dashed var(--accent);
+  color: var(--accent);
+  background: var(--bg-accent-light);
+}
+.folder-item:hover {
+  background: var(--accent);
+  color: #fff;
+  border-style: solid;
+}
+
+/* ---- 폴더 트리 ---- */
+.folder-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 부모 노드 (expandable) */
+.tree-parent {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.tree-parent-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.tree-parent-header:hover {
+  background: var(--bg-muted);
+}
+
+/* 확장/접기 버튼 */
+.tree-expand-btn {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+.tree-expand-btn:hover {
+  color: var(--text-primary);
+}
+
+/* 폴더 아이콘 */
+.folder-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* 폴더명 */
+.folder-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 개수 표시 */
+.count {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* ---- 토글 스위치 ---- */
+.folder-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+.track {
+  width: 32px;
+  height: 18px;
+  border-radius: 99px;
+  position: relative;
+  transition: background 0.2s;
+  display: inline-block;
+}
+.track.on {
+  background: var(--success, #22c55e);
+}
+.track.off {
+  background: var(--border-default, #d1d5db);
+}
+.thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 99px;
+  background: #fff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.track.on .thumb {
+  left: 16px;
+}
+.track.off .thumb {
+  left: 2px;
+}
+.label {
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+.label.on {
+  color: var(--success, #22c55e);
+}
+.label.off {
+  color: var(--text-tertiary);
+}
+
+/* ---- 트리 액션 ---- */
+.tree-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.tree-parent-header:hover .tree-actions,
+.tree-child:hover .tree-actions {
+  opacity: 1;
+}
+.act-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.act-btn.edit:hover {
+  background: var(--bg-muted);
+}
+.act-btn.danger:hover {
+  background: var(--danger-bg, #fef2f2);
+}
+.act-btn.danger {
+  color: var(--danger, #ef4444);
+}
+
+/* ---- 자식 노드 ---- */
+.tree-children-wrapper {
+  padding-left: 24px;
+  margin-top: 2px;
+}
+.tree-children-wrapper.collapsed {
+  display: none;
+}
+.tree-children {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tree-child:hover {
+  background: var(--bg-muted);
+}
+
+/* ---- 강좌 테이블 ---- */
+.courses-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+.courses-table th {
+  background: var(--bg-muted);
+  padding: 10px 14px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.courses-table td {
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.courses-table tr:last-child td {
+  border-bottom: none;
+}
+.courses-table tr:hover td {
+  background: var(--bg-muted);
+}
+.checkbox-col {
+  width: 36px;
+  text-align: center !important;
+}
+.c-empty {
+  padding: 40px 0 !important;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
+/* ---- 강좌 카드 (레이아웃 컨테이너) ---- */
+.courses-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: 16px;
+}
+
+/* ---- 빈 상태 ---- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 0;
+}
+.empty-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+.empty-state h3 {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  margin: 0 0 4px 0;
+}
+.empty-state p {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+/* ---- 업로드 존 ---- */
+.upload-zone {
+  border: 2px dashed var(--border-default);
+  border-radius: var(--radius-2xl);
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  background: var(--bg-white);
+}
+.upload-zone:hover {
+  border-color: var(--accent);
+  background: var(--bg-accent-light);
+}
+
+/* ---- 보조 텍스트 ---- */
+.small-text {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* ---- 페이지네이션 ---- */
+.pagination-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 0;
+  margin-top: 8px;
+}
+.pagination-wrap .btn {
+  min-width: 32px;
+}
+
+/* ============================================================
+   지사 관리 (branches.html) — 툴바 / 테이블 / 배지
+   ============================================================ */
+
+/* ---- 상단 툴바 ---- */
+.branches-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.branches-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.branches-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---- 지사 테이블 ---- */
+.branches-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+.branches-table th {
+  background: var(--bg-muted);
+  padding: 10px 14px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.branches-table td {
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+.branches-table tr:last-child td {
+  border-bottom: none;
+}
+.branches-table tr:hover td {
+  background: var(--bg-muted);
+}
+
+/* ---- 지사 카드 (래퍼) ---- */
+.branches-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+/* ---- 지사 코드 ---- */
+.branch-code {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ---- 지사 빈 상태 ---- */
+.branch-empty {
+  padding: 40px 0 !important;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+.branch-empty td {
+  text-align: center;
+  padding: 40px 0 !important;
+  color: var(--text-tertiary);
+}
+
+/* ---- 상태 배지 (branches, notices 등) ---- */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.status-badge.active,
+.status-badge.approved,
+.status-badge.published {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.status-badge.pending,
+.status-badge.draft {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+.status-badge.inactive,
+.status-badge.rejected,
+.status-badge.suspended {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.status-badge.closed,
+.status-badge.archived {
+  background: var(--bg-subtle);
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   사용자 관리 (users.html) — 툴바 / 테이블 / 상태
+   ============================================================ */
+
+/* ---- 상단 툴바 ---- */
+.users-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.users-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.users-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- 사용자 테이블 ---- */
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.users-table th {
+  background: var(--bg-muted);
+  padding: 10px 14px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.users-table td {
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+.users-table tr:hover td {
+  background: var(--bg-muted);
+}
+
+/* ============================================================
+   모바일 카드형 전환 (users.html) — 9열 표를 세로 카드로
+   ============================================================ */
+@media (max-width: 768px) {
+  .users-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .users-table thead { display: none; }
+  .users-table,
+  .users-table tbody { display: block; width: 100%; }
+  .users-table tr {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-white);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 10px 14px 14px;
+    margin: 0 0 12px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .users-table tr:hover td { background: transparent; }
+  .users-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-subtle);
+    font-size: 14px !important;
+    text-align: right;
+    box-sizing: border-box;
+  }
+  .users-table td:last-child { border-bottom: none; }
+  .users-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  /* 카드 순서: 이름 → 역할 → ID → 아이디 → 이메일 → 연락처 → 상태 → 가입일 → 작업 */
+  .users-table td { order: 5; }
+  .users-table td:nth-child(2) { order: -3; }  /* 이름/학생명 */
+  .users-table td:nth-child(6) { order: -2; }  /* 역할/담당원장 */
+  .users-table td:nth-child(1) { order: -1; }  /* ID */
+  .users-table td:nth-child(9) { order: 10; }  /* 작업/탈퇴일 */
+  /* 이름 강조 */
+  .users-table td[data-label="이름"],
+  .users-table td[data-label="학생명"] {
+    font-size: 17px !important;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-default);
+    padding-bottom: 10px;
+    margin-bottom: 2px;
+  }
+  .users-table td[data-label="이름"] strong,
+  .users-table td[data-label="학생명"] strong { font-size: 17px; }
+  /* 작업 버튼: 카드 하단 44px 터치 타겟 */
+  .users-table td[data-label="작업"] {
+    flex-direction: column;
+    align-items: stretch;
+    border-top: 1px solid var(--border-default);
+    border-bottom: none;
+    margin-top: 6px;
+    padding-top: 10px;
+  }
+  .users-table td[data-label="작업"]::before { display: none; }
+  .users-table td[data-label="작업"] .action-cell {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+  }
+  .users-table td[data-label="작업"] .action-cell .btn {
+    flex: 1;
+    min-height: 44px;
+    height: 44px;
+    font-size: 13px;
+  }
+  /* 역할 배지/상태 점 */
+  .users-table td .role-badge { font-size: 12px; padding: 3px 10px; }
+  .users-table td .status-dot { width: 9px; height: 9px; }
+  /* 빈 상태/로딩 행 복구 */
+  .users-table .user-empty {
+    display: table-row;
+  }
+  .users-table .user-empty td {
+    display: table-cell;
+    text-align: center;
+    border-bottom: none;
+  }
+}
+
+/* ---- 사용자 카드 (래퍼) ---- */
+.users-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+/* ---- 사용자 빈 상태 ---- */
+.user-empty {
+  padding: 40px 0 !important;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+.user-empty td {
+  text-align: center;
+  padding: 40px 0 !important;
+  color: var(--text-tertiary);
+}
+
+/* ---- 상태 도트 (users.html) ---- */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.status-dot.active {
+  background: var(--success);
+  box-shadow: 0 0 0 2px var(--success-bg);
+}
+.status-dot.inactive {
+  background: var(--text-tertiary);
+  box-shadow: 0 0 0 2px var(--bg-subtle);
+}
+
+/* ---- 역할 배지 (users.html) ---- */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.role-badge.hq,
+.role-badge.admin,
+.role-badge.master {
+  background: var(--accent-bg);
+  color: var(--accent-dark);
+}
+.role-badge.director,
+.role-badge.principal {
+  background: var(--secondary-bg);
+  color: var(--secondary);
+}
+.role-badge.teacher,
+.role-badge.instructor {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.role-badge.student {
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+}
+.role-badge.parent {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+.role-badge.staff {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+/* ============================================================
+   공지사항 (notices.html) — 툴바 / 테이블 / 고정 배지
+   ============================================================ */
+
+/* ---- 상단 툴바 ---- */
+.notices-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.notices-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.notices-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- 공지사항 테이블 ---- */
+.notices-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.notices-table th {
+  background: var(--bg-muted);
+  padding: 10px 14px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.notices-table td {
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+.notices-table tr:last-child td {
+  border-bottom: none;
+}
+.notices-table tr:hover td {
+  background: var(--bg-muted);
+}
+
+/* ---- 공지사항 카드 (래퍼) ---- */
+.notices-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+/* ---- 공지사항 빈 상태 ---- */
+.notice-empty {
+  padding: 40px 0 !important;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+.notice-empty td {
+  text-align: center;
+  padding: 40px 0 !important;
+  color: var(--text-tertiary);
+}
+
+/* ---- 고정 배지 (pinned-badge) ---- */
+.pinned-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+}
+.pinned-badge.yes {
+  color: var(--accent);
+}
+.pinned-badge.no {
+  color: var(--text-disabled);
+}
+
+/* ---- 고정된 공지 행 ---- */
+.notice-pinned {
+  background: var(--accent-bg) !important;
+}
+.notice-pinned td {
+  background: var(--accent-bg);
+}
+.notice-pinned:hover td {
+  background: var(--accent-bg) !important;
+  filter: brightness(0.97);
+}
+
+/* ---- 체크박스 인라인 ---- */
+.checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.checkbox-inline input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.checkbox-inline label {
+  margin-bottom: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+/* ============================================================
+   MGMT 툴바 (payments.html, portfolio.html)
+   ============================================================ */
+
+/* ---- 상단 툴바 ---- */
+.mgmt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mgmt-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mgmt-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- 필터 바 ---- */
+.mgmt-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   폼 유틸리티 (form-grid, full, gap-8 등)
+   ============================================================ */
+
+/* ---- 폼 그리드 (2열/3열） ---- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-5);
+}
+
+/* ---- 전체 너비 (full) ---- */
+.full,
+.full-width {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* ---- 갭 8px 유틸리티 ---- */
+.gap-8 {
+  gap: 8px;
+}
+
+/* ---- 통계 행 ---- */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+/* ---- 폼 액션 영역 ---- */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-5);
+}
+
+/* ============================================================
+   페이지네이션 (page-btn)
+   ============================================================ */
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.page-btn:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-default);
+}
+.page-btn.active {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================================
+   에듀케어 보고서 (director-reports.html)
+   ============================================================ */
+
+/* ---- 상세 테이블 ---- */
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.detail-table tr {
+  border-bottom: 1px solid var(--border-subtle);
+}
+.detail-table tr:last-child {
+  border-bottom: none;
+}
+.detail-table td {
+  padding: 8px 12px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  vertical-align: top;
+}
+.detail-table td:first-child {
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  width: 120px;
+}
+
+/* ---- 보고서 카드 헤더 ---- */
+.rc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---- 보고서 카드 타이틀 ---- */
+.rc-title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+/* ---- 보고서 카드 메타 정보 ---- */
+.rc-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+
+/* ---- 보고서 통계 행 ---- */
+.rc-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ---- 보고서 통계 아이템 ---- */
+.rc-stat {
+  text-align: center;
+  padding: 8px 16px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+  min-width: 80px;
+}
+.rc-stat .val {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.rc-stat .lbl {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ---- 보고서 카드 ---- */
+.report-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+.report-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-default);
+  transform: translateY(-1px);
+}
+
+/* ---- 섹션 블록 ---- */
+.section-block {
+  margin-bottom: 20px;
+}
+.section-block h4 {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ============================================================
+   카드/모달 유틸리티
+   ============================================================ */
+
+/* ---- 카드 헤더 액션 영역 ---- */
+.card-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- 모달 푸터 ---- */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-5);
+}
+
+/* ============================================================
+   통계 페이지 (statistics.html)
+   ============================================================ */
+
+/* ---- 리포트 행 (reports-row) ---- */
+.reports-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+/* ---- 리포트 행 아이템 (report-row) ---- */
+.report-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.report-row:last-child {
+  border-bottom: none;
+}
+.report-row .label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+.report-row .value {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+.report-row .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.report-row .dot.gold {
+  background: #F59E0B;
+}
+.report-row .dot.teal {
+  background: var(--secondary);
+}
+
+/* ---- 활동 카드 ---- */
+.activity-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- 활동 리스트 ---- */
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---- 활동 아이템 ---- */
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+/* ---- 활동 텍스트 ---- */
+.activity-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- 활동 시간 ---- */
+.activity-time {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* ---- 활동 도트 ---- */
+.activity-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.activity-dot.signup {
+  background: var(--accent);
+}
+.activity-dot.payment {
+  background: var(--success);
+}
+.activity-dot.enrollment {
+  background: var(--secondary);
+}
+.activity-dot.other {
+  background: var(--text-tertiary);
+}
+
+/* ---- 활동 빈 상태 ---- */
+.activity-empty {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
+/* ============================================================
+   지사 통계 (statistics.html - branch-table)
+   ============================================================ */
+
+/* ---- 지사 테이블 래퍼 ---- */
+.branch-table-wrap {
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  margin-bottom: var(--space-7);
+}
+
+/* ---- 지사 테이블 ---- */
+.branch-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.branch-table th {
+  background: var(--bg-muted);
+  padding: 10px 14px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.branch-table td {
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+.branch-table tr:last-child td {
+  border-bottom: none;
+}
+.branch-table tr:hover td {
+  background: var(--bg-muted);
+}
+
+/* ---- 지사명 ---- */
+.branch-name {
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+/* ---- 지사 상태 ---- */
+.branch-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+}
+.branch-status.active {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.branch-status.inactive {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.branch-status.pending {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+/* ============================================================
+   차트 (statistics.html - chart-bar)
+   ============================================================ */
+
+/* ---- 차트 헤더 ---- */
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chart-header h3 {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ---- 차트 총계 ---- */
+.chart-total {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+.chart-total strong {
+  color: var(--text-primary);
+  font-weight: var(--weight-bold);
+}
+
+/* ---- 차트 로딩 ---- */
+.chart-loading {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
+/* ---- 차트 바 래퍼 ---- */
+.chart-bar-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 200px;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+/* ---- 차트 바 아이템 ---- */
+.chart-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 40px;
+}
+
+/* ---- 차트 바 ---- */
+.chart-bar {
+  width: 100%;
+  max-width: 48px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height var(--transition-base);
+  position: relative;
+  cursor: pointer;
+}
+.chart-bar:hover {
+  opacity: 0.8;
+}
+
+/* ---- 차트 바 레이블 ---- */
+.chart-bar-label {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  text-align: center;
+  white-space: nowrap;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- 바 값 ---- */
+.bar-val {
+  display: none;
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  background: var(--bg-white);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+.chart-bar-item:hover .bar-val {
+  display: block;
+}
+.bar-val.peek {
+  display: block;
+}
+
+/* ============================================================
+   퀵 통계 (statistics.html - quick-stats)
+   ============================================================ */
+
+/* ---- 퀵 통계 그리드 ---- */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+/* ---- 퀵 통계 카드 ---- */
+.quick-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+.quick-stat:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ---- 퀵 통계 아이콘 도트 ---- */
+.qs-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-xl);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.qs-dot.gold {
+  background: #FFFBEB;
+  color: #D97706;
+}
+.qs-dot.teal {
+  background: var(--secondary-bg);
+  color: var(--secondary);
+}
+.qs-dot.success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.qs-dot.info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+/* ---- 퀵 통계 정보 영역 ---- */
+.qs-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* ---- 퀵 통계 값 ---- */
+.qs-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+/* ---- 퀵 통계 라벨 ---- */
+.qs-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--weight-medium);
+}
+
+/* ============================================================
+   통계 상단 (statistics.html — stat-top, stat-badge, stat-change)
+   ============================================================ */
+
+/* ---- 통계 상단 영역 ---- */
+.stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* ---- 통계 배지 ---- */
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.stat-badge.info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+.stat-badge.success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.stat-badge.warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+/* ---- 통계 변화 표시 ---- */
+.stat-change {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  margin-top: 4px;
+}
+.stat-change.up {
+  color: var(--success);
+}
+.stat-change.down {
+  color: var(--danger);
+}
+
+/* ============================================================
+   비교 그리드 (statistics.html — comparison-grid)
+   ============================================================ */
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* ---- 비교 아이템 ---- */
+.comparison-item {
+  text-align: center;
+  padding: 12px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-xl);
+}
+
+/* ---- 비교 라벨 ---- */
+.cmp-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--weight-medium);
+  margin-bottom: 4px;
+}
+
+/* ---- 비교 값 ---- */
+.cmp-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+/* ---- 비교 서브 텍스트 ---- */
+.cmp-sub {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   섹션 타이틀 / 애니메이션
+   ============================================================ */
+
+/* ---- 섹션 제목 ---- */
+.section-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-5);
+}
+
+/* ---- 페이드 인 애니메이션 ---- */
+.anim-fade {
+  animation: fadeIn 0.5s ease-out both;
+}
+
+/* ============================================================
+   승인 관리 (approvals.html)
+   ============================================================ */
+
+/* ---- 승인 버튼 ---- */
+.btn-approve {
+  background: var(--success);
+  color: var(--on-success);
+  border-color: var(--success);
+}
+.btn-approve:hover {
+  background: #059669;
+  border-color: #059669;
+  color: var(--on-success);
+  text-decoration: none;
+}
+
+/* ---- 거절 버튼 ---- */
+.btn-reject {
+  background: var(--danger);
+  color: var(--on-danger);
+  border-color: var(--danger);
+}
+.btn-reject:hover {
+  background: #DC2626;
+  border-color: #DC2626;
+  color: var(--on-danger);
+  text-decoration: none;
+}
+
+/* ---- 대기 중인 건수 배지 ---- */
+.pending-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  color: var(--on-accent);
+  background: var(--accent);
+  border-radius: var(--radius-full);
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+/* ---- 작은 역할 배지 ---- */
+.role-badge-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.role-badge-sm.hq,
+.role-badge-sm.admin {
+  background: var(--accent-bg);
+  color: var(--accent-dark);
+}
+.role-badge-sm.director {
+  background: var(--secondary-bg);
+  color: var(--secondary);
+}
+.role-badge-sm.teacher {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.role-badge-sm.student {
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+}
+.role-badge-sm.parent {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+/* ---- 사용자 정보 영역 ---- */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.user-info .user-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+.user-info .user-meta {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   레이아웃 유틸리티
+   ============================================================ */
+
+/* ---- 콘텐츠 컨테이너 ---- */
+.content-container {
+  max-width: var(--content-max-w, 1280px);
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ============================================================
+   색상 유틸리티 (gold, teal)
+   ============================================================ */
+
+.gold {
+  color: #D97706;
+}
+.teal {
+  color: var(--secondary);
+}
+
+/* ============================================================
+   포트폴리오 — 모달 / 업로드 드롭존 / 이미지 미리보기
+   ============================================================ */
+
+/* ---- 모달 오버레이 ---- */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 24px;
+}
+.modal-overlay.active,
+.modal-overlay[style*="display: flex"],
+.modal-overlay[style*="display:flex"] {
+  display: flex !important;
+}
+
+/* ---- 모달 본체 ---- */
+.modal-overlay .modal {
+  background: var(--bg-white);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  padding: 24px 28px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.2s ease-out;
+}
+.modal-overlay .modal h2 {
+  font-size: 18px;
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- 폼 행 (2열) ---- */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ---- 모달 액션 푸터 ---- */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 16px;
+}
+
+/* ---- 업로드 드롭존 ---- */
+.upload-dropzone {
+  border: 2px dashed var(--border-default);
+  border-radius: var(--radius-2xl);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  background: var(--bg-subtle);
+  margin-bottom: 8px;
+}
+.upload-dropzone:hover,
+.upload-dropzone.drag-over {
+  border-color: var(--accent);
+  background: var(--bg-accent-light);
+}
+.upload-dropzone .upload-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+  opacity: 0.6;
+}
+.upload-dropzone p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.upload-dropzone .small-text {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* ---- 이미지 미리보기 컨테이너 ---- */
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ---- 미리보기 아이템 ---- */
+.preview-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-muted);
+}
+.preview-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.preview-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+.preview-remove:hover {
+  background: var(--danger);
+}
+
+/* ---- 토글 레이블 ---- */
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.toggle-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ===== HQ 필터 탭 (깔끔한 디자인) ===== */
+.hq-filter-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--bg-muted, #F3F4F6);
+  border-radius: 10px;
+  padding: 3px;
+  width: fit-content;
+  margin-bottom: 16px;
+}
+.hq-filter-tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  background: transparent;
+  border: none;
+  white-space: nowrap;
+}
+.hq-filter-tabs .tab:hover {
+  color: #374151;
+  background: rgba(0,0,0,0.04);
+}
+.hq-filter-tabs .tab.active {
+  color: #111827;
+  font-weight: 600;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+}

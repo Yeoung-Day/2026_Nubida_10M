@@ -1,0 +1,60 @@
+services:
+  # 1. 고성능 데이터베이스 (MariaDB)
+  db:
+    image: mariadb:10.11
+    container_name: music-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: '***MASKED***'
+      MARIADB_DATABASE: 'music_ai'
+      MARIADB_USER: 'nubidaplet'
+      MARIADB_PASSWORD: '***MASKED***'
+    volumes:
+      - /data/ssd/mysql:/var/lib/mysql
+    # 64GB 램의 위력을 활용한 16GB 버퍼 및 3,000개 연결 확보
+    command: ["mariadbd", "--innodb-buffer-pool-size=16G", "--max-connections=3000"]
+
+  # 2. AI 음악 서비스 (Python + RTX 3080)
+  music-ai-app:
+    image: python:3.10-slim
+    container_name: music-ai-app
+    restart: always
+    depends_on:
+      - db
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - "8001:8080"
+    volumes:
+      - ./music-ai:/app
+      - /data/ssd/music-assets/models:/app/static/models:ro
+      - /data/ssd/music-assets/mr:/app/static/mr:ro
+      - /data/hdd/logs/music:/app/logs
+    working_dir: /app
+    # 대용량 파일 전송 타임아웃 300초 확보 및 최신 libgl1 적용
+    command: >
+      sh -c "apt-get update && 
+             apt-get install -y libgl1 libglib2.0-0 && 
+             pip install --no-cache-dir flask flask-cors torch torchaudio mysql-connector-python gunicorn redis && 
+             gunicorn --workers 4 --timeout 300 --bind 0.0.0.0:8080 app:app"
+
+  # 3. ADU 커뮤니티 웹 (Node.js)
+  adu-app:
+    build: ./adu-service
+    container_name: adu-web-app
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8002:3000"
+    volumes:
+      - ./adu-service:/app
+      - /data/ssd/adu-assets/uploads:/app/public/images
+      - /data/hdd/logs/adu:/app/logs
+    environment:
+      - NODE_ENV=production

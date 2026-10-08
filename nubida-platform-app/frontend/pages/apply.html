@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>교육 신청 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <meta name="description" content="누비다플랫폼 교육 신청 — 본사가 올린 교육 공고를 확인하고 온라인으로 신청하세요.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/pages/public-page.css?v=20260921a">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+    /* ===== 교육 신청 게시판 ===== */
+    .eb-wrap { max-width: 780px; margin: 0 auto; padding: 0 20px 96px; }
+
+    /* 히어로를 게시판 폭에 맞춰 좌우 정렬 통일 */
+    .page-hero {
+        max-width: 780px; padding: 128px 20px 52px;
+        text-align: left;
+    }
+    .page-hero h1 { font-size: 34px; }
+    .page-hero .sub { max-width: none; margin-top: 15px; line-height: 1.85; }
+
+    /* 섹션 헤더 */
+    .eb-sec {
+        display:flex; align-items:center; justify-content:space-between;
+        gap:14px; margin:0 2px 14px; flex-wrap:wrap;
+    }
+    .eb-sec h2 {
+        font-size:15px; font-weight:800; color:#0F172A; margin:0;
+        letter-spacing:-.02em; display:flex; align-items:center; gap:8px;
+    }
+    .eb-sec h2 .dot {
+        width:6px; height:6px; border-radius:50%; background:#4F46E5;
+        display:inline-block; flex:0 0 auto;
+    }
+    .eb-sec .cnt { font-size:12.5px; font-weight:600; color:#94A3B8; }
+
+    /* 게시판 패널 */
+    .eb-panel {
+        background:#fff; border:1px solid #E8ECF2; border-radius:20px;
+        margin-top:-52px; position:relative; z-index:3; overflow:hidden;
+        box-shadow:0 1px 2px rgba(15,23,42,.04), 0 12px 32px rgba(15,23,42,.06);
+    }
+
+    /* 공고 항목 */
+    .eb-item { border-bottom:1px solid #F1F5F9; position:relative; }
+    .eb-item:last-child { border-bottom:0; }
+    .eb-item::before {
+        content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+        background:#4F46E5; opacity:0; transition:opacity .2s;
+    }
+    .eb-item.open::before { opacity:1; }
+    .eb-head {
+        display:flex; align-items:flex-start; gap:16px;
+        padding:22px 26px; cursor:pointer; transition:background .18s;
+    }
+    .eb-head:hover { background:#FBFCFE; }
+    .eb-main { flex:1 1 auto; min-width:0; }
+    .eb-top { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-bottom:9px; }
+    .eb-top > span { display:inline-flex; align-items:center; line-height:1; }
+    .eb-cat {
+        font-size:11px; font-weight:700; color:#4338CA; background:#EEF2FF;
+        padding:3.5px 10px; border-radius:7px; letter-spacing:-.01em;
+    }
+    .eb-pin {
+        font-size:11px; font-weight:700; color:#B45309; background:#FEF3C7;
+        padding:3.5px 10px; border-radius:7px; letter-spacing:-.01em;
+    }
+    .eb-badge { font-size:11px; font-weight:700; padding:3.5px 10px; border-radius:7px; letter-spacing:-.01em; }
+    .eb-badge.open { color:#047857; background:#ECFDF5; }
+    .eb-badge.closed { color:#64748B; background:#F1F5F9; }
+    .eb-badge.full { color:#B91C1C; background:#FEF2F2; }
+    .eb-title {
+        font-size:17px; font-weight:750; color:#0F172A; letter-spacing:-.025em;
+        margin:0 0 7px; line-height:1.45;
+    }
+    .eb-sum { font-size:13.5px; color:#5A6472; line-height:1.65; margin:0 0 12px; }
+    .eb-meta {
+        display:flex; align-items:center; flex-wrap:wrap;
+        font-size:13px; color:#6B7684; line-height:1.5;
+    }
+    .eb-meta span { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+    .eb-meta span + span::before {
+        content:''; width:1px; height:11px; background:#DDE3EB;
+        margin-right:16px; margin-left:0;
+    }
+    .eb-meta b { color:#334155; font-weight:650; }
+    .eb-chev {
+        flex:0 0 auto; width:20px; height:20px; margin-top:4px;
+        color:#C3CBD6; transition:transform .24s ease, color .18s;
+    }
+    .eb-head:hover .eb-chev { color:#8A95A5; }
+    .eb-item.open .eb-chev { transform:rotate(180deg); color:#4F46E5; }
+
+    /* 펼침 본문 */
+    .eb-body {
+        display:none; padding:2px 26px 28px;
+        animation:ebFade .24s ease-out;
+    }
+    .eb-item.open .eb-body { display:block; }
+    @keyframes ebFade { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:none; } }
+    .eb-content {
+        font-size:14px; color:#3F4A5A; line-height:1.9; white-space:pre-wrap;
+        background:#FAFBFD; border:1px solid #F0F3F8; border-radius:14px;
+        padding:22px 24px; margin-bottom:18px;
+    }
+    .eb-info {
+        display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+        gap:9px; margin-bottom:20px;
+    }
+    .eb-info div {
+        font-size:13px; color:#4B5563; background:#F8FAFC; border:1px solid #F0F3F8;
+        border-radius:11px; padding:12px 15px; line-height:1.55;
+    }
+    .eb-info div span {
+        display:block; font-size:11px; font-weight:700; color:#9AA5B4;
+        margin-bottom:4px; letter-spacing:.02em;
+    }
+    .eb-apply {
+        width:100%; font-family:inherit; font-size:15.5px; font-weight:700; letter-spacing:-.015em;
+        color:#fff; background:#18181B; border:0; border-radius:13px;
+        padding:16px; cursor:pointer;
+        transition:background .18s, transform .1s, box-shadow .18s;
+        box-shadow:0 2px 8px rgba(24,24,27,.16);
+    }
+    .eb-apply:hover { background:#27272A; box-shadow:0 4px 14px rgba(24,24,27,.22); }
+    .eb-apply:active { transform:scale(.99); }
+    .eb-apply:disabled {
+        background:#EDF0F5; color:#9AA5B4; cursor:default;
+        box-shadow:none; transform:none;
+    }
+
+    .eb-empty { text-align:center; padding:76px 26px; }
+    .eb-empty .ico {
+        width:56px; height:56px; margin:0 auto 18px; border-radius:16px;
+        background:#F4F6FA; display:flex; align-items:center; justify-content:center;
+        font-size:24px; opacity:.55;
+    }
+    .eb-empty p { font-size:14px; color:#8A95A5; line-height:1.75; margin:0; }
+    .eb-empty p b { color:#5A6472; font-weight:650; display:block; margin-bottom:5px; font-size:14.5px; }
+
+    /* 강사 신청 배너 */
+    .eb-inst-sec { margin-top:44px; }
+    .eb-inst {
+        padding:28px; border-radius:18px;
+        background:linear-gradient(135deg,#F7F9FF 0%,#EFF3FE 100%);
+        border:1px solid #E1E8FB;
+        display:grid; grid-template-columns:auto 1fr auto;
+        align-items:center; gap:22px;
+    }
+    .eb-inst-ico {
+        width:48px; height:48px; border-radius:14px;
+        background:#fff; border:1px solid #E1E8FB;
+        display:flex; align-items:center; justify-content:center; font-size:22px;
+        box-shadow:0 2px 8px rgba(79,70,229,.07); align-self:center;
+    }
+    .eb-inst-txt { min-width:0; }
+    .eb-inst-txt strong {
+        display:block; font-size:16px; font-weight:800; color:#0F172A;
+        margin-bottom:7px; letter-spacing:-.02em;
+    }
+    .eb-inst-txt > span { display:block; font-size:13.5px; color:#5A6472; line-height:1.68; }
+    .eb-inst-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:13px; }
+    .eb-inst-tags i {
+        font-style:normal; font-size:11.5px; font-weight:600; color:#4F46E5;
+        background:#fff; border:1px solid #E1E8FB; border-radius:20px; padding:4.5px 12px;
+    }
+    .eb-inst-btn {
+        font-family:inherit; font-size:14px; font-weight:700;
+        color:#fff; background:#4F46E5; border:0; border-radius:12px;
+        padding:15px 26px; cursor:pointer; letter-spacing:-.01em; white-space:nowrap;
+        align-self:center;
+        transition:background .18s, transform .1s, box-shadow .18s;
+        box-shadow:0 2px 8px rgba(79,70,229,.22);
+    }
+    .eb-inst-btn:hover { background:#4338CA; box-shadow:0 4px 14px rgba(79,70,229,.3); }
+    .eb-inst-btn:active { transform:scale(.985); }
+
+    /* ===== 모달 공통 (z-index: nav 1000 / 드롭다운 999 보다 위) ===== */
+    .eb-modal {
+        display:none; position:fixed; inset:0; z-index:3000;
+        background:rgba(15,23,42,.5); backdrop-filter:blur(4px);
+        -webkit-backdrop-filter:blur(4px);
+        padding:32px 16px; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    }
+    .eb-modal.show { display:flex; align-items:flex-start; justify-content:center; }
+    .eb-modal-box {
+        width:100%; max-width:600px; margin:auto 0;
+        background:#fff; border-radius:20px;
+        box-shadow:0 32px 80px rgba(15,23,42,.28), 0 2px 8px rgba(15,23,42,.08);
+        overflow:hidden; animation:ebUp .24s cubic-bezier(.22,.9,.3,1);
+        display:flex; flex-direction:column; max-height:calc(100vh - 64px);
+    }
+    @keyframes ebUp { from { opacity:0; transform:translateY(16px) scale(.985); } to { opacity:1; transform:none; } }
+    .eb-modal-head {
+        flex:0 0 auto;
+        display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+        padding:26px 28px 20px; border-bottom:1px solid #F1F5F9; background:#fff;
+    }
+    .eb-modal-head h3 {
+        font-size:18px; font-weight:800; color:#0F172A; margin:0 0 6px;
+        letter-spacing:-.025em; line-height:1.4;
+    }
+    .eb-modal-head p { font-size:13px; color:#8A95A5; margin:0; line-height:1.6; }
+    .eb-x {
+        flex:0 0 auto; width:34px; height:34px; border:0; background:#F4F6FA;
+        border-radius:10px; cursor:pointer; color:#64748B; font-size:15px; line-height:1;
+        transition:background .16s, color .16s; display:flex; align-items:center; justify-content:center;
+    }
+    .eb-x:hover { background:#E8ECF2; color:#334155; }
+    .eb-modal-body {
+        flex:1 1 auto; overflow-y:auto; padding:26px 28px 30px;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    /* 폼 요소 */
+    .eb-row { margin-bottom:20px; }
+    .eb-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .eb-label {
+        display:block; font-size:13px; font-weight:700; color:#1E293B;
+        margin-bottom:8px; letter-spacing:-.015em;
+    }
+    .eb-label .req { color:#E11D48; margin-left:2px; }
+    .eb-label .opt {
+        color:#94A3B8; font-weight:500; font-size:11.5px; margin-left:6px;
+        background:#F4F6FA; padding:1.5px 8px; border-radius:6px;
+    }
+    .eb-input, .eb-textarea, .eb-select {
+        width:100%; box-sizing:border-box; font-family:inherit; font-size:14.5px;
+        color:#0F172A; background:#FBFCFE; border:1.5px solid #E4E9F0;
+        border-radius:12px; padding:13px 15px;
+        transition:border-color .16s, background .16s, box-shadow .16s;
+    }
+    .eb-input::placeholder, .eb-textarea::placeholder { color:#A8B4C4; }
+    .eb-input:focus, .eb-textarea:focus, .eb-select:focus {
+        outline:none; border-color:#4F46E5; background:#fff;
+        box-shadow:0 0 0 3.5px rgba(79,70,229,.1);
+    }
+    .eb-textarea { resize:vertical; min-height:96px; line-height:1.7; }
+    .eb-hint { font-size:12px; color:#94A3B8; margin-top:7px; line-height:1.6; }
+    .eb-file {
+        width:100%; box-sizing:border-box; font-family:inherit; font-size:13px; color:#5A6472;
+        background:#FBFCFE; border:1.5px dashed #D6DEE9; border-radius:12px; padding:15px;
+    }
+    .eb-file:hover { border-color:#B9C5D6; }
+    .eb-submit {
+        width:100%; font-family:inherit; font-size:15.5px; font-weight:700; letter-spacing:-.015em;
+        color:#fff; background:#18181B; border:0; border-radius:13px;
+        padding:16px; cursor:pointer; margin-top:8px;
+        transition:background .18s, transform .1s, opacity .18s, box-shadow .18s;
+        box-shadow:0 2px 8px rgba(24,24,27,.16);
+    }
+    .eb-submit:hover { background:#27272A; box-shadow:0 4px 14px rgba(24,24,27,.22); }
+    .eb-submit:active { transform:scale(.99); }
+    .eb-submit:disabled { opacity:.5; cursor:default; transform:none; box-shadow:none; }
+    .eb-err {
+        display:none; font-size:13px; color:#B91C1C; background:#FEF2F2;
+        border:1px solid #FECDD3; border-radius:11px; padding:13px 16px;
+        margin-bottom:20px; line-height:1.65;
+    }
+    .eb-ok { text-align:center; padding:46px 24px; }
+    .eb-ok .ok-ico {
+        width:66px; height:66px; margin:0 auto 20px; border-radius:50%;
+        background:#ECFDF5; border:1.5px solid #A7F3D0;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .eb-ok h3 { font-size:20px; font-weight:800; color:#0F172A; margin:0 0 11px; letter-spacing:-.025em; }
+    .eb-ok p { font-size:14px; color:#5A6472; line-height:1.8; margin:0 0 26px; }
+    .eb-again {
+        font-family:inherit; font-size:14px; font-weight:650; color:#334155;
+        background:#F4F6FA; border:1px solid #E4E9F0; border-radius:11px;
+        padding:12px 26px; cursor:pointer; transition:background .16s;
+    }
+    .eb-again:hover { background:#E8ECF2; }
+
+    @media (max-width:640px) {
+        .page-hero { padding: 108px 16px 42px; }
+        .page-hero h1 { font-size: 27px; }
+        .page-hero .sub { font-size: 14px; }
+        .eb-wrap { padding:0 16px 72px; }
+        .eb-panel { margin-top:-34px; border-radius:16px; }
+        .eb-head { padding:18px 18px; gap:12px; }
+        .eb-title { font-size:16px; }
+        .eb-body { padding:2px 18px 22px; }
+        .eb-content { padding:17px 18px; border-radius:12px; }
+        .eb-info { grid-template-columns:1fr; }
+        .eb-sec { margin-bottom:12px; }
+        .eb-inst {
+            grid-template-columns:auto 1fr; gap:16px; padding:22px 19px;
+        }
+        .eb-inst-btn { grid-column:1 / -1; width:100%; text-align:center; }
+        .eb-modal { padding:16px 10px; }
+        .eb-modal-box { max-height:calc(100vh - 32px); border-radius:16px; }
+        .eb-modal-head { padding:20px 19px 16px; }
+        .eb-modal-head h3 { font-size:17px; }
+        .eb-modal-body { padding:20px 19px 26px; }
+        .eb-row-2 { grid-template-columns:1fr; gap:0; }
+        .eb-row-2 .eb-row { margin-bottom:20px; }
+    }
+    </style>
+</head>
+<body data-site-page="apply">
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="/" class="nav-logo-text"><img src="/common/assets/brand/nubida-logo-light.png" alt="누비다플랫폼" style="height:16px;width:auto;display:block;"></a>
+        </div>
+        <div class="nav-center" id="navCenter">
+            <a href="/pages/company.html" class="nav-link">회사소개</a>
+            <a href="/pages/find-academy.html" class="nav-link">교육기관 찾기</a>
+            <a href="/pages/guide-videos.html" class="nav-link">가이드 영상</a>
+            <a href="/pages/partnership.html" class="nav-link">파트너십</a>
+            <a href="/pages/apply.html" class="nav-link active">교육 신청</a>
+            <a href="/pages/contact.html" class="nav-link">문의하기</a>
+        </div>
+        <div class="nav-links">
+            <a href="/pages/login.html" class="nav-btn nav-start">시작하기</a>
+            <button class="nav-burger" id="navBurger" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-hero">
+        <span class="eyebrow">교육 신청</span>
+        <h1>교육 공고를 확인하고 신청하세요</h1>
+        <p class="sub">본사에서 안내하는 교육 과정을 확인하고 온라인으로 간편하게 신청하실 수 있습니다.<br>소속 강사 지원은 별도 팝업에서 접수합니다.</p>
+    </header>
+
+    <main class="site-body" style="background:none;">
+    <div class="eb-wrap">
+        <div class="eb-sec">
+            <h2><span class="dot"></span>교육 공고</h2>
+            <span class="cnt" id="ebCount"></span>
+        </div>
+        <div class="eb-panel">
+            <div id="ebList"></div>
+            <div class="eb-empty" id="ebEmpty" style="display:none;">
+                <div class="ico">📋</div>
+                <p><b>현재 모집 중인 교육 공고가 없습니다</b>새로운 교육이 준비되면 이곳에 안내됩니다.</p>
+            </div>
+        </div>
+
+        <div class="eb-inst-sec">
+            <div class="eb-inst">
+                <div class="eb-inst-ico">🎓</div>
+                <div class="eb-inst-txt">
+                    <strong>소속 강사로 함께하시겠어요?</strong>
+                    <span>강사 이력과 자격증, 강사카드(PDF)를 함께 접수해 주세요.</span>
+                    <div class="eb-inst-tags">
+                        <i>강사 이력</i>
+                        <i>자격증</i>
+                        <i>강사카드 PDF</i>
+                    </div>
+                </div>
+                <button type="button" class="eb-inst-btn" onclick="ebOpenInstructor()">소속 강사 신청</button>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <!-- ===== 신청 모달 ===== -->
+    <div class="eb-modal" id="ebApplyModal">
+        <div class="eb-modal-box">
+            <div class="eb-modal-head">
+                <div>
+                    <h3 id="ebApplyTitle">교육 신청</h3>
+                    <p>아래 항목을 작성하시면 담당자가 확인 후 순차적으로 연락드립니다.</p>
+                </div>
+                <button type="button" class="eb-x" onclick="ebCloseApply()" aria-label="닫기">✕</button>
+            </div>
+            <div class="eb-modal-body">
+                <div id="ebApplyFormWrap">
+                    <div class="eb-err" id="ebApplyErr"></div>
+                    <form id="ebApplyForm" novalidate>
+                        <input type="hidden" id="ebProgramId">
+                        <div class="eb-row eb-row-2">
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebAName">이름<span class="req">*</span></label>
+                                <input class="eb-input" type="text" id="ebAName" maxlength="50" placeholder="홍길동" required>
+                            </div>
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebAPhone">연락처<span class="req">*</span></label>
+                                <input class="eb-input" type="tel" id="ebAPhone" maxlength="20" placeholder="010-1234-5678" required>
+                            </div>
+                        </div>
+                        <div class="eb-row eb-row-2">
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebAEmail">이메일<span class="opt">선택</span></label>
+                                <input class="eb-input" type="email" id="ebAEmail" maxlength="120" placeholder="name@example.com">
+                            </div>
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebARegion">지역<span class="opt">선택</span></label>
+                                <input class="eb-input" type="text" id="ebARegion" maxlength="80" placeholder="예: 서울 강남">
+                            </div>
+                        </div>
+                        <div class="eb-row">
+                            <label class="eb-label" for="ebAOrg">소속<span class="opt">선택</span></label>
+                            <input class="eb-input" type="text" id="ebAOrg" maxlength="120" placeholder="예: 누비다테스트학원 / 소속 없음">
+                        </div>
+                        <div class="eb-row">
+                            <label class="eb-label" for="ebAMemo">비고<span class="opt">선택</span></label>
+                            <textarea class="eb-textarea" id="ebAMemo" maxlength="4000" placeholder="교육 희망 일정, 궁금한 점 등을 자유롭게 적어 주세요."></textarea>
+                        </div>
+                        <button class="eb-submit" type="submit" id="ebApplyBtn">신청하기</button>
+                    </form>
+                </div>
+                <div class="eb-ok" id="ebApplyOk" style="display:none;">
+                    <div class="ok-ico">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <h3>신청이 접수되었습니다</h3>
+                    <p id="ebApplyOkMsg">확인 후 순차적으로 연락드리겠습니다.<br>감사합니다.</p>
+                    <button class="eb-again" type="button" onclick="ebCloseApply()">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 소속 강사 신청 모달 ===== -->
+    <div class="eb-modal" id="ebInstModal">
+        <div class="eb-modal-box">
+            <div class="eb-modal-head">
+                <div>
+                    <h3>🎓 소속 강사 신청</h3>
+                    <p>강사 이력과 자격증, 강사카드(PDF)를 함께 접수해 주세요.</p>
+                </div>
+                <button type="button" class="eb-x" onclick="ebCloseInstructor()" aria-label="닫기">✕</button>
+            </div>
+            <div class="eb-modal-body">
+                <div id="ebInstFormWrap">
+                    <div class="eb-err" id="ebInstErr"></div>
+                    <form id="ebInstForm" novalidate>
+                        <div class="eb-row eb-row-2">
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebIName">이름<span class="req">*</span></label>
+                                <input class="eb-input" type="text" id="ebIName" maxlength="50" placeholder="홍길동" required>
+                            </div>
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebIPhone">연락처<span class="req">*</span></label>
+                                <input class="eb-input" type="tel" id="ebIPhone" maxlength="20" placeholder="010-1234-5678" required>
+                            </div>
+                        </div>
+                        <div class="eb-row eb-row-2">
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebIEmail">이메일<span class="opt">선택</span></label>
+                                <input class="eb-input" type="email" id="ebIEmail" maxlength="120" placeholder="name@example.com">
+                            </div>
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebIBirth">생년월일<span class="opt">선택</span></label>
+                                <input class="eb-input" type="date" id="ebIBirth">
+                            </div>
+                        </div>
+                        <div class="eb-row eb-row-2">
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebIRegion">지역<span class="opt">선택</span></label>
+                                <input class="eb-input" type="text" id="ebIRegion" maxlength="80" placeholder="예: 서울 강남">
+                            </div>
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebIOrg">소속<span class="opt">선택</span></label>
+                                <input class="eb-input" type="text" id="ebIOrg" maxlength="120" placeholder="예: 누비다테스트학원">
+                            </div>
+                        </div>
+                        <div class="eb-row eb-row-2">
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebICert">자격증 유무<span class="opt">선택</span></label>
+                                <select class="eb-select" id="ebICert">
+                                    <option value="">선택 안 함</option>
+                                    <option value="yes">있음</option>
+                                    <option value="no">없음</option>
+                                </select>
+                            </div>
+                            <div class="eb-row" style="margin:0;">
+                                <label class="eb-label" for="ebICertDetail">자격증 종류<span class="opt">선택</span></label>
+                                <input class="eb-input" type="text" id="ebICertDetail" maxlength="200" placeholder="예: 코딩지도사 2급">
+                            </div>
+                        </div>
+                        <div class="eb-row">
+                            <label class="eb-label" for="ebICareer">경력사항<span class="opt">선택</span></label>
+                            <textarea class="eb-textarea" id="ebICareer" maxlength="4000" placeholder="교육 경력, 근무 이력 등을 자유롭게 적어 주세요."></textarea>
+                        </div>
+                        <div class="eb-row">
+                            <label class="eb-label" for="ebIPdf">강사카드 (PDF)<span class="opt">선택</span></label>
+                            <input class="eb-file" type="file" id="ebIPdf" accept="application/pdf,.pdf">
+                            <div class="eb-hint">PDF 파일만 업로드 가능합니다. (최대 10MB)</div>
+                        </div>
+                        <div class="eb-row">
+                            <label class="eb-label" for="ebIMemo">비고<span class="opt">선택</span></label>
+                            <textarea class="eb-textarea" id="ebIMemo" maxlength="4000" placeholder="궁금한 점 등을 자유롭게 적어 주세요."></textarea>
+                        </div>
+                        <button class="eb-submit" type="submit" id="ebInstBtn">소속 강사 신청하기</button>
+                    </form>
+                </div>
+                <div class="eb-ok" id="ebInstOk" style="display:none;">
+                    <div class="ok-ico">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <h3>소속 강사 신청이 접수되었습니다</h3>
+                    <p>확인 후 순차적으로 연락드리겠습니다.<br>감사합니다.</p>
+                    <button class="eb-again" type="button" onclick="ebCloseInstructor()">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/common/assets/brand/nubida-logo-dark.png" alt="누비다플랫폼" style="height:15px;width:auto;display:block;margin-bottom:12px;">
+                <p>메이커 코딩 · AI 교육 플랫폼</p>
+            </div>
+            <div class="footer-links" id="footerLinks"></div>
+            <div class="footer-meta">
+                <span data-c-addr>서울특별시</span>
+                <span data-c-phone>1661-0000</span>
+                <span data-c-email>help@nubida.kr</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/common/js/public-site.js?v=20260921a"></script>
+    <script src="/common/js/apply-board.js?v=20260921b"></script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+/* 누비다플랫폼 — 공개사이트 위지윅 블록 공용 렌더러
+   공개 페이지(public-site.js)와 본사 에디터(site-editor.html)가 함께 사용한다.
+   - renderInto(box, blocks, opts): blocks 배열 → DOM
+       opts.editable=true  → 블록마다 .ed-block 래퍼(툴바 포함) — 에디터 프리뷰 전용
+       opts.onSelect(bid)  → 에디터에서 블록 클릭 콜백 (툴바 제외)
+   - 블록 type: section(카드) / heading / text / image / divider / button / brand(로고 다운로드)
+   - 사용자 입력은 반드시 textContent/속성 할당으로만 삽입 (HTML 주입 차단)
+*/
+window.SiteBlocks = (function () {
+  'use strict';
+
+  var TYPE_LABEL = {
+    section: '카드', heading: '제목', text: '텍스트',
+    image: '이미지', divider: '구분선', button: '버튼', brand: '브랜드 로고'
+  };
+
+  // 브랜드 로고 기본 자산 (DB에 없을 때 사용하는 안전한 기본값).
+  //   variant: dark(어두운 배경용) / light(밝은 배경용)
+  var BRAND_DEFAULT = {
+    title: '브랜드 로고',
+    intro: '누비다플랫폼(NUBIDA.) 공식 로고 파일입니다. 배경 유무에 따라 두 가지 버전을 제공하니, 사용할 배경에 맞는 파일을 선택하세요. 모든 파일은 배경이 투명한(transparent) 원본입니다.',
+    items: [
+      {
+        variant: 'dark',
+        label: '어두운 배경용',
+        tag: 'Dark',
+        desc: '흰색 워드마크 + 푸른색 점(.) — 검정·남색 등 어두운 배경 위에 사용합니다.',
+        png: '/common/assets/brand/nubida-logo-dark.png',
+        svg: '/common/assets/brand/nubida-logo-dark.svg'
+      },
+      {
+        variant: 'light',
+        label: '밝은 배경용',
+        tag: 'Light',
+        desc: '짙은 남색 워드마크 + 푸른색 점(.) — 흰색·연회색 등 밝은 배경 위에 사용합니다.',
+        png: '/common/assets/brand/nubida-logo-light.png',
+        svg: '/common/assets/brand/nubida-logo-light.svg'
+      }
+    ],
+    notes: [
+      ['투명 배경(PNG·SVG)', '별도 배경색 없이 누끼가 제거된 상태라 어떤 배경에도 자연스럽게 얹을 수 있습니다.'],
+      ['형태 유지', '로고의 비율을 임의로 늘리거나 색을 바꾸지 마세요. 로고 주변에는 최소한 점(.)의 지름만큼 여백을 두는 것을 권장합니다.'],
+      ['용도', '홈페이지, 명함, 제안서, 교육 자료 등 누비다플랫폼 브랜드를 나타내는 모든 곳에 사용할 수 있습니다.'],
+      ['벡터(SVG)', '인쇄물이나 대형 간판처럼 크게 확대해야 하는 경우 SVG 파일을 사용하면 깨짐 없이 선명합니다.']
+    ]
+  };
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  // 텍스트 정규화: 이중 이스케이프된 개행 · <br> 태그 → 실제 줄바꿈 통일
+  var NL_ESC = '\\\\' + 'n';   // 런타임: 백슬래시 2개 + n (DB 이중 이스케이프)
+  var NL_ESC_R = '\\\\' + 'r';
+  function normText(text) {
+    if (text == null) return '';
+    var s = String(text);
+    // 1) 이중 이스케이프된 개행 → 실제 개행 (split/join: 정규식 이스케이프 문제 회피)
+    s = s.split(NL_ESC_R + NL_ESC).join('\n');
+    s = s.split(NL_ESC).join('\n');
+    s = s.split(NL_ESC_R).join('\n');
+    // 2) <br> / <br/> / <br /> 태그 → 실제 개행
+    s = s.split('<br>').join('\n').split('<br/>').join('\n').split('<br />').join('\n');
+    // 3) 실제 CRLF / CR → LF
+    s = s.split('\r\n').join('\n').split('\r').join('\n');
+    return s;
+  }
+
+  function appendParas(root, text, cls) {
+    normText(text).split('\n').forEach(function (para) {
+      var p = document.createElement('p');
+      if (cls) p.className = cls;
+      p.textContent = para;
+      root.appendChild(p);
+    });
+  }
+
+  // ===== 브랜드 로고 다운로드 블록 =====
+  function buildBrand(blk) {
+    var cfg = Object.assign({}, BRAND_DEFAULT, blk || {});
+    var items = (Array.isArray(cfg.items) && cfg.items.length) ? cfg.items : BRAND_DEFAULT.items;
+    var notes = (Array.isArray(cfg.notes) && cfg.notes.length) ? cfg.notes : BRAND_DEFAULT.notes;
+
+    var art = document.createElement('article');
+    art.className = 'site-sec';
+    art.id = 'brandAssets';
+
+    art.appendChild(el('h2', null, cfg.title || '브랜드 로고'));
+    if (cfg.intro) appendParas(art, cfg.intro);
+
+    // 카드 그리드
+    var grid = el('div', 'brand-grid');
+    items.forEach(function (it) {
+      var variant = (it.variant === 'dark') ? 'dark' : 'light';
+      var card = el('div', 'brand-card');
+
+      var prev = el('div', 'brand-preview ' + variant);
+      var im = document.createElement('img');
+      im.src = it.png || '';
+      im.alt = (it.label || 'NUBIDA 로고') + ' — ' + (variant === 'dark' ? '어두운' : '밝은') + ' 배경용';
+      im.loading = 'lazy';
+      prev.appendChild(im);
+      card.appendChild(prev);
+
+      var meta = el('div', 'brand-meta');
+      var nm = el('div', 'brand-name');
+      nm.appendChild(document.createTextNode(it.label || (variant === 'dark' ? '어두운 배경용' : '밝은 배경용')));
+      if (it.tag) nm.appendChild(el('span', 'brand-tag', it.tag));
+      meta.appendChild(nm);
+
+      var desc = document.createElement('p');
+      desc.className = 'brand-desc';
+      desc.textContent = it.desc || '';
+      meta.appendChild(desc);
+
+      var acts = el('div', 'brand-actions');
+      if (it.png) {
+        var a1 = document.createElement('a');
+        a1.className = 'brand-btn primary';
+        a1.href = it.png;
+        a1.setAttribute('download', it.png.split('/').pop());
+        a1.textContent = 'PNG 다운로드';
+        acts.appendChild(a1);
+      }
+      if (it.svg) {
+        var a2 = document.createElement('a');
+        a2.className = 'brand-btn';
+        a2.href = it.svg;
+        a2.setAttribute('download', it.svg.split('/').pop());
+        a2.textContent = 'SVG';
+        acts.appendChild(a2);
+      }
+      meta.appendChild(acts);
+      card.appendChild(meta);
+      grid.appendChild(card);
+    });
+    art.appendChild(grid);
+
+    // 사용 안내
+    var notesBox = el('div', 'brand-notes');
+    notesBox.appendChild(el('h3', null, '사용 안내'));
+    var ul = document.createElement('ul');
+    notes.forEach(function (pair) {
+      var li = document.createElement('li');
+      if (Array.isArray(pair) && pair[0]) {
+        li.appendChild(el('strong', null, pair[0]));
+        li.appendChild(document.createTextNode(' — ' + (pair[1] || '')));
+      } else {
+        li.textContent = String(pair);
+      }
+      ul.appendChild(li);
+    });
+    notesBox.appendChild(ul);
+    art.appendChild(notesBox);
+
+    return art;
+  }
+
+  // ===== 블록 1개 → DOM =====
+  function buildNode(blk) {
+    var t = blk.type;
+    if (t === 'section') {
+      var art = document.createElement('article');
+      art.className = 'site-sec';
+      var root = art;
+      if (blk.img) {
+        art.className += ' fig-top';
+        var im = document.createElement('img');
+        im.className = 'site-fig';
+        im.src = blk.img;
+        im.alt = blk.alt || '';
+        im.referrerPolicy = 'no-referrer';
+        art.appendChild(im);
+        root = document.createElement('div');
+        root.className = 'fig-body';
+        art.appendChild(root);
+      }
+      root.appendChild(el('h2', null, blk.h || ''));
+      appendParas(root, blk.p);
+      return art;
+    }
+    if (t === 'brand') {
+      return buildBrand(blk);
+    }
+    if (t === 'heading') {
+      var lv = (blk.level === 2 || blk.level === 4) ? blk.level : 3;
+      return el('h' + lv, 'site-hblock site-h' + lv, blk.h || '');
+    }
+    if (t === 'text') {
+      var frag = document.createDocumentFragment();
+      appendParas(frag, blk.p, 'site-tblock');
+      return frag;
+    }
+    if (t === 'image') {
+      var fig = el('figure', 'site-fblock');
+      var im2 = document.createElement('img');
+      im2.className = 'site-fig';
+      im2.src = blk.img || '';
+      im2.alt = blk.alt || '';
+      im2.referrerPolicy = 'no-referrer';
+      fig.appendChild(im2);
+      if (blk.caption) fig.appendChild(el('figcaption', null, blk.caption));
+      return fig;
+    }
+    if (t === 'divider') {
+      var hr = document.createElement('hr');
+      hr.className = 'site-divider-block';
+      return hr;
+    }
+    if (t === 'button') {
+      var a = document.createElement('a');
+      a.className = 'site-btn-block ' + (blk.style === 'outline' || blk.style === 'ghost' ? blk.style : 'primary');
+      a.href = blk.url || '#';
+      if (/^https?:\/\//.test(a.href)) { a.target = '_blank'; a.rel = 'noopener'; }
+      a.textContent = blk.label || '버튼';
+      return a;
+    }
+    return null;
+  }
+
+  // ===== 배열 렌더 (data-sec: section만 순번 부여 — policy 탭 호환) =====
+  function renderInto(box, blocks, opts) {
+    opts = opts || {};
+    if (!box) return;
+    box.innerHTML = '';
+    if (!Array.isArray(blocks)) return;
+    var secN = 0;
+    blocks.forEach(function (blk, i) {
+      if (!blk || !blk.type) return;
+      var node = buildNode(blk);
+      if (!node) return;
+      if (blk.type === 'section') {
+        if (node.nodeType === 1) node.setAttribute('data-sec', secN);
+        secN++;
+      }
+      if (!opts.editable) { box.appendChild(node); return; }
+
+      // 에디터 래퍼
+      var wrap = document.createElement('div');
+      wrap.className = 'ed-block';
+      wrap.setAttribute('data-bid', blk.id || ('b' + (i + 1)));
+      var bar = document.createElement('div');
+      bar.className = 'ed-bar';
+      var typeSpan = el('span', 'ed-type');
+      typeSpan.textContent = TYPE_LABEL[blk.type] || blk.type;
+      var acts = el('span', 'ed-acts');
+      ['up', 'down', 'edit', 'del'].forEach(function (act) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ed-act';
+        b.setAttribute('data-act', act);
+        b.title = { up: '위로', down: '아래로', edit: '편집', del: '삭제' }[act];
+        b.textContent = { up: '↑', down: '↓', edit: '✎', del: '✕' }[act];
+        acts.appendChild(b);
+      });
+      bar.appendChild(typeSpan);
+      bar.appendChild(acts);
+      wrap.appendChild(bar);
+      wrap.appendChild(node);
+      box.appendChild(wrap);
+    });
+  }
+
+  // 새 블록 기본 템플릿 (에디터 + 추가 시)
+  function newBlock(type, id) {
+    var b = { id: id || ('b' + Date.now().toString(36)), type: type };
+    switch (type) {
+      case 'section': b.h = ''; b.p = ''; break;
+      case 'heading': b.h = ''; b.level = 3; break;
+      case 'text': b.p = ''; break;
+      case 'image': b.img = ''; b.alt = ''; b.caption = ''; break;
+      case 'divider': break;
+      case 'button': b.label = ''; b.url = '#'; b.style = 'primary'; break;
+      case 'brand': b.title = '브랜드 로고'; b.intro = BRAND_DEFAULT.intro; b.items = BRAND_DEFAULT.items; b.notes = BRAND_DEFAULT.notes; break;
+    }
+    return b;
+  }
+
+  return {
+    TYPE_LABEL: TYPE_LABEL,
+    renderInto: renderInto,
+    buildNode: buildNode,
+    newBlock: newBlock
+  };
+})();

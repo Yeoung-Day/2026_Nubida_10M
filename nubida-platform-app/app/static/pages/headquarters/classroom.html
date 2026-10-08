@@ -1,0 +1,360 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>원격수업 — 누비다플랫폼-본사</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <link rel="manifest" href="/manifest.json?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    </head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        
+   // 섹션 매핑
+   const sectionMap = {
+   'branches.html': 'operations', 'academy-management.html': 'operations',
+   'courses.html': 'operations', 'users.html': 'operations',
+   'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>원격수업</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+   <div class="card mb-24">
+   <div class="card-header">
+   <h2>💻 수업 세션</h2>
+   <div class="card-header-actions">
+   <input type="text" class="input" id="classSearch" placeholder="강의명/강사 검색..." style="width:200px;margin-right:8px">
+   <button class="btn btn-primary" onclick="openCreateModal()">➕ 새 세션</button>
+   </div>
+   </div>
+   <div class="card-body" style="padding:0">
+   <div class="table-wrapper">
+   <table class="data-table">
+   <thead>
+   <tr>
+   <th>강의명</th>
+   <th>강사</th>
+   <th>지사</th>
+   <th>날짜</th>
+   <th>시간</th>
+   <th>상태</th>
+   <th>관리</th>
+   </tr>
+   </thead>
+   <tbody id="sessionBody">
+   <tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:24px">⏳ 로딩 중...</td></tr>
+   </tbody>
+   </table>
+   </div>
+   </div>
+   </div>
+   </main>
+   </div>
+
+   <!-- 세션 생성 모달 -->
+   <div class="modal-overlay" id="createModal" style="display:none">
+   <div class="modal">
+   <div class="modal-header">
+   <h3>새 원격수업 세션</h3>
+   </div>
+   <div class="modal-body">
+   <div class="form-group">
+   <label>강의명</label>
+   <input type="text" class="input" id="sessionTitle" placeholder="강의명 입력">
+   </div>
+   <div class="form-group">
+   <label>지사</label>
+   <select class="input" id="sessionBranch"></select>
+   </div>
+   <div class="form-group">
+   <label>강사</label>
+   <input type="text" class="input" id="sessionInstructor" placeholder="강사명 입력">
+   </div>
+   <div class="form-row">
+   <div class="form-group">
+   <label>날짜</label>
+   <input type="date" class="input" id="sessionDate">
+   </div>
+   <div class="form-group">
+   <label>시간</label>
+   <input type="time" class="input" id="sessionTime">
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-primary" onclick="createSession()">생성</button>
+   <button class="btn btn-outline" onclick="closeCreateModal()">취소</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/utils.js?v=20260610a"></script>
+   <script src="/common/js/pages-headquarters.js?v=20260610a"></script>
+
+   <script>
+   document.addEventListener('DOMContentLoaded', async () => {
+   requireAuth();
+   const user = getCurrentUser();
+   if (user) {
+   document.getElementById('sidebarUserName').textContent = user.name || '관리자';
+   document.getElementById('sidebarUserRole').textContent = '본사';
+   }
+   const now = new Date();
+   document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', {
+   year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+   });
+
+   await loadSessions();
+   await loadBranchOptions();
+
+   // 검색 디바운스
+   let searchTimer;
+   document.getElementById('classSearch').addEventListener('input', () => {
+   clearTimeout(searchTimer);
+   searchTimer = setTimeout(loadSessions, 300);
+   });
+   });
+
+   async function loadBranchOptions() {
+   try {
+   const res = await apiGet('/headquarters/branches?per_page=100');
+   const items = res.data?.items || res.data || [];
+   const sel = document.getElementById('sessionBranch');
+   sel.innerHTML = '<option value="">지사 선택</option>' +
+   items.map(b => `<option value="${b.id}">${escHtml(b.name)}</option>`).join('');
+   } catch(e) {}
+   }
+
+   async function loadSessions() {
+   const tbody = document.getElementById('sessionBody');
+   try {
+   const search = document.getElementById('classSearch').value.trim();
+   let url = '/classroom/sessions?per_page=50';
+   if (search) url += '&q=' + encodeURIComponent(search);
+   const res = await apiGet(url);
+   const items = res.data?.items || res.data || [];
+   if (!items.length) {
+   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:24px">등록된 수업 세션이 없습니다</td></tr>';
+   } else {
+   tbody.innerHTML = items.map(s => {
+   const status = s.status === 'active' ? '🟢 진행' : s.status === 'completed' ? '✅ 완료' : '🔴 취소';
+   const date = s.date ? new Date(s.date).toLocaleDateString('ko-KR') : '-';
+   return `<tr>
+   <td><strong>${escHtml(s.title || s.name || '-')}</strong></td>
+   <td>${escHtml(s.instructor || '-')}</td>
+   <td>${escHtml(s.branch_name || '-')}</td>
+   <td>${date}</td>
+   <td>${escHtml(s.time || '-')}</td>
+   <td>${status}</td>
+   <td>
+   <button class="btn btn-sm btn-outline" onclick="deleteSession(${s.id})">삭제</button>
+   </td>
+   </tr>`;
+   }).join('');
+   }
+   } catch(e) {
+   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:24px">⚠️ 데이터 로딩 실패</td></tr>';
+   }
+   }
+
+   function openCreateModal() {
+   document.getElementById('createModal').style.display = 'flex';
+   document.getElementById('sessionTitle').value = '';
+   document.getElementById('sessionInstructor').value = '';
+   document.getElementById('sessionDate').value = new Date().toISOString().slice(0,10);
+   document.getElementById('sessionTime').value = '09:00';
+   }
+
+   function closeCreateModal() {
+   document.getElementById('createModal').style.display = 'none';
+   }
+
+   async function createSession() {
+   const title = document.getElementById('sessionTitle').value.trim();
+   const branch_id = document.getElementById('sessionBranch').value;
+   const instructor = document.getElementById('sessionInstructor').value.trim();
+   const date = document.getElementById('sessionDate').value;
+   const time = document.getElementById('sessionTime').value;
+   if (!title || !branch_id) { alert('강의명과 지사를 입력해주세요.'); return; }
+   try {
+   await apiPost('/classroom/sessions', { title, branch_id, instructor, date, time });
+   closeCreateModal();
+   await loadSessions();
+   } catch(e) {
+   alert('세션 생성 실패: ' + (e.message || '오류'));
+   }
+   }
+
+   async function deleteSession(id) {
+   if (!confirm('정말 삭제하시겠습니까?')) return;
+   try {
+   await apiDelete('/classroom/sessions/' + id);
+   await loadSessions();
+   } catch(e) {
+   alert('삭제 실패');
+   }
+   }
+
+   function escHtml(s) {
+   const d = document.createElement('div');
+   d.textContent = s;
+   return d.innerHTML;
+   }
+   </script>
+
+   <script src="/common/js/nav.js?v=20260610a"></script>
+   <script>
+   // 누비다플랫폼 — Service Worker 강제 갱신
+   </script>
+
+   </body>
+   </html>

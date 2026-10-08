@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display:grid; grid-template-columns: 500px 1fr; gap:60px; padding:60px 0;">
+    <div class="img-container" style="border-radius:20px;">
+        <img src="{{ p.img }}">
+    </div>
+    <div>
+        <a href="/shop/{{ p.seller_id }}" style="font-size:0.8rem; font-weight:700; border-bottom:1px solid #ddd;">{{ p.sellerShop }} 아틀리에 ></a>
+        <h1 style="font-size:2.8rem; font-weight:200; margin:20px 0;">{{ p.name }}</h1>
+        <p style="font-size:1.8rem; font-weight:700; margin-bottom:30px;">₩ {{ "{:,}".format(p.price) }}</p>
+        <p style="color:#666; line-height:1.8; margin-bottom:40px;">{{ p.desc }}</p>
+        
+        {% if p.stock > 0 %}
+            {% if user and user.id == p.sellerId %}
+                <button class="btn btn-outline" disabled>본인 상품입니다</button>
+            {% else %}
+                <a href="/buy/{{ p.id }}" class="btn btn-black">지금 구매하기</a>
+            {% endif %}
+        {% else %}
+            <button class="btn" style="background:#ccc; color:#fff;" disabled>품절되었습니다</button>
+        {% endif %}
+    </div>
+</div>
+{% if p.detail_img %}
+<div style="margin-top:80px; text-align:center; border-top:1px solid #eee; padding-top:60px;">
+    <img src="{{ p.detail_img }}" style="max-width:100%; border-radius:15px;">
+</div>
+{% endif %}
+{% endblock %}

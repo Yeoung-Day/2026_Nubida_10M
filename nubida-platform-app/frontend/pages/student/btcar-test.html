@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>누비다 블루투스카 — 기본틀 테스트</title>
+<style>
+    :root {
+        --brand: #e11d48;
+        --ink: #0f172a;
+        --sub: #64748b;
+        --line: #e2e8f0;
+        --bg: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0; padding: 24px 16px 60px;
+        font-family: -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+        background: var(--bg); color: var(--ink);
+        -webkit-text-size-adjust: 100%;
+    }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.3px; }
+    .lead { color: var(--sub); font-size: 13.5px; margin: 0 0 20px; line-height: 1.6; }
+
+    .card {
+        background: #fff; border: 1px solid var(--line);
+        border-radius: 14px; padding: 16px; margin-bottom: 14px;
+    }
+    .card h2 {
+        font-size: 13px; margin: 0 0 12px; color: var(--sub);
+        font-weight: 600; letter-spacing: 0.2px;
+    }
+
+    .row { display: flex; gap: 8px; }
+    .row + .row { margin-top: 8px; }
+
+    button {
+        flex: 1; min-height: 46px; border: 0; border-radius: 10px;
+        font-size: 14px; font-weight: 600; cursor: pointer;
+        font-family: inherit; transition: opacity .15s;
+        background: #f1f5f9; color: var(--ink);
+    }
+    button:active { opacity: .6; }
+    button.primary { background: var(--brand); color: #fff; }
+    button.ghost { background: #fff; border: 1px solid var(--line); }
+
+    #btcarLog {
+        height: 220px; overflow-y: auto; background: #0f172a;
+        border-radius: 10px; padding: 12px; font-size: 12.5px;
+        font-family: 'SF Mono', Consolas, monospace; line-height: 1.7;
+        color: #cbd5e1; word-break: break-all;
+    }
+    #btcarLog div { color: #cbd5e1 !important; }
+    .hint {
+        font-size: 12px; color: var(--sub); margin-top: 10px;
+        line-height: 1.6; padding-left: 10px; border-left: 2px solid var(--line);
+    }
+    code {
+        background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+        font-size: 12px; color: var(--brand);
+    }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <h1>누비다 블루투스카</h1>
+    <p class="lead">
+        동작 전송 기본틀 테스트 화면입니다.<br>
+        <code>btcar_simple.js</code> 하나만 있으면 동작합니다.
+    </p>
+
+    <div class="card">
+        <h2>연결</h2>
+        <div class="row">
+            <button class="primary" onclick="누비다.연결()">🔗 아두이노 연결</button>
+            <button class="ghost" onclick="누비다.해제()">⛓️ 해제</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>동작 보내기 — 버튼</h2>
+        <div class="row">
+            <button onclick="누비다.보내기(1)">삐졌어</button>
+            <button onclick="누비다.보내기(2)">도리도리</button>
+        </div>
+        <div class="row">
+            <button onclick="누비다.보내기(3)">안녕</button>
+            <button onclick="누비다.보내기(4)">박수</button>
+        </div>
+        <div class="hint">
+            이름으로도 됩니다: <code>누비다.보내기('박수')</code>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>AI 결과 자동 전송 — 카메라 · 음성</h2>
+        <div class="row">
+            <button onclick="가짜카메라()">📷 카메라 결과 흉내</button>
+            <button onclick="가짜음성()">🎤 음성 결과 흉내</button>
+        </div>
+        <div class="hint">
+            실제로는 <code>btcarOnResult(번호, 확률, 격차)</code> 를
+            분류 결과가 나올 때마다 호출하면 끝입니다.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>로그</h2>
+        <div id="btcarLog"></div>
+        <div class="row" style="margin-top:10px">
+            <button class="ghost" onclick="document.getElementById('btcarLog').innerHTML=''">지우기</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- ① 라이브러리 (이 한 줄이면 끝) -->
+<script src="/common/js/btcar_simple.js?v=1"></script>
+
+<script>
+/* ============================================================
+   ② 사용 예시 — AI 결과가 나올 때 이 한 줄만 부르면 됩니다
+   ============================================================ */
+
+function 가짜카메라() {
+    // 실제로는 분류 결과(번호, 확률, 2등과의 격차)를 그대로 넘기세요
+    var 번호 = 3, 확률 = 0.92, 격차 = 0.7;
+    btcarOnResult(번호, 확률, 격차);
+}
+
+function 가짜음성() {
+    var 번호 = 1, 확률 = 0.88, 격차 = 0.5;
+    btcarOnResult(번호, 확률, 격차);
+}
+
+/* ============================================================
+   ③ 내가 직접 if 문으로 짜는 예시
+   ============================================================ */
+
+/* 예: 센서 값에 따라 다르게 동작시키기 */
+function 내가만든규칙(센서값) {
+    if (센서값 > 80) {
+        누비다.보내기('박수');
+    } else if (센서값 > 50) {
+        누비다.보내기('안녕');
+    } else if (센서값 > 20) {
+        누비다.보내기('도리도리');
+    } else {
+        누비다.보내기('삐졌어');
+    }
+}
+
+/* 예: AI 결과가 3번이면 안녕, 아니면 삐졌어 */
+function 내가만든AI규칙(번호) {
+    if (번호 === 3) {
+        누비다.보내기('안녕');
+    } else if (번호 === 1) {
+        누비다.보내기('삐졌어');
+    } else {
+        누비다.보내기(번호);
+    }
+}
+
+/* 예: 확률 기준을 내가 정하기 */
+function 내가만든확률규칙(번호, 확률) {
+    if (확률 < 0.5) return;              // 50% 미만이면 무시
+    if (번호 === 1) {
+        누비다.보내기('삐졌어');
+    } else if (번호 === 2) {
+        누비다.보내기('도리도리');
+    }
+}
+</script>
+
+</body>
+</html>

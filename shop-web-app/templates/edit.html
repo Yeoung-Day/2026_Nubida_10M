@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-box" style="max-width: 600px; margin: 60px auto; padding: 40px; border: 1px solid #f0f0f0; border-radius: 20px;">
+    <div style="text-align: center; margin-bottom: 50px;">
+        <p class="shop-tag">PRODUCT EDIT</p>
+        <h2 style="font-size: 2rem; font-weight: 200;">상품 정보 수정</h2>
+    </div>
+
+    <form action="{{ url_for('edit_product', p_id=p.id) }}" method="POST" enctype="multipart/form-data">
+    <div class="input-group">
+        <label>상품 이름</label>
+        <input type="text" name="name" value="{{ p.name }}" class="input-style" required>
+    </div>
+
+        <div class="input-group">
+            <label>판매 가격 (KRW)</label>
+            <input type="number" name="price" value="{{p.price}}" class="input-style" required>
+        </div>
+
+        <div class="input-group">
+    <label>재고 수량 수정</label>
+    <!-- 반드시 name="stock"이 있어야 파이썬이 인식합니다 -->
+    <input type="number" name="stock" value="{{ p.stock }}" class="input-style" min="0" required>
+</div>
+
+        <div class="input-group">
+            <label>대표 이미지 교체 (기존 이미지 유지하려면 선택 X)</label>
+            <div style="margin-top: 10px; border: 1px solid #eee; padding: 20px; border-radius: 12px; text-align: center;">
+                <input type="file" name="img_file" id="img_file" accept="image/*" class="hidden" onchange="preview(this, 'p1')">
+                <label for="img_file" style="cursor:pointer; font-size: 0.8rem; font-weight: 600;">[ 새 파일 선택 ]</label>
+                <img id="p1" src="{{p.img}}" style="width: 100%; margin-top: 15px; border-radius: 10px;">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>상세 설명</label>
+            <textarea name="desc" rows="5" class="input-style" style="border: 1px solid #eee; border-radius: 10px; padding: 15px;">{{p.desc}}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 15px;">
+            <a href="/product/{{p.id}}" class="btn btn-outline" style="flex: 1;">취소</a>
+            <button type="submit" class="btn btn-black">수정 사항 저장</button>
+        </div>
+    </form>
+</div>
+<script>
+function preview(input, id) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) { document.getElementById(id).src = e.target.result; }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

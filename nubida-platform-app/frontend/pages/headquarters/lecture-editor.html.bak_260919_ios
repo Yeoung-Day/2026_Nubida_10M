@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>블록 편집기 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <style>
+        /* ── 페이지 로딩 오버레이 ── */
+        .page-loading-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px) }
+        .page-loading-overlay.hide { display:none }
+        .page-loading-overlay .loading-icon { width:48px; height:48px; border:4px solid #e8e8f0; border-top-color:var(--accent); border-radius:50%; animation:spinner-spin 0.8s linear infinite; margin-bottom:16px }
+        @keyframes spinner-spin { to { transform:rotate(360deg) } }
+        .page-loading-overlay .loading-label { font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:4px }
+        .page-loading-overlay .loading-sub { font-size:13px; color:var(--text-tertiary) }
+        .page-loading-overlay .loading-progress { width:180px; height:3px; background:var(--border-subtle); border-radius:4px; overflow:hidden; margin-top:12px }
+        .page-loading-overlay .loading-progress-bar { height:100%; width:0; background:linear-gradient(90deg, var(--accent), #6C7AFF); border-radius:4px; animation:loading-bar 2s ease-in-out infinite }
+        @keyframes loading-bar { 0%{ width:0; margin-left:0 } 50%{ width:60%; margin-left:20% } 100%{ width:0; margin-left:100% } }
+
+        /* ── 블록 편집기 전용 스타일 ── */
+        .editor-layout { display:flex; gap:16px; align-items:flex-start; min-height:calc(100vh - 80px) }
+        .editor-sidebar { width:260px; flex-shrink:0; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; overflow:hidden; position:sticky; top:16px; max-height:calc(100vh - 100px); display:flex; flex-direction:column }
+        .editor-main { flex:1; min-width:0 }
+        .editor-sidebar-header { padding:14px 16px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between }
+        .editor-sidebar-header h3 { font-size:14px; font-weight:600; margin:0; color:var(--text-primary) }
+        .editor-sidebar-header .count { font-size:11px; color:var(--text-tertiary); background:var(--bg-subtle); padding:2px 10px; border-radius:50px }
+        .editor-chapter-list { overflow-y:auto; flex:1; padding:6px }
+        .chapter-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer; transition:all 0.15s; margin-bottom:2px }
+        .chapter-item:hover { background:var(--bg-accent-light) }
+        .chapter-item.active { background:color-mix(in srgb, var(--accent) 8%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent) }
+        .chapter-item .ci-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; background:var(--bg-subtle); flex-shrink:0 }
+        .chapter-item .ci-info { flex:1; min-width:0 }
+        .chapter-item .ci-title { font-size:13px; font-weight:500; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+        .chapter-item .ci-meta { font-size:10px; color:var(--text-tertiary); margin-top:1px }
+        .chapter-item .ci-actions { display:flex; gap:2px; flex-shrink:0 }
+        .chapter-item .ci-actions button { background:none; border:1px solid var(--border-subtle); border-radius:4px; cursor:pointer; padding:2px 6px; font-size:11px; color:var(--text-tertiary); transition:all 0.15s; line-height:1 }
+        .chapter-item .ci-actions button:hover:not(:disabled) { background:var(--bg-accent-light); color:var(--text-primary) }
+        .chapter-item .ci-actions button:disabled { opacity:0.3; cursor:default }
+
+        /* ── 에디터 툴바 ── */
+        .editor-toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:8px; flex-wrap:wrap }
+        .editor-toolbar-left { display:flex; align-items:center; gap:8px }
+        .editor-toolbar-right { display:flex; align-items:center; gap:8px }
+        .editor-course-title { font-size:20px; font-weight:700; color:var(--text-primary); margin:0 }
+        .editor-title-wrap { margin-bottom:16px }
+
+        /* ── 블록 카드 ── */
+        .block-card { border:1px solid var(--border-subtle); border-radius:10px; background:var(--bg-surface); margin-bottom:12px; transition:all 0.2s; overflow:hidden }
+        .block-card:hover { border-color:var(--border-subtle); box-shadow:0 2px 8px rgba(0,0,0,0.04) }
+        .block-card.block-removing { opacity:0; transform:translateX(-20px); max-height:0; margin-bottom:0; overflow:hidden; transition:all 0.3s ease }
+        .block-card.block-adding { animation:block-add 0.3s ease }
+        @keyframes block-add { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }
+        .block-header { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-bottom:1px solid var(--border-subtle); background:var(--bg-subtle) }
+        .block-type-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 10px; border-radius:50px; background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-secondary) }
+        .block-type-badge .bicon { font-size:13px }
+        .block-actions { display:flex; gap:4px }
+        .block-actions button { background:none; border:none; cursor:pointer; padding:3px 6px; border-radius:4px; font-size:13px; transition:all 0.15s; line-height:1; color:var(--text-tertiary) }
+        .block-actions button:hover { background:var(--bg-accent-light); color:var(--text-primary) }
+        .block-actions button.danger:hover { color:#EF4444; background:rgba(239,68,68,0.08) }
+        .block-body { padding:12px 14px }
+        .block-body textarea, .block-body input[type="text"], .block-body select { width:100%; box-sizing:border-box; border:1px solid var(--border-subtle); border-radius:6px; padding:8px 10px; font-size:13px; font-family:inherit; color:var(--text-primary); background:var(--bg-surface); transition:border-color 0.2s }
+        .block-body textarea:focus, .block-body input:focus, .block-body select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent) }
+        .block-body textarea { min-height:80px; resize:vertical; line-height:1.5 }
+        .block-body textarea.auto-resize { min-height:80px; resize:none; overflow:hidden }
+        .block-body .field-row { margin-bottom:8px }
+        .block-body .field-row:last-child { margin-bottom:0 }
+        .block-body .field-label { display:block; font-size:11px; font-weight:600; color:var(--text-tertiary); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.03em }
+        .block-body .field-row-inline { display:flex; gap:8px; align-items:center }
+        .block-body .field-row-inline input { flex:1 }
+        .block-body .field-row-inline select { width:auto; min-width:70px }
+
+        /* ── 추가 블록 툴바 ── */
+        .add-block-bar { display:flex; gap:6px; flex-wrap:wrap; padding:12px 0; border-top:1px solid var(--border-subtle); margin-top:12px }
+        .add-block-btn { display:inline-flex; align-items:center; gap:4px; padding:6px 14px; border:1px dashed var(--border-subtle); border-radius:8px; background:transparent; cursor:pointer; font-size:12px; font-weight:500; color:var(--text-secondary); transition:all 0.18s }
+        .add-block-btn:hover { border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 4%, transparent) }
+
+        .upload-queue { margin-top:12px; display:none }
+        .upload-queue-item { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border-subtle); font-size:13px }
+        .upload-queue-item:last-child { border-bottom:none }
+        .upload-queue-item .upload-status { font-size:11px; min-width:50px; text-align:right }
+
+        /* ── 반응형 ── */
+        @media (max-width:768px) {
+            .editor-layout { flex-direction:column }
+            .editor-sidebar { width:100%; position:static; max-height:none }
+        }
+
+        /* ── 헤더 영역 (category.html 스타일 일치) ── */
+        .cat-header { display:flex; align-items:center; gap:12px; margin-bottom:16px }
+        .cat-header .back-link { font-size:14px; color:var(--text-secondary); cursor:pointer; text-decoration:none; display:flex; align-items:center; gap:4px }
+        .cat-header .back-link:hover { color:var(--accent) }
+        .cat-header h2 { font-size:22px; font-weight:700; margin:0 }
+        /* ── 코드 에디터: 하이라이트 오버레이 + 자동 확장 + 스크롤 ── */
+        .code-editor-wrap { position:relative; }
+        .code-editor-wrap .code-hl,
+        .code-editor-wrap .code-editor-ta {
+            margin:0; padding:10px; border:1px solid var(--border-subtle); border-radius:6px;
+            font-family:'JetBrains Mono','Fira Code',Consolas,Menlo,monospace; font-size:13px;
+            line-height:1.5; white-space:pre; word-wrap:normal; overflow-x:auto;
+            min-height:140px; max-height:400px; box-sizing:border-box; width:100%; text-align:left;
+        }
+        .code-editor-wrap .code-hl {
+            position:absolute; top:0; left:0; right:0; z-index:1;
+            background:#1e1e2e; color:#e0e0e0; pointer-events:none;
+            overflow:hidden; max-height:400px;
+        }
+        .code-editor-wrap .code-editor-ta {
+            position:relative; z-index:2; resize:none;
+            background:transparent; color:transparent; caret-color:#e0e0e0;
+            overflow-y:auto;
+        }
+        .code-editor-wrap .code-editor-ta:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent); }
+        .code-editor-wrap .code-editor-ta::placeholder { color:rgba(224,224,224,0.35) }
+        .tok-keyword { color:#C678DD; font-weight:600 }
+        .tok-string  { color:#98C379 }
+        .tok-number  { color:#D19A66 }
+        .tok-comment { color:#7F848E; font-style:italic }
+        .tok-type    { color:#E5C07B }
+        .tok-builtin { color:#56B6C2 }
+
+        /* ── 챕터 관리 ── */
+        .block-chapter-row { display:flex; align-items:center; gap:8px; margin-bottom:8px }
+        .block-chapter-row .field-label { margin-bottom:0 }
+        .block-chapter-row select { width:auto; min-width:160px }
+        .chapter-manager-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.45); display:none; align-items:center; justify-content:center; z-index:9000; backdrop-filter:blur(2px) }
+        .chapter-manager-overlay.open { display:flex }
+        .chapter-manager-modal { width:min(520px, 92vw); max-height:82vh; overflow-y:auto; background:var(--bg-surface); border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,0.18); padding:0 }
+        .chapter-manager-head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border-subtle) }
+        .chapter-manager-head h4 { margin:0; font-size:16px; font-weight:700; color:var(--text-primary) }
+        .chapter-manager-head .close-btn { background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-tertiary); padding:2px 6px; border-radius:6px; line-height:1 }
+        .chapter-manager-head .close-btn:hover { background:var(--bg-subtle); color:var(--text-primary) }
+        .chapter-manager-body { padding:16px 18px }
+        .chapter-manager-add { display:flex; gap:8px; margin-bottom:14px }
+        .chapter-manager-add input { flex:1; border:1px solid var(--border-subtle); border-radius:6px; padding:8px 10px; font-size:13px; color:var(--text-primary); background:var(--bg-surface) }
+        .chapter-manager-add input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent) }
+        .chapter-manager-list { display:flex; flex-direction:column; gap:6px }
+        .chapter-manager-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border-subtle); border-radius:8px }
+        .chapter-manager-item .cm-icon { width:30px; height:30px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; background:var(--bg-subtle); flex-shrink:0 }
+        .chapter-manager-item .cm-info { flex:1; min-width:0 }
+        .chapter-manager-item .cm-title { font-size:13px; font-weight:600; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+        .chapter-manager-item .cm-meta { font-size:11px; color:var(--text-tertiary); margin-top:2px }
+        .chapter-manager-item .cm-actions { display:flex; gap:4px; flex-shrink:0 }
+        .chapter-manager-item .cm-actions button { background:none; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer; padding:3px 8px; font-size:11px; color:var(--text-secondary); transition:all 0.15s; line-height:1 }
+        .chapter-manager-item .cm-actions button:hover:not(:disabled) { background:var(--bg-accent-light); color:var(--text-primary) }
+        .chapter-manager-item .cm-actions button.danger { color:#EF4444 }
+        .chapter-manager-item .cm-actions button.danger:hover { background:rgba(239,68,68,0.08); color:#EF4444 }
+        .chapter-manager-item .cm-actions button:disabled { opacity:0.3; cursor:default }
+        .chapter-empty { text-align:center; padding:20px; color:var(--text-tertiary); font-size:13px }
+        .chapter-group-heading { font-size:12px; font-weight:700; color:var(--text-secondary); padding:8px 10px 4px; border-top:1px solid var(--border-subtle); margin-top:6px }
+        .chapter-group-heading:first-child { border-top:none; margin-top:0 }
+    </style>
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <!-- 페이지 로딩 오버레이 -->
+    <div class="page-loading-overlay" id="pageLoading">
+        <div class="loading-icon"></div>
+        <div class="loading-label">블록 편집기를 불러오는 중</div>
+        <div class="loading-sub">잠시만 기다려주세요</div>
+        <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+    </div>
+
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+    </div>
+</nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">본사</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+                    <div class="cat-header" style="margin-bottom:0">
+                        <a class="back-link" href="courses.html">← 강좌 관리</a>
+                        <h2 id="editorTitle">블록 편집기</h2>
+                    </div>
+                </div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                    <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveBlocks()" style="margin-left:12px">💾 저장</button>
+                </div>
+            </div>
+
+            <div class="editor-layout">
+                <!-- 왼쪽: 챕터/자료 목록 -->
+                <div class="editor-sidebar" id="chapterSidebar">
+                    <div class="editor-sidebar-header">
+                        <h3>📚 자료 목록</h3>
+                        <span class="count" id="matCount">0개</span>
+                    </div>
+                    <div class="editor-chapter-list" id="chapterList">
+                        <div class="empty-state" style="padding:24px;text-align:center;color:var(--text-tertiary);font-size:13px">
+                            자료를 불러오는 중...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 블록 편집기 메인 -->
+                <div class="editor-main">
+                    <div class="editor-title-wrap">
+                        <h3 class="editor-course-title" id="courseTitle">강좌 불러오는 중...</h3>
+                    </div>
+
+                    <div class="editor-toolbar">
+                        <div class="editor-toolbar-left">
+                            <span style="font-size:13px;color:var(--text-secondary);font-weight:500">블록 <span id="blockCount">0</span>개</span>
+                        </div>
+                        <div class="editor-toolbar-right">
+                            <button class="btn btn-secondary btn-xs" onclick="openChapterManager()" title="챕터 관리">🔖 챕터 관리</button>
+                            <button class="btn btn-secondary btn-xs" onclick="loadBlocks()" title="새로고침">🔄</button>
+                        </div>
+                    </div>
+
+                    <!-- 블록 리스트 (첨부파일 카드 포함) -->
+                    <div id="blocksContainer"></div>
+
+                    <!-- 블록 추가 도구 모음 -->
+                    <div class="add-block-bar">
+                        <button class="add-block-btn" onclick="addBlock('text')">📝 텍스트</button>
+                        <button class="add-block-btn" onclick="addBlock('heading')">🔤 제목</button>
+                        <button class="add-block-btn" onclick="addBlock('image')">🖼️ 이미지</button>
+                        <button class="add-block-btn" onclick="addBlock('video')">🎬 비디오</button>
+                        <button class="add-block-btn" onclick="addBlock('embed')">🔗 임베드</button>
+                        <button class="add-block-btn" onclick="addBlock('divider')">➖ 구분선</button>
+                        <button class="add-block-btn" onclick="addBlock('code')">💻 코드</button>
+                        <button class="add-block-btn" onclick="onFileBtnClick('file')" title="첨부파일 업로드">📎 첨부파일</button>
+                        <input type="file" id="fileInput" multiple accept=".ppt,.pptx,.pdf,.doc,.docx,.hwp,.xls,.xlsx,.txt,.zip,.jpg,.jpeg,.png,.gif,.webp,.mp4,.mp3,.csv" style="display:none" onchange="onFilesSelected(this)">
+                    </div>
+
+                    <!-- 업로드 진행 상태 (파일을 올리면 여기에 표시됨) -->
+                    <div class="upload-queue" id="uploadQueue" style="display:none"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 챕터 관리 모달 -->
+    <div class="chapter-manager-overlay" id="chapterManagerOverlay" onclick="if(event.target===this)closeChapterManager()">
+        <div class="chapter-manager-modal">
+            <div class="chapter-manager-head">
+                <h4>🔖 챕터 관리</h4>
+                <button class="close-btn" onclick="closeChapterManager()" title="닫기">✕</button>
+            </div>
+            <div class="chapter-manager-body">
+                <div class="chapter-manager-add">
+                    <input type="text" id="newChapterInput" placeholder="새 챕터 이름 입력 (예: 1일차)" onkeydown="if(event.key==='Enter')addChapterFromInput()">
+                    <button class="btn btn-primary btn-sm" onclick="addChapterFromInput()">+ 추가</button>
+                </div>
+                <div class="chapter-manager-list" id="chapterManagerList"></div>
+            </div>
+        </div>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script>
+    /* ================================================================
+       누비다플랫폼 — 블록 편집기
+       ================================================================ */
+
+    // ===== State =====
+    var courseId = null;
+    var courseTitle = '';
+    var blocks = [];
+    var materials = [];
+    var chapters = [];
+    var blockIdCounter = 0;
+
+    // ===== Block type config =====
+    var BLOCK_CONFIG = {
+        text:    { icon: '📝', label: '텍스트' },
+        heading: { icon: '🔤', label: '제목' },
+        image:   { icon: '🖼️', label: '이미지' },
+        video:   { icon: '🎬', label: '비디오' },
+        embed:   { icon: '🔗', label: '임베드' },
+        divider: { icon: '➖', label: '구분선' },
+        code:    { icon: '💻', label: '코드' },
+    };
+
+    // ===== Initialization =====
+    document.addEventListener('DOMContentLoaded', function() {
+                    // ===== Sidebar Navigation =====
+                    var currentPage = window.location.pathname.split('/').pop();
+                    var sectionMap = {
+                        'branches.html': 'operations', 'academy-management.html': 'operations',
+                        'courses.html': 'operations', 'users.html': 'operations',
+                        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+                        'point-management.html': 'point', 'point-settings.html': 'point',
+                        'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+                        'director-reports.html': 'report', 'notices.html': 'report',
+                        'portfolio.html': 'report',
+                        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+                        'category-manager.html': 'system', 'category.html': 'system',
+                        'lecture-editor.html': 'system',
+                    };
+                    var currentSection = sectionMap[currentPage];
+                    if (currentSection) {
+                        var toggle = document.querySelector('.nav-toggle[data-section="' + currentSection + '"]');
+                        if (toggle) {
+                            toggle.classList.add('open');
+                            var sub = document.getElementById('sub-' + currentSection);
+                            if (sub) sub.classList.add('open');
+                        }
+                    }
+                    document.querySelectorAll('.nav-toggle').forEach(function(btn) {
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            var section = this.dataset.section;
+                            var sub = document.getElementById('sub-' + section);
+                            var isOpen = sub.classList.contains('open');
+                            if (isOpen) {
+                                sub.classList.remove('open');
+                                this.classList.remove('open');
+                            } else {
+                                document.querySelectorAll('.nav-submenu.open').forEach(function(el) { el.classList.remove('open'); });
+                                document.querySelectorAll('.nav-toggle.open').forEach(function(el) { el.classList.remove('open'); });
+                                sub.classList.add('open');
+                                this.classList.add('open');
+                            }
+                        });
+                    });
+                    document.querySelectorAll('.nav-item').forEach(function(item) {
+                        var href = item.getAttribute('href');
+                        if (href && href === currentPage) {
+                            item.classList.add('active');
+                        }
+                    });
+
+        requireAuth();
+        renderSidebarUser();
+
+        var params = new URLSearchParams(window.location.search);
+        courseId = params.get('course_id');
+
+        if (!courseId) {
+            document.getElementById('courseTitle').textContent = '❌ course_id가 필요합니다';
+            document.getElementById('editorTitle').textContent = '오류';
+            hideLoading();
+            return;
+        }
+
+        document.getElementById('editorTitle').textContent = '블록 편집기';
+
+        // Load course info + blocks + materials in parallel
+        Promise.all([
+            loadCourseInfo(),
+            loadBlocks(),
+            loadMaterials()
+        ]).then(function() {
+            hideLoading();
+        }).catch(function(err) {
+            console.error('Initialization error:', err);
+            hideLoading();
+        });
+    });
+
+    function hideLoading() {
+        document.getElementById('pageLoading').classList.add('hide');
+    }
+
+    // ===== Load Course Info =====
+    async function loadCourseInfo() {
+        try {
+            var res = await apiGet('/headquarters/courses/' + courseId);
+            var data = res.data || res;
+            if (data.title) {
+                courseTitle = data.title;
+                document.getElementById('courseTitle').textContent = data.title;
+            }
+        } catch (e) {
+            console.error('Failed to load course info:', e);
+        }
+    }
+
+    // ===== Load Blocks =====
+    async function loadBlocks() {
+        try {
+            var res = await apiGet('/headquarters/courses/' + courseId + '/blocks');
+            var data = res.data || res;
+            var rawBlocks = data.content_blocks || [];
+            // 챕터 정보 (서버가 내려주는 경우)
+            chapters = data.chapters || chapters || [];
+            // 챕터가 서버에서 오지 않으면 기존 블록에서 유니크한 chapter 값 추출
+            if (chapters.length === 0) {
+                rebuildChaptersFromBlocks(rawBlocks);
+            }
+            // Ensure each block has a unique client-side id
+            blocks = rawBlocks.map(function(b) {
+                b._cid = 'block-' + (++blockIdCounter);
+                // 통합 자료목록 전역 순서 키 (기존값 유지, 없으면 기본값 100000+idx)
+                if (typeof b._morder !== 'number') b._morder = 100000 + (rawBlocks.indexOf(b));
+                return b;
+            });
+            renderBlocks();
+            renderMaterials();
+            renderChapterList();
+        } catch (e) {
+            console.error('Failed to load blocks:', e);
+            document.getElementById('blocksContainer').innerHTML = '<div class="empty-state" style="padding:40px;text-align:center;color:var(--text-tertiary);font-size:14px">❌ 블록을 불러올 수 없습니다</div>';
+        }
+    }
+
+    // ===== Load Materials =====
+    async function loadMaterials() {
+        try {
+            var res = await apiGet('/courses/' + courseId + '/materials');
+            materials = res.data || res || [];
+            renderMaterials();
+            renderChapterList();
+        } catch (e) {
+            console.error('Failed to load materials:', e);
+        }
+    }
+
+    // ===== Render Chapter List (통합: 첨부파일 + 코드/이미지/영상 블록) =====
+    // 수정(2026-08-05): 파일형 자료만 렌더링하던 것을 전체 블록(코드/이미지/영상/텍스트 등)까지
+    // 통합 목록으로 표시하고, 행마다 ↑/↓ 순서 변경 버튼을 제공한다.
+    // 카운트(#matCount)와 목록이 항상 일치하도록 renderMaterials와 동일한 buildUnifiedList 사용.
+    function renderChapterList() {
+        var container = document.getElementById('chapterList');
+        var allItems = buildUnifiedList();
+        document.getElementById('matCount').textContent = '총 ' + allItems.length + '개 자료';
+
+        if (!allItems || allItems.length === 0) {
+            container.innerHTML = '<div class="empty-state" style="padding:24px;text-align:center;color:var(--text-tertiary);font-size:13px">📭 등록된 자료가 없습니다</div>';
+            return;
+        }
+        var html = '';
+        // 챕터 정의가 있을 때만 챕터별 그룹화 (없으면 기존 flat 목록)
+        if (chapters && chapters.length > 0) {
+            // 챕터별 항목(자료) 그룹핑 + '미분류'
+            var groups = [];
+            (chapters || []).forEach(function(ch) {
+                groups.push({ title: ch.title, chId: ch.id, items: [] });
+            });
+            groups.push({ title: '미분류', chId: '', items: [] });
+            allItems.forEach(function(item) {
+                var chap = item.chapter;
+                if (!chap) chap = '';
+                var g = groups.find(function(grp) { return grp.chId === chap; });
+                if (!g) {
+                    // 정의되지 않은 챕터값 → 임시 그룹
+                    g = { title: chap, chId: chap, items: [] };
+                    groups.push(g);
+                }
+                g.items.push(item);
+            });
+            // 이동 버튼용 전역 인덱스 (buildUnifiedList 순서 기준)
+            var globalIndex = {};
+            allItems.forEach(function(item, gi) {
+                var key;
+                if (item.kind === 'file') key = 'file-' + item.id;
+                else key = 'block-' + item.blockIdx;
+                globalIndex[key] = gi;
+            });
+            groups.forEach(function(grp) {
+                html += '<div class="chapter-group-heading">' + esc(grp.title) + ' <span style="color:var(--text-tertiary);font-weight:400">(' + grp.items.length + ')</span></div>';
+                grp.items.forEach(function(item) {
+                    var gi = item.kind === 'file' ? globalIndex['file-' + item.id] : globalIndex['block-' + item.blockIdx];
+                    html += '<div class="chapter-item">';
+                    html += '<div class="ci-icon">' + item.icon + '</div>';
+                    html += '<div class="ci-info">';
+                    html += '<div class="ci-title">' + esc(item.title) + '</div>';
+                    html += '<div class="ci-meta">' + esc(item.sub) + '</div>';
+                    html += '</div>';
+                    html += '<div class="ci-actions">';
+                    html += '<button onclick="moveUnifiedItem(' + gi + ',-1)" ' + (gi === 0 ? 'disabled' : '') + ' title="위로 이동">↑</button>';
+                    html += '<button onclick="moveUnifiedItem(' + gi + ',1)" ' + (gi === allItems.length - 1 ? 'disabled' : '') + ' title="아래로 이동">↓</button>';
+                    html += '</div></div>';
+                });
+            });
+        } else {
+            allItems.forEach(function(item, i) {
+                html += '<div class="chapter-item">';
+                html += '<div class="ci-icon">' + item.icon + '</div>';
+                html += '<div class="ci-info">';
+                html += '<div class="ci-title">' + esc(item.title) + '</div>';
+                html += '<div class="ci-meta">' + esc(item.sub) + '</div>';
+                html += '</div>';
+                html += '<div class="ci-actions">';
+                html += '<button onclick="moveUnifiedItem(' + i + ',-1)" ' + (i === 0 ? 'disabled' : '') + ' title="위로 이동">↑</button>';
+                html += '<button onclick="moveUnifiedItem(' + i + ',1)" ' + (i === allItems.length - 1 ? 'disabled' : '') + ' title="아래로 이동">↓</button>';
+                html += '</div></div>';
+            });
+        }
+        container.innerHTML = html;
+    }
+
+    // ===== Render Blocks (블록 + 첨부파일 통합 전역 순서로 표시) =====
+    function renderBlocks() {
+        var container = document.getElementById('blocksContainer');
+        // 렌더링은 divider 포함(에디터 순서 유지용), 카운트는 divider 제외(자료수 정확)
+        var allItems = buildUnifiedList(true);
+        var countItems = buildUnifiedList();
+        // 챕터 목록/자료 개수와 동일 기준 유지 (구분선 제외)
+        document.getElementById('blockCount').textContent = countItems.length;
+
+        var html = '';
+        if (!allItems.length) {
+            html += '<div class="empty-state" style="padding:40px;text-align:center;color:var(--text-tertiary);font-size:14px">📝 블록을 추가하여 강좌 콘텐츠를 만들어보세요</div>';
+        } else {
+            allItems.forEach(function(item, i) {
+                if (item.kind === 'block') {
+                    var block = blocks[item.blockIdx];
+                    if (!block) return;
+                    var cfg = BLOCK_CONFIG[block.type] || { icon: '📦', label: block.type };
+                    html += '<div class="block-card block-adding" id="card-' + block._cid + '">';
+                    html += '<div class="block-header">';
+                    html += '<span class="block-type-badge"><span class="bicon">' + cfg.icon + '</span> ' + cfg.label + '</span>';
+                    html += '<div class="block-actions">';
+                    html += '<button onclick="moveUnifiedItem(' + i + ',-1)" ' + (i === 0 ? 'disabled style="opacity:0.3"' : '') + ' title="위로 이동">↑</button>';
+                    html += '<button onclick="moveUnifiedItem(' + i + ',1)" ' + (i === allItems.length - 1 ? 'disabled style="opacity:0.3"' : '') + ' title="아래로 이동">↓</button>';
+                    html += '<button onclick="deleteBlock(' + item.blockIdx + ')" class="danger" title="삭제">🗑️</button>';
+                    html += '</div></div>';
+                    html += '<div class="block-body">';
+                    html += renderBlockEditor(block, item.blockIdx);
+                    html += '<div class="block-chapter-row">';
+                    html += '<label class="field-label">챕터</label>';
+                    html += chapterDropdown(item.blockIdx, block.chapter);
+                    html += '</div>';
+                    html += '</div></div>';
+                } else {
+                    // 첨부파일 블록 카드
+                    var m = (materials || []).find(function(x) { return x.id === item.id; });
+                    if (!m) return;
+                    html += renderFileBlockCard(m, i, allItems.length);
+                }
+            });
+        }
+
+        // 업로드 진행 큐 — 별도 카드 없이 목록 끝에만 표시 (업로드 중에만 보임)
+        var q = document.getElementById('uploadQueue');
+        var queueHTML = q ? q.innerHTML : '';
+        var queueDisplay = q ? (q.style.display || 'none') : 'none';
+        html += '<div class="upload-queue" id="uploadQueue" style="display:' + queueDisplay + '">' + queueHTML + '</div>';
+
+        container.innerHTML = html;
+
+        // Auto-resize textareas
+        document.querySelectorAll('.auto-resize').forEach(function(ta) {
+            ta.style.height = 'auto';
+            ta.style.height = ta.scrollHeight + 'px';
+        });
+
+        // 코드 에디터 초기화: 자동 확장(최대 400px) + 하이라이트
+        document.querySelectorAll('.code-editor-ta').forEach(function(ta) {
+            var cidx = parseInt((ta.id || '').replace('codeta-', ''), 10);
+            ta.style.height = 'auto';
+            var max = 400;
+            var h = ta.scrollHeight;
+            ta.style.height = (h > max ? max : h) + 'px';
+            ta.style.overflowY = (h > max ? 'auto' : 'hidden');
+            var hl = document.getElementById('codehl-' + cidx);
+            if (hl && blocks[cidx]) {
+                hl.innerHTML = highlightCode(blocks[cidx].code || '', blocks[cidx].language || 'python');
+            }
+        });
+    }
+
+    // 첨부파일(자료)을 블록 카드 형태로 렌더링 (🔗 임베드 블록과 동일한 구조)
+    function renderFileBlockCard(m, listIdx, totalLen) {
+        var mt = (m.material_type || '').toLowerCase();
+        var icon = mt === 'video' ? '🎬' : (mt === 'link' || mt === 'embed' ? '🔗' : (mt === 'image' ? '🖼️' : '📄'));
+        var label = mt === 'video' ? '영상' : mt === 'image' ? '이미지' : (mt === 'link' || mt === 'embed' ? '링크' : '첨부파일');
+        var murl = m.url || '';
+        var msize = m.size ? (' · ' + fmtSize(m.size)) : '';
+
+        var html = '';
+        html += '<div class="block-card block-adding" id="card-file-' + m.id + '">';
+        html += '<div class="block-header">';
+        html += '<span class="block-type-badge"><span class="bicon">' + icon + '</span> ' + label + '</span>';
+        html += '<div class="block-actions">';
+        html += '<button onclick="moveUnifiedItem(' + listIdx + ',-1)" ' + (listIdx === 0 ? 'disabled style="opacity:0.3"' : '') + ' title="위로 이동">↑</button>';
+        html += '<button onclick="moveUnifiedItem(' + listIdx + ',1)" ' + (listIdx === totalLen - 1 ? 'disabled style="opacity:0.3"' : '') + ' title="아래로 이동">↓</button>';
+        html += '<button onclick="deleteMaterial(' + m.id + ')" class="danger" title="삭제">🗑️</button>';
+        html += '</div></div>';
+        html += '<div class="block-body">';
+        html += '<div class="field-row">';
+        html += '<label class="field-label">' + esc(m.title || '첨부파일') + msize + '</label>';
+        html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+        if (murl && mt === 'image') {
+            html += '<img src="' + esc(murl) + '" alt="미리보기" style="max-width:100%;max-height:200px;border-radius:6px" onerror="this.style.display=\'none\'">';
+        } else if (murl) {
+            html += '<a href="' + esc(murl) + '" target="_blank" rel="noopener" style="font-size:13px;color:var(--accent)" download>📎 파일 열기</a>';
+        }
+        html += '<span style="font-size:12px;color:var(--text-tertiary)">' + esc(m.material_type || '') + '</span>';
+        html += '</div></div>';
+        html += '<div class="block-chapter-row">';
+        html += '<label class="field-label">챕터</label>';
+        html += chapterDropdown('file-' + m.id, m.chapter);
+        html += '</div>';
+        html += '</div></div>';
+        return html;
+    }
+
+    function fmtSize(bytes) {
+        if (!bytes && bytes !== 0) return '';
+        if (bytes < 1024) return bytes + 'B';
+        if (bytes < 1048576) return (bytes / 1024).toFixed(1) + 'KB';
+        return (bytes / 1048576).toFixed(1) + 'MB';
+    }
+
+    // ===== Chapter helpers =====
+    // 챕터 선택 드롭다운 HTML 생성
+    //   \'idx\': 블록은 블록 인덱스 번호, 자료는 \'file-<id>\' 문자열
+    //   \'current\': 현재 선택된 챕터 id (없으면 \'\' = 미분류)
+    function chapterDropdown(idx, current) {
+        var currentVal = (current === undefined || current === null) ? '' : current;
+        currentVal = String(currentVal);  // 챕터 이름으로 비교
+        var options = '';
+        // 미분류
+        options += '<option value=""' + (currentVal === '' ? ' selected' : '') + '>미분류</option>';
+        (chapters || []).forEach(function(ch) {
+            var selected = (currentVal === String(ch.title)) ? ' selected' : '';
+            options += '<option value="' + esc(ch.title) + '"' + selected + '>' + esc(ch.title) + '</option>';
+        });
+        var handler = '';
+        if (typeof idx === 'string' && idx.indexOf('file-') === 0) {
+            var matId = idx.slice(5);
+            handler = 'onchange="setMaterialChapter(\'' + matId + '\',this.value)"';
+        } else {
+            handler = 'onchange="setBlockChapter(' + idx + ',this.value)"';
+        }
+        return '<select class="block-chapter-select" ' + handler + '>' + options + '</select>';
+    }
+
+    // 블록 챕터 변경
+    function setBlockChapter(blockIdx, value) {
+        if (!blocks[blockIdx]) return;
+        if (value === '') value = null; // 미분류
+        blocks[blockIdx].chapter = value;
+        renderChapterList();
+    }
+
+    // 자료(첨부파일) 챕터 변경 + 서버 저장
+    async function setMaterialChapter(materialId, value) {
+        var m = (materials || []).find(function(x) { return x.id === materialId; });
+        if (!m) {
+            // materialId가 string인 경우 숫자 비교 고려
+            m = (materials || []).find(function(x) { return String(x.id) === String(materialId); });
+        }
+        if (!m) return;
+        if (value === '') value = null; // 미분류
+        m.chapter = value;
+        renderChapterList();
+        try {
+            await apiPut('/courses/materials/' + materialId, { chapter: value });
+        } catch (e) {
+            showAlert('챕터 저장 실패: ' + (e.message || '오류'), 'error');
+        }
+    }
+
+    // 기존 블록/자료의 chapter 값에서 유니크 챕터 목록 재구성
+    function rebuildChaptersFromBlocks(rawBlocks) {
+        var seen = {};
+        var list = [];
+        function add(id, title) {
+            if (!id) return;
+            if (!seen[id]) {
+                seen[id] = true;
+                list.push({ id: id, title: title || id });
+            }
+        }
+        (rawBlocks || []).forEach(function(b) { if (b && b.chapter) add(b.chapter, b.chapter); });
+        (materials || []).forEach(function(m) { if (m && m.chapter) add(m.chapter, m.chapter); });
+        chapters = list;
+    }
+
+    // 특정 챕터가 참조하는 자료(블록+파일) 개수 계산
+    function countChapterItems(chId) {
+        var ch = (chapters || []).find(function(c) { return c.id === chId; });
+        var chTitle = ch ? ch.title : chId;
+        var count = 0;
+        (blocks || []).forEach(function(b) { if (b && b.chapter && String(b.chapter) === chTitle) count++; });
+        (materials || []).forEach(function(m) { if (m && m.chapter && String(m.chapter) === chTitle) count++; });
+        return count;
+    }
+
+    // ===== Chapter Manager (모달) =====
+    function openChapterManager() {
+        renderChapterManagerList();
+        document.getElementById('chapterManagerOverlay').classList.add('open');
+        var inp = document.getElementById('newChapterInput');
+        if (inp) {
+            inp.value = '';
+            setTimeout(function() { inp.focus(); }, 50);
+        }
+    }
+
+    function closeChapterManager() {
+        document.getElementById('chapterManagerOverlay').classList.remove('open');
+        renderChapterList();
+    }
+
+    function renderChapterManagerList() {
+        var container = document.getElementById('chapterManagerList');
+        if (!container) return;
+        var chCount = (chapters || []).length;
+        var html = '';
+        (chapters || []).forEach(function(ch, ci) {
+            var cnt = countChapterItems(ch.id);
+            var isFirst = (ci === 0);
+            var isLast = (ci === chCount - 1);
+            html += '<div class="chapter-manager-item">';
+            html += '<div class="cm-icon">🔖</div>';
+            html += '<div class="cm-info">';
+            html += '<div class="cm-title">' + esc(ch.title) + '</div>';
+            html += '<div class="cm-meta">자료 ' + cnt + '개</div>';
+            html += '</div>';
+            html += '<div class="cm-actions">';
+            // 순서 변경 버튼
+            html += '<button onclick="moveChapter(\'' + ch.id + '\',-1)" title="위로 이동"' + (isFirst ? ' disabled' : '') + '>↑</button>';
+            html += '<button onclick="moveChapter(\'' + ch.id + '\',1)" title="아래로 이동"' + (isLast ? ' disabled' : '') + '>↓</button>';
+            html += '<button onclick="renameChapter(\'' + ch.id + '\')" title="이름 변경">✏️</button>';
+            html += '<button class="danger" onclick="deleteChapter(\'' + ch.id + '\',\'' + cnt + '\')" title="삭제">🗑️</button>';
+            html += '</div></div>';
+        });
+        if ((chapters || []).length === 0) {
+            html = '<div class="chapter-empty">아직 챕터가 없습니다. 위에서 추가해보세요.</div>';
+        }
+        container.innerHTML = html;
+    }
+
+    // 새 챕터 추가 (입력창에서)
+    function addChapterFromInput() {
+        var inp = document.getElementById('newChapterInput');
+        var name = inp ? inp.value.trim() : '';
+        if (!name) {
+            showAlert('챕터 이름을 입력해주세요.', 'error');
+            return;
+        }
+        // 중복 이름 방지
+        var exists = (chapters || []).some(function(ch) { return ch.title === name; });
+        if (exists) {
+            showAlert('이미 같은 이름의 챕터가 있습니다.', 'error');
+            return;
+        }
+        chapters.push({ id: 'ch' + Date.now().toString(36), title: name });
+        renderChapterManagerList();
+        renderChapterList();
+        renderBlocks();  // 드롭다운에 새 챕터 즉시 반영
+        if (inp) inp.value = '';
+        showAlert('✅ 챕터 "' + name + '"이 추가되었습니다.', 'success');
+    }
+
+    // 챕터 이름 변경
+    function renameChapter(chId) {
+        var ch = (chapters || []).find(function(c) { return c.id === chId; });
+        if (!ch) return;
+        var oldName = ch.title;
+        var newName = prompt('새 챕터 이름을 입력하세요:', oldName);
+        if (newName === null) return; // 취소
+        newName = String(newName).trim();
+        if (!newName) return;
+        var exists = (chapters || []).some(function(c) { return c.id !== chId && c.title === newName; });
+        if (exists) {
+            showAlert('이미 같은 이름의 챕터가 있습니다.', 'error');
+            return;
+        }
+        ch.title = newName;
+        // 이전 챕터 이름을 참조하던 모든 블록/파일의 chapter 필드를 새 이름으로 갱신
+        if (oldName !== newName) {
+            (blocks || []).forEach(function(b) {
+                if (b && b.chapter === oldName) b.chapter = newName;
+            });
+            (materials || []).forEach(function(m) {
+                if (m && m.chapter === oldName) {
+                    m.chapter = newName;
+                    // 서버에 즉시 반영 (비동기)
+                    (function(matId) {
+                        apiPut('/courses/materials/' + matId, { chapter: newName })
+                            .catch(function(e) { console.error('자료 챕터 갱신 실패:', e); });
+                    })(m.id);
+                }
+            });
+        }
+        renderChapterManagerList();
+        renderChapterList();
+        renderBlocks();  // 드롭다운에 변경된 이름 반영
+        showAlert('✅ 챕터 이름이 변경되었습니다.', 'success');
+    }
+
+    // 챕터 삭제 (해당 챕터의 자료는 '미분류'로 이동)
+    function deleteChapter(chId) {
+        var cnt = countChapterItems(chId);
+        var ch = (chapters || []).find(function(c) { return c.id === chId; });
+        var name = ch ? ch.title : chId;
+        if (!confirm('챕터 "' + name + '"' + (cnt > 0 ? ' 및 이 챕터에 속한 자료 ' + cnt + '개' : '') + '를 삭제하시겠습니까?\n이 챕터의 자료는 미분류로 이동합니다.')) return;
+        // 해당 챕터 자료를 미분류로 (chapter 필드에는 챕터 이름(title)이 저장됨)
+        (blocks || []).forEach(function(b) { if (b && b.chapter === name) b.chapter = null; });
+        (materials || []).forEach(function(m) { if (m && m.chapter === name) m.chapter = null; });
+        chapters = (chapters || []).filter(function(c) { return c.id !== chId; });
+        renderChapterManagerList();
+        renderChapterList();
+        renderBlocks();  // 드롭다운에서 삭제된 챕터 제거
+        showAlert('🗑️ 챕터 "' + name + '"이 삭제되었습니다.', 'success');
+    }
+
+    // 챕터 순서 변경 (위/아래 이동)
+    function moveChapter(chId, dir) {
+        var idx = -1;
+        for (var i = 0; i < chapters.length; i++) {
+            if (chapters[i].id === chId) { idx = i; break; }
+        }
+        if (idx < 0) return;
+        var target = idx + dir;
+        if (target < 0 || target >= chapters.length) return;
+        var tmp = chapters[idx];
+        chapters[idx] = chapters[target];
+        chapters[target] = tmp;
+        // 챕터 순서 변경에 따라 아이템의 전역 순서 재계산
+        reorderItemsByChapters();
+        // 자료(sort_order) 변경 사항을 즉시 서버에 저장
+        saveMaterialOrders();
+        renderChapterManagerList();
+        renderBlocks();
+    }
+
+    // 변경된 자료 sort_order를 서버에 일괄 저장
+    async function saveMaterialOrders() {
+        try {
+            for (var k = 0; k < materials.length; k++) {
+                var m = materials[k];
+                if (typeof m.sort_order === 'number') {
+                    await apiPut('/courses/materials/' + m.id, { sort_order: m.sort_order });
+                }
+            }
+        } catch (e) {
+            console.error('켭터 재정렬 중 자료 순서 저장 실패:', e);
+        }
+    }
+
+    // 챕터 순서에 따라 모든 블록/파일의 전역 _order 재계산
+    // 각 챕터 그룹 내부의 상대 순서는 유지됨
+    function reorderItemsByChapters() {
+        // 챕터별 그룹 생성
+        var groups = {};
+        (materials || []).forEach(function(m) {
+            var key = m.chapter || '__unclassified__';
+            if (!groups[key]) groups[key] = { mats: [], blocks: [] };
+            groups[key].mats.push(m);
+        });
+        (blocks || []).forEach(function(b) {
+            if (!b || b.type === 'divider') return;
+            var key = b.chapter || '__unclassified__';
+            if (!groups[key]) groups[key] = { mats: [], blocks: [] };
+            groups[key].blocks.push(b);
+        });
+        // 각 그룹 내 정렬 후 _order 재계산
+        var orderCounter = 10;
+        // 챕터 순서대로 먼저 처리
+        (chapters || []).forEach(function(ch) {
+            var key = ch.title;
+            var grp = groups[key];
+            if (!grp) return;
+            // 그룹 내 항목 정렬 (기존 순서 기준)
+            var entries = [];
+            grp.mats.forEach(function(m) { entries.push({ type: 'mat', item: m, o: (typeof m.sort_order === 'number' ? m.sort_order : 0) }); });
+            grp.blocks.forEach(function(b) { entries.push({ type: 'blk', item: b, o: (typeof b._morder === 'number' ? b._morder : 100000) }); });
+            entries.sort(function(a, b) { return a.o - b.o; });
+            entries.forEach(function(e) {
+                if (e.type === 'mat') e.item.sort_order = orderCounter;
+                else e.item._morder = orderCounter;
+                orderCounter += 10;
+            });
+            delete groups[key];
+        });
+        // 미분류는 맨 마지막에
+        var unclassified = groups['__unclassified__'];
+        if (unclassified) {
+            var entries = [];
+            unclassified.mats.forEach(function(m) { entries.push({ type: 'mat', item: m, o: (typeof m.sort_order === 'number' ? m.sort_order : 0) }); });
+            unclassified.blocks.forEach(function(b) { entries.push({ type: 'blk', item: b, o: (typeof b._morder === 'number' ? b._morder : 100000) }); });
+            entries.sort(function(a, b) { return a.o - b.o; });
+            entries.forEach(function(e) {
+                if (e.type === 'mat') e.item.sort_order = orderCounter;
+                else e.item._morder = orderCounter;
+                orderCounter += 10;
+            });
+        }
+        // 남은 그룹 (챕터 목록에 없는 챕터 참조 등) 처리
+        Object.keys(groups).forEach(function(key) {
+            if (key === '__unclassified__') return;
+            var grp = groups[key];
+            if (!grp) return;
+            var entries = [];
+            grp.mats.forEach(function(m) { entries.push({ type: 'mat', item: m, o: (typeof m.sort_order === 'number' ? m.sort_order : 0) }); });
+            grp.blocks.forEach(function(b) { entries.push({ type: 'blk', item: b, o: (typeof b._morder === 'number' ? b._morder : 100000) }); });
+            entries.sort(function(a, b) { return a.o - b.o; });
+            entries.forEach(function(e) {
+                if (e.type === 'mat') e.item.sort_order = orderCounter;
+                else e.item._morder = orderCounter;
+                orderCounter += 10;
+            });
+        });
+    }
+
+    // ===== Render Individual Block Editor =====
+    function renderBlockEditor(block, idx) {
+        var html = '';
+        var val = block.content || '';
+        var url = block.url || '';
+        var caption = block.caption || '';
+        var level = block.level || 3;
+
+        if (block.type === 'text') {
+            html += '<div class="field-row">';
+            html += '<label class="field-label">HTML 내용</label>';
+            html += '<textarea class="auto-resize" oninput="updateBlock(' + idx + ',\'content\',this.value)" placeholder="HTML 형식의 텍스트를 입력하세요...">' + esc(val) + '</textarea>';
+            html += '</div>';
+        } else if (block.type === 'heading') {
+            html += '<div class="field-row">';
+            html += '<label class="field-label">제목 텍스트</label>';
+            html += '<input type="text" value="' + esc(val) + '" oninput="updateBlock(' + idx + ',\'content\',this.value)" placeholder="제목을 입력하세요">';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">제목 크기</label>';
+            html += '<div class="field-row-inline">';
+            html += '<select onchange="updateBlock(' + idx + ',\'level\',parseInt(this.value))">';
+            html += '<option value="3"' + (level === 3 ? ' selected' : '') + '>H3 (중간)</option>';
+            html += '<option value="4"' + (level === 4 ? ' selected' : '') + '>H4 (작게)</option>';
+            html += '</select>';
+            html += '</div></div>';
+        } else if (block.type === 'image') {
+            var imgTitle = block.title || '';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">블록 제목</label>';
+            html += '<input type="text" value="' + esc(imgTitle) + '" oninput="updateBlock(' + idx + ',\'title\',this.value)" placeholder="이미지 블록 제목을 입력하세요 (선택)">';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<input type="file" id="blockfile-img-' + idx + '" accept="image/*" style="display:none" onchange="uploadBlockFile(this,' + idx + ',\'image\')">';
+            html += '<button type="button" class="btn btn-ghost btn-xs" onclick="document.getElementById(\'blockfile-img-' + idx + '\').click()">📤 이미지 파일 업로드</button>';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">이미지 URL</label>';
+            html += '<input type="text" value="' + esc(url) + '" oninput="updateBlock(' + idx + ',\'url\',this.value)" placeholder="https://example.com/image.jpg">';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">캡션 (선택)</label>';
+            html += '<input type="text" value="' + esc(caption) + '" oninput="updateBlock(' + idx + ',\'caption\',this.value)" placeholder="이미지 설명">';
+            html += '</div>';
+            if (url) {
+                html += '<div style="margin-top:8px;text-align:center;padding:8px;background:var(--bg-subtle);border-radius:6px">';
+                html += '<img src="' + esc(url) + '" alt="미리보기" style="max-width:100%;max-height:200px;border-radius:4px" onerror="this.style.display=\'none\'">';
+                html += '</div>';
+            }
+        } else if (block.type === 'video') {
+            var vidTitle = block.title || '';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">블록 제목</label>';
+            html += '<input type="text" value="' + esc(vidTitle) + '" oninput="updateBlock(' + idx + ',\'title\',this.value)" placeholder="영상 블록 제목을 입력하세요 (선택)">';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<input type="file" id="blockfile-vid-' + idx + '" accept="video/*" style="display:none" onchange="uploadBlockFile(this,' + idx + ',\'video\')">';
+            html += '<button type="button" class="btn btn-ghost btn-xs" onclick="document.getElementById(\'blockfile-vid-' + idx + '\').click()">📤 영상 파일 업로드</button>';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">비디오 URL</label>';
+            html += '<input type="text" value="' + esc(url) + '" oninput="updateBlock(' + idx + ',\'url\',this.value)" placeholder="https://example.com/video.mp4">';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">캡션 (선택)</label>';
+            html += '<input type="text" value="' + esc(caption) + '" oninput="updateBlock(' + idx + ',\'caption\',this.value)" placeholder="비디오 설명">';
+            html += '</div>';
+        } else if (block.type === 'embed') {
+            var embTitle = block.title || '';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">블록 제목</label>';
+            html += '<input type="text" value="' + esc(embTitle) + '" oninput="updateBlock(' + idx + ',\'title\',this.value)" placeholder="임베드 블록 제목을 입력하세요 (선택)">';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">임베드 URL (YouTube/Vimeo 등)</label>';
+            html += '<input type="text" value="' + esc(url) + '" oninput="updateBlock(' + idx + ',\'url\',this.value)" placeholder="https://www.youtube.com/embed/...">';
+            html += '</div>';
+        } else if (block.type === 'divider') {
+            html += '<div style="text-align:center;padding:4px 0;color:var(--text-tertiary);font-size:12px">➖ 구분선</div>';
+                } else if (block.type === 'code') {
+            var codeContent = block.code || '';
+            var lang = block.language || 'python';
+            var blockTitle = block.title || '';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">블록 제목</label>';
+            html += '<input type="text" value="' + esc(blockTitle) + '" oninput="updateBlock(' + idx + ',\'title\',this.value)" placeholder="코드 블록 제목을 입력하세요 (선택)">';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">프로그래밍 언어</label>';
+            html += '<select onchange="updateBlock(' + idx + ',\'language\',this.value);codeEditorInput(document.getElementById(\'codeta-' + idx + '\'),' + idx + ');renderMaterials()">';
+            html += '<option value="arduino"' + (lang === 'arduino' ? ' selected' : '') + '>Arduino (아두이노)</option>';
+            html += '<option value="python"' + (lang === 'python' ? ' selected' : '') + '>Python</option>';
+            html += '<option value="javascript"' + (lang === 'javascript' ? ' selected' : '') + '>JavaScript</option>';
+            html += '<option value="html"' + (lang === 'html' ? ' selected' : '') + '>HTML</option>';
+            html += '<option value="css"' + (lang === 'css' ? ' selected' : '') + '>CSS</option>';
+            html += '<option value="sql"' + (lang === 'sql' ? ' selected' : '') + '>SQL</option>';
+            html += '<option value="bash"' + (lang === 'bash' ? ' selected' : '') + '>Bash</option>';
+            html += '<option value="java"' + (lang === 'java' ? ' selected' : '') + '>Java</option>';
+            html += '<option value="c"' + (lang === 'c' ? ' selected' : '') + '>C</option>';
+            html += '<option value="cpp"' + (lang === 'cpp' ? ' selected' : '') + '>C++</option>';
+            html += '<option value="php"' + (lang === 'php' ? ' selected' : '') + '>PHP</option>';
+            html += '</select>';
+            html += '</div>';
+            html += '<div class="field-row">';
+            html += '<label class="field-label">코드 내용 (구문 하이라이팅 자동 적용)</label>';
+            html += '<div class="code-editor-wrap">';
+            html += '<pre class="code-hl" id="codehl-' + idx + '" aria-hidden="true"></pre>';
+            html += '<textarea class="code-editor-ta" id="codeta-' + idx + '" spellcheck="false" oninput="updateBlock(' + idx + ',\'code\',this.value);codeEditorInput(this,' + idx + ')" onscroll="syncCodeScroll(this,' + idx + ')" placeholder="코드를 입력하세요...">' + esc(codeContent) + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+        }
+        return html;
+    }
+
+    // ===== Update Block Data =====
+    function updateBlock(idx, field, value) {
+        if (!blocks[idx]) return;
+        blocks[idx][field] = value;
+        // 제목이나 언어가 바뀌면 목록 라벨도 즉시 반영
+        // 주의: textarea/input 입력 중에는 renderBlocks()를 호출하면
+        // 해당 요소가 재생성되어 포커스가 사라지는 문제가 있다.
+        // → 목록(renderChapterList)만 갱신하고 블록 에디터 본체는 건드리지 않는다.
+        if (field === 'language' || field === 'title') {
+            renderChapterList();
+        }
+        // code/content/url 등 텍스트 입력 필드는 리렌더링 없이 값만 저장
+    }
+
+    // ===== 코드 하이라이터 (경량 토큰 컬러링 — VS Code 스타일) =====
+    var CODE_KEYWORDS = {
+        arduino: ['if','else','for','while','return','switch','case','default','break','continue','true','false','const','static','volatile','class','new','delete','this','sizeof','enum','struct','union','goto','do'],
+        python: ['def','class','if','elif','else','for','while','return','import','from','try','except','finally','with','as','lambda','pass','break','continue','global','nonlocal','yield','and','or','not','in','is','assert','raise','del','async','await','None','True','False'],
+        javascript: ['function','var','let','const','if','else','for','while','do','return','class','extends','new','this','typeof','instanceof','try','catch','finally','throw','switch','case','default','break','continue','async','await','export','import','from','null','undefined','true','false','in','of'],
+        html: ['html','head','body','div','span','class','id','style','script','link','meta','img','a','href','src','p','br','h1','h2','h3','h4','h5','h6','ul','ol','li','table','tr','td','th','form','input','button','select','option','textarea','iframe','video','audio','section','header','footer','nav','main'],
+        css: ['class','id','margin','padding','color','background','border','border-radius','font-size','font-family','font-weight','display','position','width','height','max-width','min-width','flex','grid','gap','align-items','justify-content','text-align','overflow','z-index','transition','animation','hover','active','focus','!important','media','import'],
+        sql: ['select','from','where','insert','into','values','update','set','delete','create','table','drop','alter','add','column','primary','key','foreign','references','join','inner','left','right','outer','on','group','by','order','having','limit','offset','and','or','not','null','is','in','exists','between','like','as','distinct','count','sum','avg','min','max'],
+        bash: ['if','then','else','elif','fi','for','while','do','done','case','esac','function','return','exit','echo','cd','ls','mkdir','rm','cp','mv','cat','grep','sed','awk','sudo','export','source','alias','true','false'],
+        java: ['public','private','protected','class','interface','extends','implements','void','static','final','if','else','for','while','do','return','new','this','super','try','catch','finally','throw','throws','switch','case','default','break','continue','import','package','abstract','synchronized','boolean','int','long','float','double','char','byte','short','true','false','null'],
+        c: ['if','else','for','while','do','return','switch','case','default','break','continue','goto','sizeof','typedef','struct','union','enum','const','static','extern','register','volatile','signed','unsigned','void','int','char','float','double','long','short','true','false'],
+        cpp: ['if','else','for','while','do','return','switch','case','default','break','continue','class','struct','union','enum','namespace','using','template','typename','public','private','protected','virtual','override','const','static','new','delete','this','true','false','nullptr','int','char','float','double','bool','void','long','short','unsigned','signed'],
+        php: ['function','class','if','else','elseif','for','foreach','while','do','return','echo','print','require','require_once','include','include_once','namespace','use','new','public','private','protected','static','final','try','catch','finally','throw','switch','case','default','break','continue','true','false','null','array','isset','empty','global']
+    };
+    var CODE_TYPES = {
+        arduino: ['void','int','float','boolean','char','byte','unsigned','long','double'],
+        python: ['str','int','float','bool','list','dict','set','tuple','bytes','object','type','None'],
+        javascript: ['Number','String','Boolean','Array','Object','Function','Promise','Map','Set','Date','RegExp','Error'],
+        java: ['int','long','float','double','char','byte','short','boolean','String','Integer','Long','Double','Float','Boolean','Character','Object','List','Map','Set','ArrayList','HashMap'],
+        c: ['int','char','float','double','long','short','void','unsigned','signed','FILE','size_t'],
+        cpp: ['int','char','float','double','bool','void','long','short','unsigned','signed','string','vector','map','set','list','auto','size_t'],
+        php: ['int','float','string','bool','array','object','callable','iterable','mixed','void']
+    };
+    var CODE_BUILTINS = {
+        arduino: ['Serial','setup','loop','pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','A0','A1','A2','A3','A4','A5','LED_BUILTIN','tone','noTone','map','constrain','min','max','pow','sqrt','abs','random','randomSeed'],
+        python: ['print','len','range','type','int','str','float','list','dict','set','tuple','sum','min','max','abs','sorted','enumerate','zip','map','filter','open','input','isinstance','hasattr','getattr','setattr','super','self','__init__','append','extend','split','join','format','strip','replace','find','count'],
+        javascript: ['console','log','document','window','alert','prompt','confirm','Math','JSON','Object','Array','String','Number','Boolean','Date','setTimeout','setInterval','parseInt','parseFloat','isNaN','querySelector','getElementById','addEventListener','fetch','Promise','map','filter','reduce','forEach','push','pop','splice','join','split'],
+        java: ['System','out','println','print','printf','String','Integer','Long','Math','Arrays','List','ArrayList','HashMap','Map','Set','HashSet','Exception','Thread','Object','equals','toString','hashCode','length','size','get','put','add','remove'],
+        c: ['printf','scanf','fopen','fclose','fread','fwrite','fgets','fputs','malloc','calloc','free','memcpy','memset','strlen','strcpy','strcat','strcmp','atoi','exit','NULL','FILE','size_t'],
+        cpp: ['cout','cin','endl','string','vector','map','set','list','cout','cerr','clog','new','delete','std','NULL','nullptr','push_back','size','begin','end','find','insert','erase','sort','reverse'],
+        php: ['echo','print','var_dump','print_r','count','array','isset','empty','unset','implode','explode','strlen','str_replace','substr','trim','json_encode','json_decode','date','time','require','include','self','parent','$this']
+    };
+
+    function highlightCode(code, lang) {
+        if (!code) return '';
+        var out = esc(code);
+        var kw = CODE_KEYWORDS[lang] || CODE_KEYWORDS.python;
+        var ty = CODE_TYPES[lang] || [];
+        var bi = CODE_BUILTINS[lang] || [];
+        // 주석 (라인)
+        if (lang === 'python') out = out.replace(/(#[^\n]*)/g, '<span class="tok-comment">$1</span>');
+        else if (lang === 'sql') out = out.replace(/(--[^\n]*)/g, '<span class="tok-comment">$1</span>');
+        else out = out.replace(/(\/\/[^\n]*)/g, '<span class="tok-comment">$1</span>');
+        // 문자열
+        out = out.replace(/(&quot;[^&]*?&quot;|&#39;[^&]*?&#39;)/g, '<span class="tok-string">$1</span>');
+        // 숫자
+        out = out.replace(/(\b\d+(\.\d+)?\b)/g, '<span class="tok-number">$1</span>');
+        // 키워드
+        var kwRe = new RegExp('\\b(' + kw.join('|') + ')\\b', 'g');
+        out = out.replace(kwRe, '<span class="tok-keyword">$1</span>');
+        // 타입
+        if (ty.length) {
+            var tyRe = new RegExp('\\b(' + ty.join('|') + ')\\b', 'g');
+            out = out.replace(tyRe, '<span class="tok-type">$1</span>');
+        }
+        // 내장 함수/상수
+        if (bi.length) {
+            var biRe = new RegExp('\\b(' + bi.join('|') + ')\\b', 'g');
+            out = out.replace(biRe, '<span class="tok-builtin">$1</span>');
+        }
+        return out;
+    }
+
+    // 코드 입력: 자동 확장(최대 400px) + 하이라이트 실시간 갱신
+    function codeEditorInput(ta, idx) {
+        if (ta) {
+            // 내용에 맞게 확장하되 최대 400px까지만. 그 이상은 세로 스크롤.
+            ta.style.height = 'auto';
+            var max = 400;
+            var h = ta.scrollHeight;
+            ta.style.height = (h > max ? max : h) + 'px';
+            ta.style.overflowY = (h > max ? 'auto' : 'hidden');
+        }
+        var hl = document.getElementById('codehl-' + idx);
+        if (hl && blocks[idx]) {
+            hl.innerHTML = highlightCode(blocks[idx].code || '', blocks[idx].language || 'python');
+        }
+    }
+
+    // 코드 textarea 세로 스크롤 시 하이라이트 레이어 동기화
+    function syncCodeScroll(ta, idx) {
+        var hl = document.getElementById('codehl-' + idx);
+        if (hl) hl.scrollTop = ta.scrollTop;
+    }
+
+    // ===== Add Block =====
+    function addBlock(type) {
+        var newBlock = {
+            _cid: 'block-' + (++blockIdCounter),
+            type: type,
+            content: '',
+            url: '',
+            caption: '',
+            level: 3,
+            code: '',
+            language: 'python',
+            title: '',
+            _morder: nextUnifiedOrder(),
+        };
+        blocks.push(newBlock);
+        renderBlocks();
+        renderMaterials();
+        renderChapterList();
+        // Scroll to the new block
+        setTimeout(function() {
+            var el = document.getElementById('card-' + newBlock._cid);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    }
+
+    // ===== Delete Block =====
+    function deleteBlock(idx) {
+        if (!blocks[idx]) return;
+        var cid = blocks[idx]._cid;
+        var card = document.getElementById('card-' + cid);
+        if (card) {
+            card.classList.add('block-removing');
+            setTimeout(function() {
+                blocks.splice(idx, 1);
+                renderBlocks();
+                renderMaterials();
+                renderChapterList();
+            }, 300);
+        } else {
+            blocks.splice(idx, 1);
+            renderBlocks();
+            renderMaterials();
+            renderChapterList();
+        }
+    }
+
+    // ===== Move Block =====
+    // 모든 블록 유형(코드/사진/영상/텍스트 등) 공통: 배열 순서 변경 + 즉시 저장
+    // (파일형 자료는 moveMaterial이 즉시 저장하므로, 블록도 동일하게 즉시 저장하여
+    //  저장 버튼을 누르지 않아도 순서가 반영되도록 한다)
+    async function moveBlock(idx, direction) {
+        var newIdx = idx + direction;
+        if (newIdx < 0 || newIdx >= blocks.length) return;
+        var temp = blocks[idx];
+        blocks[idx] = blocks[newIdx];
+        blocks[newIdx] = temp;
+        // 통합 자료목록 전역 순서 키(_morder)도 함께 교환 — 블록 카드 이동이
+        // 자료 목록(파일·블록 통합 정렬)에도 그대로 반영되도록 한다.
+        var tmpOrder = blocks[idx]._morder;
+        blocks[idx]._morder = blocks[newIdx]._morder;
+        blocks[newIdx]._morder = tmpOrder;
+        renderBlocks();
+        renderMaterials();
+        renderChapterList();
+        await saveBlocks();
+    }
+
+    // ===== Save Blocks =====
+    async function saveBlocks() {
+        var btn = document.getElementById('saveBtn');
+        btn.textContent = '💾 저장 중...';
+        btn.disabled = true;
+
+        try {
+            // Strip client-side _cid before saving
+            var blocksToSave = blocks.map(function(b) {
+                var copy = {};
+                for (var key in b) {
+                    if (key !== '_cid') copy[key] = b[key];
+                }
+                return copy;
+            });
+
+            await apiPut('/headquarters/courses/' + courseId + '/blocks', { blocks: blocksToSave, chapters: chapters });
+            showAlert('✅ 블록이 저장되었습니다.', 'success');
+        } catch (e) {
+            showAlert('❌ 저장 실패: ' + (e.message || '오류'), 'error');
+        } finally {
+            btn.textContent = '💾 저장';
+            btn.disabled = false;
+        }
+    }
+
+    // ===== File Upload =====
+    var currentMatCourseId = null;
+
+    function onFilesSelected(input) {
+        var files = input.files;
+        if (!files || files.length === 0) return;
+        var queue = document.getElementById('uploadQueue');
+        if (!queue) return;
+        queue.style.display = 'block';
+        for (var i = 0; i < files.length; i++) {
+            (function(file) {
+                var itemId = 'upload-' + Date.now() + '-' + i;
+                queue.innerHTML += '<div id="' + itemId + '" class="upload-queue-item">';
+                queue.innerHTML += '<span style="flex:1">' + esc(file.name) + ' (' + (file.size / 1024).toFixed(1) + 'KB)</span>';
+                queue.innerHTML += '<span class="upload-status" id="' + itemId + '-status">대기 중...</span></div>';
+                uploadFile(file, itemId);
+            })(files[i]);
+        }
+        input.value = '';
+    }
+
+    // 첨부파일 업로드 버튼 — 파일 선택창을 열고 자료로 등록 (PPT/PDF/이미지 등 모든 파일)
+    function onFileBtnClick(kind) {
+        var input = document.getElementById('fileInput');
+        if (!input) return;
+        // PPT/PDF 나누기 없이 모든 첨부파일 허용
+        var accept = kind === 'ppt' ? 'application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,.ppt,.pptx'
+                   : kind === 'pdf' ? 'application/pdf,.pdf'
+                   : '';  // 'file' — 모든 파일 허용
+        input.setAttribute('accept', accept);
+        input.value = '';
+        input.click();
+    }
+
+    async function uploadFile(file, itemId) {
+        var statusEl = document.getElementById(itemId + '-status');
+        if (statusEl) statusEl.textContent = '업로드 중...';
+        try {
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('course_id', courseId);
+            var token = localStorage.getItem('token') || localStorage.getItem('access_token');
+            var res = await fetch('/api/v1/courses/' + courseId + '/upload?create_material=true', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            });
+            if (!res.ok) throw new Error('업로드 실패 (' + res.status + ')');
+            if (statusEl) statusEl.textContent = '✅ 완료';
+            await loadMaterials();
+        } catch (e) {
+            if (statusEl) statusEl.textContent = '❌ 실패';
+            showAlert(file.name + ' 업로드 실패: ' + e.message, 'error');
+        }
+        maybeHideUploadQueue();
+    }
+
+    // 모든 업로드가 끝나면 진행 큐를 숨기고 비운다
+    function maybeHideUploadQueue() {
+        var q = document.getElementById('uploadQueue');
+        if (!q) return;
+        var pending = q.querySelector('.upload-status') && q.textContent.indexOf('업로드 중') === -1 && q.textContent.indexOf('대기 중') === -1;
+        var busy = q.querySelectorAll('.upload-status').length === 0;
+        // 상태 텍스트가 남아있는 동안은 유지, 전부 진행완료면 정리
+        var statuses = q.querySelectorAll('.upload-status');
+        var allDone = Array.prototype.every.call(statuses, function(s) {
+            var t = s.textContent;
+            return t.indexOf('완료') !== -1 || t.indexOf('실패') !== -1 || t.indexOf('대기') === -1;
+        });
+        if (allDone) {
+            setTimeout(function() {
+                q.innerHTML = '';
+                q.style.display = 'none';
+            }, 600);
+        }
+    }
+
+    // ===== Upload file into an image/video block (media attach) =====
+    // Uploads media with create_material=false (no separate material entry),
+    // then sets the returned file_url into the block's url field.
+    async function uploadBlockFile(input, idx, kind) {
+        var file = input.files && input.files[0];
+        if (!file) return;
+        var token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('course_id', courseId);
+        try {
+            var res = await fetch('/api/v1/courses/' + courseId + '/upload?create_material=false', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            });
+            if (!res.ok) throw new Error('업로드 실패 (' + res.status + ')');
+            var json = await res.json().catch(function(){ return {}; });
+            var fileUrl = (json && json.data && json.data.file_url) || '';
+            if (fileUrl) {
+                updateBlock(idx, 'url', fileUrl);
+                showAlert('✅ ' + (kind === 'image' ? '이미지' : '영상') + '가 업로드되었습니다.', 'success');
+                renderBlocks();
+            } else {
+                showAlert('⚠️ 업로드 응답에 파일 경로가 없습니다.', 'error');
+            }
+        } catch (e) {
+            showAlert(file.name + ' 업로드 실패: ' + e.message, 'error');
+        } finally {
+            if (input) input.value = '';
+        }
+    }
+
+    // ===== Render Materials List (통합: 첨부파일 + 코드/이미지/영상 블록) =====
+    function blockDisplayInfo(b) {
+        var cfg = BLOCK_CONFIG[b.type] || { icon: '📦', label: b.type || '블록' };
+        var title = b.title || cfg.label || b.type || '블록';
+        var sub = '';
+        if (b.type === 'code') {
+            // 상단: 제목 / 하단: 프로그래밍 언어
+            title = (b.title && b.title.trim() !== '') ? b.title : '코드';
+            sub = b.language || 'python';
+        }
+        else if (b.type === 'image') { title = (b.title && b.title.trim() !== '') ? b.title : ('이미지 · ' + (b.url ? String(b.url).split('/').pop() : '이미지')); sub = '이미지'; }
+        else if (b.type === 'video') { title = (b.title && b.title.trim() !== '') ? b.title : ('영상 · ' + (b.url ? String(b.url).split('/').pop() : '영상')); sub = '영상'; }
+        else if (b.type === 'text') { sub = '텍스트'; }
+        else if (b.type === 'heading') { sub = '제목'; }
+        else if (b.type === 'embed') { title = (b.title && b.title.trim() !== '') ? b.title : '임베드'; sub = '임베드'; }
+        else { sub = cfg.label || b.type || ''; }
+        return { icon: cfg.icon, label: title, sub: sub };
+    }
+
+    function buildUnifiedList(includeDivider) {
+        var items = [];
+        (materials || []).forEach(function(m) {
+            var mt = (m.material_type || '').toLowerCase();
+            var icon = mt === 'video' ? '🎬' : (mt === 'link' || mt === 'embed' ? '🔗' : (mt === 'image' ? '🖼️' : '📄'));
+            items.push({ kind: 'file', id: m.id, _order: (typeof m.sort_order === 'number' ? m.sort_order : 0), title: m.title || '제목 없음', sub: m.material_type || '파일', icon: icon, chapter: m.chapter || '' });
+        });
+        (blocks || []).forEach(function(b, bi) {
+            // 구분선(divider)은 학습 자료가 아니므로 기본 목록/카운트에서 제외
+            // (includeDivider=true일 때만 에디터 순서 유지용으로 포함)
+            if (b && b.type === 'divider' && !includeDivider) return;
+            var info = blockDisplayInfo(b);
+            items.push({ kind: 'block', blockIdx: bi, _order: (typeof b._morder === 'number' ? b._morder : 100000 + bi), title: info.label, sub: info.sub || info.label, icon: info.icon, chapter: b.chapter || '' });
+        });
+        // 전역 순서 키(_order) 기준 오름차순 정렬 (파일·블록 교차 배치 지원)
+        items.sort(function(a, b) { return (a._order || 0) - (b._order || 0); });
+        return items;
+    }
+
+    // 다음 통합 전역 순서 값 (추가 항목은 맨 끝에 배치)
+    function nextUnifiedOrder() {
+        var max = 0;
+        (materials || []).forEach(function(m) { if (typeof m.sort_order === 'number' && m.sort_order > max) max = m.sort_order; });
+        (blocks || []).forEach(function(b) { if (typeof b._morder === 'number' && b._morder > max) max = b._morder; });
+        return max + 10;
+    }
+
+    // ===== Render Blocks & Materials (통합 목록을 blocksContainer에 표시) =====
+    // 이전에는 분리된 upload-section/materialsList에 표시했으나,
+    // 대표님 지시로 blocksContainer에 블록+첨부파일을 하나의 카드 목록으로 통합 렌더링한다.
+    function renderMaterials() {
+        renderBlocks();
+    }
+
+    // ===== Move material order (sort_order swap + persist) =====
+    // 버그 수정(2026-08-04): swap된 2개만 (pos+1)*10으로 업데이트하면
+    // 나머지 자료의 sort_order가 0/중복으로 남아 order_by(sort_order,id) 정렬이 꼬임.
+    // → 이동 후 전체 목록을 (index+1)*10으로 일괄 재정렬하여 항상 순서 보장.
+    async function moveMaterial(idx, dir) {
+        var target = idx + dir;
+        if (!materials || target < 0 || target >= materials.length) return;
+        var tmp = materials[idx];
+        materials[idx] = materials[target];
+        materials[target] = tmp;
+        try {
+            // 전체 재정렬: 위치 * 10 으로 일괄 저장 (0/중복 방지)
+            for (var k = 0; k < materials.length; k++) {
+                await apiPut('/courses/materials/' + materials[k].id, { sort_order: (k + 1) * 10 });
+            }
+            showAlert('✅ 자료 순서가 변경되었습니다.', 'success');
+        } catch (e) {
+            showAlert('순서 저장 실패: ' + (e.message || '오류'), 'error');
+        }
+        renderMaterials();
+        renderChapterList();
+    }
+
+    async function deleteMaterial(id) {
+        if (!confirm('이 자료를 삭제하시겠습니까?')) return;
+        try {
+            await apiDelete('/courses/materials/' + id);
+            showAlert('자료가 삭제되었습니다.', 'success');
+            await loadMaterials();
+        } catch (e) {
+            showAlert(e.message || '자료 삭제 실패', 'error');
+        }
+    }
+
+    // ===== Move unified item (첨부파일 + 코드/이미지/영상 블록 통합 전역 순서 변경) =====
+    // 전역 순서 키를 _order(파일∷sort_order, 블록∷_morder)로 공유하여
+    // 파일과 블록이 서로 교차 배치되고 저장·재로드 후에도 순서가 유지된다.
+    async function moveUnifiedItem(idx, dir) {
+        var target = idx + dir;
+        // renderBlocks와 동일 기준(divider 포함)으로 인덱스 일치
+        var allItems = buildUnifiedList(true);
+        if (target < 0 || target >= allItems.length) return;
+        var tmp = allItems[idx];
+        allItems[idx] = allItems[target];
+        allItems[target] = tmp;
+
+        // 새 전역 순서 부여: 0, 10, 20, ...
+        allItems.forEach(function(item, i) {
+            item._order = (i + 1) * 10;
+            if (item.kind === 'file') {
+                var m = (materials || []).find(function(x) { return x.id === item.id; });
+                if (m) m.sort_order = item._order;
+            } else {
+                var b = blocks[item.blockIdx];
+                if (b) b._morder = item._order;
+            }
+        });
+
+        renderMaterials();
+        renderBlocks();
+        renderChapterList();
+
+        try {
+            // 파일 전역 순서 저장
+            for (var k = 0; k < materials.length; k++) {
+                await apiPut('/courses/materials/' + materials[k].id, { sort_order: materials[k].sort_order });
+            }
+            // 블록 전역 순서 저장 (_morder 포함)
+            await saveBlocks();
+        } catch (e) {
+            showAlert('순서 저장 실패: ' + (e.message || '오류'), 'error');
+        }
+    }
+
+    // ===== Drag-and-drop upload =====
+    // (업로드는 add-block-bar의 '📎 첨부파일' 버튼으로만 진행하고,
+    //  업로드 진행 큐는 renderBlocks()가 목록 끝에 렌더링한다)
+
+    // ===== Auto-resize textareas globally =====
+    document.addEventListener('input', function(e) {
+        if (e.target && e.target.classList.contains('auto-resize')) {
+            e.target.style.height = 'auto';
+            e.target.style.height = e.target.scrollHeight + 'px';
+        }
+    });
+    </script>
+<script>
+// 강제 캐시 무효화 — 새로고침 시 최신 파일 로드
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    regs.forEach(function(r) { r.unregister(); });
+  });
+}
+</script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

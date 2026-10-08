@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>내 포인트 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/reset.css">
+    <link rel="stylesheet" href="/common/css/variables.css">
+    <link rel="stylesheet" href="/common/css/common.css">
+    <style>
+        body { background:#f8f9fa; font-family:'Noto Sans KR',sans-serif; }
+        .container { max-width:800px; margin:0 auto; padding:32px 20px; }
+        .card { background:white; border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:16px; }
+        .balance-box { text-align:center; padding:32px; background:linear-gradient(135deg,#4F5EF8,#7C3AED); border-radius:16px; color:white; margin-bottom:16px; }
+        .balance-box .label { font-size:14px; opacity:0.9; margin-bottom:8px; }
+        .balance-box .amount { font-size:48px; font-weight:800; letter-spacing:-1px; }
+        .balance-box .unit { font-size:20px; font-weight:500; margin-left:4px; }
+        .balance-detail { display:flex; gap:24px; justify-content:center; margin-top:12px; }
+        .balance-detail > div { text-align:center; }
+        .balance-detail .num { font-size:18px; font-weight:700; }
+        .balance-detail .lbl { font-size:12px; opacity:0.8; }
+        .section-title { font-size:16px; font-weight:600; margin-bottom:12px; color:#374151; }
+        .txn-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #F3F4F6; }
+        .txn-item:last-child { border-bottom:none; }
+        .txn-points { font-size:16px; font-weight:700; }
+        .txn-points.plus { color:#10B981; }
+        .txn-points.minus { color:#EF4444; }
+        .txn-desc { font-size:13px; color:#6B7280; }
+        .txn-date { font-size:11px; color:#9CA3AF; margin-top:2px; }
+        .empty { text-align:center; padding:40px; color:#9CA3AF; }
+        .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; }
+        .badge-earn { background:#D1FAE5; color:#065F46; }
+        .badge-spend { background:#FEE2E2; color:#991B1B; }
+    </style>
+<script src="/common/js/popup.js?v=20260805a"></script>
+</head>
+<body>
+<div class="container">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+        <button class="logout-btn" onclick="handleLogout()" style="margin-top:0;padding:6px 14px;min-height:40px;display:inline-flex;align-items:center;justify-content:center">로그아웃</button>
+    </div>
+    <div class="balance-box">
+        <div class="label">내 포인트 잔액</div>
+        <div><span class="amount" id="balance">0</span><span class="unit">P</span></div>
+        <div class="balance-detail">
+            <div><div class="num" id="totalEarned">0</div><div class="lbl">누적 획득</div></div>
+            <div><div class="num" id="totalUsed">0</div><div class="lbl">사용</div></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title">📜 포인트 내역</div>
+        <div id="txnList"></div>
+    </div>
+</div>
+
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/auth.js?v=20260908a"></script>
+<script>
+async function loadPoints() {
+    try {
+        const res = await apiGet('/student/points');
+        const data = res.data || {};
+        document.getElementById('balance').textContent = (data.balance || 0).toLocaleString();
+        document.getElementById('totalEarned').textContent = (data.total_earned || 0).toLocaleString();
+        document.getElementById('totalUsed').textContent = (data.total_used || 0).toLocaleString();
+
+        const txnList = document.getElementById('txnList');
+        const txns = data.transactions || [];
+        if (!txns.length) {
+            txnList.innerHTML = '<div class="empty">아직 포인트 내역이 없습니다.<br>교육을 완료하거나 포트폴리오를 제출해보세요!</div>';
+            return;
+        }
+        txnList.innerHTML = txns.map(t => {
+            const isPlus = t.points > 0;
+            const typeLabel = {
+                course_complete: '교육 완료',
+                portfolio_approve: '포트폴리오 승인',
+                gifticon_exchange: '기프티콘 교환',
+                admin_adjust: '관리자 조정'
+            }[t.transaction_type] || t.transaction_type;
+            return `<div class="txn-item">
+                <div>
+                    <div style="font-weight:500;font-size:14px">${typeLabel}</div>
+                    <div class="txn-desc">${t.description || ''}</div>
+                    <div class="txn-date">${t.created_at || ''}</div>
+                </div>
+                <div class="txn-points ${isPlus ? 'plus' : 'minus'}">${isPlus ? '+' : ''}${t.points.toLocaleString()}P</div>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        document.getElementById('txnList').innerHTML = '<div class="empty">데이터를 불러오는 중 오류가 발생했습니다.</div>';
+    }
+}
+loadPoints();
+</script>
+    <script src="/common/js/protection.js?v=20260804b"></script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

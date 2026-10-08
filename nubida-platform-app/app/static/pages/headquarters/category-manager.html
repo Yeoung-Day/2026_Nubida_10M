@@ -1,0 +1,402 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>카테고리 설정 — 누비다플랫폼-본사</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <link rel="manifest" href="/manifest.json?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+            .color-preview { width:24px;height:24px;border-radius:50%;display:inline-block;border:2px solid rgba(0,0,0,0.1);vertical-align:middle }
+            .cat-table td { vertical-align:middle }
+            .cat-table .actions { white-space:nowrap;text-align:right }
+            .cat-empty { padding:60px 0;text-align:center;color:var(--text-tertiary) }
+            .sort-btn { cursor:pointer;font-size:13px;padding:4px 8px;border:1px solid var(--border-subtle);border-radius:6px;background:var(--bg-surface);transition:all 0.2s }
+            .sort-btn:hover { border-color:var(--accent);color:var(--accent) }
+        </style>
+    </head>
+    <body>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+
+   // 섹션 매핑
+   const sectionMap = {
+   'branches.html': 'operations', 'academy-management.html': 'operations',
+   'courses.html': 'operations', 'users.html': 'operations',
+   'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>⚙️ 카테고리 설정</h1></div>
+   <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+   </div>
+
+   <div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+   <p style="font-size:14px;color:var(--text-secondary);margin:0">
+   카테고리를 추가·수정·삭제할 수 있습니다.
+   카테고리 삭제 시 연결된 강좌가 있으면 삭제할 수 없습니다.
+   </p>
+   <button class="btn btn-primary btn-sm" onclick="openCreateModal()">+ 카테고리 추가</button>
+   </div>
+
+   <div class="courses-card">
+   <table class="courses-table cat-table" id="catTable">
+   <thead>
+   <tr>
+   <th style="width:40px">#</th>
+   <th style="width:40px"></th>
+   <th>이름</th>
+   <th style="width:120px">키 (key)</th>
+   <th style="width:80px">색상</th>
+   <th style="width:60px">강좌</th>
+   <th style="width:60px">폴더</th>
+   <th style="width:100px">상태</th>
+   <th style="width:120px">작업</th>
+   </tr>
+   </thead>
+   <tbody id="catTableBody">
+   <tr><td colspan="9" class="cat-empty">⏳ 카테고리 정보를 불러오는 중...</td></tr>
+   </tbody>
+   </table>
+   </div>
+   </main>
+   </div>
+
+   <!-- Create/Edit Modal -->
+   <div class="modal-overlay" id="categoryModal">
+   <div class="modal" style="max-width:500px">
+   <div class="modal-header"><h3 id="categoryModalTitle">✏️ 카테고리 정보</h3></div>
+   <div class="modal-body">
+   <input type="hidden" id="editCategoryId" value="">
+   <div class="form-row">
+   <div class="form-group" style="flex:1">
+   <label class="form-label">이름 *</label>
+   <input type="text" class="form-input" id="catName" placeholder="예: 메이커 코딩">
+   </div>
+   <div class="form-group" style="flex:1">
+   <label class="form-label">키 (key) *</label>
+   <input type="text" class="form-input" id="catKey" placeholder="예: maker_coding">
+   </div>
+   </div>
+   <div class="form-row">
+   <div class="form-group" style="flex:1">
+   <label class="form-label">글자색 (hex)</label>
+   <div style="display:flex;gap:8px;align-items:center">
+   <input type="color" class="form-input" id="catColor" value="#2563EB" style="width:50px;height:38px;padding:2px">
+   <input type="text" class="form-input" id="catColorHex" value="#2563EB" style="flex:1" placeholder="#2563EB" maxlength="7">
+   </div>
+   </div>
+   <div class="form-group" style="flex:1">
+   <label class="form-label">배경색 (hex)</label>
+   <div style="display:flex;gap:8px;align-items:center">
+   <input type="color" class="form-input" id="catBgColor" value="#EFF6FF" style="width:50px;height:38px;padding:2px">
+   <input type="text" class="form-input" id="catBgColorHex" value="#EFF6FF" style="flex:1" placeholder="#EFF6FF" maxlength="7">
+   </div>
+   </div>
+   </div>
+   <div class="form-group">
+   <label class="form-label">정렬 순서</label>
+   <input type="number" class="form-input" id="catSortOrder" value="1" min="0" style="width:100px">
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('categoryModal')">취소</button>
+   <button class="btn btn-primary" onclick="saveCategory()">저장</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script>
+   function esc(s) { if (typeof s !== 'string') s = String(s || ''); return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+   let allCats = [];
+
+   document.addEventListener('DOMContentLoaded', function() {
+   requireAuth(); renderSidebarUser();
+   loadNav();
+   loadCategories();
+   });
+
+   function loadNav() {
+   var container = document.getElementById('navContainer');
+   if (!container) return;
+   fetch('/pages/headquarters/nav.html')
+   .then(function(r) { return r.text(); })
+   .then(function(html) {
+   container.innerHTML = html;
+   container.querySelectorAll('.nav-item').forEach(function(a) {
+   if (a.getAttribute('href') === 'category-manager.html') a.classList.add('active');
+   });
+   })
+   .catch(function() {});
+   }
+
+   async function loadCategories() {
+   try {
+   var res = await apiGet('/headquarters/categories');
+   allCats = res.data || [];
+   renderCategories();
+   } catch (err) {
+   document.getElementById('catTableBody').innerHTML = '<tr><td colspan="9" class="cat-empty">❌ 로딩 실패: ' + esc(err.message) + '</td></tr>';
+   }
+   }
+
+   function renderCategories() {
+   var tbody = document.getElementById('catTableBody');
+   if (allCats.length === 0) {
+   tbody.innerHTML = '<tr><td colspan="9" class="cat-empty">📭 등록된 카테고리가 없습니다.</td></tr>';
+   return;
+   }
+   var html = '';
+   allCats.forEach(function(c, idx) {
+   var isActive = c.is_active !== false;
+   var iconMap = {
+   'ai_art': '🎨', 'ai_robot': '🤖'
+   };
+   var icon = iconMap[c.key] || '📁';
+   html += '<tr>';
+   html += '<td style="font-size:12px;color:var(--text-tertiary)">' + (idx + 1) + '</td>';
+   html += '<td><span style="font-size:18px">' + icon + '</span></td>';
+   html += '<td><strong>' + esc(c.name) + '</strong></td>';
+   html += '<td style="font-size:12px;color:var(--text-tertiary)">' + esc(c.key) + '</td>';
+   var color = c.color || '#4F5EF8';
+   var bgColor = c.bg_color || 'rgba(8,145,178,0.08)';
+   html += '<td><span class="color-preview" style="background:' + color + '"></span></td>';
+   html += '<td style="text-align:center;font-weight:600">' + (c.course_count || 0) + '</td>';
+   html += '<td style="text-align:center">' + (c.folder_count || 0) + '</td>';
+   html += '<td><span class="badge badge-' + (isActive ? 'success' : 'default') + '">' + (isActive ? '활성' : '비활성') + '</span></td>';
+   html += '<td class="actions">';
+   html += '<button class="btn btn-ghost btn-xs" onclick="openEditModal(' + c.id + ')">✏️</button>';
+   html += '<button class="btn btn-ghost btn-xs" style="color:var(--danger)" onclick="deleteCategory(' + c.id + ',\'' + esc(c.name) + '\',' + (c.course_count || 0) + ')">🗑️</button>';
+   html += '</td></tr>';
+   });
+   tbody.innerHTML = html;
+   }
+
+   function openCreateModal() {
+   document.getElementById('editCategoryId').value = '';
+   document.getElementById('categoryModalTitle').textContent = '➕ 새 카테고리';
+   document.getElementById('catName').value = '';
+   document.getElementById('catKey').value = '';
+   document.getElementById('catColor').value = '#2563EB';
+   document.getElementById('catColorHex').value = '#2563EB';
+   document.getElementById('catBgColor').value = '#EFF6FF';
+   document.getElementById('catBgColorHex').value = '#EFF6FF';
+   document.getElementById('catSortOrder').value = allCats.length + 1;
+   openModal('categoryModal');
+   setTimeout(function() { document.getElementById('catName').focus(); }, 100);
+   }
+
+   function openEditModal(id) {
+   var c = allCats.find(function(x) { return x.id === id; });
+   if (!c) { showAlert('카테고리 정보 없음', 'error'); return; }
+   document.getElementById('editCategoryId').value = c.id;
+   document.getElementById('categoryModalTitle').textContent = '✏️ ' + c.name + ' 수정';
+   document.getElementById('catName').value = c.name || '';
+   document.getElementById('catKey').value = c.key || '';
+   document.getElementById('catColor').value = c.color || '#2563EB';
+   document.getElementById('catColorHex').value = c.color || '#2563EB';
+   document.getElementById('catBgColor').value = c.bg_color || '#EFF6FF';
+   document.getElementById('catBgColorHex').value = c.bg_color || '#EFF6FF';
+   document.getElementById('catSortOrder').value = c.sort_order || 0;
+   openModal('categoryModal');
+   }
+
+   // Sync color picker ↔ hex input
+   document.addEventListener('DOMContentLoaded', function() {
+   document.getElementById('catColor').addEventListener('input', function() {
+   document.getElementById('catColorHex').value = this.value;
+   });
+   document.getElementById('catColorHex').addEventListener('input', function() {
+   if (/^#[0-9a-fA-F]{6}$/.test(this.value)) {
+   document.getElementById('catColor').value = this.value;
+   }
+   });
+   document.getElementById('catBgColor').addEventListener('input', function() {
+   document.getElementById('catBgColorHex').value = this.value;
+   });
+   document.getElementById('catBgColorHex').addEventListener('input', function() {
+   if (/^#[0-9a-fA-F]{6}$/.test(this.value)) {
+   document.getElementById('catBgColor').value = this.value;
+   }
+   });
+   });
+
+   async function saveCategory() {
+   var editId = document.getElementById('editCategoryId').value;
+   var name = document.getElementById('catName').value.trim();
+   var key = document.getElementById('catKey').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+   var color = document.getElementById('catColorHex').value.trim() || null;
+   var bgColor = document.getElementById('catBgColorHex').value.trim() || null;
+   var sortOrder = parseInt(document.getElementById('catSortOrder').value) || 0;
+   if (!name || !key) { showAlert('이름과 키는 필수입니다.', 'error'); return; }
+   try {
+   if (editId) {
+   await apiPut('/headquarters/categories/' + editId, {
+   name: name, key: key, color: color, bg_color: bgColor, sort_order: sortOrder
+   });
+   showAlert('카테고리가 수정되었습니다.', 'success');
+   } else {
+   await apiPost('/headquarters/categories', {
+   key: key, name: name, color: color, bg_color: bgColor, sort_order: sortOrder
+   });
+   showAlert('카테고리가 생성되었습니다.', 'success');
+   }
+   closeModal('categoryModal');
+   await loadCategories();
+   } catch (err) { showAlert(err.message || '저장 실패', 'error'); }
+   }
+
+   async function deleteCategory(id, name, courseCount) {
+   if (courseCount > 0) {
+   showAlert('"' + name + '" 카테고리에 ' + courseCount + '개의 강좌가 연결되어 있어 삭제할 수 없습니다. 먼저 강좌를 다른 카테고리로 이동해주세요.', 'error');
+   return;
+   }
+   if (!confirm('"' + name + '" 카테고리를 삭제하시겠습니까?\n연결된 폴더는 자동으로 전체공용으로 변경됩니다.')) return;
+   try {
+   await apiDelete('/headquarters/categories/' + id);
+   showAlert('"' + name + '" 카테고리가 삭제되었습니다.', 'success');
+   await loadCategories();
+   } catch (err) { showAlert(err.message || '삭제 실패', 'error'); }
+   }
+   </script>
+
+   <script src="/common/js/nav.js?v=20260610a"></script>
+   </body>
+   </html>

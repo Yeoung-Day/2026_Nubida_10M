@@ -1,0 +1,159 @@
+{
+	email adj29089@naver.com
+}
+
+# =====================================================================
+#  보안 헤더 공통 스니펫 (2026-09-14 윤비스 보안 점검)
+#  - HSTS: Naver 서치어드바이저 HTTPS 리다이렉션 통과 + 브라우저 강제
+#  - nosniff / frame / referrer / permissions
+#  - -Server: 서버 배너 제거 (정보 노출 최소화)
+# =====================================================================
+(base_security) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(self), microphone=(self), geolocation=()"
+		-Server
+	}
+}
+
+
+# 2. 학교용 음악 AI
+ai.nubidaplet.kr {
+	import base_security
+	header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self' data: https:; connect-src 'self' https: wss: blob:; object-src 'self' blob:"
+    encode zstd gzip
+    root * /home/nubidaplet/docker/music-ai
+
+    # [260919] access lock: / must go through Flask guard
+    #   Caddy file_server serves index.html directly, bypassing the
+    #   Flask before_request guard. Route / and /index.html to Flask.
+    #   Flask returns index.html when unlocked, lock.html when locked.
+    handle / {
+        reverse_proxy localhost:8001
+    }
+    handle /index.html {
+        reverse_proxy localhost:8001
+    }
+    handle /lock.html {
+        reverse_proxy localhost:8001
+    }
+
+    # 2. static file serving (the three handles above win)
+    file_server
+    header {
+        Access-Control-Allow-Origin "*"
+        Cross-Origin-Opener-Policy "same-origin"
+        Cross-Origin-Embedder-Policy "require-corp"
+        # 개발 중에는 캐시를 잠시 끕니다 (에러 확인용)
+        Cache-Control "no-cache, no-store, must-revalidate"
+    }
+
+    # SSD 모델 파일 매핑 (가장 정확한 경로 방식)
+    # [신규 260918] AI 노래 생성 mp3 서빙
+    #   저장 위치: /data/hdd/generated_songs/songs/<task>.mp3
+    handle /static/assets/uploads/* {
+        uri strip_prefix /static/assets/uploads
+        root * /data/hdd/generated_songs
+        file_server
+    }
+
+    handle /static/models/* {
+        uri strip_prefix /static/models
+        root * /data/ssd/music-assets/models
+        file_server
+    }
+
+    # SSD MR 파일 매핑
+    handle /static/mr/* {
+        uri strip_prefix /static/mr
+        root * /data/ssd/music-assets/mr
+        file_server
+    }
+
+    # 나머지 정적 파일
+    handle /static/* {
+        root * /home/nubidaplet/docker/music-ai
+        file_server
+    }
+
+    # 루트(/) 엔진 파일 대응
+    @engine path /sherpa-onnx-wasm-main-tts.* /sherpa-onnx-tts.js
+    handle @engine {
+        root * /home/nubidaplet/docker/music-ai/static/sherpa
+        file_server
+    }
+
+    handle /api/* {
+        header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+        reverse_proxy localhost:8001
+    }
+
+}
+
+# 3. 학교용 채팅 AI (커스텀 Node.js 앱)
+chatai.nubidaplet.kr {
+	import base_security
+	header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; object-src 'none'"
+	encode zstd gzip
+	reverse_proxy localhost:8003
+}
+
+
+# 5. 쇼핑몰 서비스
+shop.nubidaplet.kr {
+	import base_security
+	header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https:; object-src 'self'"
+    header {
+        Access-Control-Allow-Origin "*"
+    }
+    reverse_proxy localhost:8004
+}
+
+
+
+# 6. 누비다플랫폼 신규 서비스 (Nubida Platform 교육 시스템)
+xn--od1bqqv8i85hml3aulb.kr, www.xn--od1bqqv8i85hml3aulb.kr {
+	import base_security
+    header {
+        Access-Control-Allow-Origin "*"
+    }
+
+    # ---------------------------------------------------------------
+    # SSE 실시간 알림/스트림 경로:
+    #   반드시 압축 금지 (zstd/gzip은 응답을 버퍼링해서 SSE가 즉시 끊김)
+    #   flush_interval -1  →  Caddy가 데이터를 즉시 flush (스트리밍 모드)
+    #   handle 블록 안에 두면 상위 encode(아래)가 적용되지 않음
+    # ---------------------------------------------------------------
+    handle /api/v1/sse/* {
+        header {
+            Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+            X-Accel-Buffering "no"
+        }
+        reverse_proxy localhost:8005 {
+            flush_interval -1
+        }
+    }
+
+    # 그 외 API: 압축 허용
+    handle /api/* {
+        encode zstd gzip
+        reverse_proxy localhost:8005
+    }
+
+    # 사이트맵 / robots.txt 리다이렉트
+    handle /sitemap.xml {
+        rewrite * /pages/sitemap.xml
+        reverse_proxy localhost:8005
+    }
+    handle /robots.txt {
+        rewrite * /pages/robots.txt
+        reverse_proxy localhost:8005
+    }
+
+    # 나머지(정적 등): 압축 허용
+    encode zstd gzip
+    reverse_proxy localhost:8005
+}

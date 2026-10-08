@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🔍 학습페이지 진단</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .section { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        h2 { margin-top: 0; }
+        .result { background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
+        .btn { padding: 10px 20px; background: #6366f1; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; margin: 5px; }
+        .btn:hover { background: #4f46e5; }
+        #manualPreview { margin-top: 16px; }
+        .good { color: #059669; font-weight: bold; }
+        .bad { color: #dc2626; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔍 학습페이지 highlight.js 진단</h1>
+    
+    <div class="section">
+        <h2>1️⃣ 현재 learning.html의 applyCodeHighlighting 함수</h2>
+        <button class="btn" onclick="checkPage()">현재 페이지 상태 확인</button>
+        <div id="pageStatus" class="result" style="margin-top:12px;">버튼을 누르세요</div>
+    </div>
+
+    <div class="section">
+        <h2>2️⃣ renderStudentLectureContent 시뮬레이션</h2>
+        <button class="btn" onclick="runSimulation()">시뮬레이션 실행</button>
+        <div id="simResult" class="result" style="margin-top:12px;">버튼을 누르세요</div>
+    </div>
+
+    <div class="section">
+        <h2>3️⃣ 순수 highlight.js 직접 적용</h2>
+        <p>아래 코드 블록에 직접 hljs.highlightElement() 실행</p>
+        <pre id="rawCodeBlock" style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px;font-family:monospace;font-size:13px;"><code>int touch1;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+}</code></pre>
+        <button class="btn" onclick="applyDirect()">직접 highlight 적용</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <script>
+    function checkPage() {
+        var log = '';
+        log += 'hljs 로드: ' + (typeof hljs !== 'undefined' ? '✅' : '❌') + '\n';
+        log += 'hljs 버전: ' + (hljs?.versionString || 'N/A') + '\n';
+        
+        var codes = document.querySelectorAll('pre code');
+        log += '\n페이지 내 <pre><code> 개수: ' + codes.length + '\n';
+        
+        codes.forEach(function(el, i) {
+            log += '  [' + i + '] classes: "' + el.className + '" | 내부 <span> 개수: ' + el.querySelectorAll('span').length + '\n';
+            if (el.querySelectorAll('span').length > 0) {
+                var spans = el.querySelectorAll('span');
+                log += '        첫 span class: "' + spans[0].className + '" color: ' + getComputedStyle(spans[0]).color + '\n';
+            }
+        });
+        
+        // lecture-content 확인
+        var lc = document.querySelector('.lecture-content');
+        log += '\n.lecture-content 존재: ' + (lc ? '✅' : '❌');
+        if (lc) {
+            var lcCodes = lc.querySelectorAll('pre code');
+            log += '\n.lecture-content 내 <pre><code> 개수: ' + lcCodes.length;
+            lcCodes.forEach(function(el, i) {
+                log += '\n  [' + i + '] classes: "' + el.className + '" | spans: ' + el.querySelectorAll('span').length;
+                if (el.querySelectorAll('span').length > 0) {
+                    var s = el.querySelector('span');
+                    log += ' | 첫 span: .' + s.className + ' color=' + getComputedStyle(s).color;
+                }
+                log += '\n  computed color: ' + getComputedStyle(el).color;
+            });
+        }
+        
+        document.getElementById('pageStatus').textContent = log;
+    }
+
+    function runSimulation() {
+        var code = 'int touch1;\n\nvoid setup() {\n  Serial.begin(9600);\n  pinMode(4, OUTPUT);\n  pinMode(5, OUTPUT);\n}';
+        
+        // learning.html의 renderStudentLectureContent와 동일
+        var esc = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        var rawHtml = '<pre class="code-block arduino"><code>' + esc + '</code></pre>';
+        
+        var styled = rawHtml;
+        styled = styled.replace(/<pre class="code-block([^\"]*)\"><code>([\s\S]*?)<\/code><\/pre>/g, function(m, cls, codeContent) {
+            var lang = cls.trim() || 'text';
+            var langLabel = lang.charAt(0).toUpperCase() + lang.slice(1);
+            if (lang === 'slide') return m;
+            return '<div class="code-wrapper" style="background:#f5f5f5;border-radius:12px;overflow:hidden;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #e5e7eb">'
+                + '<div style="display:flex;align-items:center;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">'
+                + '<span style="font-size:11px;font-weight:600;color:#6b7280;letter-spacing:0.5px;text-transform:uppercase">' + langLabel + '</span>'
+                + '<span style="flex:1"></span>'
+                + '<button style="background:#f3f4f6;border:1px solid #e5e7eb;color:#374151;padding:3px 12px;border-radius:5px;font-size:10px;cursor:pointer">📋 복사</button>'
+                + '</div>'
+                + '<pre style="margin:0;padding:18px;overflow-x:auto;font-size:13px;line-height:1.7;background:#fff;font-family:JetBrains Mono,Fira Code,D2Coding,monospace;tab-size:4"><code style="border:none">' + codeContent + '</code></pre></div>';
+        });
+        
+        var div = document.getElementById('simResult');
+        var container = document.createElement('div');
+        container.id = 'simContainer';
+        container.innerHTML = styled;
+        div.innerHTML = '';
+        div.appendChild(container);
+        
+        // learning.html의 applyCodeHighlighting과 동일하게
+        container.querySelectorAll('pre code').forEach(function(el) {
+            el.classList.add('hljs');
+            var pre = el.closest('pre');
+            if (!pre) return;
+            if (pre.classList.contains('slide')) return;
+            var langClass = pre.className.match(/code-block\s+(\w+)/);
+            var lang = langClass ? langClass[1] : 'text';
+            var langMap = {c:'cpp','c++':'cpp','c_cpp':'cpp','arduino':'cpp','ino':'cpp','cpp':'cpp','csharp':'cpp','java':'cpp','python':'python','py':'python','javascript':'javascript','js':'javascript','text':'plaintext','html':'xml','css':'css'};
+            var hljsLang = langMap[lang.toLowerCase()] || 'plaintext';
+            if (hljs.highlightElement) {
+                el.classList.add(hljsLang);
+                hljs.highlightElement(el);
+            }
+        });
+        
+        // 결과 분석
+        var log = '✅ 시뮬레이션 완료\n\n';
+        var codeEl = container.querySelector('code');
+        if (codeEl) {
+            var spans = codeEl.querySelectorAll('span');
+            log += '<code> 클래스: "' + codeEl.className + '"\n';
+            log += '내부 <span> 개수: ' + spans.length + '\n';
+            spans.forEach(function(s, i) {
+                if (i < 8) log += '  span[' + i + '] class="' + s.className + '" text="' + s.textContent.substring(0,20) + '" color=' + getComputedStyle(s).color + '\n';
+            });
+            log += '\ncomputed color = ' + getComputedStyle(codeEl).color;
+        }
+        div.innerHTML += '<div class="result" style="margin-top:12px;white-space:pre">' + log + '</div>';
+    }
+
+    function applyDirect() {
+        var el = document.querySelector('#rawCodeBlock code');
+        if (!el) return;
+        el.classList.add('hljs', 'language-cpp');
+        hljs.highlightElement(el);
+        
+        var spans = el.querySelectorAll('span');
+        var log = '✅ 직접 적용 완료\n';
+        log += '<code> classes: "' + el.className + '"\n';
+        log += '<span> 개수: ' + spans.length + '\n';
+        if (spans.length > 0) {
+            log += '첫 span: class="' + spans[0].className + '" text="' + spans[0].textContent + '" color=' + getComputedStyle(spans[0]).color + '\n';
+            log += 'computed color of code: ' + getComputedStyle(el).color;
+        }
+        document.getElementById('simResult').textContent = log;
+    }
+    </script>
+</body>
+</html>

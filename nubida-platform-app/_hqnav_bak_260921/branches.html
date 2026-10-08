@@ -1,0 +1,1462 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>에듀케어 관리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260919ios">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260911nav">
+        <link rel="manifest" href="/manifest.json?v=20260804b">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="theme-color" content="#4F5EF8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="누비다">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <style>
+            /* ── 페이지 로딩 오버레이 ── */
+            .page-loading-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px) }
+            .page-loading-overlay.hide { display:none }
+            .page-loading-overlay .loading-icon { width:48px; height:48px; border:4px solid #e8e8f0; border-top-color:var(--accent); border-radius:50%; animation:spinner-spin 0.8s linear infinite; margin-bottom:16px }
+            @keyframes spinner-spin { to { transform:rotate(360deg) } }
+            .page-loading-overlay .loading-label { font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:4px }
+            .page-loading-overlay .loading-sub { font-size:13px; color:var(--text-tertiary) }
+            .page-loading-overlay .loading-progress { width:180px; height:3px; background:var(--border-subtle); border-radius:4px; overflow:hidden; margin-top:12px }
+            .page-loading-overlay .loading-progress-bar { height:100%; width:0; background:linear-gradient(90deg, var(--accent), #6C7AFF); border-radius:4px; animation:loading-bar 2s ease-in-out infinite }
+            @keyframes loading-bar { 0%{ width:0; margin-left:0 } 50%{ width:60%; margin-left:20% } 100%{ width:0; margin-left:100% } }
+
+            /* ── Split layout ── */
+            .edu-split-layout { display:grid; grid-template-columns:1fr 1.1fr; gap:24px; }
+            @media (max-width:1100px) { .edu-split-layout { grid-template-columns:1fr; } }
+
+            /* ── 좌측 패널 ── */
+            .left-panel-card { background:#fff; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden; }
+
+            /* ── 우측 패널 ── */
+            .right-panel { background:#fff; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden; }
+            .right-panel-header { padding:16px 20px; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:center; }
+            .right-panel-body { padding:20px; }
+
+            /* ── 원장 카드 ── */
+            .director-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+            @media (max-width:1400px) { .director-cards { grid-template-columns:1fr; } }
+            .director-card { border:1px solid #E5E7EB; border-radius:12px; padding:16px; cursor:pointer; transition:all 0.2s; background:#fff; }
+            .director-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+            .director-card.selected { border-color:#4F5EF8; background:#EEF0FF; }
+            .director-card .dc-name { font-size:15px; font-weight:700; color:#111827; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+            .director-card .dc-info { font-size:12px; color:#6B7280; line-height:1.7; }
+            .director-card .dc-info span { display:inline-flex; align-items:center; gap:3px; margin-right:12px; }
+            .director-card .dc-stats { display:flex; gap:12px; margin-top:10px; padding-top:10px; border-top:1px solid #F3F4F6; }
+            .director-card .dc-stat { font-size:12px; font-weight:600; }
+            .director-card .dc-stat .num { font-size:16px; font-weight:700; color:#4F5EF8; display:block; }
+
+            /* ── 누비다머신 잠금 ── */
+            .dc-name .ml-badge { margin-left:auto; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; letter-spacing:-0.2px; }
+            .ml-badge.normal { background:#F3F4F6; color:#6B7280; border:1px solid #E5E7EB; }
+            .ml-badge.locked { background:#FEF2F2; color:#DC2626; border:1px solid #FECACA; }
+            .dc-lock-row { margin-top:10px; padding-top:10px; border-top:1px solid #F3F4F6; display:flex; justify-content:flex-end; }
+            .ml-lock-btn { font-size:11px; font-weight:600; padding:5px 12px; border-radius:8px; border:1px solid #E5E7EB; background:#fff; color:#374151; cursor:pointer; transition:all .15s; }
+            .ml-lock-btn:hover { border-color:#F59E0B; color:#B45309; background:#FFFBEB; }
+            .ml-lock-btn.is-locked { background:#FEF2F2; border-color:#FCA5A5; color:#DC2626; }
+            .ml-lock-btn.is-locked:hover { background:#FEE2E2; }
+
+            /* ── 섹션 카드 ── */
+            .info-section { background:#fff; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden; margin-bottom:16px; }
+            .info-section-header { padding:14px 20px; border-bottom:1px solid #E5E7EB; font-size:13px; font-weight:600; color:#374151; display:flex; justify-content:space-between; align-items:center; }
+            .info-section-body { padding:16px 20px; }
+
+            /* ── 결제 요약 ── */
+            .payment-summary { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px; }
+            .payment-stat-box { flex:1; min-width:100px; padding:12px 16px; background:#F9FAFB; border-radius:10px; text-align:center; }
+            .payment-stat-box .label { font-size:11px; color:#9CA3AF; margin-bottom:4px; }
+            .payment-stat-box .value { font-size:18px; font-weight:700; color:#111827; }
+            .payment-stat-box .value.primary { color:#4F5EF8; }
+            .payment-stat-box .value.success { color:#10B981; }
+            .payment-stat-box .value.warning { color:#F59E0B; }
+
+            /* ── 빈 상태 ── */
+            .empty-detail { text-align:center; padding:60px 20px; color:#9CA3AF; }
+            .empty-detail .big-icon { font-size:48px; margin-bottom:12px; }
+            .empty-detail .text { font-size:14px; }
+            .empty-detail .subtext { font-size:12px; color:#D1D5DB; margin-top:4px; }
+
+            /* ── 학생 테이블 ── */
+            .student-mini-table { width:100%; border-collapse:collapse; font-size:13px; }
+            .student-mini-table th { text-align:left; padding:8px 10px; font-weight:600; color:#6B7280; font-size:11px; border-bottom:1px solid #E5E7EB; }
+            .student-mini-table td { padding:8px 10px; border-bottom:1px solid #F3F4F6; color:#374151; }
+            .student-mini-table tr:hover td { background:#F9FAFB; }
+
+            /* ── 결제 리스트 ── */
+            .payment-mini-list { font-size:13px; }
+            .payment-mini-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #F3F4F6; }
+            .payment-mini-item:last-child { border-bottom:none; }
+            .payment-mini-item .pmi-left { display:flex; gap:10px; align-items:center; }
+            .payment-mini-item .pmi-date { color:#9CA3AF; font-size:11px; }
+            .payment-mini-item .pmi-amount { font-weight:600; color:#111827; }
+
+            .branch-row-active { background:#EEF0FF !important; }
+            .branch-row-active td { border-color:#4F5EF8 !important; }
+            .branch-row-clickable { cursor:pointer; }
+            .branch-row-clickable:hover td { background:#F9FAFB; }
+
+            /* ── 좌측 테이블 찌그러짐 방지 ── */
+            .branches-card { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+            .branches-table { table-layout:fixed; width:100%; min-width:900px; }
+            .branches-table th, .branches-table td { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+            .branches-table th:nth-child(1) { width:35px; }
+            .branches-table th:nth-child(2) { width:auto; min-width:90px; }
+            .branches-table th:nth-child(3) { width:80px; }
+            .branches-table th:nth-child(4) { width:60px; }
+            .branches-table th:nth-child(5) { width:auto; min-width:100px; }
+            .branches-table th:nth-child(6) { width:100px; }
+            .branches-table th:nth-child(7) { width:auto; min-width:110px; }
+            .branches-table th:nth-child(8) { width:65px; }
+            .branches-table th:nth-child(9) { width:95px; }
+            .branches-table th:nth-child(10) { width:110px; }
+            .branches-table td { font-size:11px; padding:5px 6px; }
+            .branches-table th { font-size:10px; padding:5px 6px; white-space:nowrap; }
+            .branches-table td .badge { font-size:10px; padding:1px 4px; }
+
+            /* ── 사이드바 고정 너비로 찌그러짐 방지 ── */
+            .left-panel-card { min-width:0; }
+            .branches-toolbar .form-input { font-size:12px; }
+
+            /* ── 우측 패널 콘텐츠 찌그러짐 방지 ── */
+            .right-panel-body { min-width:0; }
+            .info-section-body { overflow-x:auto; }
+            .student-mini-table td { white-space:nowrap; }
+            .right-panel-header h2 { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:15px; }
+            #detailStats { flex-wrap:wrap; gap:8px; }
+            .director-cards { grid-template-columns:1fr; }
+            @media (min-width:1300px) { .director-cards { grid-template-columns:1fr 1fr; } }
+            .edu-split-layout { grid-template-columns:1.2fr 1.4fr; }
+            @media (max-width:1200px) { .edu-split-layout { grid-template-columns:1fr; } }
+
+            /* ── 모바일: 툴바 필터 세로 쌓기 + 상세 시야 확보 ── */
+            @media (max-width:768px) {
+                .branches-toolbar { gap:10px; padding:14px 16px !important; }
+                .branches-toolbar-left { width:100%; flex-wrap:wrap; gap:8px; }
+                .branches-toolbar-right { width:100%; }
+                .branches-toolbar .form-input { width:100% !important; max-width:100% !important; flex:1 1 100%; }
+                .branches-toolbar .btn { width:100%; }
+                .right-panel { margin-top:14px; }
+                .right-panel-body { padding:14px; }
+                .info-section-body { padding:12px 14px; }
+            }
+        </style>
+    <script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+    <body>
+        <!-- 페이지 로딩 오버레이 -->
+        <div class="page-loading-overlay" id="pageLoading">
+            <div class="loading-icon"></div>
+            <div class="loading-label">에듀케어 정보를 불러오는 중</div>
+            <div class="loading-sub">잠시만 기다려주세요</div>
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+        </div>
+        <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span>
+    </a>
+    <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>메뉴</div>
+    <button class="nav-item nav-toggle" data-section="consult">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">교육기관 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-consult">
+        <a class="nav-item sub active" href="branches.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 21V9h6v12"/><path d="M3 9h18"/></svg></span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">사용자 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="eduops">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">교육 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-eduops">
+        <a class="nav-item sub" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="categories.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></span><span class="nav-label">강좌 카테고리 관리</span></a>
+        <a class="nav-item sub" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+        <a class="nav-item sub" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-label">Q&A</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">통계 조회</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="site">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-site">
+        <a class="nav-item sub" href="site-manager.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="nav-label">공개사이트 관리</span></a>
+    </div>
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.4-8.4h.5A8.4 8.4 0 0 1 21 11z"/></svg></span><span class="nav-label">채팅</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="security.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="nav-label">보안 설정</span></a>
+        <a class="nav-item sub" href="access-control.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="nav-label">노래 AI 이용 관리</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const sectionMap = {
+        'contracts.html': 'consult', 'portfolio-templates.html': 'report',
+        'withdrawn-students.html': 'system', 'lecture-editor.html': 'eduops',
+        'branches.html': 'consult', 'categories.html': 'eduops',
+        'academy-management.html': 'consult', 'courses.html': 'eduops', 'users.html': 'consult',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'director-reports.html': 'report', 'notices.html': 'system',
+        'edu-materials.html': 'eduops', 'portfolio.html': 'report',
+        'approvals.html': 'system', 'settings.html': 'system', 'site-manager.html': 'site', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+        'inquiries.html': 'eduops',
+    };
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) { toggle.classList.add('open'); const sub = document.getElementById(`sub-${currentSection}`); if (sub) sub.classList.add('open'); }
+    }
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            if (!sub) return;
+            const isOpen = sub.classList.contains('open');
+            if (isOpen) { sub.classList.remove('open'); this.classList.remove('open'); }
+            else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open'); this.classList.add('open');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) item.classList.add('active');
+    });
+});
+</script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>에듀케어 관리</h1></div>
+   <div class="top-nav-right">
+   <span class="small-text" id="todayDate"></span>
+   </div>
+   </div>
+
+
+
+   <!-- ===== 에듀케어 관리 ===== -->
+   <div class="edu-split-layout">
+
+   <!-- LEFT PANEL: 에듀케어 목록 -->
+   <div class="left-panel-card">
+
+   <!-- 툴바 -->
+  <div class="branches-toolbar" style="padding:16px 20px;border-bottom:1px solid #E5E7EB;gap:10px;align-items:center;">
+  <div class="branches-toolbar-left" style="gap:10px;">
+   <select class="form-input" id="statusFilter" onchange="loadBranches(1)" style="width:120px">
+   <option value="">전체 상태</option>
+   <option value="active">운영중</option>
+   <option value="inactive">정지</option>
+   <option value="pending">휴무</option>
+   </select>
+   <input type="text" class="form-input" id="searchInput" placeholder="에듀케어명/코드 검색..." oninput="filterBranches()" style="width:200px">
+   <span class="small-text" id="branchCount">0개</span>
+   </div>
+   <div class="branches-toolbar-right">
+   <button class="btn btn-primary btn-sm" onclick="openCreateBranchModal()">+ 에듀케어 추가</button>
+   </div>
+   </div>
+
+   <!-- 에듀케어 목록 -->
+   <div class="branches-card">
+   <table class="branches-table" data-card-view>
+   <thead>
+   <tr>
+   <th style="width:50px">ID</th>
+   <th>에듀케어명</th>
+   <th style="width:100px">코드</th>
+   <th style="width:80px">타입</th>
+   <th>주소</th>
+   <th>연락처</th>
+   <th>이메일</th>
+   <th style="width:80px">상태</th>
+   <th style="width:100px">계약기간</th>
+   <th style="width:140px">작업</th>
+   </tr>
+   </thead>
+   <tbody id="branchTableBody">
+   <tr class="branch-empty">
+   <td colspan="10">에듀케어 정보를 불러오는 중...</td>
+   </tr>
+   </tbody>
+   </table>
+   <div class="pagination-wrap" id="paginationWrap"></div>
+   </div>
+   </div>
+
+   <!-- RIGHT PANEL: 에듀케어 상세 대시보드 -->
+   <div class="right-panel" id="rightPanel">
+       <div class="right-panel-header">
+           <div style="display:flex;align-items:center;gap:10px;">
+               <h2 id="detailTitle" style="font-size:16px;font-weight:700;margin:0;">🏢 에듀케어를 선택하세요</h2>
+               <span id="detailStatusBadge" style="display:none;"></span>
+           </div>
+           <div id="detailStats" style="display:none;font-size:12px;color:#6B7280;display:flex;gap:16px;"></div>
+       </div>
+       <div class="right-panel-body" id="detailBody">
+           <div class="empty-detail" id="detailEmpty">
+               <div class="big-icon">👈</div>
+               <div class="text">왼쪽 목록에서 에듀케어를 선택하세요</div>
+               <div class="subtext">원장, 결제, 학생 정보를 한눈에 확인할 수 있습니다</div>
+           </div>
+           <div id="detailContent" style="display:none;">
+               <!-- 원장 카드 목록 -->
+               <div class="info-section">
+                   <div class="info-section-header">
+                       <span>👤 연결된 원장</span>
+                       <span class="small-text" id="directorCount">0명</span>
+                   </div>
+                   <div class="info-section-body">
+                       <div class="director-cards" id="directorCards">
+                           <div class="empty-detail" style="padding:20px;"><div class="text">연결된 원장이 없습니다</div></div>
+                       </div>
+                   </div>
+               </div>
+
+               <!-- 결제 현황 -->
+               <div class="info-section">
+                   <div class="info-section-header">
+                       <span>💳 결제 현황</span>
+                       <span class="small-text" id="paymentCount">0건</span>
+                   </div>
+                   <div class="info-section-body">
+                       <div class="payment-summary" id="paymentSummary">
+                           <div class="payment-stat-box"><div class="label">총 결제</div><div class="value primary" id="totalPaymentAmount">₩0</div></div>
+                           <div class="payment-stat-box"><div class="label">완료</div><div class="value success" id="completedPaymentCount">0건</div></div>
+                           <div class="payment-stat-box"><div class="label">대기</div><div class="value warning" id="pendingPaymentCount">0건</div></div>
+                       </div>
+                       <div id="paymentList"><p class="text-muted" style="text-align:center;padding:12px;">결제 내역이 없습니다</p></div>
+                   </div>
+               </div>
+
+               <!-- 학생 목록 -->
+               <div class="info-section">
+                   <div class="info-section-header">
+                       <span>👥 학생 목록</span>
+                       <span class="small-text" id="studentCount">0명</span>
+                   </div>
+                   <div class="info-section-body" style="padding:0;">
+                       <table class="student-mini-table" data-card-view>
+                           <thead><tr><th style="width:50px">ID</th><th>이름</th><th>연락처</th><th>소속 원장</th><th>상태</th></tr></thead>
+                           <tbody id="studentTableBody">
+                               <tr><td colspan="5" style="text-align:center;padding:20px;color:#9CA3AF;">학생 정보가 없습니다</td></tr>
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+
+   </div>
+   </main>
+   </div>
+
+   <!-- 에듀케어 생성 모달 -->
+   <div class="modal-overlay" id="createBranchModal">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header">
+   <h3>🏢 새 에듀케어 추가</h3>
+   </div>
+   <div class="modal-body">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">에듀케어명 *</label>
+   <input type="text" class="form-input" id="newName" placeholder="예: 부산 센텀에듀케어">
+   </div>
+   <div class="form-group">
+   <label class="form-label">에듀케어 코드 *</label>
+   <input type="text" class="form-input" id="newCode" placeholder="예: BUSAN_CENTER" style="text-transform:uppercase">
+   </div>
+   <div class="full form-group">
+   <label class="form-label">주소</label>
+   <input type="text" class="form-input" id="newAddress" placeholder="에듀케어 주소">
+   </div>
+   <div class="form-group">
+   <label class="form-label">연락처</label>
+   <input type="text" class="form-input" id="newPhone" placeholder="051-000-0000">
+   </div>
+   <div class="form-group">
+   <label class="form-label">이메일</label>
+   <input type="email" class="form-input" id="newEmail" placeholder="branch@example.com">
+   </div>
+   <div class="form-group">
+   <label class="form-label">에듀케어 관리자</label>
+   <select class="form-input" id="newAdminId">
+   <option value="">선택 안 함</option>
+   </select>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeCustomModal('createBranchModal')">취소</button>
+   <button class="btn btn-primary" onclick="createBranch()">에듀케어 생성</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- 에듀케어 수정 모달 -->
+   <div class="modal-overlay" id="editBranchModal">
+   <div class="modal" style="max-width:540px">
+   <div class="modal-header">
+   <h3>✏️ 에듀케어 정보 수정</h3>
+   </div>
+   <div class="modal-body">
+   <input type="hidden" id="editBranchId">
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">에듀케어명</label>
+   <input type="text" class="form-input" id="editName">
+   </div>
+   <div class="form-group">
+   <label class="form-label">상태</label>
+   <select class="form-input" id="editStatus">
+   <option value="active">운영중</option>
+   <option value="inactive">정지</option>
+   <option value="pending">휴무</option>
+   </select>
+   </div>
+   <div class="full form-group">
+   <label class="form-label">주소</label>
+   <input type="text" class="form-input" id="editAddress">
+   </div>
+   <div class="form-group">
+   <label class="form-label">연락처</label>
+   <input type="text" class="form-input" id="editPhone">
+   </div>
+   <div class="form-group">
+   <label class="form-label">이메일</label>
+   <input type="email" class="form-input" id="editEmail">
+   </div>
+   </div>
+
+   <hr style="margin:20px 0;border:none;border-top:1px solid var(--border-default)">
+   <div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 6px">
+   <h4 style="margin:0;font-size:14px;font-weight:600;color:var(--text-secondary)">정산 설정</h4>
+   <span style="font-size:11px;color:var(--text-tertiary)">본사 관리 항목</span>
+   </div>
+   <p style="margin:0 0 14px;font-size:12px;color:var(--text-tertiary);line-height:1.5">
+   에듀케어 매출관리에 적용되는 정산 기준입니다. 매출 100만원 기준으로 계산됩니다.
+   </p>
+   <div class="form-row">
+   <div class="form-group">
+   <label class="form-label">본사 로열티율 (%)</label>
+   <input type="number" class="form-input" id="editRoyaltyRate" min="0" max="100" step="0.1" placeholder="45" oninput="renderSettlementPreview();renderDeductCompare()">
+   </div>
+   <div class="form-group">
+   <label class="form-label">에듀케어 순수익률 (%)</label>
+   <input type="number" class="form-input" id="editProfitRate" min="0" max="100" step="0.1" placeholder="7" oninput="renderSettlementPreview();renderDeductCompare()">
+   </div>
+   <div class="form-group">
+   <label class="form-label">순수익 공제율 (%)</label>
+   <input type="number" class="form-input" id="editIncomeTaxRate" min="0" max="100" step="0.1" placeholder="3.3" oninput="renderSettlementPreview();renderDeductCompare()">
+   </div>
+   <div class="full form-group">
+   <label class="form-label" style="margin-bottom:6px">공제 방식 (빠른 선택)</label>
+   <div id="deductPresetRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+   <button type="button" class="btn btn-ghost" style="font-size:12.5px;padding:7px 14px" onclick="setDeductPreset(3.3)">3.3% (사업소득세)</button>
+   <button type="button" class="btn btn-ghost" style="font-size:12.5px;padding:7px 14px" onclick="setDeductPreset(10)">10% 공제</button>
+   <button type="button" class="btn btn-ghost" style="font-size:12.5px;padding:7px 14px" onclick="setDeductPreset(0)">공제 없음 (0%)</button>
+   </div>
+   <div id="deductCompare" style="font-size:12px;line-height:1.9;color:var(--text-secondary);background:var(--bg-secondary,#f8fafc);border:1px dashed var(--border-default);border-radius:8px;padding:10px 14px">
+   </div>
+   <p style="margin:8px 0 0;font-size:11.5px;color:var(--text-tertiary);line-height:1.5">
+   ※ 공제율은 <b>에듀케어 순수익</b>에서 차감되는 비율입니다. 3.3%(소득세3%+지방소득세0.3%) 또는 10% 중 확정되지 않아 본사에서 지정합니다. 아래 비교를 참고하세요.
+   </p>
+   </div>
+   <div class="full form-group">
+   <div id="editSettlementPreview" style="background:var(--bg-secondary,#f8fafc);border:1px solid var(--border-default);border-radius:8px;padding:12px 14px;font-size:12px;line-height:1.9;color:var(--text-secondary)">
+   </div>
+   </div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeCustomModal('editBranchModal')">취소</button>
+   <button class="btn btn-primary" onclick="updateBranch()">저장</button>
+   </div>
+   </div>
+   </div>
+
+
+<script src="/common/js/api.js?v=20260918abort"></script>
+<script src="/common/js/auth.js?v=20260911nav"></script>
+<script>
+/* ===== 상태 변수 ===== */
+let currentBranchPage = 1;
+let totalBranchPages = 1;
+let allBranches = [];
+
+/* ===== 헬퍼 함수 ===== */
+function esc(s) {
+    if (s == null) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function showToast(msg, type) {
+    const existing = document.getElementById('pageToast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.id = 'pageToast';
+    t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:400px;';
+    const colors = { success:'#10B981', error:'#EF4444', warning:'#F59E0B', info:'#4F5EF8' };
+    const bgColors = { success:'#F0FDF4', error:'#FEF2F2', warning:'#FFFBEB', info:'#EFF6FF' };
+    t.style.background = bgColors[type] || '#F0FDF4';
+    t.style.color = colors[type] || '#10B981';
+    t.style.border = '1px solid ' + (colors[type] || '#10B981');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { if (t.parentNode) t.remove(); }, 3000);
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'active': '<span class="badge badge-success">● 운영중</span>',
+        'inactive': '<span class="badge badge-danger">● 정지</span>',
+        'pending': '<span class="badge badge-warning">● 휴무</span>'
+    };
+    return map[status] || '<span class="badge">' + (status || '-') + '</span>';
+}
+
+function getContractStatusBadge(status) {
+    const map = {
+        'active': '<span class="badge badge-success">● 활성</span>',
+        'expired': '<span class="badge badge-secondary">● 만료</span>',
+        'terminated': '<span class="badge badge-danger">● 해지</span>',
+        'pending': '<span class="badge badge-warning">● 대기</span>'
+    };
+    return map[status] || '<span class="badge">' + (status || '-') + '</span>';
+}
+
+function formatDate(str) {
+    if (!str) return '-';
+    try {
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
+        return d.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' });
+    } catch(e) { return str; }
+}
+
+function formatAmount(v) {
+    if (v == null) return '₩0';
+    return '₩' + Number(v).toLocaleString();
+}
+
+/* ===== 탭 전환 ===== */
+function switchTab(tabName) {
+    // 1. 모든 탭 내용 숨기기
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    // 2. 모든 탭 버튼 스타일 초기화
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.style.borderBottom = '2px solid transparent';
+        btn.style.color = 'var(--text-tertiary)';
+        btn.style.fontWeight = '500';
+    });
+    // 3. 대상 탭 내용 표시 & 버튼 활성화
+    const content = document.getElementById('tab-' + tabName);
+    if (content) content.style.display = 'block';
+    const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+    if (btn) {
+        btn.style.borderBottom = '2px solid var(--primary)';
+        btn.style.color = 'var(--primary)';
+        btn.style.fontWeight = '600';
+    }
+    // 4. 탭별 데이터 초기화 후 로드
+    if (tabName === 'branches') {
+        document.getElementById('branchTableBody').innerHTML = '<tr class="branch-empty"><td colspan="10">로딩 중...</td></tr>';
+        loadBranches(currentBranchPage);
+    } else if (tabName === 'contracts') {
+        document.getElementById('contractTableBody').innerHTML = ''; // 빈 값으로 시작
+        loadContracts(currentContractPage);
+    } else if (tabName === 'categories') {
+        document.getElementById('branchCategorySelect').innerHTML = '<option value="">← 학원을 선택하세요</option>';
+        document.getElementById('categoryPermissionPanel').style.display = 'none';
+        document.getElementById('categoryPermEmpty').style.display = '';
+        document.getElementById('categoryToggleList').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-tertiary)">카테고리 정보를 불러오는 중...</div>';
+        loadBranchSelectForCategories();
+    }
+}
+
+/* ===== 에듀케어 CRUD ===== */
+async function loadBranches(page) {
+    currentBranchPage = page || 1;
+    const tbody = document.getElementById('branchTableBody');
+    tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">로딩 중...</td></tr>';
+    // 5초 fallback: 오버레이 강제 해제
+    var fallbackTimer = setTimeout(function() {
+        var ol = document.getElementById('pageLoading');
+        if (ol) ol.classList.add('hide');
+    }, 5000);
+    try {
+        const params = { page: currentBranchPage, per_page: 20 };
+        const status = document.getElementById('statusFilter').value;
+        const search = document.getElementById('searchInput').value.trim();
+        if (status) params.status = status;
+        if (search) params.search = search;
+        console.log('[branches] loadBranches 호출:', params);
+        const res = await apiGet('/headquarters/branches?' + new URLSearchParams(params));
+        console.log('[branches] loadBranches 응답:', res);
+        // 응답 데이터 검증 강화
+        const data = res && res.data;
+        allBranches = Array.isArray(data) ? data : [];
+        const total = (res && typeof res.total === 'number') ? res.total : allBranches.length;
+        totalBranchPages = Math.max(1, Math.ceil(total / 20));
+        document.getElementById('branchCount').textContent = total + '개';
+        // 오버레이 숨김
+        clearTimeout(fallbackTimer);
+        var ol = document.getElementById('pageLoading');
+        if (ol) ol.classList.add('hide');
+        if (!allBranches.length) {
+            tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">등록된 에듀케어가 없습니다.</td></tr>';
+            renderBranchPagination();
+            return;
+        }
+        tbody.innerHTML = allBranches.map(b => {
+            const statusBadge = getStatusBadge(b.status);
+            const periodStr = b.contract_start ? formatDate(b.contract_start) + ' ~ ' + formatDate(b.contract_end) : '-';
+            return '<tr data-branch-id="' + b.id + '" class="branch-row-clickable" onclick="showBranchDetail(' + b.id + ')">' +
+                '<td>' + b.id + '</td>' +
+                '<td><strong>' + esc(b.name || '') + '</strong></td>' +
+                '<td>' + esc(b.code || '') + '</td>' +
+                '<td>' + esc(b.branch_type || '-') + '</td>' +
+                '<td style="font-size:13px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(b.address || '-') + '</td>' +
+                '<td>' + esc(b.phone || '-') + '</td>' +
+                '<td style="font-size:12px">' + esc(b.email || '-') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td style="font-size:12px">' + periodStr + '</td>' +
+                '<td><div style="display:flex;gap:4px">' +
+                '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEditBranchModal(' + b.id + ')" style="font-size:11px">✏️</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteBranch(' + b.id + ')" style="font-size:11px">🗑️</button>' +
+                '</div></td></tr>';
+        }).join('');
+        renderBranchPagination();
+    } catch (e) {
+        clearTimeout(fallbackTimer);
+        var ol = document.getElementById('pageLoading');
+        if (ol) ol.classList.add('hide');
+        console.error('[branches] loadBranches 실패:', e, e.stack);
+        tbody.innerHTML = '<tr class="branch-empty"><td colspan="10">불러오기 실패: ' + esc(e.message) + '</td></tr>';
+        showToast('데이터를 불러올 수 없습니다', 'error');
+    }
+}
+
+function filterBranches() { currentBranchPage = 1; loadBranches(1); }
+
+function renderBranchPagination() {
+    const el = document.getElementById('paginationWrap');
+    if (totalBranchPages <= 1) { el.innerHTML = ''; return; }
+    let html = '<button class="page-btn" onclick="goBranchPage(1)" ' + (currentBranchPage <= 1 ? 'disabled' : '') + '>«</button>';
+    html += '<button class="page-btn" onclick="goBranchPage(' + (currentBranchPage - 1) + ')" ' + (currentBranchPage <= 1 ? 'disabled' : '') + '>‹</button>';
+    const start = Math.max(1, currentBranchPage - 2);
+    const end = Math.min(totalBranchPages, currentBranchPage + 2);
+    for (let i = start; i <= end; i++) {
+        html += '<button class="page-btn' + (i === currentBranchPage ? ' active' : '') + '" onclick="goBranchPage(' + i + ')">' + i + '</button>';
+    }
+    html += '<button class="page-btn" onclick="goBranchPage(' + (currentBranchPage + 1) + ')" ' + (currentBranchPage >= totalBranchPages ? 'disabled' : '') + '>›</button>';
+    html += '<button class="page-btn" onclick="goBranchPage(' + totalBranchPages + ')" ' + (currentBranchPage >= totalBranchPages ? 'disabled' : '') + '>»</button>';
+    el.innerHTML = html;
+}
+
+function goBranchPage(page) {
+    if (page < 1 || page > totalBranchPages) return;
+    currentBranchPage = page;
+    loadBranches(page);
+}
+
+async function openCreateBranchModal() {
+    try {
+        const res = await apiGet('/headquarters/users?role=admin&per_page=100');
+        const users = res.data || [];
+        const select = document.getElementById('newAdminId');
+        select.innerHTML = '<option value="">선택 안 함</option>' +
+            users.map(u => '<option value="' + u.id + '">' + esc(u.name || u.username) + '</option>').join('');
+    } catch (e) {}
+    document.getElementById('createBranchModal').style.display = 'flex';
+}
+
+async function createBranch() {
+    const name = document.getElementById('newName').value.trim();
+    const code = document.getElementById('newCode').value.trim();
+    const address = document.getElementById('newAddress').value.trim();
+    const phone = document.getElementById('newPhone').value.trim();
+    const email = document.getElementById('newEmail').value.trim();
+    const admin_id = document.getElementById('newAdminId').value;
+    if (!name) { showToast('에듀케어명을 입력하세요', 'error'); return; }
+    if (!code) { showToast('에듀케어 코드를 입력하세요', 'error'); return; }
+    const payload = { name, code, address, phone, email };
+    if (admin_id) payload.admin_id = parseInt(admin_id);
+    try {
+        await apiPost('/headquarters/branches', payload);
+        showToast('에듀케어가 생성되었습니다', 'success');
+        document.getElementById('createBranchModal').style.display = 'none';
+        document.getElementById('newName').value = '';
+        document.getElementById('newCode').value = '';
+        document.getElementById('newAddress').value = '';
+        document.getElementById('newPhone').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newAdminId').value = '';
+        loadBranches(1);
+    } catch (e) { showToast('생성 실패: ' + (e.message || ''), 'error'); }
+}
+
+async function openEditBranchModal(id) {
+    try {
+        const res = await apiGet('/headquarters/branches/' + id);
+        const b = res.data || res;
+        document.getElementById('editBranchId').value = b.id;
+        document.getElementById('editName').value = b.name || '';
+        document.getElementById('editStatus').value = b.status || 'active';
+        document.getElementById('editAddress').value = b.address || '';
+        document.getElementById('editPhone').value = b.phone || '';
+        document.getElementById('editEmail').value = b.email || '';
+        // 정산 설정 (본사 관리)
+        document.getElementById('editRoyaltyRate').value = (b.hq_royalty_rate != null ? b.hq_royalty_rate : 45);
+        document.getElementById('editProfitRate').value = (b.profit_rate != null ? b.profit_rate : 7);
+        document.getElementById('editIncomeTaxRate').value = (b.income_tax_rate != null ? b.income_tax_rate : 3.3);
+        renderSettlementPreview();
+        renderDeductCompare();
+        document.getElementById('editBranchModal').style.display = 'flex';
+    } catch (e) { showToast('정보를 불러올 수 없습니다', 'error'); }
+}
+
+/* 공제 방식 빠른 선택 (3.3% / 10% / 0%) */
+function setDeductPreset(rate) {
+    const el = document.getElementById('editIncomeTaxRate');
+    if (!el) return;
+    el.value = rate;
+    renderSettlementPreview();
+    renderDeductCompare();
+}
+
+/* 3.3% vs 10% 실수령액 비교 (확정 전 의사결정용) */
+function renderDeductCompare() {
+    const box = document.getElementById('deductCompare');
+    if (!box) return;
+    const num = (id, dflt) => {
+        const v = parseFloat((document.getElementById(id) || {}).value);
+        return isNaN(v) ? dflt : v;
+    };
+    const royaltyRate = num('editRoyaltyRate', 45);
+    const profitRate = num('editProfitRate', 7);
+    const current = num('editIncomeTaxRate', 3.3);
+
+    const SAMPLE = 1000000;
+    const taxBase = SAMPLE / 1.1;
+    const profit = taxBase * profitRate / 100;
+
+    const calc = (r) => {
+        const deduct = Math.round(profit * r / 100);
+        return { deduct: deduct, net: Math.round(profit) - deduct };
+    };
+    const a = calc(3.3);
+    const b = calc(10);
+    const cur = calc(current);
+
+    const rowHtml = (label, r, o, highlight) => {
+        const badge = highlight ? ' <span style="color:var(--primary,#2563eb);font-weight:700">← 적용 중</span>' : '';
+        return '<div style="display:flex;justify-content:space-between;' + (highlight ? 'font-weight:700;color:var(--text-primary)' : '') + '">' +
+            '<span>' + label + '</span>' +
+            '<span>공제 -' + fmtWon(o.deduct) + ' → <b>' + fmtWon(o.net) + '</b>' + badge + '</span>' +
+            '</div>';
+    };
+
+    box.innerHTML =
+        '<div style="font-weight:600;color:var(--text-primary);margin-bottom:6px">📊 실수령액 비교 (매출 100만원 · 순수익률 ' + profitRate + '% 기준)</div>' +
+        rowHtml('3.3% 공제 (사업소득세)', 3.3, a, Math.abs(current - 3.3) < 0.001) +
+        rowHtml('10% 공제', 10, b, Math.abs(current - 10) < 0.001) +
+        (Math.abs(current - 3.3) > 0.001 && Math.abs(current - 10) > 0.001 ? rowHtml(current + '% 공제 (직접입력)', current, cur, true) : '') +
+        '<div style="margin-top:6px;font-size:11.5px;color:var(--text-tertiary)">차이: 3.3% 대비 10%는 실수령액이 <b>' + fmtWon(b.net - a.net) + '</b> 적습니다.</div>';
+}
+
+/* 정산 설정 미리보기 — 매출 100만원 기준 실시간 계산 */
+function renderSettlementPreview() {
+    const box = document.getElementById('editSettlementPreview');
+    if (!box) return;
+    const num = (id, dflt) => {
+        const v = parseFloat((document.getElementById(id) || {}).value);
+        return isNaN(v) ? dflt : v;
+    };
+    const royaltyRate = num('editRoyaltyRate', 45);
+    const profitRate = num('editProfitRate', 7);
+    const taxRate = num('editIncomeTaxRate', 3.3);
+
+    const SAMPLE = 1000000;                       // 매출 100만원 기준
+    const taxBase = SAMPLE / 1.1;                 // 과세표준 (부가세 10% 제외)
+    const vat = SAMPLE - taxBase;
+    const royalty = taxBase * royaltyRate / 100;  // 본사 로열티
+    const profit = taxBase * profitRate / 100;    // 에듀케어 순수익
+    const incomeTax = profit * taxRate / 100;     // 사업소득세 (원천징수)
+    const netDeposit = profit - incomeTax;        // 실수령액 (본사 → 에듀케어)
+    const directorIncome = taxBase * (100 - royaltyRate) / 100;
+
+    box.innerHTML =
+        '<div style="font-weight:600;color:var(--text-primary);margin-bottom:6px">매출 100만원 기준</div>' +
+        '<div style="display:flex;justify-content:space-between"><span>과세표준 (부가세 ' + fmtWon(vat) + ' 제외)</span><b>' + fmtWon(taxBase) + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between"><span>본사 로열티 ' + royaltyRate + '%</span><b>' + fmtWon(royalty) + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between"><span>원장 수익 ' + (100 - royaltyRate).toFixed(1) + '%</span><b>' + fmtWon(directorIncome) + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between"><span>에듀케어 순수익 ' + profitRate + '%</span><b>' + fmtWon(profit) + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between;color:var(--danger,#dc2626)"><span>순수익 공제 ' + taxRate + '%</span><b>-' + fmtWon(incomeTax) + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border-default);margin-top:6px;padding-top:6px;font-weight:700;color:var(--primary,#2563eb)"><span>본사 → 에듀케어 입금액</span><b>' + fmtWon(netDeposit) + '</b></div>';
+}
+
+/* 금액 포맷 (원) */
+function fmtWon(v) {
+    const n = Math.round(v || 0);
+    return n.toLocaleString('ko-KR') + '원';
+}
+
+async function updateBranch() {
+    const id = document.getElementById('editBranchId').value;
+    const name = document.getElementById('editName').value.trim();
+    const status = document.getElementById('editStatus').value;
+    const address = document.getElementById('editAddress').value.trim();
+    const phone = document.getElementById('editPhone').value.trim();
+    const email = document.getElementById('editEmail').value.trim();
+    if (!name) { showToast('에듀케어명을 입력하세요', 'error'); return; }
+
+    // 정산 설정 (본사 관리 항목)
+    const royaltyRate = parseFloat(document.getElementById('editRoyaltyRate').value);
+    const profitRate = parseFloat(document.getElementById('editProfitRate').value);
+    const incomeTaxRate = parseFloat(document.getElementById('editIncomeTaxRate').value);
+    for (const [label, val] of [['본사 로열티율', royaltyRate], ['에듀케어 순수익률', profitRate], ['순수익 공제율', incomeTaxRate]]) {
+        if (isNaN(val) || val < 0 || val > 100) {
+            showToast(label + '은(는) 0~100 사이 숫자여야 합니다', 'error');
+            return;
+        }
+    }
+
+    try {
+        // 1) 기본 정보 수정
+        await apiPut('/headquarters/branches/' + id, { name, status, address, phone, email });
+        // 2) 정산 설정 저장 (별도 엔드포인트 — 본사 관리)
+        await apiPut('/headquarters/branches/' + id + '/settlement', {
+            hq_royalty_rate: royaltyRate,
+            profit_rate: profitRate,
+            income_tax_rate: incomeTaxRate,
+        });
+        showToast('에듀케어 정보와 정산 설정이 저장되었습니다', 'success');
+        document.getElementById('editBranchModal').style.display = 'none';
+        loadBranches(currentBranchPage);
+    } catch (e) { showToast('수정 실패: ' + (e.message || ''), 'error'); }
+}
+
+async function deleteBranch(id) {
+    if (!confirm('정말 이 에듀케어를 삭제하시겠습니까?')) return;
+    try {
+        await apiDelete('/headquarters/branches/' + id);
+        showToast('에듀케어가 삭제되었습니다', 'success');
+        loadBranches(currentBranchPage);
+    } catch (e) { showToast('삭제 실패: ' + (e.message || ''), 'error'); }
+}
+
+/* ===== 계약 CRUD ===== */
+async function loadContracts(page) {
+    currentContractPage = page || 1;
+    const tbody = document.getElementById('contractTableBody');
+    tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">로딩 중...</td></tr>';
+    try {
+        const params = { page: currentContractPage, per_page: 20 };
+        const status = document.getElementById('cStatusFilter').value;
+        const search = document.getElementById('cSearchInput').value.trim();
+        if (status) params.status = status;
+        if (search) params.search = search;
+        console.log('[branches] loadContracts 호출:', params);
+        const res = await apiGet('/headquarters/contracts?' + new URLSearchParams(params));
+        console.log('[branches] loadContracts 응답:', res);
+        // 응답 데이터 검증 강화
+        const data = res && res.data;
+        allContracts = Array.isArray(data) ? data : [];
+        const total = (res && typeof res.total === 'number') ? res.total : allContracts.length;
+        totalContractPages = Math.max(1, Math.ceil(total / 20));
+        document.getElementById('contractCount').textContent = total + '건';
+        const direct = allContracts.filter(c => c.contract_type === 'direct').length;
+        const franchise = allContracts.filter(c => c.contract_type === 'franchise').length;
+        const expiring = allContracts.filter(c => {
+            if (!c.end_date) return false;
+            const days = (new Date(c.end_date) - new Date()) / (1000 * 60 * 60 * 24);
+            return days >= 0 && days <= 30;
+        }).length;
+        document.getElementById('statDirect').textContent = direct + '명';
+        document.getElementById('statFranchise').textContent = franchise + '명';
+        document.getElementById('statExpiring').textContent = expiring + '건';
+        document.getElementById('statTotal').textContent = total + '건';
+        if (!allContracts.length) {
+            tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">등록된 계약이 없습니다.</td></tr>';
+            renderContractPagination();
+            return;
+        }
+        tbody.innerHTML = allContracts.map(c => {
+            const statusBadge = getContractStatusBadge(c.status);
+            const periodStr = c.start_date ? formatDate(c.start_date) + ' ~ ' + formatDate(c.end_date) : '-';
+            const typeLabel = c.contract_type === 'direct' ? '직영' : c.contract_type === 'franchise' ? '프랜차이즈' : (c.contract_type || '-');
+            return '<tr>' +
+                '<td>' + c.id + '</td>' +
+                '<td>' + esc(c.branch_name || '-') + '</td>' +
+                '<td><strong>' + esc(c.director_name || '-') + '</strong></td>' +
+                '<td>' + typeLabel + '</td>' +
+                '<td style="font-size:12px">' + periodStr + '</td>' +
+                '<td>' + formatAmount(c.monthly_fee) + '</td>' +
+                '<td>' + (c.royalty_rate != null ? c.royalty_rate + '%' : '-') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td><div style="display:flex;gap:4px">' +
+                '<button class="btn btn-ghost btn-sm" onclick="openEditContractModal(' + c.id + ')" style="font-size:11px">✏️</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteContract(' + c.id + ')" style="font-size:11px">🗑️</button>' +
+                '</div></td></tr>';
+        }).join('');
+        renderContractPagination();
+    } catch (e) {
+        console.error('[branches] loadContracts 실패:', e, e.stack);
+        tbody.innerHTML = '<tr><td class="ctr-empty" colspan="9">불러오기 실패: ' + esc(e.message) + '</td></tr>';
+        showToast('데이터를 불러올 수 없습니다', 'error');
+    }
+}
+
+function filterContracts() { currentContractPage = 1; loadContracts(1); }
+
+function renderContractPagination() {
+    const el = document.getElementById('cPaginationWrap');
+    if (totalContractPages <= 1) { el.innerHTML = ''; return; }
+    let html = '<button class="page-btn" onclick="goContractPage(1)" ' + (currentContractPage <= 1 ? 'disabled' : '') + '>«</button>';
+    html += '<button class="page-btn" onclick="goContractPage(' + (currentContractPage - 1) + ')" ' + (currentContractPage <= 1 ? 'disabled' : '') + '>‹</button>';
+    const start = Math.max(1, currentContractPage - 2);
+    const end = Math.min(totalContractPages, currentContractPage + 2);
+    for (let i = start; i <= end; i++) {
+        html += '<button class="page-btn' + (i === currentContractPage ? ' active' : '') + '" onclick="goContractPage(' + i + ')">' + i + '</button>';
+    }
+    html += '<button class="page-btn" onclick="goContractPage(' + (currentContractPage + 1) + ')" ' + (currentContractPage >= totalContractPages ? 'disabled' : '') + '>›</button>';
+    html += '<button class="page-btn" onclick="goContractPage(' + totalContractPages + ')" ' + (currentContractPage >= totalContractPages ? 'disabled' : '') + '>»</button>';
+    el.innerHTML = html;
+}
+
+function goContractPage(page) {
+    if (page < 1 || page > totalContractPages) return;
+    currentContractPage = page;
+    loadContracts(page);
+}
+
+function switchContractTab(type) {
+    document.querySelectorAll('.contracts-tab').forEach(t => t.classList.remove('active'));
+    const btn = document.querySelector('.contracts-tab[data-type="' + type + '"]');
+    if (btn) btn.classList.add('active');
+    currentContractPage = 1;
+    loadContracts(1);
+}
+
+function toggleBranchSelect() {
+    const type = document.querySelector('input[name="newContractType"]:checked');
+    document.getElementById('newContractBranchGroup').style.display = (type && type.value === 'franchise') ? '' : 'none';
+}
+
+async function openCreateContractModal() {
+    try {
+        const res = await apiGet('/headquarters/directors?per_page=100');
+        const directors = res.data || [];
+        const select = document.getElementById('newContractDirector');
+        select.innerHTML = '<option value="">원장을 선택하세요</option>' +
+            directors.map(d => '<option value="' + d.id + '">' + esc(d.name || d.director_name) + ' (' + esc(d.branch_name || '-') + ')</option>').join('');
+    } catch (e) {}
+    try {
+        const res = await apiGet('/headquarters/branches?per_page=100');
+        const branches = res.data || [];
+        const select = document.getElementById('newContractBranch');
+        select.innerHTML = '<option value="">에듀케어를 선택하세요</option>' +
+            branches.map(b => '<option value="' + b.id + '">' + esc(b.name) + '</option>').join('');
+    } catch (e) {}
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newContractStart').value = today;
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+    document.getElementById('newContractEnd').value = nextYear.toISOString().split('T')[0];
+    document.getElementById('newContractFee').value = '0';
+    document.getElementById('newContractRoyalty').value = '0';
+    document.getElementById('newContractMemo').value = '';
+    document.getElementById('newContractBranchGroup').style.display = 'none';
+    document.getElementById('createContractModal').style.display = 'flex';
+}
+
+async function createContract() {
+    const director_id = document.getElementById('newContractDirector').value;
+    const typeEl = document.querySelector('input[name="newContractType"]:checked');
+    const contract_type = typeEl ? typeEl.value : 'direct';
+    const branch_id = document.getElementById('newContractBranch').value;
+    const start_date = document.getElementById('newContractStart').value;
+    const end_date = document.getElementById('newContractEnd').value;
+    const monthly_fee = parseInt(document.getElementById('newContractFee').value) || 0;
+    const royalty_rate = parseFloat(document.getElementById('newContractRoyalty').value) || 0;
+    const memo = document.getElementById('newContractMemo').value.trim();
+    if (!director_id) { showToast('원장을 선택하세요', 'error'); return; }
+    if (contract_type === 'franchise' && !branch_id) { showToast('소속 에듀케어를 선택하세요', 'error'); return; }
+    if (!start_date) { showToast('계약 시작일을 선택하세요', 'error'); return; }
+    if (!end_date) { showToast('계약 종료일을 선택하세요', 'error'); return; }
+    const payload = { director_id: parseInt(director_id), contract_type, start_date, end_date, monthly_fee, royalty_rate, memo };
+    if (contract_type === 'franchise' && branch_id) payload.branch_id = parseInt(branch_id);
+    try {
+        await apiPost('/headquarters/contracts', payload);
+        showToast('계약이 생성되었습니다', 'success');
+        document.getElementById('createContractModal').style.display = 'none';
+        loadContracts(1);
+    } catch (e) { showToast('생성 실패: ' + (e.message || ''), 'error'); }
+}
+
+function toggleEditBranchSelect() {
+    const type = document.querySelector('input[name="editContractType"]:checked');
+    document.getElementById('editContractBranchGroup').style.display = (type && type.value === 'franchise') ? '' : 'none';
+}
+
+async function openEditContractModal(id) {
+    try {
+        const res = await apiGet('/headquarters/contracts/' + id);
+        const c = res.data || res;
+        document.getElementById('editContractId').value = c.id;
+        document.getElementById('editContractDirector').value = c.director_name || '';
+        document.querySelectorAll('input[name="editContractType"]').forEach(r => { r.checked = r.value === c.contract_type; });
+        toggleEditBranchSelect();
+        try {
+            const branchRes = await apiGet('/headquarters/branches?per_page=100');
+            const branches = branchRes.data || [];
+            const select = document.getElementById('editContractBranch');
+            select.innerHTML = '<option value="">에듀케어를 선택하세요</option>' +
+                branches.map(b => '<option value="' + b.id + '" ' + (b.id === c.branch_id ? 'selected' : '') + '>' + esc(b.name) + '</option>').join('');
+        } catch (e) {}
+        document.getElementById('editContractStart').value = c.start_date ? c.start_date.split('T')[0] : '';
+        document.getElementById('editContractEnd').value = c.end_date ? c.end_date.split('T')[0] : '';
+        document.getElementById('editContractFee').value = c.monthly_fee || 0;
+        document.getElementById('editContractRoyalty').value = c.royalty_rate || 0;
+        document.getElementById('editContractMemo').value = c.memo || '';
+        document.getElementById('editContractModal').style.display = 'flex';
+    } catch (e) { showToast('정보를 불러올 수 없습니다', 'error'); }
+}
+
+async function updateContract() {
+    const id = document.getElementById('editContractId').value;
+    const typeEl = document.querySelector('input[name="editContractType"]:checked');
+    const contract_type = typeEl ? typeEl.value : 'direct';
+    const branch_id = document.getElementById('editContractBranch').value;
+    const start_date = document.getElementById('editContractStart').value;
+    const end_date = document.getElementById('editContractEnd').value;
+    const monthly_fee = parseInt(document.getElementById('editContractFee').value) || 0;
+    const royalty_rate = parseFloat(document.getElementById('editContractRoyalty').value) || 0;
+    const memo = document.getElementById('editContractMemo').value.trim();
+    const payload = { contract_type, start_date, end_date, monthly_fee, royalty_rate, memo };
+    if (contract_type === 'franchise' && branch_id) payload.branch_id = parseInt(branch_id);
+    try {
+        await apiPut('/headquarters/contracts/' + id, payload);
+        showToast('계약이 수정되었습니다', 'success');
+        document.getElementById('editContractModal').style.display = 'none';
+        loadContracts(currentContractPage);
+    } catch (e) { showToast('수정 실패: ' + (e.message || ''), 'error'); }
+}
+
+async function deleteContract(id) {
+    if (!confirm('정말 이 계약을 삭제하시겠습니까?')) return;
+    try {
+        await apiDelete('/headquarters/contracts/' + id);
+        showToast('계약이 삭제되었습니다', 'success');
+        loadContracts(currentContractPage);
+    } catch (e) { showToast('삭제 실패: ' + (e.message || ''), 'error'); }
+}
+
+/* ===== 카테고리 권한 ===== */
+async function loadBranchSelectForCategories() {
+    try {
+        console.log('[branches] loadBranchSelectForCategories 호출');
+        const res = await apiGet('/headquarters/branches?per_page=100');
+        console.log('[branches] loadBranchSelectForCategories 응답:', res);
+        const data = res && res.data;
+        const branches = Array.isArray(data) ? data : [];
+        const select = document.getElementById('branchCategorySelect');
+        select.innerHTML = '<option value="">← 학원을 선택하세요</option>' +
+            branches.map(b => '<option value="' + b.id + '">' + esc(b.name) + '</option>').join('');
+        if (selectedCategoriesBranchId) {
+            select.value = selectedCategoriesBranchId;
+            onBranchSelectForCategories();
+        } else {
+            document.getElementById('categoryPermissionPanel').style.display = 'none';
+            document.getElementById('categoryPermEmpty').style.display = '';
+        }
+    } catch (e) {
+        console.error('[branches] loadBranchSelectForCategories 실패:', e, e.stack);
+        showToast('에듀케어 목록을 불러올 수 없습니다', 'error');
+    }
+}
+
+async function onBranchSelectForCategories() {
+    const branchId = document.getElementById('branchCategorySelect').value;
+    if (!branchId) {
+        document.getElementById('categoryPermissionPanel').style.display = 'none';
+        document.getElementById('categoryPermEmpty').style.display = '';
+        selectedCategoriesBranchId = null;
+        return;
+    }
+    selectedCategoriesBranchId = parseInt(branchId);
+    document.getElementById('categoryPermEmpty').style.display = 'none';
+    document.getElementById('categoryPermissionPanel').style.display = '';
+    try {
+        console.log('[branches] onBranchSelectForCategories - 브랜치 상세 요청:', branchId);
+        const res = await apiGet('/headquarters/branches/' + branchId);
+        console.log('[branches] 브랜치 상세 응답:', res);
+        const b = res && (res.data || res);
+        document.getElementById('selectedBranchInfo').textContent = esc(b.name || '') + ' (' + esc(b.code || '') + ')';
+        document.getElementById('catPermTitle').textContent = '📚 강좌 카테고리 권한 설정 — ' + esc(b.name || '');
+    } catch (e) {
+        console.error('[branches] 브랜치 상세 로드 실패:', e, e.stack);
+    }
+    try {
+        console.log('[branches] 카테고리/권한 로드 시작');
+        const [catRes, permRes] = await Promise.all([
+            apiGet('/headquarters/categories?per_page=100'),
+            apiGet('/headquarters/branches/' + branchId + '/categories')
+        ]);
+        console.log('[branches] 카테고리 응답:', catRes);
+        console.log('[branches] 권한 응답:', permRes);
+        const catData = catRes && catRes.data;
+        allCategories = Array.isArray(catData) ? catData : [];
+        // GET /headquarters/branches/{id}/categories returns {branch_id, branch_name, categories: [...]}
+        const permData = permRes && (permRes.data || permRes);
+        const categories = (permData && (Array.isArray(permData.categories) ? permData.categories : null)) || [];
+        const permittedKeys = new Set(
+            categories
+                .filter(function(c) { return c && c.is_active_for_branch; })
+                .map(function(c) { return c.key; })
+        );
+        const list = document.getElementById('categoryToggleList');
+        if (!allCategories.length) {
+            list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-tertiary)">등록된 카테고리가 없습니다.</div>';
+            return;
+        }
+        list.innerHTML = allCategories.map(cat => {
+            const checked = cat && cat.key && permittedKeys.has(cat.key) ? 'checked' : '';
+            return '<label class="cat-toggle" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;background:var(--bg-canvas)">' +
+                '<input type="checkbox" class="cat-checkbox" data-cat-key="' + esc(cat.key) + '" ' + checked + ' style="width:18px;height:18px">' +
+                '<span>' + esc(cat.name) + '</span></label>';
+        }).join('');
+        const checkedCount = document.querySelectorAll('.cat-checkbox:checked').length;
+        document.getElementById('catCountInfo').textContent = '선택: ' + checkedCount + '/' + allCategories.length + '개';
+    } catch (e) {
+        console.error('[branches] 카테고리 권한 로드 실패:', e, e.stack);
+        showToast('카테고리 정보를 불러올 수 없습니다', 'error');
+    }
+}
+
+function selectAllCategories(select) {
+    document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = select);
+    const checkedCount = document.querySelectorAll('.cat-checkbox:checked').length;
+    document.getElementById('catCountInfo').textContent = '선택: ' + checkedCount + '/' + allCategories.length + '개';
+}
+
+async function saveCategoryPermissions() {
+    if (!selectedCategoriesBranchId) { showToast('학원을 선택하세요', 'error'); return; }
+    const checkedKeys = [];
+    document.querySelectorAll('.cat-checkbox:checked').forEach(cb => checkedKeys.push(cb.dataset.catKey));
+    try {
+        // PUT /headquarters/branches/{id}/categories expects {categories: [{key: "...", ...}]}
+        await apiPut('/headquarters/branches/' + selectedCategoriesBranchId + '/categories', {
+            categories: checkedKeys.map(function(key) { return { key: key }; })
+        });
+        showToast('카테고리 권한이 저장되었습니다', 'success');
+    } catch (e) { showToast('저장 실패: ' + (e.message || ''), 'error'); }
+}
+
+/* ===== 공통 모달 함수 ===== */
+function closeCustomModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// ============================================================
+// 우측 패널: 에듀케어 상세 대시보드
+// ============================================================
+let selectedBranchId = null;
+let selectedDirectorId = null;
+let branchDirectors = [];
+let branchStudents = [];
+let branchPayments = [];
+
+async function showBranchDetail(branchId) {
+    selectedBranchId = branchId;
+    selectedDirectorId = null;
+    
+    // Highlight row
+    document.querySelectorAll('#branchTableBody tr').forEach(r => r.classList.remove('branch-row-active'));
+    const row = document.querySelector(`#branchTableBody tr[data-branch-id="${branchId}"]`);
+    if (row) row.classList.add('branch-row-active');
+    
+    // Show the right panel
+    document.getElementById('detailEmpty').style.display = 'none';
+    document.getElementById('detailContent').style.display = 'block';
+    
+    // Set loading state
+    document.getElementById('detailTitle').innerHTML = `🏢 로딩 중...`;
+    document.getElementById('directorCards').innerHTML = '<div class="empty-detail" style="padding:20px;"><div class="text">⏳ 불러오는 중...</div></div>';
+    
+    try {
+        // SINGLE API CALL — get all data at once
+        const res = await apiGet('/headquarters/branches/' + branchId + '/overview');
+        const data = res && res.data;
+        if (!data) throw new Error('No data');
+        
+        // Branch info
+        const b = data.branch || {};
+        document.getElementById('detailTitle').innerHTML = `🏢 ${esc(b.name || '')}`;
+        const badge = document.getElementById('detailStatusBadge');
+        badge.style.display = 'inline-block';
+        badge.innerHTML = getStatusBadge(b.status || 'active');
+        
+        // Stats
+        document.getElementById('detailStats').style.display = 'flex';
+        document.getElementById('detailStats').innerHTML = `
+            <span>👤 원장 <strong>${data.directors ? data.directors.length : 0}명</strong></span>
+            <span>👥 학생 <strong>${data.students ? data.students.length : 0}명</strong></span>
+            <span>💳 결제 <strong>${data.payments ? data.payments.total_count : 0}건</strong></span>
+        `;
+        
+        // Store data
+        branchDirectors = data.directors || [];
+        branchStudents = data.students || [];
+        const payData = data.payments || {};
+        branchPayments = payData.list || [];
+        
+        // Render directors
+        renderDirectorCards();
+        
+        // Render payments
+        document.getElementById('paymentCount').textContent = (payData.total_count || 0) + '건';
+        document.getElementById('totalPaymentAmount').textContent = '₩' + Number(payData.total_amount || 0).toLocaleString();
+        document.getElementById('completedPaymentCount').textContent = (payData.completed_count || 0) + '건';
+        document.getElementById('pendingPaymentCount').textContent = (payData.pending_count || 0) + '건';
+        renderPaymentList();
+        
+        // Render students
+        renderStudentList();
+        
+    } catch(e) {
+        console.error('Branch overview load error:', e);
+        document.getElementById('detailTitle').innerHTML = `🏢 에듀케어 로딩 실패`;
+        document.getElementById('directorCards').innerHTML = '<div class="empty-detail" style="padding:20px;"><div class="text">데이터를 불러올 수 없습니다</div></div>';
+    }
+
+    // 모바일/태블릿(1열 레이아웃): 상세 패널이 목록 아래로 밀리지 않도록
+    // 선택 즉시 화면 상단으로 부드럽게 스크롤해 시야에 들어오게 함
+    if (window.innerWidth <= 1200) {
+        const detailPanel = document.getElementById('rightPanel');
+        if (detailPanel) {
+            setTimeout(() => detailPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+        }
+    }
+}
+
+function renderDirectorCards() {
+    const container = document.getElementById('directorCards');
+    document.getElementById('directorCount').textContent = branchDirectors.length + '명';
+    
+    if (branchDirectors.length === 0) {
+        container.innerHTML = '<div class="empty-detail" style="padding:20px;"><div class="text">연결된 원장이 없습니다</div></div>';
+        return;
+    }
+    
+    container.innerHTML = branchDirectors.map(d => {
+        const isSelected = selectedDirectorId === d.id;
+        const locked = !!d.nubida_machine_locked;
+        const badgeHtml = locked
+            ? '<span class="ml-badge locked">🔒 머신 잠금</span>'
+            : '<span class="ml-badge normal">머신 정상</span>';
+        const btnHtml = locked
+            ? '<button class="ml-lock-btn is-locked" onclick="event.stopPropagation(); toggleMachineLock(' + d.id + ')">🔓 잠금 해제</button>'
+            : '<button class="ml-lock-btn" onclick="event.stopPropagation(); toggleMachineLock(' + d.id + ')">🔒 머신 잠금</button>';
+        return `<div class="director-card ${isSelected ? 'selected' : ''}" onclick="selectDirector(${d.id})">
+            <div class="dc-name">👤 ${esc(d.name || '')}${badgeHtml}</div>
+            <div class="dc-info">
+                <span>📞 ${esc(d.phone || '-')}</span>
+                <span>🏫 ${esc(d.academy_type || '-')}</span>
+                <span>📍 ${esc(d.region || '-')}</span>
+            </div>
+            <div class="dc-stats">
+                <div class="dc-stat"><span class="num">${d.student_count || 0}명</span>학생</div>
+                <div class="dc-stat"><span class="num">₩${Number(d.total_payment || 0).toLocaleString()}</span>결제</div>
+            </div>
+            <div class="dc-lock-row">${btnHtml}</div>
+        </div>`;
+    }).join('');
+}
+
+/* 누비다머신 잠금 토글 — 원장 1명 + 소속 학생 전체에 즉시 적용 */
+async function toggleMachineLock(directorId) {
+    const d = branchDirectors.find(x => x.id === directorId);
+    if (!d) return;
+    const next = !d.nubida_machine_locked;
+    const actionLabel = next ? '잠금 설정' : '잠금 해제';
+    if (!confirm(`'${d.name || '원장'}' 원장의 누비다머신을 ${actionLabel}하시겠습니까?\n\n잠금 시 해당 원장과 소속 학생은 AI 어시스턴트·ML 스튜디오·아두이노 실습을 사용할 수 없습니다.`)) return;
+    try {
+        const res = await apiPut('/headquarters/users/' + directorId + '/nubida-machine-lock', { nubida_machine_locked: next });
+        if (res && res.success === false) throw new Error(res.message || 'API 오류');
+        d.nubida_machine_locked = next;
+        renderDirectorCards();
+        showToast(next ? '🔒 누비다머신이 잠금 처리되었습니다' : '🔓 누비다머신 잠금이 해제되었습니다', next ? 'error' : 'success');
+    } catch (e) {
+        console.error('[branches] Machine lock toggle error:', e);
+        showToast('잠금 상태 변경에 실패했습니다: ' + (e.message || ''), 'error');
+    }
+}
+
+function renderPaymentList(filterDirectorId) {
+    const list = document.getElementById('paymentList');
+    let filtered = branchPayments;
+    
+    if (filterDirectorId) {
+        // Filter payments by students belonging to this director
+        const dirStudentIds = branchStudents
+            .filter(s => s.director_id == filterDirectorId)
+            .map(s => s.id);
+        filtered = branchPayments.filter(p => dirStudentIds.includes(p.student_id));
+    }
+    
+    if (filtered.length === 0) {
+        list.innerHTML = '<p class="text-muted" style="text-align:center;padding:12px;">결제 내역이 없습니다</p>';
+        return;
+    }
+    
+    list.innerHTML = filtered.slice(0, 10).map(p => `
+        <div class="payment-mini-item">
+            <div class="pmi-left">
+                <span class="pmi-date">${formatDate(p.paid_at)}</span>
+                <span>${esc(p.student_name || '-')}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span class="pmi-amount">₩${Number(p.amount || 0).toLocaleString()}</span>
+                <span class="badge ${p.status === 'completed' ? 'badge-success' : 'badge-warning'}">${p.status === 'completed' ? '완료' : '대기'}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderStudentList(filterDirectorId) {
+    const tbody = document.getElementById('studentTableBody');
+    let filtered = branchStudents;
+    
+    if (filterDirectorId) {
+        filtered = branchStudents.filter(s => s.director_id == filterDirectorId);
+    }
+    
+    document.getElementById('studentCount').textContent = filtered.length + '명';
+    
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#9CA3AF;">학생이 없습니다</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = filtered.map(s => {
+        const courseNames = (s.enrollments || []).map(e => e.course_name).filter(Boolean).join(', ') || '-';
+        return `<tr>
+            <td>${s.id}</td>
+            <td><strong>${esc(s.name || '')}</strong></td>
+            <td>${esc(s.phone || '-')}</td>
+            <td>${esc(s.director_name || '-')}</td>
+            <td><span class="badge ${s.is_active ? 'badge-success' : 'badge-inactive'}">${s.is_active ? '활성' : '비활성'}</span></td>
+        </tr>`;
+    }).join('');
+}
+
+function selectDirector(directorId) {
+    selectedDirectorId = directorId;
+    
+    // Update card highlight
+    document.querySelectorAll('.director-card').forEach(c => c.classList.remove('selected'));
+    const cards = document.querySelectorAll('.director-card');
+    for (let i = 0; i < branchDirectors.length; i++) {
+        if (branchDirectors[i].id === directorId && cards[i]) {
+            cards[i].classList.add('selected');
+            break;
+        }
+    }
+    
+    // Update payment list filtered
+    renderPaymentList(directorId);
+    
+    // Update student list filtered
+    renderStudentList(directorId);
+}
+
+/* ===== 초기화 ===== */
+document.addEventListener('DOMContentLoaded', function() {
+    requireAuth();
+    document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+    const u = getCurrentUser();
+    if (u && u.name) document.getElementById('sidebarUserName').textContent = u.name;
+    if (u && u.role) {
+        const roleLabels = { 'super_admin': '최고관리자', 'admin': '관리자', 'branch_admin': '에듀케어', 'branch_manager': '에듀케어', 'branch_staff': '에듀케어 직원', 'director': '원장' };
+        document.getElementById('sidebarUserRole').textContent = roleLabels[u.role] || u.role;
+    }
+    // 페이지 로딩 오버레이 표시
+    var overlay = document.getElementById('pageLoading');
+    if (overlay) overlay.classList.remove('hide');
+    onAuthReady(function() {
+        loadBranches(1);
+        // 오버레이는 loadBranches 성공 시 hide됨
+    });
+    // 정산 설정 입력 변경 시 실시간 미리보기 갱신
+    ['editRoyaltyRate', 'editProfitRate', 'editIncomeTaxRate'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', renderSettlementPreview);
+    });
+    // 타임아웃: 15초 지나도 데이터 안 오면 오버레이 숨기고 에러 표시
+    setTimeout(function() {
+        if (overlay && !overlay.classList.contains('hide')) {
+            overlay.classList.add('hide');
+            document.getElementById('branchTableBody').innerHTML = '<tr class="branch-empty"><td colspan="10">⏱️ 서버 응답이 지연되고 있습니다. 페이지를 새로고침 해주세요.</td></tr>';
+        }
+    }, 15000);
+});
+</script>
+<script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

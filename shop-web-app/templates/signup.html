@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-box">
+    <div style="text-align: center; margin-bottom: 50px;">
+        <p class="shop-tag">START YOUR ATELIER</p>
+        <h2 style="font-size: 2.2rem; font-weight: 200; margin-top: 10px;">회원가입</h2>
+        <p style="color: #6c5ce7; font-size: 0.85rem; font-weight: 700; margin-top: 15px;">🎉 가입 즉시 창업 지원금 50,000P 지급</p>
+    </div>
+    <form action="/signup" method="POST">
+        <div class="input-group">
+            <label>아이디</label>
+            <input type="text" name="id" class="input-style" placeholder="사용할 ID를 입력하세요" required>
+        </div>
+        <div class="input-group">
+            <label>비밀번호</label>
+            <input type="password" name="pw" class="input-style" placeholder="Password" required>
+        </div>
+        <div class="input-group">
+            <label>이름</label>
+            <input type="text" name="name" class="input-style" placeholder="학생 실명을 입력하세요" required>
+        </div>
+        <div class="input-group">
+            <label>나의 상점 이름</label>
+            <input type="text" name="shopName" class="input-style" placeholder="아틀리에 명칭을 정해주세요" required>
+        </div>
+        <button type="submit" class="btn btn-black" style="margin-top: 30px;">가입 및 지원금 받기</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+0 3 * * * /bin/bash /home/nubidaplet/scripts/backup.sh >> /home/nubidaplet/scripts/backup.log 2>&1
+0 3 * * 0 /bin/bash /home/nubidaplet/docker/scripts/cleanup_ai_data.sh >> /home/nubidaplet/docker/scripts/cleanup_ai_data.log 2>&1
+# ── Nubida AI 노래 워커 자동 복구 (260918 추가) ──
+# 매 5분마다 워커 생존 확인 → 죽었으면 재시작
+*/5 * * * * /home/nubidaplet/ace-step-15/watch_song_worker.sh >/dev/null 2>&1
+# Nubida Main→Mirror DB sync (weekly, Sunday 04:00 KST)
+0 4 * * 0 /bin/bash /home/nubidaplet/docker/backups/sync_main_to_mirror.sh >> /home/nubidaplet/docker/backups/sync/sync.log 2>&1

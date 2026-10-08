@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>알림 — 누비다플랫폼</title>
+<link rel="icon" type="image/png" href="/favicon.ico">
+
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260910nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260805c">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/print.css?v=20260804b">
+    <link rel="stylesheet" href="/common/css/pages/student/style.css?v=20260804c">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260805a"></script>
+<style>
+    /* ══════════════════════════════════════════════════════
+       학생 알림 — 세련된·미니멀 (nf-*)
+       ══════════════════════════════════════════════════════ */
+    .nf-head { display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .nf-head h2 { font-size:16px; font-weight:700; color:#111827; margin:0; letter-spacing:-.2px; }
+    .nf-head .nf-count { font-size:12.5px; color:#9CA3AF; }
+    .nf-head .nf-count b { color:#4F5EF8; font-weight:700; }
+    .nf-head .nf-actions { margin-left:auto; }
+
+    /* 필터 탭 */
+    .nf-tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+    .nf-tab {
+      border:1px solid #EDF0F5; background:#fff; color:#6B7280;
+      border-radius:999px; padding:7px 15px; font-size:12.5px; font-weight:600;
+      cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:6px;
+    }
+    .nf-tab:hover { border-color:#D7DCE6; color:#374151; }
+    .nf-tab.active { background:#4F5EF8; border-color:#4F5EF8; color:#fff; }
+    .nf-tab .nf-tab-n {
+      min-width:18px; height:18px; padding:0 5px; border-radius:9px;
+      background:#F1F4F9; color:#6B7280; font-size:10.5px; font-weight:700;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-variant-numeric:tabular-nums;
+    }
+    .nf-tab.active .nf-tab-n { background:rgba(255,255,255,.25); color:#fff; }
+
+    /* 알림 리스트 */
+    .nf-list { display:flex; flex-direction:column; gap:10px; }
+    .nf-item {
+      display:flex; gap:14px; align-items:flex-start;
+      background:#fff; border:1px solid #EEF0F4; border-radius:14px;
+      padding:16px 18px; transition:border-color .15s, box-shadow .15s;
+      position:relative;
+    }
+    .nf-item:hover { border-color:#DDE2EC; box-shadow:0 2px 10px rgba(17,24,39,.04); }
+    .nf-item.is-unread { border-left:3px solid #4F5EF8; background:#FCFDFF; }
+    .nf-item.is-read { opacity:.78; }
+
+    .nf-ico {
+      flex:0 0 auto; width:38px; height:38px; border-radius:11px;
+      display:flex; align-items:center; justify-content:center;
+      background:#F1F4F9; color:#64748B;
+    }
+    .nf-ico svg { width:19px; height:19px; }
+    .nf-ico.k-notice      { background:#EEF2FF; color:#4F5EF8; }
+    .nf-ico.k-learning    { background:#ECFDF5; color:#10B981; }
+    .nf-ico.k-approved    { background:#ECFDF5; color:#059669; }
+    .nf-ico.k-rejected    { background:#FEF2F2; color:#EF4444; }
+    .nf-ico.k-revision    { background:#FFF7ED; color:#F59E0B; }
+    .nf-ico.k-feedback    { background:#F5F3FF; color:#8B5CF6; }
+    .nf-ico.k-portfolio   { background:#EFF6FF; color:#3B82F6; }
+
+    .nf-body { flex:1 1 auto; min-width:0; }
+    .nf-title {
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+      font-size:13.5px; font-weight:700; color:#111827;
+      margin:0 0 5px; letter-spacing:-.2px; line-height:1.35;
+    }
+    .nf-newdot {
+      width:6px; height:6px; border-radius:50%; background:#4F5EF8; flex:0 0 auto;
+    }
+    .nf-text {
+      font-size:12.5px; color:#6B7280; line-height:1.55;
+      margin:0; word-break:break-word;
+    }
+    .nf-meta { margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .nf-chip {
+      font-size:10.5px; font-weight:700; letter-spacing:.02em;
+      padding:3px 8px; border-radius:6px; background:#F1F4F9; color:#6B7280;
+    }
+    .nf-chip.k-notice    { background:#EEF2FF; color:#4F5EF8; }
+    .nf-chip.k-learning  { background:#ECFDF5; color:#059669; }
+    .nf-chip.k-approved  { background:#ECFDF5; color:#059669; }
+    .nf-chip.k-rejected  { background:#FEF2F2; color:#DC2626; }
+    .nf-chip.k-revision  { background:#FFF7ED; color:#B45309; }
+    .nf-chip.k-feedback  { background:#F5F3FF; color:#7C3AED; }
+    .nf-chip.k-portfolio { background:#EFF6FF; color:#2563EB; }
+    .nf-time { font-size:11.5px; color:#9CA3AF; font-variant-numeric:tabular-nums; }
+
+    /* 빈 상태 */
+    .nf-empty {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:64px 20px; text-align:center;
+    }
+    .nf-empty .nf-empty-ico {
+      width:56px; height:56px; border-radius:16px; background:#F4F6F9;
+      display:flex; align-items:center; justify-content:center; margin-bottom:14px;
+      color:#B0B7C3;
+    }
+    .nf-empty .nf-empty-ico svg { width:26px; height:26px; }
+    .nf-empty h3 { font-size:14px; font-weight:600; color:#6B7280; margin:0 0 5px; }
+    .nf-empty p { font-size:12.5px; color:#9CA3AF; margin:0; }
+
+    /* 스켈레톤 */
+    .nf-sk {
+      height:88px; border-radius:14px;
+      background:linear-gradient(90deg,#F4F6F9 25%,#EDF0F5 50%,#F4F6F9 75%);
+      background-size:200% 100%; animation:nfShimmer 1.4s infinite;
+    }
+    @keyframes nfShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+</style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학습</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-label">내 대시보드</span></a>
+                <a class="nav-item" href="courses.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/></svg></span><span class="nav-label">수강 강좌</span></a>
+                <a class="nav-item" href="ai-assistant.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="nav-label">누비다 AI</span></a>
+                <a class="nav-item" href="ml-studio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span class="nav-label">누비다머신</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>알림</div>
+                <a class="active nav-item" href="notifications.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nav-label">알림</span></a>
+                <a class="nav-item" href="inquiries.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span><span class="nav-label">Q&A</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">학생</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>알림</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+<div class="nf-head">
+                <h2>알림</h2>
+                <span class="nf-count" id="notificationCount"></span>
+                <div class="nf-actions">
+                    <button class="btn btn-ghost btn-sm" onclick="markAllRead()">모두 읽음</button>
+                </div>
+            </div>
+
+            <!-- 필터 탭 -->
+            <div class="nf-tabs" id="nfTabs">
+                <button class="nf-tab active" data-filter="all">전체 <span class="nf-tab-n" id="nfTabAll">0</span></button>
+                <button class="nf-tab" data-filter="notice">공지 <span class="nf-tab-n" id="nfTabNotice">0</span></button>
+                <button class="nf-tab" data-filter="learning">학습내용 <span class="nf-tab-n" id="nfTabLearning">0</span></button>
+                <button class="nf-tab" data-filter="portfolio">포트폴리오 <span class="nf-tab-n" id="nfTabPortfolio">0</span></button>
+                <button class="nf-tab" data-filter="unread">안읽음 <span class="nf-tab-n" id="nfTabUnread">0</span></button>
+            </div>
+
+            <div class="nf-list" id="nfList">
+                <div class="nf-sk"></div>
+                <div class="nf-sk"></div>
+                <div class="nf-sk"></div>
+            </div>
+
+            <div class="card card-premium mt-24" id="emptyCard" style="display:none">
+                <div class="card-body" style="padding:0">
+                    <div class="nf-empty">
+                        <div class="nf-empty-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+                        <h3>알림이 없습니다</h3>
+                        <p>공지, 학습내용 추가, 포트폴리오 소식이 여기에 표시됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260908a"></script>
+    <script src="/common/js/utils.js?v=20260804b"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const dateEl = document.getElementById('todayDate');
+            if (dateEl) {
+                dateEl.textContent = now.toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                });
+            }
+            // 필터 탭 바인딩
+            document.querySelectorAll('#nfTabs .nf-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#nfTabs .nf-tab').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    nfFilter = btn.dataset.filter || 'all';
+                    renderList();
+                });
+            });
+            loadNotifications();
+        });
+
+        let nfAll = [];
+        let nfFilter = 'all';
+
+        // ── 알림 타입 → 분류/아이콘/라벨 매핑 ──────────────────────
+        const NF_SVG = {
+            notice:    '<path d="M3 11l18-8v18l-18-8z"/><path d="M11 17v4"/>',
+            learning:  '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/>',
+            approved:  '<path d="M20 6 9 17l-5-5"/>',
+            rejected:  '<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>',
+            revision:  '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+            feedback:  '<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/>',
+            portfolio: '<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 15l5-5 4 4 3-3 6 6"/>'
+        };
+
+        function nfClassify(type) {
+            const t = String(type || '').toLowerCase();
+            if (t === 'notice') return { cat: 'notice', cls: 'k-notice', ico: 'notice',    label: '공지' };
+            if (t === 'learning_added') return { cat: 'learning', cls: 'k-learning', ico: 'learning', label: '학습내용' };
+            if (t === 'portfolio_approved') return { cat: 'portfolio', cls: 'k-approved', ico: 'approved', label: '승인' };
+            if (t === 'portfolio_rejected') return { cat: 'portfolio', cls: 'k-rejected', ico: 'rejected', label: '반려' };
+            if (t === 'portfolio_revision') return { cat: 'portfolio', cls: 'k-revision', ico: 'revision', label: '수정요청' };
+            if (t === 'portfolio_feedback') return { cat: 'portfolio', cls: 'k-feedback', ico: 'feedback', label: '피드백' };
+            if (t === 'portfolio_status' || t === 'portfolio_submitted') return { cat: 'portfolio', cls: 'k-portfolio', ico: 'portfolio', label: '포트폴리오' };
+            // 그 외는 목록에 오지 않지만 방어적으로 포트폴리오로 처리
+            return { cat: 'portfolio', cls: 'k-portfolio', ico: 'portfolio', label: '알림' };
+        }
+
+        async function loadNotifications() {
+            const listEl = document.getElementById('nfList');
+            if (!listEl) return;
+            try {
+                const res = await apiGet('/sse/notifications');
+                let notifications = [];
+                if (Array.isArray(res)) notifications = res;
+                else if (res && Array.isArray(res.data)) notifications = res.data;
+                else if (res && res.data && Array.isArray(res.data.notifications)) notifications = res.data.notifications;
+                else if (res && Array.isArray(res.notifications)) notifications = res.notifications;
+
+                nfAll = notifications;
+                updateTabCounts();
+                renderList();
+            } catch (err) {
+                listEl.innerHTML = '<div class="nf-empty"><h3>불러오지 못했습니다</h3><p>' + escapeHtml(err.message) + '</p></div>';
+                console.error('[notifications] load error:', err);
+            }
+        }
+
+        function updateTabCounts() {
+            const c = { all: nfAll.length, notice: 0, learning: 0, portfolio: 0, unread: 0 };
+            nfAll.forEach(n => {
+                const k = nfClassify(n.type || n.notif_type);
+                if (k.cat === 'notice') c.notice++;
+                else if (k.cat === 'learning') c.learning++;
+                else c.portfolio++;
+                if (!isReadOf(n)) c.unread++;
+            });
+            const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+            set('nfTabAll', c.all); set('nfTabNotice', c.notice);
+            set('nfTabLearning', c.learning); set('nfTabPortfolio', c.portfolio);
+            set('nfTabUnread', c.unread);
+
+            const countEl = document.getElementById('notificationCount');
+            if (countEl) {
+                countEl.innerHTML = c.all === 0
+                    ? ''
+                    : '총 <b>' + c.all + '</b>건' + (c.unread > 0 ? ' · 안읽음 <b>' + c.unread + '</b>건' : '');
+            }
+        }
+
+        function isReadOf(n) {
+            return n.is_read === true || n.read === true;
+        }
+
+        function renderList() {
+            const listEl = document.getElementById('nfList');
+            const emptyCard = document.getElementById('emptyCard');
+            if (!listEl) return;
+
+            let items = nfAll;
+            if (nfFilter === 'unread') items = nfAll.filter(n => !isReadOf(n));
+            else if (nfFilter !== 'all') items = nfAll.filter(n => nfClassify(n.type || n.notif_type).cat === nfFilter);
+
+            if (items.length === 0) {
+                listEl.innerHTML = '';
+                listEl.style.display = 'none';
+                if (emptyCard) emptyCard.style.display = '';
+                return;
+            }
+            listEl.style.display = '';
+            if (emptyCard) emptyCard.style.display = 'none';
+
+            listEl.innerHTML = items.map(n => {
+                const k = nfClassify(n.type || n.notif_type);
+                const read = isReadOf(n);
+                const title = escapeHtml(n.title || n.subject || '알림');
+                const text = escapeHtml(n.content || n.message || n.body || '');
+                const when = formatRelative(n.created_at || n.date || n.createdAt || '');
+                const svg = NF_SVG[k.ico] || NF_SVG.portfolio;
+                return '<div class="nf-item ' + (read ? 'is-read' : 'is-unread') + '">'
+                    + '<div class="nf-ico ' + k.cls + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + svg + '</svg></div>'
+                    + '<div class="nf-body">'
+                    +   '<div class="nf-title">' + (read ? '' : '<span class="nf-newdot"></span>') + title + '</div>'
+                    +   (text ? '<p class="nf-text">' + text + '</p>' : '')
+                    +   '<div class="nf-meta"><span class="nf-chip ' + k.cls + '">' + k.label + '</span><span class="nf-time">' + when + '</span></div>'
+                    + '</div>'
+                    + '</div>';
+            }).join('');
+        }
+
+        async function markAllRead() {
+            try {
+                await apiPost('/sse/notifications/read-all');
+                showAlert('모든 알림을 읽음 처리했습니다.', 'success');
+                loadNotifications();
+            } catch (err) {
+                showAlert('일괄 읽음 처리 실패: ' + err.message, 'error');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function formatRelative(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const d = new Date(String(dateStr).replace(' ', 'T'));
+                if (isNaN(d.getTime())) return dateStr;
+                const diff = Date.now() - d.getTime();
+                const min = Math.floor(diff / 60000);
+                if (min < 1) return '방금 전';
+                if (min < 60) return min + '분 전';
+                const hr = Math.floor(min / 60);
+                if (hr < 24) return hr + '시간 전';
+                const day = Math.floor(hr / 24);
+                if (day < 7) return day + '일 전';
+                return d.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function formatDateTime(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const d = new Date(String(dateStr).replace(' ', 'T'));
+                if (isNaN(d.getTime())) return dateStr;
+                return d.toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+    <script src="/common/js/protection.js?v=20260804b"></script>
+</body>
+</html>

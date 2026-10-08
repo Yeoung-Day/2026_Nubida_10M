@@ -1,0 +1,500 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>채팅 — 누비다플랫폼</title>
+        <link rel="stylesheet" href="/common/css/reset.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/variables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/common.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/responsive.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/features/chat.css?v=20260610a">
+        <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610a">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    </head>
+    <body>
+    <div class="app-layout">
+                    <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header"><div class="sidebar-logo"><img src="/common/assets/logo.svg?v=20260610a" alt="누비다플랫폼" style="height:28px;width:auto;"></div></div>
+                            <nav class="sidebar-nav" id="sidebarNav">
+        <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+        <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+            <span class="icon">📊</span><span class="nav-label">대시보드</span>
+        </a>
+
+        <div class="nav-section">메뉴</div>
+
+        <button class="nav-item nav-toggle" data-section="operations">
+            <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-operations">
+            <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">컨설턴트</span></a>
+            <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+            <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+            <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="finance">
+            <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-finance">
+            <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+            <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+            <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="point">
+            <span class="icon">🏆</span><span class="nav-label">포인트</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-point">
+            <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+            <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+            <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+            <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="report">
+            <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-report">
+            <a class="nav-item sub" href="director-reports.html"><span class="icon">📋</span><span class="nav-label">원장 보고서</span></a>
+            <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+            <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+            <a class="nav-item sub" href="videos.html"><span class="icon">🎥</span><span class="nav-label">비디오</span></a>
+            <a class="nav-item sub" href="classroom.html"><span class="icon">💻</span><span class="nav-label">원격수업</span></a>
+        </div>
+
+        <button class="nav-item nav-toggle" data-section="system">
+            <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+            <span class="toggle-arrow">▸</span>
+        </button>
+        <div class="nav-submenu" id="sub-system">
+            <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+            <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+            <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+            <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+            <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+        </div>
+    </nav>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        
+        // 섹션 매핑
+        const sectionMap = {
+            'branches.html': 'operations', 'academy-management.html': 'operations', 
+            'courses.html': 'operations', 'users.html': 'operations',
+            'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+   'point-management.html': 'point', 'point-settings.html': 'point',
+   'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+   'director-reports.html': 'report', 'notices.html': 'report',
+   'portfolio.html': 'report', 'videos.html': 'report', 'classroom.html': 'report',
+   'withdrawn-students.html': 'system', 'backups.html': 'system',
+   'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+   'category-manager.html': 'system', 'category.html': 'system',
+   };
+
+   const currentSection = sectionMap[currentPage];
+   if (currentSection) {
+   const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+   if (toggle) {
+   toggle.classList.add('open');
+   const sub = document.getElementById(`sub-${currentSection}`);
+   if (sub) sub.classList.add('open');
+   }
+   }
+
+   // 토글 버튼 클릭 이벤트 — 누르면 열고/닫기
+   document.querySelectorAll('.nav-toggle').forEach(btn => {
+   btn.addEventListener('click', function(e) {
+   e.preventDefault();
+   const section = this.dataset.section;
+   const sub = document.getElementById(`sub-${section}`);
+   const isOpen = sub.classList.contains('open');
+
+   if (isOpen) {
+   sub.classList.remove('open');
+   this.classList.remove('open');
+   } else {
+   // 다른 열린 섹션 모두 닫기
+   document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+   document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+   // 현재 섹션 열기
+   sub.classList.add('open');
+   this.classList.add('open');
+   }
+   });
+   });
+
+   // active 표시
+   document.querySelectorAll('.nav-item').forEach(item => {
+   const href = item.getAttribute('href');
+   if (href && href === currentPage) {
+   item.classList.add('active');
+   }
+   });
+   });
+   </script>
+   <div class="sidebar-footer">
+   <div class="user-name" id="sidebarUserName">사용자</div>
+   <div class="user-role" id="sidebarUserRole">본사</div>
+   <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+   </div>
+   </aside>
+   <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   <main class="main-content">
+   <div class="top-nav"><div class="top-nav-left"><h1>💬 채팅</h1></div>
+   <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+   </div>
+   <div class="section-divider"></div>
+
+   <div class="chat-layout">
+   <!-- Sidebar: Room List -->
+   <div class="chat-sidebar" id="chatSidebar">
+   <div class="chat-sidebar-header">
+   <h2>💬 채팅</h2>
+   <button class="btn btn-primary btn-sm" onclick="openNewChatModal()">+ 새 채팅</button>
+   </div>
+   <div class="chat-sidebar-search">
+   <input type="text" id="roomSearch" placeholder="채팅방 검색..." oninput="filterRooms()">
+   </div>
+   <div class="chat-room-list" id="roomList">
+   <div class="chat-empty" style="padding:40px 0"><p>로딩 중...</p></div>
+   </div>
+   </div>
+
+   <!-- Main: Messages -->
+   <div class="chat-main hidden" id="chatMain">
+   <div class="chat-main-header">
+   <div>
+   <div class="chat-mobile-back" onclick="showRoomList()">← 목록</div>
+   <h3 id="currentRoomName">채팅방을 선택하세요</h3>
+   <div class="cmh-meta" id="currentRoomMeta"></div>
+   </div>
+   <div style="display:flex;gap:6px;align-items:center">
+   <button class="btn btn-ghost btn-sm" onclick="renameRoom()" id="renameBtn" style="display:none" title="방 이름 변경">✏️</button>
+   <button class="btn btn-ghost btn-sm" onclick="deleteRoom()" id="deleteBtn" style="display:none" title="방 삭제">🗑️</button>
+   <button class="btn btn-ghost btn-sm" onclick="toggleParticipants()" id="participantsBtn" style="display:none">👥 <span id="participantCount">0</span></button>
+   </div>
+   </div>
+   <div class="chat-messages" id="messageContainer">
+   <div class="chat-empty" id="emptyChat">
+   <div class="icon">💬</div>
+   <p>대화를 시작해보세요</p>
+   </div>
+   </div>
+   <div id="typingIndicator" class="typing-indicator" style="padding:0 20px;display:none"></div>
+   <div class="chat-input-area">
+   <button class="file-btn" onclick="document.getElementById('fileInput').click()" title="파일 첨부">📎</button>
+   <input type="file" id="fileInput" onchange="onFileSelected(event)" style="display:none">
+   <textarea id="msgInput" placeholder="메시지를 입력하세요..." rows="1" oninput="onInputChange()" onkeydown="onInputKeydown(event)"></textarea>
+   <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+   </div>
+   <div class="file-preview" id="filePreview">
+   <span class="fp-icon">📄</span>
+   <span class="fp-name" id="fpName"></span>
+   <span class="fp-cancel" onclick="cancelFileUpload()">✕</span>
+   </div>
+   </div>
+   </div>
+   </main>
+   </div>
+
+   <!-- New Chat Modal -->
+   <div class="modal-overlay" id="newChatModal">
+   <div class="modal" style="max-width:500px">
+   <div class="modal-header"><h3>💬 새 채팅</h3></div>
+   <div class="modal-body">
+   <div class="form-group" style="margin-bottom:12px">
+   <label>채팅 유형</label>
+   <select class="form-input" id="chatTypeSelect" onchange="onChatTypeChange()">
+   <option value="direct">1:1 채팅</option>
+   <option value="group">그룹 채팅</option>
+   </select>
+   </div>
+   <div class="form-group" id="groupNameField" style="margin-bottom:12px;display:none">
+   <label>방 이름</label>
+   <input type="text" class="form-input" id="groupNameInput" placeholder="그룹방 이름">
+   </div>
+   <div class="form-group">
+   <label>참여자</label>
+   <input type="text" class="form-input" id="userSearch" placeholder="사용자 검색..." oninput="filterAvailableUsers()">
+   <div class="selected-tags" id="selectedUserTags"></div>
+   <div class="user-select-list" id="availableUserList"></div>
+   </div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-primary" onclick="createChatRoom()">채팅방 만들기</button>
+   <button class="btn btn-ghost" onclick="closeModal('newChatModal')">취소</button>
+   </div>
+   </div>
+   </div>
+
+   <!-- Participants Modal -->
+   <div class="modal-overlay" id="participantsModal">
+   <div class="modal" style="max-width:400px">
+   <div class="modal-header"><h3>👥 참여자</h3></div>
+   <div class="modal-body" id="participantsBody">
+   <div class="chat-empty"><p>로딩 중...</p></div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-ghost" onclick="closeModal('participantsModal')">닫기</button>
+   </div>
+   </div>
+   </div>
+
+   <script src="/common/js/api.js?v=20260610a"></script>
+   <script src="/common/js/auth.js?v=20260610a"></script>
+   <script src="/common/js/utils.js?v=20260610a"></script>
+   <script>
+   let currentUser = null;
+   let chatRooms = [];
+   let currentRoomId = null;
+   let currentWs = null;
+   let msgOffset = 0;
+   let isLoadingMessages = false;
+   let hasMoreMessages = true;
+   let selectedUsers = new Set();
+   let availableUsers = [];
+   let typingTimeout = null;
+   let isTyping = false;
+
+   document.addEventListener('DOMContentLoaded', async () => {
+   try {
+   requireAuth();
+   renderSidebarUser();
+   const now = new Date();
+   document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+
+   // Get current user info from localStorage
+   const stored = localStorage.getItem('user');
+   if (stored) {
+   currentUser = JSON.parse(stored);
+   }
+
+   await loadRooms();
+   setupInfiniteScroll();
+   } catch (e) {
+   console.error('Init error:', e);
+   }
+   });
+
+   async function loadRooms() {
+   try {
+   const res = await apiGet('/chat/rooms');
+   chatRooms = res?.data || [];
+   renderRoomList();
+   } catch (e) {
+   console.error('Load rooms error:', e);
+   }
+   }
+
+   function renderRoomList() {
+   const container = document.getElementById('roomList');
+   const searchVal = (document.getElementById('roomSearch').value || '').toLowerCase();
+
+   let filtered = chatRooms;
+   if (searchVal) {
+   filtered = chatRooms.filter(r => r.name.toLowerCase().includes(searchVal));
+   }
+
+   if (!filtered.length) {
+   container.innerHTML = '<div class="chat-empty" style="padding:40px 0"><p>채팅방이 없습니다.</p></div>';
+   return;
+   }
+
+   container.innerHTML = filtered.map(r => {
+   const isActive = r.id === currentRoomId;
+   const time = r.last_message?.created_at ? formatChatTime(r.last_message.created_at) : '';
+   const preview = r.last_message?.content || '';
+   const badge = r.unread_count > 0 ? `<div class="cri-badge">${r.unread_count > 99 ? '99+' : r.unread_count}</div>` : '';
+   return `<div class="chat-room-item ${isActive ? 'active' : ''}" onclick="selectRoom(${r.id})">
+   <div class="cri-header">
+   <div class="cri-name">${esc(r.name)}</div>
+   <div class="cri-time">${time}</div>
+   </div>
+   <div class="cri-preview">${esc(preview)}</div>
+   ${badge}
+   </div>`;
+   }).join('');
+   }
+
+   function selectRoom(roomId) {
+   if (currentRoomId === roomId) return;
+
+   // Disconnect old WS
+   if (currentWs) {
+   currentWs.close();
+   currentWs = null;
+   }
+
+   currentRoomId = roomId;
+   msgOffset = 0;
+   hasMoreMessages = true;
+
+   // Update UI
+   renderRoomList();
+
+   // Find room
+   const room = chatRooms.find(r => r.id === roomId);
+   document.getElementById('currentRoomName').textContent = room ? room.name : '채팅방';
+   document.getElementById('currentRoomMeta').textContent = room ? `${room.room_type === 'direct' ? '1:1' : room.room_type === 'group' ? '그룹' : '공지'} · ${room.participant_count}명` : '';
+   const participantsBtn = document.getElementById('participantsBtn');
+   if (participantsBtn) participantsBtn.style.display = 'inline-flex';
+   document.getElementById('participantCount').textContent = room?.participant_count || 0;
+
+   // Show action buttons (모든 채팅방에서 표시)
+   const db = document.getElementById('deleteBtn');
+   const rb = document.getElementById('renameBtn');
+   const pb = document.getElementById('participantsBtn');
+   if (room) {
+   if (db) db.style.display = 'inline-flex';
+   if (rb) rb.style.display = 'inline-flex';
+   if (pb) pb.style.display = 'inline-flex';
+   } else {
+   if (db) db.style.display = 'none';
+   if (rb) rb.style.display = 'none';
+   if (pb) pb.style.display = 'none';
+   }
+
+   // Clear messages
+   document.getElementById('messageContainer').innerHTML = '';
+   const emptyChat = document.getElementById('emptyChat');
+   if (emptyChat) {
+   emptyChat.style.display = 'block';
+   const p = emptyChat.querySelector('p');
+   if (p) p.textContent = '메시지를 불러오는 중...';
+   }
+
+   // Show chat main (mobile)
+   document.getElementById('chatMain').classList.remove('hidden');
+   document.getElementById('chatSidebar').classList.add('hidden');
+
+   // Load messages
+   loadMessages();
+
+   // Connect WebSocket
+   connectWebSocket(roomId);
+   }
+
+   function showRoomList() {
+   document.getElementById('chatMain').classList.add('hidden');
+   document.getElementById('chatSidebar').classList.remove('hidden');
+   }
+
+   async function loadMessages() {
+   if (!currentRoomId || isLoadingMessages || !hasMoreMessages) return;
+   isLoadingMessages = true;
+
+   try {
+   let url = `/chat/rooms/${currentRoomId}/messages?limit=50`;
+   if (msgOffset > 0) url += `&before=${msgOffset}`;
+
+   const res = await apiGet(url);
+   const messages = res?.data || [];
+
+   if (messages.length < 50) hasMoreMessages = false;
+   const isInitialLoad = msgOffset === 0;
+   if (messages.length > 0) {
+   msgOffset = messages[0].id;
+   }
+
+   const container = document.getElementById('messageContainer');
+   let emptyEl = document.getElementById('emptyChat');
+
+   // emptyChat이 없으면 새로 생성 (selectRoom에서 innerHTML=''로 삭제된 경우)
+   if (!emptyEl) {
+   emptyEl = document.createElement('div');
+   emptyEl.className = 'chat-empty';
+   emptyEl.id = 'emptyChat';
+   emptyEl.style.display = 'none';
+   const iconDiv = document.createElement('div');
+   iconDiv.className = 'icon';
+   iconDiv.textContent = '💬';
+   const p = document.createElement('p');
+   p.textContent = '대화를 시작해보세요';
+   emptyEl.appendChild(iconDiv);
+   emptyEl.appendChild(p);
+   container.prepend(emptyEl);
+   }
+
+   if (messages.length === 0 && msgOffset === 0) {
+   emptyEl.style.display = 'flex';
+   emptyEl.querySelector('p').textContent = '대화를 시작해보세요';
+   return;
+   }
+
+   emptyEl.style.display = 'none';
+
+   // Prepend messages (입장/퇴장 제외)
+   const filteredMessages = messages.filter(m => !(m.message_type === 'system' && (m.content.includes('입장') || m.content.includes('퇴장'))));
+   if (filteredMessages.length === 0) return;
+   const fragment = document.createDocumentFragment();
+   // We use temporary div to generate HTML and insert at top
+   const tempDiv = document.createElement('div');
+   tempDiv.innerHTML = filteredMessages.map(m => renderMessage(m, false)).join('');
+
+   if (!isInitialLoad && filteredMessages.length > 0) {
+   // Insert before first child
+   while (tempDiv.firstChild) {
+   container.insertBefore(tempDiv.firstChild, container.firstChild);
+   }
+   } else {
+   container.innerHTML = filteredMessages.map(m => renderMessage(m, false)).join('');
+   // Re-create emptyChat if it was destroyed by innerHTML
+   if (!document.getElementById('emptyChat')) {
+   const emptyEl = document.createElement('div');
+   emptyEl.className = 'chat-empty';
+   emptyEl.id = 'emptyChat';
+   emptyEl.style.display = 'none';
+   const iconDiv = document.createElement('div');
+   iconDiv.className = 'icon';
+   iconDiv.textContent = '💬';
+   const p = document.createElement('p');
+   p.textContent = '대화를 시작해보세요';
+   emptyEl.appendChild(iconDiv);
+   emptyEl.appendChild(p);
+   container.appendChild(emptyEl);
+   }
+   }
+
+   // Scroll to bottom on initial load
+   if (isInitialLoad) {
+   scrollToBottom();
+   }
+
+   // Auto mark as read
+   if (messages.length > 0) {
+   const maxId = Math.max(...messages.map(m => m.id));
+   markRead(maxId);
+   }
+   } catch (e) {
+   console.error('Load messages error:', e);
+   } finally {
+   isLoadingMessages = false;
+   }
+   }
+
+   function renderMessage(m, withTime) {
+   const isMine = m.sender_id === currentUser?.id;
+   const isAdmin = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
+   const isSystem = m.message_type === 'system';
+   const isFile = m.message_type === 'file';
+   const time = m.created_at ? formatChatTime(m.created_at) : '';
+
+   if (isSystem) {
+   return `<div class="chat-msg-wrap system"><div class="chat-msg-bubble">${esc(m.content)}</div></div>`;
+   }
+

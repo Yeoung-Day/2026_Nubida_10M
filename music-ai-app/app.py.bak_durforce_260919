@@ -1,0 +1,1289 @@
+import os
+import mimetypes
+import json
+import mysql.connector
+import redis
+import uuid
+import traceback
+import sys
+sys.path.insert(0, '/app')
+from password_hash import hash_password, verify_password
+from flask import Flask, send_from_directory, abort, jsonify, request
+
+# static_url_path를 설정하여 /static/ 경로를 Flask가 자동으로 처리하게 합니다.
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(BASE_DIR, 'static')
+
+app = Flask(__name__, static_folder=static_dir)
+
+# 1. MariaDB 연결 설정
+db_config = {
+    'host': 'music-db',               # 도커 서비스 이름
+    'user': 'nubiapp',             # DB 사용자명
+    'password': 'Mi9qEZGvEaE^g9nhzoILrvT=',     # DB 비밀번호
+    'database': 'nubida_ai',          # DB 이름
+    'port': 3306,
+    'raise_on_warnings': True
+}
+
+def get_db_connection():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        return conn
+    except Exception as e:
+        print(f"!!! DB 연결 실패: {e}")
+        return None
+
+
+# ══════════════════════════════════════════════════════════════
+# [신규 260919] 접속 잠금 (Access Lock) — 시간제한 코드 방식
+#   · 관리자가 본사 페이지에서 코드 생성 (예: NUB26A)
+#   · 선생님이 학생들에게 코드 전달 → 수업 시간 동안만 유효
+#   · 설정: access_lock_config (lock_enabled)
+#   · 코드: access_codes (starts_at ~ ends_at)
+#   · 기존 게시판/노래 기능은 전혀 건드리지 않음 (앞단 가드만 추가)
+# ══════════════════════════════════════════════════════════════
+import secrets
+import hashlib
+import hmac
+from datetime import datetime, timedelta
+from flask import make_response
+
+ACCESS_COOKIE = 'nubida_ai_access'
+# 방문자 식별 쿠키 (인원 기준 카운트용)
+VISITOR_COOKIE = 'nubida_ai_visitor'
+_SECRET_FILE = '/tmp/.nubida_ai_access_secret'
+try:
+    with open(_SECRET_FILE, 'rb') as _f:
+        ACCESS_SECRET = _f.read()
+except Exception:
+    ACCESS_SECRET = secrets.token_bytes(32)
+    try:
+        with open(_SECRET_FILE, 'wb') as _f:
+            _f.write(ACCESS_SECRET)
+    except Exception:
+        pass
+
+_LOCK_EXEMPT_EXACT = {
+    '/api/access/status',
+    '/api/access/unlock',
+    '/favicon.ico',
+}
+# 관리자 API 전체는 잠금 예외 (X-Nubida-Admin 키로 별도 보호됨)
+_LOCK_EXEMPT_PREFIX = (
+    '/static/',
+    '/api/access/admin/',
+)
+
+
+def _get_lock_config():
+    """잠금 설정 조회 → (lock_enabled, updated_by)"""
+    conn = get_db_connection()
+    if not conn:
+        return (False, None)
+    try:
+        cur = conn.cursor(dictionary=True)
+        cur.execute("SELECT lock_enabled, updated_by FROM access_lock_config WHERE id=1")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if not row:
+            return (False, None)
+        return (bool(row['lock_enabled']), row.get('updated_by'))
+    except Exception as e:
+        print("!!! lock config error: %s" % e)
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return (False, None)
+
+
+def _token_for(code, ends_at):
+    """코드 + 만료시각 서명 토큰 (위조 방지)"""
+    msg = ("%s|%s" % (code, ends_at)).encode('utf-8')
+    return hmac.new(ACCESS_SECRET, msg, hashlib.sha256).hexdigest()
+
+
+def _session_valid():
+    """쿠키 토큰 검증 → 유효하면 코드 반환, 아니면 None"""
+    raw = request.cookies.get(ACCESS_COOKIE)
+    if not raw:
+        return None
+    parts = raw.split('|')
+    if len(parts) < 3:
+        return None
+    code, ends_at, sig = parts[0], parts[1], '|'.join(parts[2:])
+    if not hmac.compare_digest(sig, _token_for(code, ends_at)):
+        return None
+    try:
+        ends = datetime.fromisoformat(ends_at)
+    except Exception:
+        return None
+    if datetime.now() > ends:
+        return None
+    # 코드가 DB에서 아직 활성인지 재확인 (관리자가 중간에 끌 수 있음)
+    conn = get_db_connection()
+    if not conn:
+        return code
+    try:
+        cur = conn.cursor(dictionary=True)
+        cur.execute("""SELECT id FROM access_codes
+                       WHERE code=%s AND is_active=1
+                         AND starts_at<=NOW() AND ends_at>=NOW()""", (code,))
+        ok = cur.fetchone() is not None
+        cur.close()
+        conn.close()
+        return code if ok else None
+    except Exception:
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return code
+
+
+def _get_code_duration(code):
+    """코드에 지정된 노래 길이(초) 반환. 없으면 None."""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    try:
+        cur = conn.cursor(dictionary=True)
+        cur.execute("SELECT duration_sec FROM access_codes WHERE code=%s LIMIT 1", (code,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row and row.get('duration_sec'):
+            return int(row['duration_sec'])
+        return None
+    except Exception:
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return None
+
+
+def _visitor_key(req):
+    """방문자 고유키 생성 — 쿠키 우선, 없으면 지문 생성용 시드 반환.
+    실제 쿠키 발급은 unlock 응답에서 한다."""
+    ck = req.cookies.get(VISITOR_COOKIE)
+    if ck and len(ck) >= 16:
+        return ck, False          # 기존 방문자
+    return None, True             # 신규 → 발급 필요
+
+
+def _new_visitor_key():
+    return uuid.uuid4().hex + uuid.uuid4().hex[:8]
+
+
+def _count_visitor(code, vkey, ip, ua):
+    """방문자 등록. (is_new, current_count) 반환."""
+    conn = get_db_connection()
+    if not conn:
+        return (True, 0)
+    try:
+        cur = conn.cursor(dictionary=True)
+        cur.execute("""SELECT id FROM access_visitors
+                       WHERE code=%s AND visitor_key=%s LIMIT 1""", (code, vkey))
+        exists = cur.fetchone() is not None
+        if not exists:
+            cur.execute("""INSERT IGNORE INTO access_visitors
+                           (id, code, visitor_key, ip, ua)
+                           VALUES (%s,%s,%s,%s,%s)""",
+                        ('av_' + uuid.uuid4().hex[:16], code, vkey,
+                         (ip or '')[:45], (ua or '')[:255]))
+            conn.commit()
+        cur.execute("SELECT COUNT(*) AS c FROM access_visitors WHERE code=%s", (code,))
+        cnt = cur.fetchone()['c']
+        cur.close()
+        conn.close()
+        return (not exists, cnt)
+    except Exception as e:
+        print("!!! visitor count error: %s" % e)
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return (True, 0)
+
+
+def _sync_used_count(code):
+    """access_codes.used_count 를 실제 방문자 수로 맞춘다 (표시용)."""
+    conn = get_db_connection()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor()
+        cur.execute("""UPDATE access_codes SET used_count =
+                       (SELECT COUNT(*) FROM access_visitors WHERE code=%s)
+                       WHERE code=%s""", (code, code))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
+
+def _verify_code(entered, vkey=None, ip=None, ua=None):
+    """입력 코드 검증 → 유효하면 (code, ends_at_str, is_new_visitor) 반환
+
+    인원 기준 제한:
+      · max_uses = 허용 인원 (고유 방문자 수)
+      · 같은 방문자가 다시 입력해도 카운트되지 않음
+    """
+    entered = (entered or '').strip().upper()
+    if not entered:
+        return None
+    if not vkey:
+        vkey = 'legacy_' + _new_visitor_key()
+    conn = get_db_connection()
+    if not conn:
+        return None
+    try:
+        cur = conn.cursor(dictionary=True)
+        cur.execute("""SELECT id, code, ends_at, max_uses, used_count FROM access_codes
+                       WHERE code=%s AND is_active=1
+                         AND starts_at<=NOW() AND ends_at>=NOW()
+                       ORDER BY ends_at DESC LIMIT 1""", (entered,))
+        row = cur.fetchone()
+        if not row:
+            cur.close()
+            conn.close()
+            return None
+
+        # ── 이미 이 코드로 들어온 방문자인가? ──
+        cur.execute("""SELECT id FROM access_visitors
+                       WHERE code=%s AND visitor_key=%s LIMIT 1""",
+                    (row['code'], vkey))
+        already = cur.fetchone() is not None
+        cur.close()
+        conn.close()
+
+        # 신규 방문자만 인원 제한 검사
+        if not already and row['max_uses'] is not None:
+            _, cnt = _count_visitor(row['code'], vkey, ip, ua)
+            if cnt > int(row['max_uses']):
+                # 초과 → 방금 등록한 방문자 기록 롤백
+                _remove_visitor(row['code'], vkey)
+                return None
+            _sync_used_count(row['code'])
+            return (row['code'], row['ends_at'].strftime('%Y-%m-%dT%H:%M:%S'), True)
+
+        # 기존 방문자 또는 무제한
+        if not already:
+            _count_visitor(row['code'], vkey, ip, ua)
+            _sync_used_count(row['code'])
+            return (row['code'], row['ends_at'].strftime('%Y-%m-%dT%H:%M:%S'), True)
+
+        return (row['code'], row['ends_at'].strftime('%Y-%m-%dT%H:%M:%S'), False)
+    except Exception as e:
+        print("!!! code verify error: %s" % e)
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return None
+
+
+def _remove_visitor(code, vkey):
+    """인원 초과 시 방문자 기록 제거 (롤백)"""
+    conn = get_db_connection()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM access_visitors WHERE code=%s AND visitor_key=%s",
+                    (code, vkey))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
+
+@app.route('/api/access/status', methods=['GET'])
+def access_status():
+    """잠금 상태 + 현재 세션 유효성"""
+    enabled, _ = _get_lock_config()
+    if not enabled:
+        return jsonify({"locked": False, "unlocked": True})
+    ok = _session_valid() is not None
+    return jsonify({"locked": True, "unlocked": ok})
+
+
+@app.route('/api/access/unlock', methods=['POST'])
+def access_unlock():
+    """코드 입력 → 검증 → 쿠키 발급 (방문자 기준 인원 제한)"""
+    data = request.get_json(silent=True) or {}
+    code_in = str(data.get('code', '')).strip().upper()
+    if not code_in:
+        return jsonify({"ok": False, "message": "코드를 입력해 주세요."}), 400
+
+    # ── 방문자 식별 (없으면 새로 발급) ──
+    vkey, is_new_cookie = _visitor_key(request)
+    if is_new_cookie:
+        vkey = _new_visitor_key()
+
+    ip = (request.headers.get('X-Forwarded-For', '') or request.remote_addr or '').split(',')[0].strip()
+    ua = request.headers.get('User-Agent', '')
+
+    result = _verify_code(code_in, vkey=vkey, ip=ip, ua=ua)
+    if not result:
+        return jsonify({"ok": False,
+                        "message": "코드가 올바르지 않거나 이용 시간이 아니거나 인원이 초과되었습니다."}), 403
+    code, ends_at, _is_new = result
+    resp = make_response(jsonify({"ok": True, "ends_at": ends_at}))
+    resp.set_cookie(
+        ACCESS_COOKIE,
+        "%s|%s|%s" % (code, ends_at, _token_for(code, ends_at)),
+        max_age=60 * 60 * 24,
+        httponly=True,
+        samesite='Lax',
+    )
+    # 방문자 쿠키 (인원 카운트용, 1년)
+    if is_new_cookie:
+        resp.set_cookie(
+            VISITOR_COOKIE,
+            vkey,
+            max_age=60 * 60 * 24 * 365,
+            httponly=False,
+            samesite='Lax',
+        )
+    return resp
+
+
+@app.before_request
+def _access_lock_guard():
+    """전역 접속 가드 — 잠금 ON이면 코드 없는 요청을 차단"""
+    path = request.path or '/'
+    if path in _LOCK_EXEMPT_EXACT:
+        return None
+    for pref in _LOCK_EXEMPT_PREFIX:
+        if path.startswith(pref):
+            return None
+    enabled, _ = _get_lock_config()
+    if not enabled:
+        return None
+    if _session_valid():
+        return None
+    # API 요청은 401 JSON
+    if path.startswith('/api/'):
+        return jsonify({"ok": False, "locked": True,
+                        "message": "이용 시간이 아닙니다. 선생님께 코드를 확인해 주세요."}), 401
+    # 페이지 요청 → 잠금화면
+    return send_from_directory(BASE_DIR, 'lock.html')
+
+
+ADMIN_API_KEY = os.environ.get('NUBIDA_ACCESS_KEY', 'nubida-admin-260919')
+
+
+def _admin_ok():
+    return request.headers.get('X-Nubida-Admin', '') == ADMIN_API_KEY
+
+
+@app.route('/api/access/admin/config', methods=['GET', 'POST'])
+def access_admin_config():
+    if not _admin_ok():
+        return jsonify({"ok": False, "message": "권한 없음"}), 403
+    if request.method == 'GET':
+        enabled, by = _get_lock_config()
+        return jsonify({"ok": True, "lock_enabled": enabled, "updated_by": by})
+    data = request.get_json(silent=True) or {}
+    enabled = 1 if data.get('lock_enabled') else 0
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"ok": False, "message": "DB 연결 실패"}), 500
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE access_lock_config SET lock_enabled=%s, updated_by=%s WHERE id=1",
+                    (enabled, str(data.get('updated_by', ''))[:100] or None))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"ok": True, "lock_enabled": bool(enabled)})
+    except Exception as e:
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+@app.route('/api/access/admin/codes', methods=['GET', 'POST'])
+def access_admin_codes():
+    if not _admin_ok():
+        return jsonify({"ok": False, "message": "권한 없음"}), 403
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"ok": False, "message": "DB 연결 실패"}), 500
+    try:
+        cur = conn.cursor(dictionary=True)
+        if request.method == 'GET':
+            cur.execute("""SELECT id, code, label, starts_at, ends_at,
+                                  duration_sec, max_songs, max_uses,
+                                  used_count, is_active, created_by, created_at,
+                                  (SELECT COUNT(*) FROM access_visitors v
+                                    WHERE v.code = access_codes.code) AS visitor_count
+                           FROM access_codes ORDER BY created_at DESC LIMIT 200""")
+            rows = cur.fetchall()
+            for r in rows:
+                for k in ('starts_at', 'ends_at', 'created_at'):
+                    if r.get(k):
+                        r[k] = r[k].strftime('%Y-%m-%d %H:%M:%S')
+                # 표시용: used_count = 실제 방문자 수
+                r['used_count'] = int(r.get('visitor_count') or 0)
+            cur.close()
+            conn.close()
+            return jsonify({"ok": True, "codes": rows})
+
+        data = request.get_json(silent=True) or {}
+        starts = str(data.get('starts_at', '')).strip()
+        ends = str(data.get('ends_at', '')).strip()
+        if not starts or not ends:
+            cur.close()
+            conn.close()
+            return jsonify({"ok": False, "message": "시작/종료 시간이 필요합니다."}), 400
+        code = str(data.get('code', '')).strip().upper()
+        if not code:
+            code = _gen_code()
+        if len(code) < 6 or not code.isalnum():
+            cur.close()
+            conn.close()
+            return jsonify({"ok": False,
+                            "message": "코드는 영문/숫자 6자리 이상이어야 합니다."}), 400
+        # 노래 길이 (20/30/40 등, 없으면 NULL = 기본 30초)
+        _dur = data.get('duration_sec')
+        try:
+            dur = int(_dur) if _dur not in (None, '', 0, '0') else None
+        except (TypeError, ValueError):
+            dur = None
+        _ms = data.get('max_songs')
+        try:
+            msongs = int(_ms) if _ms not in (None, '', 0, '0') else None
+        except (TypeError, ValueError):
+            msongs = None
+
+        cid = 'ac_' + uuid.uuid4().hex[:16]
+        cur.execute("""INSERT INTO access_codes
+                       (id, code, label, starts_at, ends_at,
+                        duration_sec, max_songs, max_uses, created_by)
+                       VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                    (cid, code, str(data.get('label', ''))[:100] or None,
+                     starts, ends, dur, msongs,
+                     int(data['max_uses']) if data.get('max_uses') else None,
+                     str(data.get('created_by', ''))[:100] or None))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"ok": True, "id": cid, "code": code,
+                        "duration_sec": dur})
+    except Exception as e:
+        print("!!! admin codes error: %s" % e)
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+@app.route('/api/access/admin/codes/<cid>/deactivate', methods=['POST'])
+def access_admin_deactivate(cid):
+    if not _admin_ok():
+        return jsonify({"ok": False, "message": "권한 없음"}), 403
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"ok": False, "message": "DB 연결 실패"}), 500
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE access_codes SET is_active=0 WHERE id=%s", (cid,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"ok": True})
+    except Exception as e:
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+def _gen_code(length=6):
+    """헷갈리는 문자 제외한 영문대문자+숫자 코드 생성"""
+    alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+# ══════════════════════════════════════════════════════════════
+# [/신규 260919] 접속 잠금 끝
+# ══════════════════════════════════════════════════════════════
+
+
+# ══════════════════════════════════════════════════════════════
+# [신규 260919] 권한별 노래 설정 API (본사 관리자용)
+#   · 누비다플랫폼 본사 페이지에서 권한별 곡 길이/기능을 설정
+#   · song_role_settings 테이블 사용
+# ══════════════════════════════════════════════════════════════
+
+@app.route('/api/access/admin/role-settings', methods=['GET'])
+def access_admin_role_settings():
+    """권한별 노래 길이/기능 설정 조회"""
+    if not _admin_ok():
+        return jsonify({"ok": False, "message": "권한 없음"}), 403
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"ok": False, "message": "DB 연결 실패"}), 500
+    try:
+        cur = conn.cursor(dictionary=True)
+        cur.execute("""SELECT role, duration_sec, inference_steps,
+                              max_songs_per_day, allow_ai_chat, allow_board
+                       FROM song_role_settings ORDER BY role""")
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({"ok": True, "roles": rows})
+    except Exception as e:
+        print("!!! role settings get error: %s" % e)
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+@app.route('/api/access/admin/role-settings', methods=['POST'])
+def access_admin_role_settings_set():
+    """권한별 노래 설정 저장"""
+    if not _admin_ok():
+        return jsonify({"ok": False, "message": "권한 없음"}), 403
+    data = request.get_json(silent=True) or {}
+    roles = data.get('roles') or []
+    if not isinstance(roles, list) or not roles:
+        return jsonify({"ok": False, "message": "roles 배열이 필요합니다."}), 400
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"ok": False, "message": "DB 연결 실패"}), 500
+    try:
+        cur = conn.cursor()
+        for r in roles:
+            role = str(r.get('role', '')).strip()
+            if not role:
+                continue
+            dur = int(r.get('duration_sec', 30) or 30)
+            steps = int(r.get('inference_steps', 8) or 8)
+            maxd = r.get('max_songs_per_day')
+            maxd = int(maxd) if maxd not in (None, '', 0) else None
+            chat = 1 if r.get('allow_ai_chat') else 0
+            board = 1 if r.get('allow_board') else 0
+            cur.execute("""INSERT INTO song_role_settings
+                             (role, duration_sec, inference_steps,
+                              max_songs_per_day, allow_ai_chat, allow_board)
+                           VALUES (%s,%s,%s,%s,%s,%s)
+                           ON DUPLICATE KEY UPDATE
+                             duration_sec=VALUES(duration_sec),
+                             inference_steps=VALUES(inference_steps),
+                             max_songs_per_day=VALUES(max_songs_per_day),
+                             allow_ai_chat=VALUES(allow_ai_chat),
+                             allow_board=VALUES(allow_board)""",
+                        (role, dur, steps, maxd, chat, board))
+        conn.commit()
+        cur.execute("""SELECT role, duration_sec, inference_steps,
+                              max_songs_per_day, allow_ai_chat, allow_board
+                       FROM song_role_settings ORDER BY role""")
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({"ok": True, "roles": [
+            {"role": r[0], "duration_sec": r[1], "inference_steps": r[2],
+             "max_songs_per_day": r[3], "allow_ai_chat": r[4], "allow_board": r[5]}
+            for r in rows
+        ]})
+    except Exception as e:
+        print("!!! role settings set error: %s" % e)
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+# ══════════════════════════════════════════════════════════════
+# [/신규 260919] 권한별 노래 설정 끝
+# ══════════════════════════════════════════════════════════════
+
+
+# 2. 필수 MIME 타입 추가 (WASM 엔진 인식용)
+mimetypes.add_type('application/octet-stream', '.data')
+mimetypes.add_type('application/wasm', '.wasm')
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('application/octet-stream', '.onnx')
+# espeak-ng 데이터 파일들을 위한 타입
+mimetypes.add_type('application/octet-stream', '.phontab')
+mimetypes.add_type('application/octet-stream', '.phonindex')
+mimetypes.add_type('application/octet-stream', '.phondata')
+
+
+@app.route('/api/posts', methods=['GET'])
+def get_posts():
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"error": "데이터베이스 연결 실패"}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM posts ORDER BY created_at DESC")
+        rows = cursor.fetchall()
+        
+        for row in rows:
+            if row.get('recipe'):
+                try: row['recipe'] = json.loads(row['recipe'])
+                except: row['recipe'] = []
+            else:
+                row['recipe'] = []
+            
+            # 해당 게시물 댓글 가져오기
+            cursor.execute("SELECT text FROM comments WHERE post_id = %s", (row['id'],))
+            row['comments'] = [c_row['text'] for c_row in cursor.fetchall()]
+            
+            if row['created_at']:
+                row['created_at'] = row['created_at'].strftime('%Y-%m-%d %H:%M:%S')
+
+        return jsonify(rows)
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        conn.close()
+
+# [수정됨] 게시물 저장 시 비밀번호(password)를 쿼리에 추가했습니다.
+@app.route('/api/posts', methods=['POST'])
+def save_post():
+    data = request.json
+    conn = get_db_connection()
+    if not conn: return jsonify({"error": "DB 연결 실패"}), 500
+    
+    try:
+        cursor = conn.cursor()
+        # 가사 데이터(recipe)를 문자열로 변환하여 유실 방지
+        recipe_str = json.dumps(data.get('recipe', []), ensure_ascii=False)
+        
+        sql = """INSERT INTO posts (id, title, password, author, school, singerId, singerName, mrPath, recipe, likes) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 0)"""
+        
+        cursor.execute(sql, (
+            data.get('id'),
+            data.get('title'),
+            hash_password(str(data.get('password', ''))),
+            data.get('author', '무명'),
+            data.get('school', '개인'),
+            data.get('singerId'),
+            data.get('singerName'),
+            data.get('mrPath'), # 사용자가 선택한 MR 경로
+            recipe_str         # [핵심] JSON 문자열로 저장
+        ))
+        conn.commit()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        print(f"저장 에러: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/posts/<post_id>/like', methods=['POST'])
+def toggle_like(post_id):
+    data = request.json or {}
+    user_id = data.get('user_id', request.remote_addr)
+
+    conn = get_db_connection()
+    if not conn: return jsonify({"error": "DB 연결 실패"}), 500
+        
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM post_likes WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+        exists = cursor.fetchone()
+
+        if exists:
+            cursor.execute("DELETE FROM post_likes WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+            cursor.execute("UPDATE posts SET likes = GREATEST(0, likes - 1) WHERE id = %s", (post_id,))
+            action = "unliked"
+        else:
+            cursor.execute("INSERT INTO post_likes (post_id, user_id) VALUES (%s, %s)", (post_id, user_id))
+            cursor.execute("UPDATE posts SET likes = likes + 1 WHERE id = %s", (post_id,))
+            action = "liked"
+
+        conn.commit()
+        return jsonify({"status": "success", "action": action})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/posts/<post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    data = request.json
+    client_password = str(data.get('password', '')).strip()
+
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT password FROM posts WHERE id = %s", (post_id,))
+        post = cursor.fetchone()
+
+        if not post:
+            return jsonify({"status": "error", "message": "게시물을 찾을 수 없습니다."}), 404
+
+        db_password = str(post['password'] if post['password'] is not None else '').strip()
+
+        print(f"--- 삭제 시도 로그 ---")
+        print(f"ID: {post_id} | 비밀번호 검증")
+
+        if not verify_password(client_password, db_password):
+            return jsonify({"status": "error", "message": "비밀번호가 일치하지 않습니다."}), 401
+
+        # 기존 평문이면 검증 성공 시점에 해시로 자동 교체
+        if db_password and not db_password.startswith("pbkdf2_sha256$"):
+            try:
+                cursor.execute("UPDATE posts SET password = %s WHERE id = %s",
+                               (hash_password(client_password), post_id))
+                conn.commit()
+            except Exception:
+                pass
+
+        cursor.execute("DELETE FROM posts WHERE id = %s", (post_id,))
+        conn.commit()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        print(traceback.format_exc())
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/posts/<post_id>/comment', methods=['POST'])
+def add_comment(post_id):
+    text = request.json.get('text')
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO comments (post_id, text) VALUES (%s, %s)", (post_id, text))
+        conn.commit()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+# ---------------------------------------------------------
+# [보안 헤더 및 파일 서빙 구역]
+# ---------------------------------------------------------
+
+@app.after_request
+def add_security_headers(response):
+    response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
+    response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+@app.route('/')
+def index():
+    return send_from_directory(BASE_DIR, 'index.html')
+
+@app.route('/<path:path>')
+def serve_root_files(path):
+    # API 요청과 겹치지 않게 우선 탐색
+    # 1. static/sherpa 우선 탐색
+    sherpa_path = os.path.join(app.static_folder, 'sherpa', path)
+    if os.path.exists(sherpa_path) and os.path.isfile(sherpa_path):
+        return send_from_directory(os.path.join(app.static_folder, 'sherpa'), path)
+
+    # 2. 루트(BASE_DIR) 탐색 (js, css 등)
+    full_path = os.path.join(BASE_DIR, path)
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        return send_from_directory(BASE_DIR, path)
+    
+    # 3. static 일반 탐색
+    static_path = os.path.join(app.static_folder, path)
+    if os.path.exists(static_path) and os.path.isfile(static_path):
+        return send_from_directory(app.static_folder, path)
+        
+    return abort(404)
+
+rd = redis.Redis(host='redis', port=6379, db=0)
+
+@app.route('/<path:filename>')
+def serve_root(filename):
+    # index.js, config.js 등이 루트에 있을 경우를 대비
+    return send_from_directory(BASE_DIR, filename)
+
+# 3. 모든 정적 파일 서빙 (하위 폴더 무제한 지원)
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    # 파일이 실제로 존재하는지 확인하는 로그 (디버깅용)
+    # print(f"Serving: {filename}") 
+    return send_from_directory(app.static_folder, filename)
+
+@app.route('/api/generate', methods=['POST'])
+def generate_request():
+    task_id = str(uuid.uuid4())
+    # 1. 대기열에 요청 추가
+    rd.rpush("music_queue", task_id)
+    # 2. 현재 대기 인원 확인
+    queue_len = rd.llen("music_queue")
+    return jsonify({"task_id": task_id, "queue_number": queue_len})
+
+# ══════════════════════════════════════════════════════════════
+# [신규 260914] AI 도우미 (Ollama 연동) — 스튜디오 전용 채팅 + 가사 생성
+#   - 같은 docker_ai-net 안의 ollama:11434 를 직접 호출
+#   - 외부 라이브러리 없이 표준 라이브러리(urllib)만 사용
+#   - 로그인/세션 불필요 (공개 스튜디오)
+# ══════════════════════════════════════════════════════════════
+import urllib.request
+import urllib.error
+
+OLLAMA_URL = os.environ.get('OLLAMA_URL', 'http://ollama:11434')
+OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'qwen3:8b')
+
+# AI 남용 방지: IP 기준 1분 20회
+_ai_rate = {}
+
+def _ai_rate_ok(ip, limit=20, window=60):
+    import time as _t
+    now = _t.time()
+    hit = _ai_rate.get(ip)
+    if not hit or now - hit[0] > window:
+        _ai_rate[ip] = [now, 1]
+        return True, 0
+    hit[1] += 1
+    if hit[1] > limit:
+        return False, int(window - (now - hit[0]))
+    return True, 0
+
+def _ollama_chat(messages, timeout=120):
+    """Ollama /api/chat 호출 (표준 라이브러리)"""
+    payload = json.dumps({
+        "model": OLLAMA_MODEL,
+        "messages": messages,
+        "stream": False,
+        # qwen3 는 thinking 모드가 기본이라 답이 느림 -> 끄기
+        "think": False
+    }).encode('utf-8')
+    req = urllib.request.Request(
+        OLLAMA_URL + '/api/chat',
+        data=payload,
+        headers={'Content-Type': 'application/json'},
+        method='POST'
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        data = json.loads(resp.read().decode('utf-8'))
+    msg = data.get('message') or {}
+    text = msg.get('content') or ''
+    # thinking 태그 제거 (모델이  thinking 를 붙이는 경우)
+    if '<｜end▁of▁thinking｜>' in text:
+        text = text.split('<｜end▁of▁thinking｜>')[-1]
+    return text.strip()
+
+# 스튜디오 전용 시스템 프롬프트 (가사/음악 특화)
+STUDIO_SYSTEM = """너는 '누비다 AI 스튜디오'의 랩/노래 작사 도우미야.
+학생들이 AI 가창으로 노래를 만들 수 있도록 돕는다.
+
+[답변 규칙]
+1. 항상 친절한 존댓말(해요체)을 쓴다.
+2. 답변은 짧고 읽기 쉽게. 줄바꿈을 자주 쓴다.
+3. 라임과 리듬을 살린 자연스러운 한국어 가사를 쓴다.
+4. 가사를 쓸 때는 반드시 한 줄에 한 마디씩, 마디 구분은 줄바꿈으로만 한다.
+5. 가사 외에 설명이 필요하면 가사 뒤에 짧게 덧붙인다.
+6. 절대 거짓 정보를 지어내지 않는다. 모르면 모른다고 말한다.
+
+[가사 작성 규칙]
+- 각 마디는 8~16음절 정도로, 소리 내어 읽었을 때 자연스럽게 이어지도록 쓴다.
+- 발음하기 쉬운 단어를 쓴다 (TTS 가창이므로 어려운 외래어/숫자 나열은 피한다).
+- 비속어, 욕설, 차별 표현은 절대 쓰지 않는다.
+- 학교/학생이 사용하는 서비스이므로 건전한 내용만 쓴다."""
+
+@app.route('/api/ai/chat', methods=['POST'])
+def ai_chat():
+    """스튜디오 전용 AI 채팅"""
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
+    ok, retry = _ai_rate_ok(ip)
+    if not ok:
+        return jsonify({"error": f"요청이 너무 많습니다. {retry}초 후 다시 시도해 주세요."}), 429
+
+    data = request.json or {}
+    message = (data.get('message') or '').strip()
+    history = data.get('history') or []
+    if not message:
+        return jsonify({"error": "메시지를 입력해 주세요."}), 400
+
+    msgs = [{"role": "system", "content": STUDIO_SYSTEM}]
+    # 최근 6개 대화만 문맥으로 사용
+    for h in history[-6:]:
+        role = h.get('role')
+        content = (h.get('content') or '').strip()
+        if role in ('user', 'assistant') and content:
+            msgs.append({"role": role, "content": content})
+    msgs.append({"role": "user", "content": message})
+
+    try:
+        reply = _ollama_chat(msgs, timeout=180)
+        return jsonify({"reply": reply})
+    except urllib.error.URLError as e:
+        print(f"[AI] Ollama 연결 실패: {e}")
+        return jsonify({"error": "AI 서버에 연결할 수 없습니다."}), 503
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": "AI 응답 생성 중 오류가 발생했습니다."}), 500
+
+@app.route('/api/ai/lyrics', methods=['POST'])
+def ai_lyrics():
+    """주제로 가사 자동 생성 (마디별 배열로 반환)"""
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
+    ok, retry = _ai_rate_ok(ip, limit=15, window=60)
+    if not ok:
+        return jsonify({"error": f"요청이 너무 많습니다. {retry}초 후 다시 시도해 주세요."}), 429
+
+    data = request.json or {}
+    topic = (data.get('topic') or '').strip()
+    genre = (data.get('genre') or '힙합').strip()
+    bars = int(data.get('bars') or 8)
+    bars = max(2, min(bars, 16))
+
+    if not topic:
+        return jsonify({"error": "주제를 입력해 주세요."}), 400
+
+    prompt = (
+        f"주제: {topic}\n"
+        f"장르: {genre}\n"
+        f"위 주제로 {genre} 스타일 노래 가사를 {bars}마디 써 주세요.\n\n"
+        f"[매우 중요]\n"
+        f"- 정확히 {bars}줄만 출력하세요. 그 이상도 이하도 안 됩니다.\n"
+        f"- 각 줄이 한 마디입니다. 줄바꿈으로만 구분하세요.\n"
+        f"- 마디 번호(1., 2.), 따옴표, 제목, 설명, 인사말을 절대 붙이지 마세요.\n"
+        f"- 오직 가사 내용만 {bars}줄 출력하세요.\n"
+        f"- 각 줄은 8~16음절의 자연스러운 한국어로 쓰세요."
+    )
+
+    try:
+        raw = _ollama_chat(
+            [{"role": "system", "content": STUDIO_SYSTEM},
+             {"role": "user", "content": prompt}],
+            timeout=180
+        )
+        # 후처리: 빈 줄 제거, 번호/따옴표/머리기호 제거
+        import re as _re
+        lines = []
+        for ln in raw.split('\n'):
+            s = ln.strip()
+            if not s:
+                continue
+            s = _re.sub(r'^\s*\d+[\.\)]\s*', '', s)      # "1. ", "2) "
+            s = _re.sub(r'^\s*[-*•]\s*', '', s)           # "- ", "* "
+            s = s.strip('"\'' + chr(8220) + chr(8221) + ' ')
+            if s:
+                lines.append(s)
+        lines = lines[:bars]
+        if not lines:
+            return jsonify({"error": "가사를 생성하지 못했습니다. 다시 시도해 주세요."}), 500
+        return jsonify({"lines": lines, "count": len(lines)})
+    except urllib.error.URLError as e:
+        print(f"[AI] Ollama 연결 실패: {e}")
+        return jsonify({"error": "AI 서버에 연결할 수 없습니다."}), 503
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": "가사 생성 중 오류가 발생했습니다."}), 500
+
+
+@app.route('/api/check_status/<task_id>', methods=['GET'])
+def check_status(task_id):
+    # 현재 내 순서 계산 로직 등
+    return jsonify({"status": "waiting", "position": 3})
+
+
+# ══════════════════════════════════════════════════════════════
+# [신규 260918] AI 노래 생성 — ACE-Step 1.5 (실제 가창)
+#   ★ 기존 '작업실'의 가창(sherpa TTS 피치변조)과는 별개 기능
+#   ★ GPU 공유: 생성 중 Ollama(AI 채팅) 를 잠시 중지했다가 복구한다
+#   ★ 컨테이너 → 호스트 네트워크가 차단되어 있어
+#     공유 디렉토리(/app/static/assets/uploads/songs) 로 요청/결과를 주고받는다
+#     - 요청: req_<id>.json 쓰기 → 호스트 워커(song15_worker.py)가 감시
+#     - 결과: res_<id>.json 읽기
+# ══════════════════════════════════════════════════════════════
+import uuid
+import time as _time2
+
+SONG_DIR = "/app/static/assets/uploads/songs"
+REQ_PREFIX = "req_"
+RES_PREFIX = "res_"
+
+_song_last_request = {}          # (구) IP별 마지막 요청 시각 — 하위호환 유지
+_song_pending = {}               # ★ IP별 진행중 작업 {'task': id, 'at': 시각}
+_song_rate_lock = __import__('threading').Lock()
+
+# ★ gunicorn 은 워커(프로세스)가 여러 개라 메모리 Lock 으로는 순번 계산이 어긋난다.
+#   → 파일 잠금(flock)으로 프로세스 간 직렬화한다.
+import fcntl
+
+
+class _FileLock:
+    """프로세스 간 공용 잠금 (gunicorn 멀티워커 대응)"""
+
+    def __init__(self, path):
+        self.path = path
+        self.fh = None
+
+    def __enter__(self):
+        self.fh = open(self.path, "a+")
+        fcntl.flock(self.fh.fileno(), fcntl.LOCK_EX)
+        return self
+
+    def __exit__(self, *exc):
+        try:
+            fcntl.flock(self.fh.fileno(), fcntl.LOCK_UN)
+        finally:
+            self.fh.close()
+        return False
+
+
+_QUEUE_LOCK_PATH = os.path.join("/tmp", "nubida_song_queue.lock")
+
+
+def _song_dir_ready():
+    try:
+        os.makedirs(SONG_DIR, exist_ok=True)
+        return os.path.isdir(SONG_DIR)
+    except Exception as e:
+        print(f"[SONG] 저장 디렉토리 접근 실패: {e}")
+        return False
+
+
+def _write_json(path, obj):
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False)
+    os.replace(tmp, path)
+
+
+def _read_json(path):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _queue_status(my_task_id=None):
+    """대기열 현황 조회.
+
+    my_task_id 를 주면 그 작업보다 '먼저 온' 요청 개수를 함께 반환.
+    반환: (내앞개수, 전체대기수, 예상대기초)
+    """
+    items = []
+    try:
+        for fn in os.listdir(SONG_DIR):
+            if not fn.startswith(REQ_PREFIX) or not fn.endswith(".json"):
+                continue
+            try:
+                mtime = os.path.getmtime(os.path.join(SONG_DIR, fn))
+            except Exception:
+                continue
+            items.append((mtime, fn[len(REQ_PREFIX):-len(".json")]))
+    except Exception:
+        return (0, 0, 0)
+
+    items.sort()
+    total = len(items)
+    if not my_task_id:
+        return (0, total, 0)
+
+    ahead = 0
+    for _mt, tid in items:
+        if tid == my_task_id:
+            return (ahead, total, 0)
+        ahead += 1
+    # 내 req 파일이 아직 없으면(기록 전) = 내가 가장 마지막
+    return (total, total + 1, 0)
+
+
+def _running_task():
+    """지금 생성 중인 작업이 있는지 → (task_id, elapsed) 또는 None"""
+    try:
+        for fn in os.listdir(SONG_DIR):
+            if not fn.startswith(RES_PREFIX) or not fn.endswith(".json"):
+                continue
+            try:
+                r = _read_json(os.path.join(SONG_DIR, fn))
+            except Exception:
+                continue
+            if r.get("status") == "running":
+                # 5분 넘게 갱신 없으면 죽은 것으로 간주
+                try:
+                    stale = _time2.time() - os.path.getmtime(os.path.join(SONG_DIR, fn))
+                except Exception:
+                    stale = 0
+                if stale > 300:
+                    continue
+                started = r.get("started") or 0
+                return (fn[len(RES_PREFIX):-len(".json")],
+                        _time2.time() - started if started else 0)
+    except Exception:
+        pass
+    return None
+
+
+@app.route('/api/ai/song', methods=['POST'])
+def ai_song():
+    """AI 노래 생성 요청 → task_id 반환 (대기열 방식)
+
+    ★ 260918 개편: 거절(429)하지 않고 '순서대로 줄을 세운다'
+      - 학급 수업에서 여러 명이 동시에 눌러도 모두 자기 곡을 받을 수 있게 함
+    """
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
+
+    data = request.get_json(silent=True) or {}
+    lyrics = (data.get('lyrics') or '').strip()
+    if len(lyrics) < 10:
+        return jsonify({"error": "가사를 10자 이상 입력해주세요."}), 400
+    if len(lyrics) > 3000:
+        return jsonify({"error": "가사가 너무 깁니다 (3000자 이하)."}), 400
+
+    if not _song_dir_ready():
+        return jsonify({"error": "노래 저장 공간을 사용할 수 없습니다. 관리자에게 문의해주세요."}), 500
+
+    now = _time2.time()
+
+    # ── ★ IP 제한: '동시 대기/생성 중복'만 막고, 끝나면 바로 다시 허용 ──
+    #    (기존: 무조건 3분 대기 → 교실 공유 IP에서 3분에 1곡만 가능했던 문제 해결)
+    with _song_rate_lock:
+        pend = _song_pending.get(ip)          # {'task': id, 'at': 시각}
+        if pend and now - pend.get('at', 0) < 900:   # 15분 = 최대 생성시간
+            _t = pend.get('task')
+            # 그 작업이 아직 살아있으면 중복 제출로 간주
+            if _t and os.path.exists(os.path.join(SONG_DIR, f"{RES_PREFIX}{_t}.json")):
+                try:
+                    _r = _read_json(os.path.join(SONG_DIR, f"{RES_PREFIX}{_t}.json"))
+                    if _r.get("status") in ("queued", "running"):
+                        return jsonify({
+                            "error": "이미 만들고 있는 곡이 있어요. 완성되면 다시 만들 수 있어요.",
+                            "busy": True, "task_id": _t}), 429
+                except Exception:
+                    pass
+        # 대기열이 너무 길면 막음 (22명 초과 시 = 약 25분)
+        _ahead, _total, _ = _queue_status()
+        if _total >= 22:
+            return jsonify({
+                "error": f"지금 대기 중인 곡이 너무 많아요 ({_total}곡). "
+                         f"조금 뒤에 다시 시도해 주세요.",
+                "busy": True}), 429
+
+    try:
+        duration = max(15, min(120, int(data.get('duration') or 30)))
+        steps = max(4, min(32, int(data.get('steps') or 8)))
+    except (TypeError, ValueError):
+        duration, steps = 30, 8
+
+    # ── 코드별 노래 길이 상한 적용 ──
+    #   관리자가 코드 발급 시 지정한 duration_sec 이 있으면
+    #   그 값을 상한으로 강제한다 (요청값이 더 커도 잘림).
+    _code = _session_valid()
+    if _code:
+        _cd = _get_code_duration(_code)
+        if _cd:
+            if duration > _cd:
+                duration = _cd
+                print(f"[SONG] duration capped to {_cd}s by code {_code}")
+
+    task_id = str(uuid.uuid4())
+    req = {
+        "task_id": task_id,
+        "lyrics": lyrics,
+        "prompt": (data.get('prompt') or '').strip() or
+                  "korean pop ballad, emotional, clear female vocal, piano",
+        "title": (data.get('title') or '').strip(),
+        "language": (data.get('language') or 'ko').strip(),
+        "duration": duration,
+        "steps": steps,
+        "created": now,
+        "ip": ip,
+    }
+
+    # 내 순번 계산 (나보다 먼저 온 요청 개수)
+    # ★ flock 으로 프로세스 간 직렬화 → 동시 제출에도 순번이 정확
+    # ★ req 파일을 '먼저' 쓴 뒤 순번을 계산해야 내 위치가 정확히 잡힌다
+    with _FileLock(_QUEUE_LOCK_PATH):
+        try:
+            _write_json(os.path.join(SONG_DIR, f"{REQ_PREFIX}{task_id}.json"), req)
+        except Exception as e:
+            traceback.print_exc()
+            return jsonify({"error": f"요청을 저장하지 못했습니다: {e}"}), 500
+        ahead, total, _ = _queue_status(task_id)
+        eta = ahead * max(25, int(round(20 + duration * 0.9)))
+        try:
+            _write_json(os.path.join(SONG_DIR, f"{RES_PREFIX}{task_id}.json"), {
+                "status": "queued",
+                "message": (f"대기 {ahead + 1}번째예요 (약 {max(1, eta // 60)}분)" if ahead > 0
+                            else "곧 시작해요!"),
+                "progress": 5,
+                "title": req["title"] or "AI 노래",
+                "started": None,
+                "queue_ahead": ahead,
+                "queue_total": total,
+                "eta": eta,
+            })
+        except Exception as e:
+            traceback.print_exc()
+            return jsonify({"error": f"요청을 저장하지 못했습니다: {e}"}), 500
+        _song_pending[ip] = {'task': task_id, 'at': now}
+
+    print(f"[SONG] 요청 접수 task={task_id} dur={duration} steps={steps} "
+          f"내앞={ahead} 전체={total}")
+    return jsonify({"task_id": task_id, "queue_number": ahead + 1,
+                    "queue_ahead": ahead, "queue_total": total,
+                    "eta": eta})
+
+
+@app.route('/api/ai/song/status', methods=['GET'])
+def ai_song_status():
+    """노래 생성 진행 상황 (결과 파일 읽기)"""
+    task_id = request.args.get('task_id', '').strip()
+    if not task_id:
+        return jsonify({"error": "task_id 가 필요합니다."}), 400
+
+    # 경로 탈출 방지
+    if '/' in task_id or '\\' in task_id or '..' in task_id:
+        return jsonify({"error": "잘못된 요청입니다."}), 400
+
+    path = os.path.join(SONG_DIR, f"{RES_PREFIX}{task_id}.json")
+    if not os.path.exists(path):
+        return jsonify({"error": "작업을 찾을 수 없습니다."}), 404
+
+    try:
+        r = _read_json(path)
+    except Exception as e:
+        return jsonify({"error": f"상태 확인 실패: {e}"}), 500
+
+    out = {
+        "status": r.get("status", "unknown"),
+        "message": r.get("message", ""),
+        "progress": r.get("progress", 0),
+        "title": r.get("title", "AI 노래"),
+    }
+    # ★ 대기열 정보 전달 (UI 에서 순번 표시)
+    if r.get("queue_ahead") is not None:
+        out["queue_ahead"] = r.get("queue_ahead")
+    if r.get("queue_total") is not None:
+        out["queue_total"] = r.get("queue_total")
+    if r.get("eta") is not None:
+        out["eta"] = r.get("eta")
+
+    fname = r.get("file")
+    if r.get("status") == "done" and fname:
+        out["url"] = f"/static/assets/uploads/songs/{os.path.basename(fname)}"
+        out["elapsed"] = r.get("elapsed")
+    return jsonify(out)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, threaded=True, debug=False)

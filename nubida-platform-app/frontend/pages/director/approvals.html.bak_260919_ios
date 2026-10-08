@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>회원 승인 관리 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/approvals.css?v=20260911nav">
+    <link rel="manifest" href="/manifest.json?v=20260804b">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="active nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button>
+                    <h1>회원 승인</h1>
+                </div>
+                <div class="top-nav-right">
+                    <button class="ap-btn ap-btn-ghost" onclick="loadPendingUsers()">새로고침</button>
+                </div>
+            </div>
+
+            <!-- 요약 -->
+            <section class="ap-summary">
+                <div class="ap-sum-card ap-sum-pending">
+                    <div class="ap-sum-label">승인 대기</div>
+                    <div class="ap-sum-value" id="statPending">0</div>
+                    <div class="ap-sum-sub">처리 대기 중인 회원</div>
+                </div>
+                <div class="ap-sum-card">
+                    <div class="ap-sum-label">학생</div>
+                    <div class="ap-sum-value" id="statStudents">0</div>
+                    <div class="ap-sum-sub">가입 신청 학생</div>
+                </div>
+                <div class="ap-sum-card">
+                    <div class="ap-sum-label">학부모</div>
+                    <div class="ap-sum-value" id="statParents">0</div>
+                    <div class="ap-sum-sub">가입 신청 학부모</div>
+                </div>
+            </section>
+
+            <!-- 대기 목록 -->
+            <section class="ap-card">
+                <div class="ap-card-head">
+                    <div>
+                        <h2>가입 신청 목록</h2>
+                        <p class="ap-card-desc">학생·학부모가 등록코드를 입력하고 가입하면 여기에 표시됩니다. 정보를 확인한 뒤 승인해 주세요.</p>
+                    </div>
+                    <span class="ap-count" id="pendingCount">0건</span>
+                </div>
+                <div class="ap-list" id="pendingListBody">
+                    <div class="ap-empty">
+                        <div class="ap-empty-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <div class="ap-empty-title">승인 대기 중인 회원이 없습니다</div>
+                        <div class="ap-empty-desc">학생/학부모가 등록코드를 입력하고 가입하면 여기에 표시됩니다</div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 승인 상세 모달 -->
+    <div class="modal-overlay" id="approveModal" style="display:none;">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-header"><h3>회원 정보 확인</h3></div>
+            <div class="ap-modal-body">
+                <div class="ap-detail-grid">
+                    <div class="ap-detail-item">
+                        <div class="ap-detail-label">이름</div>
+                        <div class="ap-detail-value" id="amName"></div>
+                    </div>
+                    <div class="ap-detail-item">
+                        <div class="ap-detail-label">아이디</div>
+                        <div class="ap-detail-value" id="amUsername"></div>
+                    </div>
+                    <div class="ap-detail-item">
+                        <div class="ap-detail-label">구분</div>
+                        <div class="ap-detail-value" id="amRole"></div>
+                    </div>
+                    <div class="ap-detail-item">
+                        <div class="ap-detail-label">연락처</div>
+                        <div class="ap-detail-value" id="amPhone"></div>
+                    </div>
+                    <div class="ap-detail-item ap-detail-full">
+                        <div class="ap-detail-label">이메일</div>
+                        <div class="ap-detail-value" id="amEmail"></div>
+                    </div>
+                    <div class="ap-detail-item">
+                        <div class="ap-detail-label">등록코드</div>
+                        <div class="ap-detail-value" id="amCode"></div>
+                    </div>
+                    <div class="ap-detail-item">
+                        <div class="ap-detail-label">가입일</div>
+                        <div class="ap-detail-value" id="amCreated"></div>
+                    </div>
+                </div>
+                <div class="ap-detail-note">
+                    위 정보를 확인한 뒤 승인해 주세요. <b>승인 시</b> 해당 회원이 시스템을 이용할 수 있으며, <b>거절 시</b> 회원 정보가 삭제됩니다.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="ap-btn ap-btn-reject" id="rejectBtn" onclick="confirmReject()">거절</button>
+                <button class="ap-btn ap-btn-ghost" onclick="closeApproveModal()">취소</button>
+                <button class="ap-btn ap-btn-approve" id="approveBtn" onclick="confirmApprove()">회원 승인</button>
+            </div>
+            <input type="hidden" id="amUserId">
+        </div>
+    </div>
+
+    <!-- 거절 확인 모달 -->
+    <div class="modal-overlay" id="rejectConfirmModal" style="display:none;">
+        <div class="modal" style="max-width:400px;">
+            <div class="modal-header"><h3>가입 거절 확인</h3></div>
+            <div class="ap-confirm-body">
+                <b id="rejectUserName">해당 회원</b>의 가입을 거절하시겠습니까?<br>
+                <span class="ap-confirm-warn">거절 시 해당 회원 정보가 삭제되며 되돌릴 수 없습니다.</span>
+            </div>
+            <div class="modal-footer">
+                <button class="ap-btn ap-btn-ghost" onclick="closeRejectConfirm()">취소</button>
+                <button class="ap-btn ap-btn-reject" id="rejectConfirmBtn" onclick="doReject()">거절</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="ap-toast" id="apToast"></div>
+
+    <script src="/common/js/api.js?v=20260918abort"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+        let pendingUsers = [];
+        let selectedUserId = null;
+
+        function esc(s) {
+            if (s == null) return '';
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        let _toastTimer = null;
+        function showToast(msg, type) {
+            const el = document.getElementById('apToast');
+            if (!el) return;
+            el.textContent = msg || '';
+            el.className = 'ap-toast is-on' + (type ? ' is-' + type : '');
+            if (_toastTimer) clearTimeout(_toastTimer);
+            _toastTimer = setTimeout(function () {
+                el.className = 'ap-toast';
+            }, 2600);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const u = getCurrentUser();
+            if (u) {
+                document.getElementById('sidebarUserName').textContent = u.name || u.username || '사용자';
+                document.getElementById('sidebarUserRole').textContent = '원장';
+            }
+            loadPendingUsers();
+        });
+
+        async function loadPendingUsers() {
+            try {
+                const res = await apiGet('/auth/pending-approvals');
+                pendingUsers = (res && res.data) || [];
+
+                // Stats
+                const students = pendingUsers.filter(u => u.role === 'student').length;
+                const parents = pendingUsers.filter(u => u.role === 'parent').length;
+                document.getElementById('statPending').textContent = pendingUsers.length;
+                document.getElementById('statStudents').textContent = students;
+                document.getElementById('statParents').textContent = parents;
+                document.getElementById('pendingCount').textContent = pendingUsers.length + '건';
+
+                const body = document.getElementById('pendingListBody');
+                if (pendingUsers.length === 0) {
+                    body.innerHTML = `
+                        <div class="ap-empty">
+                            <div class="ap-empty-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            </div>
+                            <div class="ap-empty-title">승인 대기 중인 회원이 없습니다</div>
+                            <div class="ap-empty-desc">학생/학부모가 등록코드를 입력하고 가입하면 여기에 표시됩니다</div>
+                        </div>`;
+                    return;
+                }
+
+                body.innerHTML = pendingUsers.map(u => {
+                    const roleClass = u.role === 'student' ? 'ap-role-student' : 'ap-role-parent';
+                    const roleLabel = u.role === 'student' ? '학생' : '학부모';
+                    const date = u.created_at ? new Date(u.created_at).toLocaleDateString('ko-KR') : '-';
+                    return `<div class="ap-row">
+                        <div class="ap-row-info">
+                            <div class="ap-row-top">
+                                <span class="ap-row-name">${esc(u.name)}</span>
+                                <span class="ap-role-badge ${roleClass}">${roleLabel}</span>
+                            </div>
+                            <div class="ap-row-email">${esc(u.email || '이메일 없음')}</div>
+                            <div class="ap-row-meta">
+                                <span><span class="ap-meta-label">연락처</span>${esc(u.phone || '-')}</span>
+                                <span><span class="ap-meta-label">가입일</span>${date}</span>
+                                ${u.registration_code ? `<span class="ap-row-code">#${esc(u.registration_code)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="ap-row-actions">
+                            <button class="ap-btn ap-btn-ghost" onclick="viewUser(${u.id})">정보</button>
+                            <button class="ap-btn ap-btn-approve" onclick="approveUser(${u.id})">승인</button>
+                        </div>
+                    </div>`;
+                }).join('');
+
+            } catch(err) {
+                document.getElementById('pendingListBody').innerHTML =
+                    `<div class="ap-empty is-error"><div class="ap-empty-title">로딩 실패: ${esc(err.message)}</div></div>`;
+            }
+        }
+
+        function viewUser(userId) {
+            const user = pendingUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('amUserId').value = userId;
+            document.getElementById('amName').textContent = user.name || '-';
+            document.getElementById('amUsername').textContent = user.username || '-';
+            document.getElementById('amRole').textContent = user.role === 'student' ? '학생' : '학부모';
+            document.getElementById('amEmail').textContent = user.email || '-';
+            document.getElementById('amPhone').textContent = user.phone || '-';
+            document.getElementById('amCode').textContent = user.registration_code ? '#' + user.registration_code : '-';
+            document.getElementById('amCreated').textContent = user.created_at ? new Date(user.created_at).toLocaleString('ko-KR') : '-';
+
+            document.getElementById('approveBtn').textContent = '회원 승인';
+            document.getElementById('approveBtn').disabled = false;
+            document.getElementById('rejectBtn').textContent = '거절';
+            document.getElementById('rejectBtn').disabled = false;
+            document.getElementById('approveModal').style.display = 'flex';
+        }
+
+        function approveUser(userId) {
+            viewUser(userId);
+        }
+
+        function closeApproveModal() {
+            document.getElementById('approveModal').style.display = 'none';
+            document.getElementById('rejectBtn').disabled = false;
+            document.getElementById('rejectBtn').textContent = '거절';
+        }
+
+        function closeRejectConfirm() {
+            document.getElementById('rejectConfirmModal').style.display = 'none';
+        }
+
+        function confirmReject() {
+            const userId = document.getElementById('amUserId').value;
+            if (!userId) return;
+            const user = pendingUsers.find(u => u.id == userId);
+            document.getElementById('rejectUserName').textContent = (user && user.name) ? user.name : '해당 회원';
+            const btn = document.getElementById('rejectConfirmBtn');
+            btn.disabled = false;
+            btn.textContent = '거절';
+            document.getElementById('rejectConfirmModal').style.display = 'flex';
+        }
+
+        async function doReject() {
+            const userId = document.getElementById('amUserId').value;
+            if (!userId) return;
+
+            const btn = document.getElementById('rejectConfirmBtn');
+            btn.disabled = true;
+            btn.textContent = '처리 중...';
+
+            try {
+                const res = await apiDelete('/director/students/' + userId + '/reject');
+                if (res && res.status === 'success') {
+                    showToast(res.message || '거절 완료', 'success');
+                    closeRejectConfirm();
+                    closeApproveModal();
+                    loadPendingUsers();
+                } else {
+                    showToast(res && res.message ? res.message : '거절에 실패했습니다.', 'error');
+                    btn.disabled = false;
+                    btn.textContent = '거절';
+                }
+            } catch(err) {
+                showToast('오류: ' + (err.message || '알 수 없음'), 'error');
+                btn.disabled = false;
+                btn.textContent = '거절';
+            }
+        }
+
+        async function confirmApprove() {
+            const userId = document.getElementById('amUserId').value;
+            if (!userId) return;
+
+            const btn = document.getElementById('approveBtn');
+            btn.disabled = true;
+            btn.textContent = '승인 중...';
+
+            try {
+                const res = await apiPost('/director/students/' + userId + '/approve');
+                if (res && res.status === 'success') {
+                    showToast(res.message || '회원이 승인되었습니다.', 'success');
+                    closeApproveModal();
+                    loadPendingUsers();
+                } else {
+                    showToast(res && res.message ? res.message : '승인에 실패했습니다.', 'error');
+                    btn.disabled = false;
+                    btn.textContent = '회원 승인';
+                }
+            } catch(err) {
+                showToast('오류: ' + (err.message || '알 수 없음'), 'error');
+                btn.disabled = false;
+                btn.textContent = '회원 승인';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+            window.location.href = '/pages/login.html';
+        }
+    </script>
+</body>
+</html>

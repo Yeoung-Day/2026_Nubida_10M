@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>월간 운영 보고서 — 누비다플랫폼</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260911nav">
+    <link rel="stylesheet" href="/common/css/pages/director/style.css?v=20260911nav">
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script src="/common/js/popup.js?v=20260911nav"></script>
+</head>
+<body>
+    <div class="app-layout">
+                <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo.svg?v=20260804b" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>업무</div>
+                <a class="nav-item" href="dashboard.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="nav-label">대시보드</span></a>
+                <a class="nav-item" href="students.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">학생 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>학급</div>
+                <a class="nav-item" href="classes.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span class="nav-label">학급 관리</span></a>
+                <a class="nav-item" href="attendance.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg></span><span class="nav-label">출결 관리</span></a>
+                <a class="nav-item" href="edu-materials.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">교육 자료</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>금융</div>
+                <a class="nav-item" href="revenue.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="nav-label">매출 관리</span></a>
+                <a class="nav-item" href="payments.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">결제</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>자료</div>
+                <a class="active nav-item" href="reports.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="nav-label">보고서</span></a>
+                <a class="nav-item" href="portfolio.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></span><span class="nav-label">포트폴리오</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>시스템</div>
+                <a class="nav-item" href="approvals.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span class="nav-label">승인 관리</span></a>
+                <div class="nav-section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>설정</div>
+                <a class="nav-item" href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="nav-label">설정</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">원장</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav"><div class="top-nav-left"><button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">☰</button><h1>📋 월간 운영 보고서</h1></div>
+                <div class="top-nav-right"><span class="small-text" id="todayDate"></span></div>
+            </div>
+
+            <div class="report-container" id="reportForm">
+                <!-- Header -->
+                <div class="report-header">
+                    <h1>공부방 월간 운영 보고서</h1>
+                    <div class="sub">(주)<strong>누비다플랫폼</strong> 제출용 &nbsp;|&nbsp; <span id="reportPeriod"></span></div>
+                </div>
+
+                <!-- Section 1: 기본 정보 -->
+                <div class="form-card">
+                    <div class="section-title">📋 기본 정보 <span class="badge">필수</span></div>
+                    <div class="form-grid">
+                        <div>
+                            <label class="form-label">공부방명 (지역)</label>
+                            <input type="text" class="form-control" id="branchName" placeholder="예: 부산 사상구">
+                        </div>
+                        <div>
+                            <label class="form-label">원장명</label>
+                            <input type="text" class="form-control" id="directorName" placeholder="원장 성명">
+                        </div>
+                        <div>
+                            <label class="form-label">연락처</label>
+                            <input type="text" class="form-control" id="contact" placeholder="010-0000-0000">
+                        </div>
+                        <div>
+                            <label class="form-label">제출월</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control" id="reportYear" placeholder="2026" min="2020" max="2100">
+                                <span class="form-label" style="margin:0">년</span>
+                                <input type="number" class="form-control" id="reportMonth" placeholder="5" min="1" max="12">
+                                <span class="form-label" style="margin:0">월</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: 수강생 현황 -->
+                <div class="form-card">
+                    <div class="section-title">수강생 현황 <span class="badge">전월 대비</span></div>
+                    <div class="form-grid-4">
+                        <div>
+                            <label class="form-label">총 수강생</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm" id="totalStudents" min="0">
+                                <span class="unit">명</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">전월 신규 등록</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm" id="newRegistrations" min="0">
+                                <span class="unit">명</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">퇴원</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm" id="withdrawals" min="0">
+                                <span class="unit">명</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">유지율</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm auto-calc" id="retentionRate" min="0" max="100" readonly tabindex="-1">
+                                <span class="unit">%</span>
+                            </div>
+                            <div class="form-hint">(총수강생 − 퇴원) ÷ 총수강생 자동 계산</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: 이번 달 목표 -->
+                <div class="form-card">
+                    <div class="section-title">이번 달 목표</div>
+                    <div class="form-grid-3">
+                        <div>
+                            <label class="form-label">신규 수강생 목표</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm" id="targetNewStudents" min="0">
+                                <span class="unit">명</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">월 매출 목표</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm" id="targetRevenue" min="0" step="10000">
+                                <span class="unit">원</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">기타 목표</label>
+                            <input type="text" class="form-control form-control-sm" id="targetOther" placeholder="예: 코딩 대회 출전">
+                            <div class="form-hint">선택사항</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: 이슈 및 건의사항 -->
+                <div class="form-card">
+                    <div class="section-title">이슈 및 건의사항</div>
+                    <div id="issuesContainer">
+                        <div class="issue-row">
+                            <div class="issue-label">시설</div>
+                            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+                                <div><label class="form-label">내용</label><textarea class="form-control" id="issueFacilityContent" rows="2"></textarea></div>
+                                <div><label class="form-label">본사 요청사항</label><textarea class="form-control" id="issueFacilityRequest" rows="2"></textarea></div>
+                            </div>
+                        </div>
+                        <div class="issue-row">
+                            <div class="issue-label">교육</div>
+                            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+                                <div><label class="form-label">내용</label><textarea class="form-control" id="issueEducationContent" rows="2"></textarea></div>
+                                <div><label class="form-label">본사 요청사항</label><textarea class="form-control" id="issueEducationRequest" rows="2"></textarea></div>
+                            </div>
+                        </div>
+                        <div class="issue-row">
+                            <div class="issue-label">📋 행정</div>
+                            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+                                <div><label class="form-label">내용</label><textarea class="form-control" id="issueAdminContent" rows="2"></textarea></div>
+                                <div><label class="form-label">본사 요청사항</label><textarea class="form-control" id="issueAdminRequest" rows="2"></textarea></div>
+                            </div>
+                        </div>
+                        <div class="issue-row">
+                            <div class="issue-label">🔧 기타</div>
+                            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+                                <div><label class="form-label">내용</label><textarea class="form-control" id="issueOtherContent" rows="2"></textarea></div>
+                                <div><label class="form-label">본사 요청사항</label><textarea class="form-control" id="issueOtherRequest" rows="2"></textarea></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: 전월 실적 -->
+                <div class="form-card">
+                    <div class="section-title">전월 실적 (간략)</div>
+                    <div class="form-grid-3">
+                        <div>
+                            <label class="form-label">신규 수강생 실적</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm" id="resultNewStudents" min="0">
+                                <span class="unit">명</span>
+                            </div>
+                            <div class="form-row" style="margin-top:6px">
+                                <input type="number" class="form-control form-control-sm auto-calc" id="resultNewStudentsRate" min="0" max="100" readonly tabindex="-1">
+                                <span class="unit">%</span>
+                            </div>
+                            <div class="form-hint">자동 계산 (실적 ÷ 목표)</div>
+                        </div>
+                        <div>
+                            <label class="form-label">월 매출 실적</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm" id="resultRevenue" min="0" step="10000">
+                                <span class="unit">원</span>
+                            </div>
+                            <div class="form-row" style="margin-top:6px">
+                                <input type="number" class="form-control form-control-sm auto-calc" id="resultRevenueRate" min="0" max="100" readonly tabindex="-1">
+                                <span class="unit">%</span>
+                            </div>
+                            <div class="form-hint">자동 계산 (실적 ÷ 목표)</div>
+                        </div>
+                        <div>
+                            <label class="form-label">유지율 실적</label>
+                            <div class="form-row">
+                                <input type="number" class="form-control form-control-sm auto-calc" id="resultRetentionRate" min="0" max="100" readonly tabindex="-1">
+                                <span class="unit">%</span>
+                            </div>
+                            <div class="form-row" style="margin-top:6px">
+                                <input type="number" class="form-control form-control-sm auto-calc" id="resultRetentionRateAchieved" min="0" max="100" readonly tabindex="-1">
+                                <span class="unit">%</span>
+                            </div>
+                            <div class="form-hint">자동 계산 (실적 ÷ 목표)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: 특이사항 -->
+                <div class="form-card">
+                    <div class="section-title">특이사항</div>
+                    <textarea class="form-control" id="notes" rows="4" placeholder="특이사항이나 본사에 전달할 내용을 입력하세요..."></textarea>
+                </div>
+
+                <!-- Section 7: 서명 -->
+                <div class="form-card">
+                    <div class="section-title">원장 확인</div>
+                    <div class="signature-area">
+                        <label>
+                            <input type="checkbox" id="isAgreed">
+                            <span>위 내용을 확인하였으며, 보고서 제출에 동의합니다.</span>
+                        </label>
+                        <div class="form-row" style="align-items:center;gap:8px;margin-top:6px">
+                            <span style="font-size:13px;font-weight:500;color:var(--text-primary);white-space:nowrap">확인일:</span>
+                            <input type="date" class="form-control form-control-sm" id="confirmedDate" style="width:150px">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="btn-group">
+                    <button class="btn btn-outline" onclick="saveReport('draft')">임시 저장</button>
+                    <button class="btn btn-primary" onclick="saveReport('submitted')">제출하기</button>
+                    <button class="btn btn-ghost" onclick="resetForm()">초기화</button>
+                </div>
+
+                <div class="footer-note">
+                    (주)<strong>누비다플랫폼</strong> &nbsp;|&nbsp; 대표 윤영철 &nbsp;|&nbsp; 부산 사상구<br>
+                    제출 마감: <strong>매월 말일</strong> &nbsp;|&nbsp; 원장 서명 후 제출
+                </div>
+            </div>
+
+            <!-- Report List -->
+            <div class="report-container report-list" id="reportList">
+                <div class="form-card">
+                    <div class="section-title">📁 제출 내역</div>
+                    <div id="reportItems">
+                        <div class="empty-state"><div class="icon">📋</div><p>제출된 보고서가 없습니다.</p></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="/common/js/api.js?v=20260911nav"></script>
+    <script src="/common/js/auth.js?v=20260911nav"></script>
+    <script src="/common/js/utils.js?v=20260911nav"></script>
+    <script>
+    let currentReportId = null;
+    let allReports = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        requireAuth();
+        const user = getCurrentUser();
+        if (user) {
+            document.getElementById('sidebarUserName').textContent = user.name || user.username || '원장';
+            document.getElementById('sidebarUserRole').textContent = '원장';
+        }
+        const now = new Date();
+        document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+        document.getElementById('reportYear').value = now.getFullYear();
+        document.getElementById('reportMonth').value = now.getMonth() + 1;
+        document.getElementById('confirmedDate').value = now.toISOString().slice(0,10);
+        updatePeriod();
+        loadReports();
+
+        document.getElementById('reportYear').addEventListener('input', updatePeriod);
+        document.getElementById('reportMonth').addEventListener('input', updatePeriod);
+
+        // % 항목 자동 계산 바인딩
+        bindAutoCalc();
+
+        // localStorage에서 마지막 편집 보고서 복원
+        const savedId = localStorage.getItem('monthlyReport_lastId');
+        if (savedId && !isNaN(parseInt(savedId))) {
+            restoreReport(parseInt(savedId));
+        }
+    });
+
+    async function restoreReport(reportId) {
+        try {
+            const res = await apiGet('/director/director-reports/' + reportId);
+            if (res && res.status === 'success' && res.data) {
+                fillForm(res.data);
+            }
+        } catch (e) {
+            console.log('Auto-restore failed (report may have been deleted):', e);
+            localStorage.removeItem('monthlyReport_lastId');
+        }
+    }
+
+    async function loadAndFillReport(reportId) {
+        try {
+            const res = await apiGet('/director/director-reports/' + reportId);
+            if (res && res.status === 'success' && res.data) {
+                fillForm(res.data);
+            } else {
+                showToast('보고서를 불러올 수 없습니다.', 'error');
+            }
+        } catch (e) {
+            showToast('보고서 불러오기 실패', 'error');
+            console.error(e);
+        }
+    }
+
+    function updatePeriod() {
+        const y = document.getElementById('reportYear').value || '____';
+        const m = document.getElementById('reportMonth').value || '__';
+        document.getElementById('reportPeriod').textContent = y + '년 ' + m + '월';
+    }
+
+    // ============================================================
+    // 자동 계산 — % 항목은 입력값에서 자동 산출 (원장 수동 입력 불필요)
+    //   유지율            = (총수강생 − 퇴원) ÷ 총수강생 × 100
+    //   신규 달성률       = 신규 실적 ÷ 신규 목표 × 100
+    //   매출 달성률       = 매출 실적 ÷ 매출 목표 × 100
+    //   유지율 달성률     = 유지율 실적 ÷ 목표 유지율 × 100
+    //   유지율 실적       = (전월 총수강생 − 퇴원) ÷ 전월 총수강생 × 100
+    // ============================================================
+    function pct(numer, denom) {
+        numer = Number(numer) || 0;
+        denom = Number(denom) || 0;
+        if (denom <= 0) return 0;
+        return Math.round((numer / denom) * 100);
+    }
+    function num(id) {
+        const el = document.getElementById(id);
+        return el ? (parseInt(el.value) || 0) : 0;
+    }
+    function setVal(id, v) {
+        const el = document.getElementById(id);
+        if (el) el.value = (v === 0 ? 0 : v);
+    }
+
+    function recalc() {
+        // 1) 목표 유지율 = (총수강생 − 퇴원) / 총수강생
+        const total = num('totalStudents');
+        const withdrawals = num('withdrawals');
+        const retention = total > 0 ? pct(total - withdrawals, total) : 0;
+        setVal('retentionRate', retention);
+
+        // 2) 신규 달성률 = 실적 / 목표
+        setVal('resultNewStudentsRate',
+               pct(num('resultNewStudents'), num('targetNewStudents')));
+
+        // 3) 매출 달성률 = 실적 / 목표
+        setVal('resultRevenueRate',
+               pct(num('resultRevenue'), num('targetRevenue')));
+
+        // 4) 유지율 실적 — 전월 총수강생 기준 (없으면 목표 기준)
+        const prevTotal = num('prevTotalStudents') || total;
+        const resultRetention = prevTotal > 0 ? pct(prevTotal - withdrawals, prevTotal) : 0;
+        setVal('resultRetentionRate', resultRetention);
+
+        // 5) 유지율 달성률 = 유지율 실적 / 목표 유지율
+        setVal('resultRetentionRateAchieved', pct(resultRetention, retention));
+    }
+
+    // 자동계산 트리거: 관련 입력이 바뀌면 즉시 재계산
+    function bindAutoCalc() {
+        ['totalStudents', 'withdrawals', 'newRegistrations',
+         'targetNewStudents', 'targetRevenue',
+         'resultNewStudents', 'resultRevenue', 'prevTotalStudents'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', recalc);
+                el.addEventListener('change', recalc);
+            }
+        });
+        recalc();
+    }
+
+    function getFormData() {
+        recalc();
+        return {
+            year: parseInt(document.getElementById('reportYear').value) || 0,
+            month: parseInt(document.getElementById('reportMonth').value) || 0,
+            branch_name: document.getElementById('branchName').value.trim(),
+            director_name: document.getElementById('directorName').value.trim(),
+            contact: document.getElementById('contact').value.trim(),
+            total_students: parseInt(document.getElementById('totalStudents').value) || 0,
+            new_registrations: parseInt(document.getElementById('newRegistrations').value) || 0,
+            withdrawals: parseInt(document.getElementById('withdrawals').value) || 0,
+            retention_rate: parseInt(document.getElementById('retentionRate').value) || 0,
+            target_new_students: parseInt(document.getElementById('targetNewStudents').value) || 0,
+            target_monthly_revenue: parseInt(document.getElementById('targetRevenue').value) || 0,
+            target_other: document.getElementById('targetOther').value.trim(),
+            issue_facility_content: document.getElementById('issueFacilityContent').value.trim(),
+            issue_facility_request: document.getElementById('issueFacilityRequest').value.trim(),
+            issue_education_content: document.getElementById('issueEducationContent').value.trim(),
+            issue_education_request: document.getElementById('issueEducationRequest').value.trim(),
+            issue_admin_content: document.getElementById('issueAdminContent').value.trim(),
+            issue_admin_request: document.getElementById('issueAdminRequest').value.trim(),
+            issue_other_content: document.getElementById('issueOtherContent').value.trim(),
+            issue_other_request: document.getElementById('issueOtherRequest').value.trim(),
+            result_new_students: parseInt(document.getElementById('resultNewStudents').value) || 0,
+            result_new_students_rate: parseInt(document.getElementById('resultNewStudentsRate').value) || 0,
+            result_monthly_revenue: parseInt(document.getElementById('resultRevenue').value) || 0,
+            result_monthly_revenue_rate: parseInt(document.getElementById('resultRevenueRate').value) || 0,
+            result_retention_rate: parseInt(document.getElementById('resultRetentionRate').value) || 0,
+            result_retention_rate_achieved: parseInt(document.getElementById('resultRetentionRateAchieved').value) || 0,
+            notes: document.getElementById('notes').value.trim(),
+            confirmed_date: document.getElementById('confirmedDate').value.trim(),
+            is_agreed: document.getElementById('isAgreed').checked,
+        };
+    }
+
+    function fillForm(data) {
+        currentReportId = data.id;
+        localStorage.setItem('monthlyReport_lastId', data.id);
+        document.getElementById('reportYear').value = data.year;
+        document.getElementById('reportMonth').value = data.month;
+        document.getElementById('branchName').value = data.branch_name || '';
+        document.getElementById('directorName').value = data.director_name || '';
+        document.getElementById('contact').value = data.contact || '';
+        document.getElementById('totalStudents').value = data.total_students || 0;
+        document.getElementById('newRegistrations').value = data.new_registrations || 0;
+        document.getElementById('withdrawals').value = data.withdrawals || 0;
+        document.getElementById('retentionRate').value = data.retention_rate || 0;
+        document.getElementById('targetNewStudents').value = data.target_new_students || 0;
+        document.getElementById('targetRevenue').value = data.target_monthly_revenue || 0;
+        document.getElementById('targetOther').value = data.target_other || '';
+        document.getElementById('issueFacilityContent').value = data.issue_facility_content || '';
+        document.getElementById('issueFacilityRequest').value = data.issue_facility_request || '';
+        document.getElementById('issueEducationContent').value = data.issue_education_content || '';
+        document.getElementById('issueEducationRequest').value = data.issue_education_request || '';
+        document.getElementById('issueAdminContent').value = data.issue_admin_content || '';
+        document.getElementById('issueAdminRequest').value = data.issue_admin_request || '';
+        document.getElementById('issueOtherContent').value = data.issue_other_content || '';
+        document.getElementById('issueOtherRequest').value = data.issue_other_request || '';
+        document.getElementById('resultNewStudents').value = data.result_new_students || 0;
+        document.getElementById('resultNewStudentsRate').value = data.result_new_students_rate || 0;
+        document.getElementById('resultRevenue').value = data.result_monthly_revenue || 0;
+        document.getElementById('resultRevenueRate').value = data.result_monthly_revenue_rate || 0;
+        document.getElementById('resultRetentionRate').value = data.result_retention_rate || 0;
+        document.getElementById('resultRetentionRateAchieved').value = data.result_retention_rate_achieved || 0;
+        document.getElementById('notes').value = data.notes || '';
+        document.getElementById('confirmedDate').value = data.confirmed_date || '';
+        // 동의 체크박스는 항상 해제 상태로 시작 — 원장이 직접 눌러야 제출 가능
+        document.getElementById('isAgreed').checked = false;
+        updatePeriod();
+        recalc();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+        if (!confirm('모든 입력 내용을 초기화하시겠습니까?')) return;
+        currentReportId = null;
+        localStorage.removeItem('monthlyReport_lastId');
+        document.querySelectorAll('.form-control').forEach(el => {
+            if (el.type === 'number') el.value = '';
+            else if (el.tagName === 'TEXTAREA') el.value = '';
+            else el.value = '';
+        });
+        document.getElementById('isAgreed').checked = false;
+        const now = new Date();
+        document.getElementById('reportYear').value = now.getFullYear();
+        document.getElementById('reportMonth').value = now.getMonth() + 1;
+        document.getElementById('confirmedDate').value = now.toISOString().slice(0,10);
+        updatePeriod();
+        recalc();
+        showToast('입력 내용이 초기화되었습니다.', 'success');
+    }
+
+    async function saveReport(status) {
+        if (status === 'submitted') {
+            const year = document.getElementById('reportYear').value;
+            const month = document.getElementById('reportMonth').value;
+            const name = document.getElementById('branchName').value.trim();
+            if (!year || !month) { showToast('년/월을 입력해주세요.', 'error'); return; }
+            if (!name) { showToast('공부방명을 입력해주세요.', 'error'); return; }
+            if (!document.getElementById('isAgreed').checked) { showToast('원장 확인에 동의해주세요.', 'error'); return; }
+        }
+
+        const data = getFormData();
+        data.status = status;
+
+        try {
+            let res;
+            if (currentReportId) {
+                res = await apiPut('/director/director-reports/' + currentReportId, data);
+            } else {
+                res = await apiPost('/director/director-reports', data);
+            }
+            if (res && res.status === 'success') {
+                showToast(status === 'submitted' ? '✅ 보고서가 제출되었습니다.' : '💾 임시 저장되었습니다.', 'success');
+                currentReportId = res.data?.id || null;
+                if (currentReportId) localStorage.setItem('monthlyReport_lastId', currentReportId);
+                await loadReports();
+            } else {
+                showToast(res?.message || '저장 실패', 'error');
+            }
+        } catch (e) {
+            showToast('저장 중 오류가 발생했습니다.', 'error');
+            console.error(e);
+        }
+    }
+
+    async function loadReports() {
+        try {
+            const res = await apiGet('/director/director-reports?per_page=50');
+            allReports = res?.data || [];
+            renderReportList();
+        } catch (e) {
+            console.error('Load reports error:', e);
+        }
+    }
+
+    function renderReportList() {
+        const container = document.getElementById('reportItems');
+        if (!allReports.length) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>제출된 보고서가 없습니다.<br>위 폼에서 보고서를 작성해주세요.</p></div>';
+            return;
+        }
+        container.innerHTML = allReports.map(r => {
+            const statusClass = r.status === 'submitted' ? 'status-submitted' : 'status-draft';
+            const statusLabel = r.status === 'submitted' ? '✅ 제출 완료' : '📝 임시 저장';
+            return '<div class="report-list-item" onclick="loadAndFillReport(' + r.id + ')">' +
+                '<div class="info"><div class="title">' + (r.branch_name || '공부방') + ' — ' + r.year + '년 ' + r.month + '월</div>' +
+                '<div class="meta">수강생 ' + (r.total_students || 0) + '명 · 신규 ' + (r.new_registrations || 0) + '명 · 유지율 ' + (r.retention_rate || 0) + '%</div></div>' +
+                '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span></div>';
+        }).join('');
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + (type || '') + ' show';
+        clearTimeout(t._hide);
+        t._hide = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+    <script>
+    // 누비다플랫폼 — Service Worker 강제 갱신
+    </script>
+
+</body>
+</html>

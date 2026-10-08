@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>활동 영상 관리 — 누비다플랫폼-본사</title><link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="stylesheet" href="/common/css/reset.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/variables.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/common.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/responsive.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/animations.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/buttons.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/cards.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/forms.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/modals.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/tables.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/tabs.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/components/badges.css?v=20260610b">
+    <link rel="stylesheet" href="/common/css/pages/headquarters/style.css?v=20260610b">
+    <link rel="manifest" href="/manifest.json?v=20260610b">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="theme-color" content="#4F5EF8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="누비다">
+    <style>
+        .activity-preview-thumb {
+            width: 80px;
+            height: 56px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #E8E8EC;
+        }
+        .activity-type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .type-image { background: #E0F2FE; color: #0284C7; }
+        .type-video { background: #FCE7F3; color: #DB2777; }
+        .visibility-toggle {
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .visibility-toggle:hover { transform: scale(1.2); }
+        .action-btn-group { display: flex; gap: 4px; }
+        .action-btn-group button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-edit { background: #EFF6FF; color: #2563EB; }
+        .btn-edit:hover { background: #DBEAFE; }
+        .btn-delete { background: #FEF2F2; color: #DC2626; }
+        .btn-delete:hover { background: #FEE2E2; }
+        .btn-visibility { background: #F0FDF4; color: #16A34A; }
+        .btn-visibility.hidden { background: #FEF3C7; color: #D97706; }
+        .card-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        @media (max-width: 768px) {
+            .card-header-actions { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo"><a href="/pages/headquarters/dashboard.html" style="display:flex;align-items:center;text-decoration:none;" aria-label="홈으로"><img src="/common/assets/logo-white.svg?v=20260715" alt="누비다플랫폼" style="height:22px;width:auto;"></a></div></div>
+            <nav class="sidebar-nav" id="sidebarNav">
+    <!-- ===== 최상위 메뉴 (항상 표시) ===== -->
+    <a class="nav-item top-item" data-section="dashboard" href="dashboard.html">
+        <span class="icon">📊</span><span class="nav-label">대시보드</span>
+    </a>
+    <a class="nav-item top-item" data-section="activities" href="activities.html">
+        <span class="icon">📸</span><span class="nav-label">활동 영상</span>
+    </a>
+
+    <div class="nav-section">메뉴</div>
+
+    <button class="nav-item nav-toggle" data-section="operations">
+        <span class="icon">🏢</span><span class="nav-label">운영 관리</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-operations">
+        <a class="nav-item sub" href="branches.html"><span class="icon">🏢</span><span class="nav-label">에듀케어</span></a>
+        <a class="nav-item sub" href="academy-management.html"><span class="icon">🏫</span><span class="nav-label">학원 관리</span></a>
+        <a class="nav-item sub" href="courses.html"><span class="icon">📖</span><span class="nav-label">강좌 관리</span></a>
+        <a class="nav-item sub" href="users.html"><span class="icon">👥</span><span class="nav-label">사용자 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="finance">
+        <span class="icon">💰</span><span class="nav-label">재무/통계</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-finance">
+        <a class="nav-item sub" href="payments.html"><span class="icon">💳</span><span class="nav-label">결제 관리</span></a>
+        <a class="nav-item sub" href="revenue-approval.html"><span class="icon">✅</span><span class="nav-label">수익금 승인</span></a>
+        <a class="nav-item sub" href="statistics.html"><span class="icon">📈</span><span class="nav-label">통계 조회</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="point">
+        <span class="icon">🏆</span><span class="nav-label">포인트</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-point">
+        <a class="nav-item sub" href="point-management.html"><span class="icon">💰</span><span class="nav-label">포인트 통합 관리</span></a>
+        <a class="nav-item sub" href="point-settings.html"><span class="icon">⚙️</span><span class="nav-label">포인트 설정</span></a>
+        <a class="nav-item sub" href="gifticon-settings.html"><span class="icon">🎁</span><span class="nav-label">기프티콘 설정</span></a>
+        <a class="nav-item sub" href="gifticon-management.html"><span class="icon">📋</span><span class="nav-label">기프티콘 관리</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="report">
+        <span class="icon">📋</span><span class="nav-label">보고/자료</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-report">
+        <a class="nav-item sub" href="director-reports.html"><span class="icon">📑</span><span class="nav-label">에듀케어 보고서</span></a>
+        <a class="nav-item sub" href="notices.html"><span class="icon">📢</span><span class="nav-label">공지사항</span></a>
+        <a class="nav-item sub" href="portfolio.html"><span class="icon">🎨</span><span class="nav-label">포트폴리오</span></a>
+        <a class="nav-item sub" href="activities.html"><span class="icon">📸</span><span class="nav-label">활동 영상</span></a>
+    </div>
+
+    <button class="nav-item nav-toggle" data-section="system">
+        <span class="icon">⚙️</span><span class="nav-label">시스템</span>
+        <span class="toggle-arrow">▸</span>
+    </button>
+    <div class="nav-submenu" id="sub-system">
+        <a class="nav-item sub" href="withdrawn-students.html"><span class="icon">👤</span><span class="nav-label">탈퇴 학생</span></a>
+        <a class="nav-item sub" href="backups.html"><span class="icon">💾</span><span class="nav-label">백업</span></a>
+        <a class="nav-item sub" href="approvals.html"><span class="icon">✅</span><span class="nav-label">승인 관리</span></a>
+        <a class="nav-item sub" href="settings.html"><span class="icon">⚙️</span><span class="nav-label">설정</span></a>
+        <a class="nav-item sub" href="chat.html"><span class="icon">💬</span><span class="nav-label">채팅</span></a>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    const sectionMap = {
+        'dashboard.html': 'dashboard',
+        'activities.html': 'activities',
+        'branches.html': 'operations', 'academy-management.html': 'operations', 
+        'courses.html': 'operations', 'users.html': 'operations',
+        'payments.html': 'finance', 'revenue-approval.html': 'finance', 'statistics.html': 'finance',
+        'point-management.html': 'point', 'point-settings.html': 'point', 
+        'gifticon-settings.html': 'point', 'gifticon-management.html': 'point',
+        'director-reports.html': 'report', 'notices.html': 'report', 
+        'portfolio.html': 'report', 'activities.html': 'report',
+        'withdrawn-students.html': 'system', 'backups.html': 'system', 
+        'approvals.html': 'system', 'settings.html': 'system', 'chat.html': 'system',
+        'category-manager.html': 'system', 'category.html': 'system',
+    };
+    
+    const currentSection = sectionMap[currentPage];
+    if (currentSection) {
+        const toggle = document.querySelector(`.nav-toggle[data-section="${currentSection}"]`);
+        if (toggle) {
+            toggle.classList.add('open');
+            const sub = document.getElementById(`sub-${currentSection}`);
+            if (sub) sub.classList.add('open');
+        }
+    }
+    
+    document.querySelectorAll('.nav-toggle').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            const sub = document.getElementById(`sub-${section}`);
+            const isOpen = sub.classList.contains('open');
+            
+            if (isOpen) {
+                sub.classList.remove('open');
+                this.classList.remove('open');
+            } else {
+                document.querySelectorAll('.nav-submenu.open').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.nav-toggle.open').forEach(el => el.classList.remove('open'));
+                sub.classList.add('open');
+                this.classList.add('open');
+            }
+        });
+    });
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+            item.classList.add('active');
+        }
+    });
+});
+</script>
+            <div class="sidebar-footer">
+                <div class="user-name" id="sidebarUserName">사용자</div>
+                <div class="user-role" id="sidebarUserRole">본사</div>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <main class="main-content">
+            <div class="top-nav">
+                <div class="top-nav-left"><h1>활동 영상 관리</h1></div>
+                <div class="top-nav-right">
+                    <span class="small-text" id="todayDate"></span>
+                </div>
+            </div>
+
+            <div class="card mb-24 animate-fade-up">
+                <div class="card-header">
+                    <h2>📸 활동 영상 목록</h2>
+                    <div class="card-header-actions">
+                        <select id="fileTypeFilter" class="form-select" style="max-width:140px" onchange="loadActivities()">
+                            <option value="">전체 유형</option>
+                            <option value="image">이미지</option>
+                            <option value="video">영상</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="openUploadModal()">📤 업로드</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>미리보기</th>
+                                    <th>제목</th>
+                                    <th>유형</th>
+                                    <th>설명</th>
+                                    <th>공개</th>
+                                    <th>등록일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityTableBody">
+                                <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-tertiary)">로딩 중...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="activityPagination" style="display:flex;justify-content:center;margin-top:16px"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="uploadModal" style="display:none">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>활동 영상 업로드</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>제목 *</label>
+                    <input type="text" class="input" id="activityTitle" placeholder="활동 제목 입력">
+                </div>
+                <div class="form-group">
+                    <label>설명</label>
+                    <textarea class="input" id="activityDescription" placeholder="활동 설명 입력" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>파일 * (이미지: jpg, png, gif, webp | 영상: mp4, webm, mov)</label>
+                    <input type="file" class="input" id="activityFile" accept="image/*,video/*">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="uploadActivity()">업로드</button>
+                <button class="btn btn-outline" onclick="closeUploadModal()">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal" style="display:none">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>활동 영상 수정</h3>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editActivityId">
+                <div class="form-group">
+                    <label>제목</label>
+                    <input type="text" class="input" id="editTitle" placeholder="활동 제목 입력">
+                </div>
+                <div class="form-group">
+                    <label>설명</label>
+                    <textarea class="input" id="editDescription" placeholder="활동 설명 입력" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>공개 상태</label>
+                    <select class="input" id="editVisibility">
+                        <option value="true">공개</option>
+                        <option value="false">비공개</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="updateActivity()">저장</button>
+                <button class="btn btn-outline" onclick="closeEditModal()">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/common/js/api.js?v=20260910login"></script>
+    <script src="/common/js/auth.js?v=20260908a"></script>
+    <script src="/common/js/utils.js?v=20260610b"></script>
+    <script src="/common/js/pages-headquarters.js?v=20260610b"></script>
+
+    <script>
+        let currentPage = 1;
+        let currentFileType = '';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            requireAuth();
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('sidebarUserName').textContent = user.name || '관리자';
+                document.getElementById('sidebarUserRole').textContent = '본사';
+            }
+            const now = new Date();
+            document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', {
+                year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+            });
+
+            await loadActivities();
+        });
+
+        async function loadActivities() {
+            const tbody = document.getElementById('activityTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px">로딩 중...</td></tr>';
+
+            try {
+                let url = `/api/v1/activities/admin/all?page=${currentPage}&per_page=20`;
+                const fileType = document.getElementById('fileTypeFilter')?.value || '';
+                if (fileType) url += '&file_type=' + fileType;
+
+                const res = await fetch(url, {
+                    headers: {
+                        'Authorization': 'Bearer ' + (localStorage.getItem('token') || localStorage.getItem('access_token'))
+                    }
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.message || json.detail || '로딩 실패');
+
+                const items = json.data || [];
+                const pagination = { page: json.page || 1, total_pages: json.total_pages || 1, total: json.total || 0 };
+
+                if (!items.length) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-tertiary)">등록된 활동 영상이 없습니다.</td></tr>';
+                } else {
+                    tbody.innerHTML = items.map(item => {
+                        const date = item.created_at ? new Date(item.created_at).toLocaleDateString('ko-KR') : '-';
+                        const isVisible = item.is_visible;
+                        const thumbSrc = item.thumbnail_path || item.file_path;
+                        const typeIcon = item.file_type === 'video' ? '🎬' : '🖼️';
+                        const typeClass = item.file_type === 'video' ? 'type-video' : 'type-image';
+
+                        return `<tr>
+                            <td><img src="${escHtml(thumbSrc)}" alt="" class="activity-preview-thumb" onerror="this.src='/common/assets/no-image.svg';this.style.cssText='width:80px;height:56px;border-radius:6px;background:#E8E8EC;display:flex;align-items:center;justify-content:center;font-size:24px;'"></td>
+                            <td><strong>${escHtml(item.title)}</strong></td>
+                            <td><span class="activity-type-badge ${typeClass}">${typeIcon} ${item.file_type === 'video' ? '영상' : '이미지'}</span></td>
+                            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(item.description || '-')}</td>
+                            <td>${isVisible ? '<span class="badge badge-success">공개</span>' : '<span class="badge badge-warning">비공개</span>'}</td>
+                            <td>${date}</td>
+                            <td>
+                                <div class="action-btn-group">
+                                    <button class="btn-edit" onclick="openEditModal(${item.id}, '${escHtml(item.title)}', '${escHtml(item.description || '')}', ${item.is_visible})">✏️ 수정</button>
+                                    <button class="${isVisible ? 'btn-visibility' : 'btn-visibility hidden'}" onclick="toggleVisibility(${item.id})">${isVisible ? '🔒 숨김' : '🔓 공개'}</button>
+                                    <button class="btn-delete" onclick="deleteActivity(${item.id})">🗑️ 삭제</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }).join('');
+                }
+
+                renderPaginationWidget('activityPagination', pagination, 'goToPage');
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-danger)">오류: ${escHtml(e.message || '알 수 없는 오류')}</td></tr>`;
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadActivities();
+        }
+
+        function renderPaginationWidget(containerId, pagination, pageFn) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!pagination || pagination.total_pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            const { page, total_pages } = pagination;
+            let html = '<div class="pagination">';
+            if (page > 1) html += `<button class="btn btn-sm" onclick="${pageFn}(${page - 1})">‹</button>`;
+            for (let i = Math.max(1, page - 2); i <= Math.min(total_pages, page + 2); i++) {
+                html += `<button class="btn btn-sm ${i === page ? 'btn-primary' : 'btn-outline'}" onclick="${pageFn}(${i})">${i}</button>`;
+            }
+            if (page < total_pages) html += `<button class="btn btn-sm" onclick="${pageFn}(${page + 1})">›</button>`;
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Upload Modal
+        function openUploadModal() {
+            document.getElementById('uploadModal').style.display = 'flex';
+            document.getElementById('activityTitle').value = '';
+            document.getElementById('activityDescription').value = '';
+            document.getElementById('activityFile').value = '';
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        async function uploadActivity() {
+            const title = document.getElementById('activityTitle').value.trim();
+            const description = document.getElementById('activityDescription').value.trim();
+            const fileInput = document.getElementById('activityFile');
+
+            if (!title) { alert('제목을 입력해주세요.'); return; }
+            if (!fileInput.files.length) { alert('파일을 선택해주세요.'); return; }
+
+            const uploadBtn = document.querySelector('#uploadModal .btn-primary');
+            const origText = uploadBtn.textContent;
+            uploadBtn.textContent = '⏳ 업로드 중...';
+            uploadBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('title', title);
+            if (description) formData.append('description', description);
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+                const res = await fetch('/api/v1/activities', {
+                    method: 'POST',
+                    headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                    body: formData
+                });
+                const text = await res.text();
+                let json;
+                try { json = JSON.parse(text); } catch(e) { throw new Error(text || '업로드 실패'); }
+                if (!res.ok) throw new Error(json.message || json.detail || '업로드 실패');
+                closeUploadModal();
+                showAlert('활동 영상이 업로드되었습니다.', 'success');
+                await loadActivities();
+            } catch(e) {
+                alert('업로드 실패: ' + (e.message || '오류'));
+            } finally {
+                uploadBtn.textContent = origText;
+                uploadBtn.disabled = false;
+            }
+        }
+
+        // Edit Modal
+        function openEditModal(id, title, description, isVisible) {
+            document.getElementById('editModal').style.display = 'flex';
+            document.getElementById('editActivityId').value = id;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editDescription').value = description;
+            document.getElementById('editVisibility').value = isVisible ? 'true' : 'false';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        async function updateActivity() {
+            const id = document.getElementById('editActivityId').value;
+            const title = document.getElementById('editTitle').value.trim();
+            const description = document.getElementById('editDescription').value.trim();
+            const isVisible = document.getElementById('editVisibility').value === 'true';
+
+            if (!title) { alert('제목을 입력해주세요.'); return; }
+
+            try {
+                const res = await apiPut(`/activities/${id}`, {
+                    title: title,
+                    description: description || null,
+                    is_visible: isVisible
+                });
+                closeEditModal();
+                showAlert('활동 영상이 수정되었습니다.', 'success');
+                await loadActivities();
+            } catch(e) {
+                alert('수정 실패: ' + (e.message || '오류'));
+            }
+        }
+
+        // Toggle Visibility
+        async function toggleVisibility(id) {
+            try {
+                const res = await apiPut(`/activities/${id}/visibility`, {});
+                showAlert(res.message || '가시성이 변경되었습니다.', 'success');
+                await loadActivities();
+            } catch(e) {
+                alert('변경 실패: ' + (e.message || '오류'));
+            }
+        }
+
+        // Delete
+        async function deleteActivity(id) {
+            if (!confirm('정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
+            try {
+                await apiDelete(`/activities/${id}`);
+                showAlert('활동 영상이 삭제되었습니다.', 'success');
+                await loadActivities();
+            } catch(e) {
+                alert('삭제 실패: ' + (e.message || '오류'));
+            }
+        }
+
+        function escHtml(s) {
+            if (!s) return '';
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+    </script>
+    
+    <script src="/common/js/nav.js?v=20260913nav"></script>
+</body>
+</html>

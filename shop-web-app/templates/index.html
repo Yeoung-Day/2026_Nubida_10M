@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<header style="text-align:center; padding: 80px 0 20px;">
+    <h1 style="font-size:2.5rem; font-weight:200;">모든 학생의 창업 컬렉션</h1>
+</header>
+<div class="grid">
+    {% for p in products %}
+    <div class="card" onclick="location.href='/product/{{p.id}}'">
+        <div class="img-container">
+            {% if p.stock <= 0 %}<div class="sold-out-overlay">품절</div>{% endif %}
+            <img src="{{ p.img }}" style="{% if p.stock <= 0 %}filter:grayscale(1);{% endif %}">
+        </div>
+        <div style="padding:15px 5px;">
+            <p style="font-size:0.7rem; color:#999; font-weight:700;">{{ p.sellerShop }}</p>
+            <h3 style="font-size:1rem; font-weight:500; margin:5px 0;">{{ p.name }}</h3>
+            <p style="font-weight:800;">₩ {{ "{:,}".format(p.price) }} <span style="font-size:0.7rem; color:#ccc;">(재고:{{p.stock}})</span></p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

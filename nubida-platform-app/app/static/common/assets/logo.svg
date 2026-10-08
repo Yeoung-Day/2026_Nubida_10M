@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188 44" width="188" height="44">
+  <!-- Icon: Graduation Cap -->
+  <g transform="translate(6, 4)">
+    <!-- Cap Diamond (Top) -->
+    <path d="M16 4 L30 11 L16 18 L2 11 Z" fill="#4F5EF8"/>
+    <!-- Cap Bottom part -->
+    <path d="M7 13.5 V18 C7 21, 25 21, 25 18 V13.5" fill="#18181B" />
+    <!-- Tassel -->
+    <path d="M16 11 L26 15.5 V21" fill="none" stroke="#4F5EF8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Small Cap button -->
+    <circle cx="16" cy="11" r="1.5" fill="#FFF"/>
+  </g>
+  <!-- Brand text: NUBIDA. -->
+  <text x="44" y="23" font-family="'Inter','Outfit','Noto Sans KR',sans-serif" font-size="16" font-weight="800" fill="#18181B" letter-spacing="-0.03em">NUBIDA</text>
+  <text x="143" y="23" font-family="'Inter','Outfit','Noto Sans KR',sans-serif" font-size="22" font-weight="800" fill="#4F5EF8">.</text>
+</svg>

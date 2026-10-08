@@ -1,0 +1,152 @@
+/* ============================================================
+   누비다플랫폼 — 공지 팝업 모달 (Minimal / Professional)
+   ============================================================ */
+
+.np-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+.np-overlay.show { opacity: 1; pointer-events: auto; }
+
+/* ---- 모달 본체 ---- */
+.np-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 84vh;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.30), 0 2px 8px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.np-overlay.show .np-modal { transform: translateY(0) scale(1); }
+
+/* ---- 헤더 (심플 화이트) ---- */
+.np-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #EFF1F6;
+  flex-shrink: 0;
+}
+.np-head-text { flex: 1; min-width: 0; }
+.np-eyebrow {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #4F5EF8;
+  margin-bottom: 7px;
+}
+.np-head .np-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: #0F172A;
+  word-break: keep-all;
+}
+
+/* ---- 본문 ---- */
+.np-body {
+  padding: 22px 24px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  color: #334155;
+  font-size: 14.5px;
+  line-height: 1.75;
+  -webkit-overflow-scrolling: touch;
+}
+.np-body::-webkit-scrollbar { width: 8px; }
+.np-body::-webkit-scrollbar-thumb { background: #DDE1EA; border-radius: 999px; }
+.np-body::-webkit-scrollbar-track { background: transparent; }
+
+.np-p {
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.np-p:last-child { margin-bottom: 0; }
+.np-empty { color: #94A3B8; }
+
+/* ---- 이미지 강조 ---- */
+.np-figure {
+  margin: 0 0 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #F6F7FA;
+  border: 1px solid #EEF0F5;
+}
+.np-figure:last-child { margin-bottom: 0; }
+.np-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 46vh;
+  object-fit: contain;
+  background: #F6F7FA;
+}
+
+/* ---- 하단 ---- */
+.np-foot {
+  padding: 14px 24px 18px;
+  border-top: 1px solid #EFF1F6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #FFFFFF;
+  flex-shrink: 0;
+}
+.np-author { font-size: 12px; color: #94A3B8; }
+.np-actions { display: flex; align-items: center; gap: 8px; }
+.np-hide-today {
+  font-size: 12.5px;
+  color: #64748B;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 6px;
+  transition: color 0.15s;
+}
+.np-hide-today:hover { color: #0F172A; }
+.np-confirm {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 10px;
+  background: #4F5EF8;
+  color: #FFFFFF;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.np-confirm:hover { background: #4351E0; }
+
+/* ---- 모바일 ---- */
+@media (max-width: 768px) {
+  .np-overlay { padding: 14px; align-items: flex-end; }
+  .np-modal { max-width: 100%; max-height: 88vh; border-radius: 18px 18px 0 0; }
+  .np-head { padding: 18px 18px 14px; }
+  .np-head .np-title { font-size: 17px; }
+  .np-body { padding: 18px; }
+  .np-foot { padding: 12px 18px 16px; }
+  .np-figure img { max-height: 40vh; }
+}
