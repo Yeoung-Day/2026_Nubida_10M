@@ -567,7 +567,7 @@
                                     html += `<div class="linked-item-sub">${subParts.map(v => esc(v)).join(' · ')}</div>`;
                                 }
                                 html += `</div>`;
-                                html += `<button class="btn btn-ghost btn-sm" onclick="unlinkCourse(${c.id})" title="연결 해제">해제</button>`;
+                                html += `<button class="btn btn-ghost btn-sm" onclick="unlinkCourse(${c.course_id || c.id})" title="연결 해제">해제</button>`;
                                 html += `</div>`;
                             });
                         }
@@ -617,12 +617,12 @@
                         listHtml += `<div class="linked-item">`;
                         listHtml += `<div class="linked-item-info">`;
                         listHtml += `<div class="linked-item-name">${esc(c.course_name || c.name || '-')}</div>`;
-                        const subParts = [c.subject, c.instructor].filter(Boolean);
-                        if (subParts.length) {
-                            listHtml += `<div class="linked-item-sub">${subParts.map(v => esc(v)).join(' · ')}</div>`;
+                        const _op = [c.subject, c.instructor].filter(Boolean);
+                        if (_op.length) {
+                            listHtml += `<div class="linked-item-sub">${_op.map(v => esc(v)).join(' · ')}</div>`;
                         }
                         listHtml += `</div>`;
-                        listHtml += `<button class="btn btn-ghost btn-sm" onclick="unlinkCourse(${c.id})" title="연결 해제">해제</button>`;
+                        listHtml += `<button class="btn btn-ghost btn-sm" onclick="unlinkCourse(${c.course_id || c.id})" title="연결 해제">해제</button>`;
                         listHtml += `</div>`;
                     });
                     orphanPages.forEach(p => {

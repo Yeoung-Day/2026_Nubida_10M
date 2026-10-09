@@ -1031,10 +1031,22 @@ function renderContentBoxes(content) {
     if (currentLabel) {
         sections.push({label: currentLabel, text: currentText.join('\n').trim()});
     }
-    // If no labels found, return plain text
+    // If no labels found, return plain text (마크다운 코드펜스는 제거해서 노출)
     if (sections.length === 0) {
-        var preview = (content || '').substring(0, 120);
-        return '<div class="journal-card-content">' + esc(preview) + (content && content.length > 120 ? '...' : '') + '</div>';
+        var raw = (content || '').trim();
+        // 순수 코드(```lang ... ```)만 있는 기록 → 다크 코드박스로 렌더
+        var fence = raw.match(/^```([a-zA-Z0-9_+-]*)\s*\n?([\s\S]*?)```\s*$/);
+        if (fence) {
+            var lang = (fence[1] || '').toLowerCase();
+            var codeTxt = (fence[2] || '').replace(/\s+$/, '');
+            return '<div class="content-box code-box">'
+                + '<div class="content-box-label">💻 코드' + (lang ? ' <span class="pf-lang">' + esc(lang.toUpperCase()) + '</span>' : '') + '</div>'
+                + '<pre class="content-box-code"><code>' + esc(codeTxt) + '</code></pre>'
+                + '</div>';
+        }
+        var cleaned = raw.replace(/```[a-zA-Z0-9_+-]*\s*\n?/g, '').replace(/```/g, '').trim();
+        var preview = cleaned.substring(0, 120);
+        return '<div class="journal-card-content">' + esc(preview) + (cleaned.length > 120 ? '...' : '') + '</div>';
     }
     // Build boxes — icon map for all known section types
     var iconMap = {
@@ -1079,15 +1091,13 @@ function renderContentBoxes(content) {
     // ── 카드 요약/상태 헬퍼 : 저장된 [라벨] 구조를 사람이 읽을 수 있는 짧은 요약·문구로 ──
     function pfExcerpt(item){
       var c = String(item.content || '');
+      // ── 마크다운 코드펜스(```lang ... ```) 정리: 백틱/언어 태그가 카드에 그대로 노출되지 않게 ──
+      c = c.replace(/```[a-zA-Z0-9_+-]*\s*\n?/g, '').replace(/```/g, '');
       var txt = '';
       if (pfIsWeekly(item)) {
         var m = c.match(/\[이번 주 배운 내용\]\s*([\s\S]*?)(?=\n\[|$)/);
         if (m && m[1]) txt = m[1];
       } else {
-        ['오늘 배운 내용','새로 알게 된 점','어려웠던 점'].some(function(lbl){
-          var m = c.match(new RegExp('\\['+lbl+'\\]\\s*([\\s\\S]*?)(?=\\]|$)', ''));
-          return false;
-        });
         var mm = c.match(/\[오늘 배운 내용\]\s*([\s\S]*?)(?=\n\[|$)/);
         if (mm && mm[1]) txt = mm[1];
         else { var rr = c.replace(/\[[^\]]+\]\s*/g, ''); txt = rr; }

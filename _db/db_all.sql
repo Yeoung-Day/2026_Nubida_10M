@@ -37978,7 +37978,7 @@ CREATE TABLE `academy_courses` (
   KEY `ix_academy_courses_academy_id` (`academy_id`),
   CONSTRAINT `1` FOREIGN KEY (`academy_id`) REFERENCES `academies` (`id`),
   CONSTRAINT `2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37995,7 +37995,9 @@ INSERT INTO `academy_courses` VALUES
 (49,2,31,1,'2026-08-28 09:59:07','2026-08-28 09:59:07'),
 (60,2,32,1,'2026-09-10 10:12:26','2026-09-10 10:12:26'),
 (62,5,43,1,'2026-10-02 15:32:13','2026-10-02 15:32:13'),
-(63,5,44,1,'2026-10-02 16:58:30','2026-10-02 16:58:30');
+(63,5,44,1,'2026-10-02 16:58:30','2026-10-02 16:58:30'),
+(64,5,32,1,'2026-10-09 20:18:50','2026-10-09 20:18:50'),
+(65,5,31,1,'2026-10-09 20:18:50','2026-10-09 20:18:50');
 /*!40000 ALTER TABLE `academy_courses` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -38017,7 +38019,7 @@ CREATE TABLE `access_logs` (
   PRIMARY KEY (`id`),
   KEY `ix_access_logs_user_id` (`user_id`),
   CONSTRAINT `1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8273 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8286 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46300,7 +46302,20 @@ INSERT INTO `access_logs` VALUES
 (8269,NULL,'DELETE /api/v1/ml/projects/35/samples/1610','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/ml/projects/35/samples/1610\", \"query_params\": {}, \"status_code\": 200}','2026-10-03 18:59:24'),
 (8270,NULL,'POST /api/v1/ai/chat/stream','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/ai/chat/stream\", \"query_params\": {}, \"status_code\": 200}','2026-10-07 19:14:18'),
 (8271,NULL,'POST /api/v1/ai/chat/stream','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/ai/chat/stream\", \"query_params\": {}, \"status_code\": 200}','2026-10-07 20:54:36'),
-(8272,NULL,'POST /api/v1/ai/chat/stream','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/ai/chat/stream\", \"query_params\": {}, \"status_code\": 200}','2026-10-07 21:39:14');
+(8272,NULL,'POST /api/v1/ai/chat/stream','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/ai/chat/stream\", \"query_params\": {}, \"status_code\": 200}','2026-10-07 21:39:14'),
+(8273,NULL,'POST /api/v1/validate/code','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/validate/code\", \"query_params\": {}, \"status_code\": 404}','2026-10-09 10:17:21'),
+(8274,NULL,'POST /api/v1/build_public_tmp/00000000-0000-0000-0000-000000000000/flow','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/build_public_tmp/00000000-0000-0000-0000-000000000000/flow\", \"query_params\": {}, \"status_code\": 404}','2026-10-09 10:17:21'),
+(8275,NULL,'POST /api/v1/node-load-method/customMCP','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/node-load-method/customMCP\", \"query_params\": {}, \"status_code\": 404}','2026-10-09 10:17:23'),
+(8276,NULL,'POST /api/v1/headquarters/directors/bulk-categories','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/headquarters/directors/bulk-categories\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:18:50'),
+(8277,NULL,'DELETE /api/v1/headquarters/courses/5','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/headquarters/courses/5\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:40:01'),
+(8278,NULL,'DELETE /api/v1/headquarters/courses/4','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/headquarters/courses/4\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:40:02'),
+(8279,NULL,'DELETE /api/v1/headquarters/courses/2','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/headquarters/courses/2\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:40:03'),
+(8280,NULL,'DELETE /api/v1/headquarters/courses/1','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/headquarters/courses/1\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:40:04'),
+(8281,NULL,'DELETE /api/v1/director/classes/16/courses/43','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/director/classes/16/courses/43\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:43:07'),
+(8282,NULL,'DELETE /api/v1/director/classes/16/courses/undefined','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/director/classes/16/courses/undefined\", \"query_params\": {}, \"status_code\": 422}','2026-10-09 20:43:07'),
+(8283,NULL,'DELETE /api/v1/director/classes/16/courses/undefined','172.18.0.1','{\"method\": \"DELETE\", \"path\": \"/api/v1/director/classes/16/courses/undefined\", \"query_params\": {}, \"status_code\": 422}','2026-10-09 20:43:11'),
+(8284,NULL,'POST /api/v1/director/classes/16/courses','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/director/classes/16/courses\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:43:25'),
+(8285,NULL,'POST /api/v1/courses/18/progress','172.18.0.1','{\"method\": \"POST\", \"path\": \"/api/v1/courses/18/progress\", \"query_params\": {}, \"status_code\": 200}','2026-10-09 20:50:04');
 /*!40000 ALTER TABLE `access_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -47063,7 +47078,7 @@ CREATE TABLE `class_courses` (
   KEY `ix_class_courses_class_id` (`class_id`),
   CONSTRAINT `1` FOREIGN KEY (`class_id`) REFERENCES `school_classes` (`id`) ON DELETE CASCADE,
   CONSTRAINT `2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47074,17 +47089,14 @@ LOCK TABLES `class_courses` WRITE;
 /*!40000 ALTER TABLE `class_courses` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `class_courses` VALUES
-(1,1,1,'2026-06-18 14:33:58'),
-(2,1,2,'2026-06-18 14:33:58'),
-(4,1,4,'2026-06-18 14:33:58'),
 (42,7,21,'2026-08-09 12:21:19'),
 (43,7,22,'2026-08-09 12:21:19'),
 (44,7,23,'2026-08-09 12:21:19'),
 (45,6,31,'2026-08-28 09:18:49'),
 (46,6,32,'2026-08-28 09:18:49'),
 (48,8,31,'2026-08-28 11:12:22'),
-(55,16,43,'2026-10-02 15:32:37'),
-(56,16,44,'2026-10-02 16:58:59');
+(56,16,44,'2026-10-02 16:58:59'),
+(57,16,43,'2026-10-09 20:43:25');
 /*!40000 ALTER TABLE `class_courses` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -47427,15 +47439,6 @@ LOCK TABLES `course_materials` WRITE;
 /*!40000 ALTER TABLE `course_materials` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `course_materials` VALUES
-(6,1,'2026 디지털피아노 (코딩).pdf',NULL,'document','/uploads/872816dbc1dd480bbe94ea462c5ca8cd.pdf',NULL,25521249,0,NULL,NULL,0,1,1,'2026-06-19 01:57:00',NULL,''),
-(7,1,'26.jpg',NULL,'image','/uploads/0623763049b94ddaa75327c0139608e8.jpg',NULL,122826,0,NULL,NULL,0,1,1,'2026-06-19 01:57:20',NULL,''),
-(8,1,'27.jpg',NULL,'image','/uploads/f633de3162114a25849a8c18d24606a4.jpg',NULL,117525,0,NULL,NULL,0,1,1,'2026-06-19 01:57:20',NULL,''),
-(9,1,'24.jpg',NULL,'image','/uploads/3317b0e9f3e8428686cf7c154f9bbc84.jpg',NULL,180580,0,NULL,NULL,0,1,1,'2026-06-19 01:57:20',NULL,''),
-(12,4,'2026 자율주행카 (코딩) 1H.pptx',NULL,'document','/uploads/9efbde948a94405abb0c91728bf2685d.pptx',NULL,8735282,0,NULL,NULL,0,1,1,'2026-06-19 03:25:58',NULL,''),
-(13,2,'2026 디지털피아노 _코딩_.pptx',NULL,'document','/uploads/8c8b81c523714727ac105c6ee0af6ebe.pptx',NULL,16827035,0,NULL,NULL,0,1,1,'2026-06-19 03:26:11',NULL,''),
-(15,5,'(주)누비다플랫폼 - 피아노 (코딩).pdf',NULL,'document','/uploads/c6aa7b6b479643a3ac6559f6858fb6b8.pdf',NULL,636232,0,NULL,NULL,0,1,1,'2026-06-19 10:51:50',NULL,''),
-(16,5,'(주)누비다플랫폼 - 피아노 (제작).pdf',NULL,'document','/uploads/309776911e294b249bb23b06c5518429.pdf',NULL,1046773,0,NULL,NULL,0,1,1,'2026-06-19 10:51:50',NULL,''),
-(17,5,'(주)누비다플랫폼 - 피아노 (이론).pdf',NULL,'document','/uploads/0411b5c527cf4b27acd85d3fc4d84caa.pdf',NULL,3761636,0,NULL,NULL,0,1,1,'2026-06-19 10:51:50',NULL,''),
 (18,17,'(주)누비다플랫폼 - Start Kit - 1주차 (원리&메이킹).pdf',NULL,'document','/uploads/106085da1e38432983feefa3029c4876.pdf',NULL,7243613,0,NULL,NULL,10,1,1,'2026-07-16 05:23:34','2026-09-09 10:50:11',''),
 (19,17,'Start Kit ⅲ - 1주차','강의 콘텐츠','lecture',NULL,NULL,0,0,'<pre class=\"code-block slide\" data-src=\"/uploads/106085da1e38432983feefa3029c4876.pdf\" data-type=\"pdf\"><code>[슬라이드]</code></pre>','[{\"type\": \"slide\", \"file_url\": \"/uploads/106085da1e38432983feefa3029c4876.pdf\", \"file_ext\": \"pdf\"}]',20,1,1,'2026-07-16 05:24:43','2026-09-09 10:50:11',''),
 (20,18,'(주)누비다플랫폼 - Start Kit - 1주차 (코딩).pdf',NULL,'document','/uploads/31551336527b4701b00c0960433c6ade.pdf',NULL,733065,0,NULL,NULL,10,1,1,'2026-07-16 05:25:17','2026-09-09 10:47:42',''),
@@ -47538,10 +47541,6 @@ LOCK TABLES `courses` WRITE;
 /*!40000 ALTER TABLE `courses` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `courses` VALUES
-(1,NULL,'AI로봇(7월1주차)','',NULL,'ai_robot',NULL,NULL,30,NULL,'active',NULL,0,'2026-06-18 14:16:45','2026-06-18 14:16:45',NULL),
-(2,NULL,'AI로봇(7월2주차)','',NULL,'ai_robot',NULL,NULL,30,NULL,'active',NULL,0,'2026-06-18 14:16:51','2026-06-18 14:16:51',NULL),
-(4,NULL,'AI로봇(7월4주차)','',NULL,'ai_robot',NULL,NULL,30,NULL,'active',NULL,0,'2026-06-18 14:17:03','2026-06-18 14:17:03',NULL),
-(5,NULL,'AI로봇(샘플)-1','',NULL,'ai_robot',NULL,NULL,30,NULL,'active',NULL,0,'2026-06-19 10:48:10','2026-06-19 10:48:10',NULL),
 (9,NULL,'AI로봇 (Start Kit ⅰ) - 1주차','',NULL,'ai_robot',NULL,NULL,30,NULL,'active',NULL,0,'2026-07-16 04:10:31','2026-07-16 04:10:31',NULL),
 (10,NULL,'AI로봇 (Start Kit ⅰ) - 2주차','',NULL,'ai_robot',NULL,NULL,30,NULL,'active',NULL,0,'2026-07-16 04:10:36','2026-07-16 04:10:36',NULL),
 (11,NULL,'AI로봇 (Start Kit ⅰ) - 3주차','',NULL,'ai_robot',NULL,NULL,30,NULL,'active',NULL,0,'2026-07-16 04:10:41','2026-07-16 04:10:41',NULL),
@@ -47997,17 +47996,6 @@ LOCK TABLES `enrollments` WRITE;
 /*!40000 ALTER TABLE `enrollments` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `enrollments` VALUES
-(1,4,4,'2026-06-18','active','pending'),
-(2,4,1,'2026-06-18','active','pending'),
-(3,4,2,'2026-06-18','active','pending'),
-(5,7,1,'2026-06-19','cancelled','pending'),
-(6,7,2,'2026-06-19','cancelled','paid'),
-(8,7,4,'2026-06-19','cancelled','pending'),
-(9,8,2,'2026-06-19','cancelled','paid'),
-(11,8,4,'2026-06-19','cancelled','pending'),
-(12,8,1,'2026-06-19','cancelled','pending'),
-(13,7,5,'2026-06-19','cancelled','pending'),
-(14,8,5,'2026-06-19','cancelled','pending'),
 (21,7,17,'2026-07-16','cancelled','pending'),
 (22,7,18,'2026-07-16','cancelled','pending'),
 (23,20,22,'2026-07-31','cancelled','pending'),
@@ -48306,7 +48294,7 @@ CREATE TABLE `learning_progress` (
   CONSTRAINT `1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`),
   CONSTRAINT `2` FOREIGN KEY (`material_id`) REFERENCES `course_materials` (`id`),
   CONSTRAINT `3` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=440 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=441 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48317,19 +48305,6 @@ LOCK TABLES `learning_progress` WRITE;
 /*!40000 ALTER TABLE `learning_progress` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `learning_progress` VALUES
-(11,7,6,NULL,1,0,50,'2026-06-19 01:58:45',NULL,'2026-06-19 01:58:45'),
-(12,7,7,NULL,1,0,50,'2026-06-19 01:58:47',NULL,'2026-06-19 01:58:46'),
-(13,7,8,NULL,1,0,50,'2026-06-19 01:58:48',NULL,'2026-06-19 01:58:48'),
-(14,7,9,NULL,1,1,100,'2026-06-20 04:57:11','2026-06-20 04:57:11','2026-06-19 02:43:08'),
-(17,7,13,NULL,2,0,50,'2026-06-19 03:26:27',NULL,'2026-06-19 03:26:27'),
-(18,7,12,NULL,4,0,50,'2026-06-19 03:26:31',NULL,'2026-06-19 03:26:31'),
-(19,8,6,NULL,1,0,50,'2026-06-19 03:32:14',NULL,'2026-06-19 03:32:14'),
-(20,8,7,NULL,1,0,50,'2026-06-19 03:32:15',NULL,'2026-06-19 03:32:15'),
-(21,8,12,NULL,4,0,50,'2026-06-19 03:32:21',NULL,'2026-06-19 03:32:21'),
-(22,8,13,NULL,2,0,50,'2026-06-19 03:32:28',NULL,'2026-06-19 03:32:28'),
-(23,7,15,NULL,5,1,100,'2026-06-20 04:57:58','2026-06-20 04:57:58','2026-06-19 10:53:57'),
-(24,7,16,NULL,5,1,100,'2026-06-20 05:02:31','2026-06-20 05:02:31','2026-06-19 10:54:05'),
-(25,7,17,NULL,5,1,100,'2026-06-20 05:02:37','2026-06-20 05:02:37','2026-06-19 10:54:11'),
 (26,7,18,NULL,17,0,50,'2026-07-16 05:37:35',NULL,'2026-07-16 05:37:28'),
 (27,7,19,NULL,17,0,50,'2026-07-16 05:37:34',NULL,'2026-07-16 05:37:30'),
 (28,7,20,NULL,18,0,50,'2026-07-16 05:37:37',NULL,'2026-07-16 05:37:37'),
@@ -48665,7 +48640,6 @@ INSERT INTO `learning_progress` VALUES
 (407,20,NULL,5,32,0,50,'2026-09-13 17:20:13',NULL,'2026-09-13 17:20:13'),
 (408,20,NULL,3,32,0,50,'2026-09-13 17:20:14',NULL,'2026-09-13 17:20:14'),
 (409,20,NULL,4,32,0,50,'2026-09-13 17:20:15',NULL,'2026-09-13 17:20:15'),
-(410,4,6,NULL,1,0,50,'2026-09-13 17:37:28',NULL,'2026-09-13 17:37:28'),
 (411,58,52,NULL,31,0,50,'2026-09-19 01:24:26',NULL,'2026-09-19 01:24:26'),
 (412,58,53,NULL,31,0,50,'2026-09-19 01:24:33',NULL,'2026-09-19 01:24:33'),
 (413,58,55,NULL,31,0,50,'2026-09-19 01:24:38',NULL,'2026-09-19 01:24:38'),
@@ -48694,7 +48668,8 @@ INSERT INTO `learning_progress` VALUES
 (436,83,NULL,2,44,0,50,'2026-10-03 03:09:24',NULL,'2026-10-03 12:09:24'),
 (437,85,NULL,2,44,0,50,'2026-10-03 03:09:24',NULL,'2026-10-03 12:09:24'),
 (438,86,NULL,0,44,0,50,'2026-10-03 03:11:44',NULL,'2026-10-03 12:11:44'),
-(439,84,NULL,0,44,0,50,'2026-10-03 03:11:46',NULL,'2026-10-03 12:11:46');
+(439,84,NULL,0,44,0,50,'2026-10-03 03:11:46',NULL,'2026-10-03 12:11:46'),
+(440,65,22,NULL,18,0,50,'2026-10-09 11:50:03',NULL,'2026-10-09 20:50:03');
 /*!40000 ALTER TABLE `learning_progress` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -54553,10 +54528,6 @@ CREATE TABLE `payments` (
 LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
 set autocommit=0;
-INSERT INTO `payments` VALUES
-(2,NULL,7,2,1,150000.00,'card','completed','2026-08-07 13:54:32','RCP-20260807-856D8CFC','2026-08-07 13:54:32'),
-(3,NULL,7,2,1,150000.00,'transfer','completed','2026-08-07 13:54:55','RCP-20260807-D7C8A088','2026-08-07 13:54:55'),
-(4,NULL,8,2,1,150000.00,'transfer','completed','2026-08-07 13:55:04','RCP-20260807-1CB60234','2026-08-07 13:55:04');
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -54738,22 +54709,7 @@ INSERT INTO `portfolios` VALUES
 (6,7,'블루투스 RC카 코딩','sdadad','---\ntemplate_type: daily\n---\n[오늘 배운 내용]\n블루투스를 이용해 근거리 통신의 원리를 알고 DC 모터와 모터 드라이브를 이용해 RC카의 동작을 구현하였습니다.\n동작을 구현한 DC 모터에 블루투스의 통신에 맞춰 전진/후진/우/좌 회전을 시키는 알고리즘을 구현하여 동작하는 원리에 대해 알게 되었습니다.\n\n[새로 알게 된 점]\n블루투스 모듈의 라이브러리 <Software.h> 라이브러리를 통해 통신의 코딩을 진행하는 방법에 대해 알게 되었으며 근거리 통신 (블루투스)를 이용해 실생활 동작하는 가전|전자 제품의 원리를 이해하였습니다.\n\n[어려웠던 점]\n블루투스 모듈이 사용될때 TXD 와 RXD 의 이해가 조금 어려웠습니다.\n통신을 할때 수신과송신에 대한 원리를 이해하는 방법을 이해하는데 시간이 걸렸습니다.',NULL,NULL,NULL,'[\"/uploads/portfolio/portfolio_7_icptf96h.jpg\"]','AI로봇 (Start Kit ⅲ) - 2주차','{\"comment\":true}',1,'approved',NULL,NULL,'2026-07-16 06:04:59','2026-08-07 15:14:01'),
 (7,7,'adadasdd',NULL,'---\ntemplate_type: daily\n---\n[오늘 배운 내용]\nsdadsad\n\n[새로 알게 된 점]\nsadsdadsd\n\n[어려웠던 점]\nsad',NULL,NULL,NULL,'[\"/uploads/portfolio/portfolio_7_vvk5blne.jpg\"]','1일차',NULL,1,'published',NULL,NULL,'2026-08-07 15:25:23','2026-08-28 11:18:57'),
 (8,7,'sadsadasda','sdad','---\ntemplate_type: weekly\n---\n[주차] 32주차\n\n[이번 주 배운 내용]\nsadsadsad\n\n[코드]\n# 코드를 입력하세요\nsadasdsdasceadsa\nca\nwed\nadac\nsd\nacd\na\n\n[실행 결과]\nsacdadadwace\n\n[알고리즘 설명]\nasecas\n\n[배운 점]\necadasdcad',NULL,NULL,NULL,'[\"/uploads/portfolio/portfolio_7_vvk5blne.jpg\", \"/uploads/portfolio/portfolio_7_cdqejwsd.jpg\"]','2일차','{\"comment\":true}',1,'approved',NULL,NULL,'2026-08-07 15:25:44','2026-09-10 11:13:01'),
-(12,44,'dasdds',NULL,'---\ntemplate_type: daily\n---\n[오늘 배운 내용]\nsda\n\n[새로 알게 된 점]\nadad\n\n[어려웠던 점]\nsad',NULL,NULL,NULL,'[\"/uploads/portfolio/portfolio_44_tlwrbspw.jpg\"]','1일차',NULL,1,'draft',NULL,NULL,'2026-08-14 02:57:46','2026-08-14 02:57:46'),
-(13,44,'1',NULL,'```cpp\n// LED 깜빡이기\nint ledPin = 13;\n\nvoid setup() {\n  pinMode(ledPin, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(ledPin, HIGH);\n  Serial.println(\"LED ON\");\n  delay(1000);\n  digitalWrite(ledPin, LOW);\n  Serial.println(\"LED OFF\");\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-08-14 07:58:27','2026-08-14 07:58:27'),
-(14,44,'1',NULL,'```cpp\n// LED 깜빡이기\nint ledPin = 13;\n\nvoid setup() {\n  pinMode(ledPin, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(ledPin, HIGH);\n  Serial.println(\"LED ON\");\n  delay(1000);\n  digitalWrite(ledPin, LOW);\n  Serial.println(\"LED OFF\");\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-08-15 03:35:59','2026-08-15 03:35:59'),
-(15,44,'새 코드',NULL,'```cpp\nvoid setup() {\n  // put your setup code here, to run once:\n  Serial.begin(9600);\n  Serial.println(\"Arduino ready!\");\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-08-15 03:37:01','2026-08-15 03:37:01'),
-(24,82,'코드',NULL,'```cpp\nvoid setup() {\n  // put your setup code here, to run once:\n  Serial.begin(9600);\n  Serial.println(\"Arduino ready!\");\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-02 16:36:48','2026-10-02 16:36:48'),
-(25,82,'코드',NULL,'```cpp\nint buzzer = 7;\nvoid setup() {\n pinMode(buzzer , OUTPUT);\n}\nvoid loop() {\n tone(buzzer , 262);\n delay(1000);\n noTone(buzzer);\n delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-02 16:41:33','2026-10-02 16:41:33'),
-(26,82,'코드',NULL,'```cpp\nvoid setup() {\n pinMode(7, OUTPUT);\n}\nvoid loop() {\n tone(7, 262);\n delay(1000);\n noTone(7);\n delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-02 16:43:34','2026-10-02 16:43:34'),
-(27,85,'1번',NULL,'```cpp\nvoid setup() \n{\n\n  Serial.begin(9600);\n  pinMode(7, OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(7, 262);\n  delay(1000);\n  noTone(7);\n\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:20:46','2026-10-03 12:20:46'),
-(28,84,'1번 코딩',NULL,'```cpp\nvoid setup() {\n  // put your setup code here, to run once:\n  Serial.begin(9600);\n  Serial.println(\"Arduino ready!\");\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:23:29','2026-10-03 12:23:29'),
-(29,84,'1번 코딩',NULL,'```cpp\nvoid setup() {\n  // put your setup code here, to run once:\n  Serial.begin(9600);\n  pinMode(7,OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(7,262);\n  delay(1000);\n  noTone(7);\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:24:59','2026-10-03 12:24:59'),
-(30,85,'1번',NULL,'```cpp\nvoid setup() \n{\n\n  Serial.begin(9600);\n  pinMode(7, OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(7, 300);\n  delay(500);\n  noTone(7);\n\n  delay(500);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:26:51','2026-10-03 12:26:51'),
-(31,85,'1번',NULL,'```cpp\nvoid setup() \n{\n\n  Serial.begin(9600);\n  pinMode(7, OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(7, 329);\n  delay(500);\n  noTone(7);\n\n  delay(500);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:29:56','2026-10-03 12:29:56'),
-(32,84,'1번 코딩',NULL,'```cpp\nvoid setup() {\n  // put your setup code here, to run once:\n  Serial.begin(9600);\n  pinMode(7,OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(7,392);\n  delay(1000);\n  noTone(7);\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:30:06','2026-10-03 12:30:06'),
-(33,84,'1번 코딩',NULL,'```cpp\nvoid setup() {\n  // put your setup code here, to run once:\n  Serial.begin(9600);\n  pinMode(7,OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(7,392);\n  delay(1000);\n  noTone(7);\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:30:26','2026-10-03 12:30:26'),
-(34,84,'1번 코딩',NULL,'```cpp\nint o = 8;\n\nvoid setup() {\n  // put your setup code here, to run once:\n  Serial.begin(9600);\n  pinMode(o,OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(o,494);\n  delay(1000);\n  noTone(o);\n  delay(1000);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:34:46','2026-10-03 12:34:46'),
-(35,85,'1번',NULL,'```cpp\nint buzzer= 8;\n\nvoid setup() \n{\n\n  Serial.begin(9600);\n  pinMode( buzzer, OUTPUT);\n}\n\nvoid loop() {\n  // put your main code here, to run repeatedly:\n  tone(buzzer, 329);\n  delay(500);\n  noTone(buzzer);\n\n  delay(500);\n}\n```',NULL,NULL,NULL,'[]','코딩','아두이노,코딩실습',1,'draft',NULL,NULL,'2026-10-03 12:35:15','2026-10-03 12:35:15');
+(12,44,'dasdds',NULL,'---\ntemplate_type: daily\n---\n[오늘 배운 내용]\nsda\n\n[새로 알게 된 점]\nadad\n\n[어려웠던 점]\nsad',NULL,NULL,NULL,'[\"/uploads/portfolio/portfolio_44_tlwrbspw.jpg\"]','1일차',NULL,1,'draft',NULL,NULL,'2026-08-14 02:57:46','2026-08-14 02:57:46');
 /*!40000 ALTER TABLE `portfolios` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -55419,13 +55375,13 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `users` VALUES
-(1,'nubidaplet','adj29089@naver.com','pbkdf2_sha256$260000$qATOMUY0B5ithur2xjV5zA==$Zja9mw6c299YjYrIBlTqoj0GSwU43MAOHqyqV9tL7jE=','대표님','010-2772-7870','super_admin',NULL,NULL,'#581704',1,NULL,'2026-06-18 13:47:49','2026-10-03 10:34:21','','','{}','2026-08-07 13:39:03',0,0,117,0,NULL,'3ZSUEZMLTGQD7T4FGQGJXQP3OEXL4EII',0,NULL,NULL,NULL),
+(1,'nubidaplet','adj29089@naver.com','pbkdf2_sha256$260000$qATOMUY0B5ithur2xjV5zA==$Zja9mw6c299YjYrIBlTqoj0GSwU43MAOHqyqV9tL7jE=','대표님','010-2772-7870','super_admin',NULL,NULL,'#581704',1,NULL,'2026-06-18 13:47:49','2026-10-09 20:39:47','','','{}','2026-08-07 13:39:03',0,0,122,0,NULL,'3ZSUEZMLTGQD7T4FGQGJXQP3OEXL4EII',0,NULL,NULL,NULL),
 (2,'aa01','aa01@naver.com','pbkdf2_sha256$260000$07FqibfuG1BBgQylb/UFtQ==$MVUvMa6aLyxYZodk0WPFxCKq6Nd66YnAUrM01rCJ1Xk=','김남남','010-1111-1111','branch_admin',1,NULL,'#542243',1,1,'2026-06-18 14:30:08','2026-09-14 11:34:34','','','{}',NULL,0,0,2,1,NULL,NULL,0,NULL,NULL,NULL),
 (3,'aaa01','aaa01@naver.com','pbkdf2_sha256$260000$lgDH6qmI+BuG3pQKSvRaYg==$x63RiuUKDEJ8AllLRqJWbpTt+vO6ooH/p2VeL2OpdoA=','담담담','010-0000-0000','director',1,NULL,'#018222',1,1,'2026-06-18 14:32:10','2026-09-14 11:34:33','','','{}',NULL,0,0,3,0,NULL,NULL,0,NULL,NULL,NULL),
-(4,'aaaa01','aaaa01@na','pbkdf2_sha256$260000$jyc/S6fVzUZfRvyRxoDvjQ==$T7PMyaQxJVb8v8d21eFtET7dsC/pxb6iOKrk0yhQy4k=','김학생','','student',1,3,'#466320',1,3,'2026-06-18 14:34:45','2026-10-07 20:48:09','','','{}',NULL,0,0,55,5,'2026-10-07 11:58:09',NULL,0,NULL,NULL,NULL),
+(4,'aaaa01','aaaa01@na','pbkdf2_sha256$260000$jyc/S6fVzUZfRvyRxoDvjQ==$T7PMyaQxJVb8v8d21eFtET7dsC/pxb6iOKrk0yhQy4k=','김학생','','student',1,3,'#466320',1,3,'2026-06-18 14:34:45','2026-10-09 20:49:23','','','{}',NULL,0,0,55,1,NULL,NULL,0,NULL,NULL,NULL),
 (5,'educare1','educare1@educare1','0fadf52a4580cfebb99e61162139af3d3a6403c1d36b83e4962b721d1c8cbd0b','educare1','educare1','branch_admin',12,NULL,'#180637',1,1,'2026-06-19 01:11:21','2026-09-10 13:49:07','','','{}','2026-08-07 13:48:03',1,0,9,0,NULL,NULL,0,NULL,NULL,NULL),
 (6,'dnjswkd1','dnjswkd1@dnjswkd1','pbkdf2_sha256$260000$Ckf01Iq3CvoVuo/X9/T+9g==$ocsaMG+2ssLkuufg+zmh44swavQVzkHHmzLkQO2erS4=','dnjswkd1','dnjswkd1','director',12,NULL,'#187821',1,1,'2026-06-19 01:12:19','2026-10-03 12:45:53','','','{}','2026-08-07 13:52:26',1,1,25,0,NULL,NULL,0,NULL,NULL,NULL),
-(7,'gkrtod1','gkrtod1@gkrtod1','0fadf52a4580cfebb99e61162139af3d3a6403c1d36b83e4962b721d1c8cbd0b','gkrtod1','gkrtod1','student',2,6,'#579855',1,6,'2026-06-19 01:13:17','2026-10-07 20:53:48','','','{}','2026-08-07 15:17:36',1,0,7,0,NULL,NULL,0,NULL,NULL,NULL),
+(7,'gkrtod1','gkrtod1@gkrtod1','0fadf52a4580cfebb99e61162139af3d3a6403c1d36b83e4962b721d1c8cbd0b','gkrtod1','gkrtod1','student',2,6,'#579855',1,6,'2026-06-19 01:13:17','2026-10-09 20:49:23','','','{}','2026-08-07 15:17:36',1,0,7,2,NULL,NULL,0,NULL,NULL,NULL),
 (8,'gkrtod2','gkrtod2@gkrtod2','pbkdf2_sha256$260000$+c07OcecqtyA2k2xApB04g==$TZ42s1d54XJCZBj5DTHH1Nd9BtUL9Rn3asD3ozBe6BA=','gkrtod2','gkrtod2','student',2,6,'#068394',1,6,'2026-06-19 03:31:35','2026-09-18 08:40:25','','','{}','2026-08-09 04:35:55',1,0,34,0,NULL,NULL,0,NULL,NULL,NULL),
 (10,'educare2','educare2@educare2','d9147fb0c2370584d7b26d10ba8f696b10681187bd106ea366a5a4be3f15be8a','educare2','educare2','branch_admin',13,NULL,'#881932',1,1,'2026-06-19 03:36:01','2026-09-14 05:44:11','','','{}',NULL,1,0,23,0,NULL,NULL,0,NULL,NULL,NULL),
 (11,'educare3','educare3@educare3','pbkdf2_sha256$260000$PFpH3mgRGLnAfrsBC8X/gA==$6OELPWoNbE4bwg5ehalFntKYcp5enT1Jedm5/fIuSSo=','educare3','educare3','admin',4,NULL,'#742329',1,1,'2026-06-20 10:26:40','2026-10-02 15:57:51','','','{}',NULL,0,0,3,1,NULL,NULL,0,NULL,NULL,NULL),
@@ -55434,8 +55390,8 @@ INSERT INTO `users` VALUES
 (15,'dnjswkd5','dnjswkd5@dnjswkd5','c0085c5330e25bcd2a7b4042ed2e885c6388f98acecd7e86d804d3782793e141','dnjswkd5','dnjswkd5','director',13,NULL,'#903262',1,1,'2026-07-16 04:01:38','2026-07-16 04:02:08','','','{}',NULL,0,0,1,0,NULL,NULL,0,NULL,NULL,NULL),
 (16,'gkrtod5','gkrtod5@gkrtod5','ae668cb67bcfd5262c952bd136f8f8eaf7147edab2707f81f218bb72cc62c883','gkrtod5','gkrtod5','student',6,15,'#666399',1,15,'2026-07-16 04:02:41','2026-07-16 04:03:06','','','{}',NULL,0,0,1,0,NULL,NULL,0,NULL,NULL,NULL),
 (17,'ppoppoppo22','ppoppoppo22@naver.com','pbkdf2_sha256$260000$PFpH3mgRGLnAfrsBC8X/gA==$6OELPWoNbE4bwg5ehalFntKYcp5enT1Jedm5/fIuSSo=','윤선경','01095581350','admin',7,NULL,'#029043',1,1,'2026-07-24 01:38:40','2026-09-19 01:30:53','','','{}',NULL,0,0,3,5,'2026-09-19 01:40:53',NULL,0,NULL,NULL,NULL),
-(19,'NubidaClass','NubidaClass@NubidaClass','pbkdf2_sha256$260000$anPjuPeTuu/lgaRZ1tUoLw==$UdRomJ5oK22PYY+/CNREIcy0kCwIK1T7yxDyhVWCybs=','본사원장','01027727870','director',8,NULL,'#584752',1,1,'2026-07-31 08:55:04','2026-10-03 12:46:19','','','{}','2026-08-09 12:20:30',1,0,15,0,NULL,NULL,0,NULL,NULL,NULL),
-(20,'Test123','Test1@Test1','pbkdf2_sha256$260000$O2fGWwqZyzU2qIt93XdoNw==$BYxzFm94xzWJstj3hySd52BO9GJ/svlE1RHtMT3L7RU=','AI 학생','Test1','student',8,19,'#609666',1,19,'2026-07-31 11:29:33','2026-10-07 21:39:01','','','{}','2026-08-09 23:29:53',1,0,107,0,NULL,NULL,0,NULL,NULL,NULL),
+(19,'NubidaClass','NubidaClass@NubidaClass','pbkdf2_sha256$260000$anPjuPeTuu/lgaRZ1tUoLw==$UdRomJ5oK22PYY+/CNREIcy0kCwIK1T7yxDyhVWCybs=','본사원장','01027727870','director',8,NULL,'#584752',1,1,'2026-07-31 08:55:04','2026-10-09 20:42:43','','','{}','2026-08-09 12:20:30',1,0,16,0,NULL,NULL,0,NULL,NULL,NULL),
+(20,'Test123','Test1@Test1','pbkdf2_sha256$260000$O2fGWwqZyzU2qIt93XdoNw==$BYxzFm94xzWJstj3hySd52BO9GJ/svlE1RHtMT3L7RU=','AI 학생','Test1','student',8,19,'#609666',1,19,'2026-07-31 11:29:33','2026-10-09 20:43:34','','','{}','2026-08-09 23:29:53',1,0,109,0,NULL,NULL,0,NULL,NULL,NULL),
 (23,'GoEunChan','cks150601@gmail.com','11da7c117d1c6f9075c98390591d34bf78e563f852150a6384da820baeccf6c4','고은찬','01095446645','student',8,19,'#437017',0,19,'2026-08-10 00:36:10','2026-10-02 12:25:22','','','{}','2026-08-10 00:39:39',1,0,1,0,NULL,NULL,0,NULL,NULL,'2026-10-02 12:25:22'),
 (24,'rkznwhswkf','a12@a','1967bfa68e40013348762184193c2a457be7a6975d1d5da6a8161d0e9165dbbb','김민아','','student',8,19,'#310878',0,19,'2026-08-10 00:36:11','2026-10-02 12:25:19','','','{}','2026-08-10 00:39:57',1,0,1,0,NULL,NULL,0,NULL,NULL,'2026-10-02 12:25:19'),
 (25,'sychoi1565','sychoi1565@gmail.com','0a0d77bed81c4d66f1185253f53b69f92d36d01786ddbbf154e29ee55cd35cd7','최서윤','010-9558-1381','student',8,19,'#414385',0,19,'2026-08-10 00:36:11','2026-10-02 12:25:20','','','{}','2026-08-10 00:39:36',1,0,1,0,NULL,NULL,0,NULL,NULL,'2026-10-02 12:25:20'),
@@ -55460,9 +55416,9 @@ INSERT INTO `users` VALUES
 (44,'260810','260810@260810','pbkdf2_sha256$260000$JVMGdNKx+rSCWOdpJhjBjQ==$0OHj/bsZEUY+aVAOZypxkep3+S0SPor9YwfSeuJ3pzs=','윤영철','','student',8,19,'#415390',1,19,'2026-08-10 00:47:00','2026-10-02 12:24:32','','','{}','2026-08-10 00:47:23',1,0,2,0,NULL,NULL,0,NULL,NULL,NULL),
 (55,'ppoppoppo20','ysksk1004@gmail.com','pbkdf2_sha256$260000$kQUGndE5iK+CWdT5CyjrDQ==$3Mppd3V0T6Q/yPuBN66l421Xl2qEpsLSMgfQHmvT3Cc=','윤선경','01095581350','student',2,NULL,'#119125',1,17,'2026-08-29 02:57:28','2026-09-19 01:30:28','','','{}',NULL,1,0,2,0,NULL,NULL,0,NULL,NULL,NULL),
 (58,'a1094312','a1094312@naver.com','pbkdf2_sha256$260000$P94AyK7L46E0GdfrSmDmYg==$cn38nxbi4jalE3Ym3TDLLZJucQeP7CErMCanvfAG2mA=','윤승률','010-4574-2909','student',8,19,'#648033',1,19,'2026-09-01 01:27:24','2026-09-19 01:24:10','','','{}',NULL,1,0,2,0,NULL,NULL,0,NULL,NULL,NULL),
-(65,'gkrtod3','gkrtod3@gkrtod3','e9c45ba084d67000280ac054771b51a8a7f0eac1dbfeb64f9cbe23006bc90301','gkrtod3','gkrtod3','student',2,6,'#342284',1,6,'2026-09-11 00:20:25','2026-09-11 00:40:30','','','{}',NULL,0,0,1,0,NULL,NULL,0,NULL,NULL,NULL),
-(81,'iostest001','iostest001@nubida-test.local','pbkdf2_sha256$260000$AIh6MvKKhqOuv75gPiDuXQ==$T7Uj0HOGCzsENrnYywAHdT7PVP41+sCG65S1e1pBfr4=','iOS UI 테스트',NULL,'student',8,NULL,'IOSTST1',1,NULL,'2026-09-20 22:31:12','2026-09-20 23:38:14',NULL,NULL,NULL,NULL,1,0,7,0,NULL,NULL,0,NULL,NULL,NULL),
-(82,'nubidapletC','nubidapletC@nubidapletC','pbkdf2_sha256$260000$2oDpPNJYUL3UNkkG2AABlw==$yNvXxoyqfSvtpRx4m7ezj0zOZduXiyqCPPI/7mFw2KM=','누비다플랫폼','nubidapletC','student',8,19,'#239085',1,19,'2026-10-02 12:25:51','2026-10-03 12:06:34','','','{}',NULL,1,0,13,0,NULL,NULL,0,NULL,NULL,NULL),
+(65,'gkrtod3','gkrtod3@gkrtod3','pbkdf2_sha256$260000$ZJrcaJ6xa8de1h+wsT7P7Q==$bWLl8pG7b+//4XKtHrkuasGOSjb+3n/+OCA6X773rxM=','gkrtod3','gkrtod3','student',2,6,'#342284',1,6,'2026-09-11 00:20:25','2026-10-09 20:49:31','','','{}',NULL,0,0,3,0,NULL,NULL,0,NULL,NULL,NULL),
+(81,'iostest001','iostest001@nubida-test.local','pbkdf2_sha256$260000$AIh6MvKKhqOuv75gPiDuXQ==$T7Uj0HOGCzsENrnYywAHdT7PVP41+sCG65S1e1pBfr4=','iOS UI 테스트',NULL,'student',8,NULL,'IOSTST1',1,NULL,'2026-09-20 22:31:12','2026-10-09 20:49:23',NULL,NULL,NULL,NULL,1,0,7,2,NULL,NULL,0,NULL,NULL,NULL),
+(82,'nubidapletC','nubidapletC@nubidapletC','pbkdf2_sha256$260000$2oDpPNJYUL3UNkkG2AABlw==$yNvXxoyqfSvtpRx4m7ezj0zOZduXiyqCPPI/7mFw2KM=','누비다플랫폼','nubidapletC','student',8,19,'#239085',1,19,'2026-10-02 12:25:51','2026-10-09 21:27:56','','','{}',NULL,1,0,20,0,NULL,NULL,0,NULL,NULL,NULL),
 (83,'youm0121','youm0121@naver.com','pbkdf2_sha256$260000$NGmE+LvOTeccGyWlJuGyTg==$QvV7DvgqA0gmwTaab6NRVXSd1HYk5t2tIYXlaK+fL2M=','김수진','01028526625','student',8,19,'#667558',1,19,'2026-10-03 10:37:15','2026-10-03 18:58:52','','','{}',NULL,1,0,4,0,NULL,NULL,0,NULL,NULL,NULL),
 (84,'0626khj','0626k@naver.com','pbkdf2_sha256$260000$7EVTnSrU/dclRluBnVAKPw==$87XklHSMsAiQW7xCPjrmUjv2Xv0iH6h061xBkaAcMyM=','김현주','01083116699','student',8,19,'#865492',1,19,'2026-10-03 10:37:33','2026-10-03 12:08:11','','','{}',NULL,1,0,4,0,NULL,NULL,0,NULL,NULL,NULL),
 (85,'knh7332','knh7332@naver.com','pbkdf2_sha256$260000$C71rW+NVmSAdKT93gb1+qA==$ipdAlDrenrSqZuZkXi15xviNVhv88tzYmYdGIzFl6c8=','김남희','01036980142','student',8,19,'#494136',1,19,'2026-10-03 10:37:53','2026-10-03 12:08:09','','','{}',NULL,1,0,4,0,NULL,NULL,0,NULL,NULL,NULL),
@@ -68953,7 +68909,7 @@ LOCK TABLES `users_bak_260914` WRITE;
 set autocommit=0;
 INSERT INTO `users_bak_260914` VALUES
 ('111','111','11','1',50000),
-('adj29089','***MASKED***','관리자','누비다플랫폼',949888),
+('adj29089','dbsdudcjf2020**','관리자','누비다플랫폼',949888),
 ('admin','admin1234','관리자','중앙정부',999999),
 ('test','test','test','test',103433),
 ('test1','test1','test1','test1',53901);
@@ -69042,4 +68998,4 @@ USE `shop_db`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-10-08 15:32:03
+-- Dump completed on 2026-10-09 21:43:23

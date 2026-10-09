@@ -2403,25 +2403,6 @@ let serialPort = null;
             addSerialLine('🎉 업로드 완료! 보드가 자동으로 실행됩니다.');
             showToast('✅ 업로드 성공!', 'success');
 
-            // 12. 포트폴리오에도 저장
-            try {
-                const title = document.getElementById('codeTitle').value.trim() || '코딩 실습';
-                await fetch(apiUrl('/api/v1/portfolio'), {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + (token || ''),
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        content: '```cpp\n' + code + '\n```',
-                        subject: '코딩',
-                        tags: '아두이노,코딩실습',
-                        is_public: true,
-                    }),
-                });
-            } catch(e) { /* 포트폴리오 저장은 부가 기능 */ }
-
         } catch(e) {
             hideUploadProgress();
             console.error('Upload error:', e);
